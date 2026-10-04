@@ -19,14 +19,7 @@ function sqlLiteral(value) {
 function psql(args, options = {}) {
   return execFileSync(
     "psql",
-    [
-      "-X",
-      "--no-psqlrc",
-      "-v",
-      "ON_ERROR_STOP=1",
-      ...args,
-      databaseUrl,
-    ],
+    ["-X", "--no-psqlrc", "-v", "ON_ERROR_STOP=1", ...args, databaseUrl],
     {
       encoding: "utf8",
       stdio: options.capture ? ["ignore", "pipe", "inherit"] : "inherit",
