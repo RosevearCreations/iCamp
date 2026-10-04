@@ -1,7 +1,7 @@
 # Build 001 — Responsive PWA & Omnichannel Application Shell
 
 ## Status
-**Queued — not started.**
+**IN PROGRESS on `dev`.**
 
 ## Objective
 Create the active iCamp application shell without prematurely implementing campground business modules.
@@ -55,6 +55,12 @@ Inherently graphical operations such as drawing campground polygons are allowed 
 - channel-capability declaration exists;
 - tests/format/lint/typecheck/build/security gates GREEN;
 - source-of-truth docs remain consistent.
+
+## Flexibility and cost constraints
+- Use no paid service as a prerequisite for Build 001.
+- Keep workspace/channel definitions data-driven so adding or reorganizing modules does not require rewriting the application shell.
+- Keep all external-provider integrations behind future adapters.
+- Produce self-hostable/standalone Next.js output to preserve deployment portability.
 
 ## Manual action
 None expected.
