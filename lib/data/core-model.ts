@@ -1,11 +1,7 @@
 export type LifecycleState = "active" | "inactive" | "archived";
 
 export type RefreshStatus =
-  | "idle"
-  | "refreshing"
-  | "fresh"
-  | "stale"
-  | "failed";
+  "idle" | "refreshing" | "fresh" | "stale" | "failed";
 
 export interface RecordIdentity {
   id: string;
