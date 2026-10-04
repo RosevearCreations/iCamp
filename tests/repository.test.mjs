@@ -142,21 +142,18 @@ test("build operating model preserves autonomous free-first delivery", async () 
   assert.match(operatingModel, /exact numbered steps/i);
 });
 
-
 test("Build 002 defines typed environment and health contracts", async () => {
   const runtime = await readFile("lib/config/runtime.ts", "utf8");
   const envTemplate = await readFile(".env.example", "utf8");
 
-  for (const environment of [
-    "development",
-    "test",
-    "staging",
-    "production",
-  ]) {
+  for (const environment of ["development", "test", "staging", "production"]) {
     assert.match(runtime, new RegExp(`["']${environment}["']`));
   }
 
-  assert.match(runtime, /NEXT_PUBLIC_APP_ENV and ICAMP_APP_ENV|ICAMP_APP_ENV and NEXT_PUBLIC_APP_ENV/);
+  assert.match(
+    runtime,
+    /NEXT_PUBLIC_APP_ENV and ICAMP_APP_ENV|ICAMP_APP_ENV and NEXT_PUBLIC_APP_ENV/,
+  );
   assert.match(envTemplate, /ICAMP_BUILD_SHA/);
   assert.match(envTemplate, /ICAMP_FEATURE_EXTERNAL_WATCHDOG/);
 });
