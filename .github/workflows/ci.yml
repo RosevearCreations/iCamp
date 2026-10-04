@@ -16,10 +16,10 @@ jobs:
     timeout-minutes: 20
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Use Node.js 24
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version: 24
 
@@ -39,7 +39,7 @@ jobs:
 
       - name: Upload formatter diff on failure
         if: failure() && steps.formatting.outcome == 'failure'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: prettier-diff
           path: prettier.diff
@@ -66,7 +66,7 @@ jobs:
 
       - name: Upload full dependency audit
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: npm-audit-full
           path: npm-audit-full.json

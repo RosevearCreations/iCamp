@@ -808,3 +808,61 @@ Telephony provider failure must not corrupt reservations or payments. Calls/SMS 
 
 ### 23.12 Visual-task fallback
 Graphical functions such as polygon plotting remain web/PWA tasks. Telephone/SMS offers operational equivalents using site/asset IDs and can send secure links to the relevant visual page.
+
+
+## 24. Live Evolution, Free-First Development and Scale Migration
+
+iCamp is expected to remain a **live, evolving application**. Requirements, campground operating models, providers, regulations and customer expectations will change over time.
+
+Architecture must therefore favor:
+- modular bounded domains rather than one tightly coupled application;
+- canonical service interfaces that can gain new channels without duplicating logic;
+- versioned configuration instead of hard-coded campground policy;
+- feature flags for staged rollout/rollback;
+- backward-compatible migrations where practical;
+- append-oriented history for financially/safety significant records;
+- provider adapters at every external dependency boundary;
+- contract tests around adapters and domain services;
+- observability/version identifiers so changes can be traced and reversed;
+- data export paths so the campground is not trapped by a development provider.
+
+### 24.1 Free-first development/testing
+
+During design, development and early testing, prefer software and service tiers that can be used at no recurring cost where practical.
+
+The free-first requirement must **not** create architectural lock-in or force unsafe limitations. Core iCamp behavior should remain portable.
+
+Preferred development approach:
+- open-source frameworks/libraries where practical;
+- PostgreSQL-compatible schemas rather than proprietary databases;
+- provider-neutral object/media abstractions;
+- sandbox/mock integrations for payments, SMS/voice and physical access;
+- synthetic/demo data;
+- GitHub Actions within available plan limits;
+- self-hostable/standalone application output.
+
+Paid services should only become necessary when real production scale, phone numbers/messages, payment processing, hardware integration, storage, uptime or regulatory services genuinely require them.
+
+### 24.2 Scale-up migration
+
+Every managed development service selected later must have a documented exit/scale path.
+
+Examples:
+- free managed PostgreSQL -> larger managed PostgreSQL or self-hosted PostgreSQL;
+- free web hosting -> paid serverless/container hosting or multi-instance deployment;
+- development object storage -> scalable S3-compatible/provider storage;
+- telephony sandbox/mock -> production telephony provider adapter;
+- payment sandbox -> production payment provider credentials;
+- single-instance background work -> durable queue/worker infrastructure.
+
+No core business table should depend on one vendor's proprietary identity unless a portable internal identifier also exists.
+
+### 24.3 Change-management rule
+
+A later alteration should normally be implemented as:
+1. a versioned configuration or feature flag when it is campground policy;
+2. a new adapter implementation when it is an external provider change;
+3. a backward-compatible domain/schema extension when it is new business capability;
+4. a migration with rollback/recovery documentation when compatibility is impossible.
+
+Large rewrites should be the exception.

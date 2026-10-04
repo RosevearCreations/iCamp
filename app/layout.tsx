@@ -1,9 +1,24 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
+
+import { ServiceWorkerRegistration } from "@/components/service-worker-registration";
+
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "iCamp",
-  description: "iCamp2027 campground operations platform",
+  applicationName: "iCamp",
+  title: {
+    default: "iCamp2027",
+    template: "%s",
+  },
+  description: "Flexible campground operations platform for guests and staff.",
+  manifest: "/manifest.webmanifest",
+};
+
+export const viewport: Viewport = {
+  colorScheme: "light",
+  themeColor: "#173f35",
+  width: "device-width",
+  initialScale: 1,
 };
 
 export default function RootLayout({
@@ -13,7 +28,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        {children}
+        <ServiceWorkerRegistration />
+      </body>
     </html>
   );
 }
