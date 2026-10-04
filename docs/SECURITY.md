@@ -297,3 +297,68 @@ Physical-access adapter tests use mocks/sandboxes, not real gate commands in ord
 ## 19. Security gate
 
 A build cannot be GREEN if it introduces an unresolved critical/high security defect in the code or production dependency set, or if a high-risk operation lacks authorization/audit controls.
+
+
+## 20. Telephone, IVR, DTMF and SMS Security
+
+Telephone/SMS channels are untrusted external interfaces.
+
+### Identity
+- Caller ID must never be treated as sufficient authentication.
+- Reservation/stay lookups should use limited verification appropriate to the action.
+- Staff and high-risk actions require stronger authentication than guest information lookups.
+- Authentication secrets/PINs must not be spoken back or returned in plaintext SMS.
+- Failed verification attempts are rate limited and monitored.
+
+### DTMF
+- Never log full sensitive DTMF sequences if they represent PINs or authentication secrets.
+- Mask/redact sensitive digit input in application logs and provider event storage.
+- Set session expiry and retry limits.
+- Prevent replay of completed commands.
+- Do not collect raw payment-card data using custom iCamp DTMF flows.
+
+### SMS
+- Treat incoming message bodies as untrusted input.
+- Validate and normalize every SMS command before executing a domain action.
+- Natural-language SMS interpretation cannot bypass normal authorization/business rules.
+- Sensitive information should not be sent by plain SMS when a secure link or authenticated portal is appropriate.
+- STOP/START/HELP and provider opt-out events must update internal preference state where applicable.
+- Marketing and transactional/operational messaging purposes remain separately classified.
+
+### Provider webhooks
+- Verify webhook signatures.
+- Enforce HTTPS.
+- Apply replay/idempotency controls.
+- Rate limit abusive sources.
+- Validate provider event schema.
+- Avoid storing unnecessary provider payload fields.
+
+### Staff telephone actions
+A staff call may not perform gate overrides, refunds, financing actions, role changes or similar high-risk commands based on caller ID alone.
+
+High-risk staff telephone actions should require:
+- authenticated staff identity;
+- additional factor/re-authentication;
+- explicit target confirmation;
+- reason capture where appropriate;
+- complete audit event.
+
+### Voice recordings and transcription
+If call recording/transcription is ever enabled:
+- it is disabled by default;
+- jurisdiction-appropriate notice/consent is required;
+- retention is limited;
+- recordings/transcripts are confidential;
+- access is audited;
+- payment/authentication secrets are excluded/redacted where possible.
+
+### Emergency boundary
+The IVR must provide clear routing/escalation for emergencies and must not imply that a voicemail/SMS/automated workflow replaces calling emergency services where immediate assistance is required.
+
+## 21. Messaging Compliance Boundary
+
+iCamp must support configurable compliance requirements rather than hard-code one jurisdiction.
+
+For Canadian commercial SMS, the communications module must support evidence of consent where required, sender identification and a functioning unsubscribe mechanism. Transactional/operational notices and marketing messages must be purpose-tagged and reviewed separately.
+
+Provider-level opt-out handling is synchronized into iCamp's consent/preference records instead of being treated as an external black box.
