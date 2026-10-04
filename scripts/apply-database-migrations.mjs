@@ -20,12 +20,12 @@ function psql(args, options = {}) {
   return execFileSync(
     "psql",
     [
-      databaseUrl,
       "-X",
       "--no-psqlrc",
       "-v",
       "ON_ERROR_STOP=1",
       ...args,
+      databaseUrl,
     ],
     {
       encoding: "utf8",
