@@ -25,10 +25,24 @@ Delivered:
 - autonomous build operating model;
 - portable standalone application output.
 
-## Next active build
-**Build 002 — Environment, Configuration, Health & I.T. Analysis Foundation**
+### Build 002 — Environment, Configuration, Health & I.T. Analysis Foundation
+Status: **GREEN on `dev`; promotion in progress.**
 
-Status: **IN PROGRESS on `dev`**
+Delivered:
+- typed environment/runtime configuration;
+- development/test/staging/production separation;
+- non-production safety banner;
+- health, liveness, readiness and version endpoints;
+- request/correlation IDs;
+- public-safe system status;
+- I.T. & Analysis workspace foundation;
+- provider-neutral external watchdog contract;
+- safe error/support references and diagnostic redaction foundation.
+
+## Next active build
+**Build 003 — Database, Migration & Multi-Property Foundation**
+
+Status: **QUEUED — NOT STARTED**
 
 ## Operating rule
 - Work primarily on `dev`.
