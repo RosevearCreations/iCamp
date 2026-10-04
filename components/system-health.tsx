@@ -24,7 +24,9 @@ export function SystemHealthSummary() {
       <article className="health-card">
         <span className="health-card__label">Version</span>
         <strong>{version.version}</strong>
-        <span>{version.buildSha === "local" ? "Local build" : version.buildSha}</span>
+        <span>
+          {version.buildSha === "local" ? "Local build" : version.buildSha}
+        </span>
       </article>
       <article className="health-card">
         <span className="health-card__label">Support</span>
