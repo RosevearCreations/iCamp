@@ -22,7 +22,10 @@ export default function HelpIndexPage() {
           </p>
         </section>
 
-        <section className="content-panel" aria-labelledby="help-topics-heading">
+        <section
+          className="content-panel"
+          aria-labelledby="help-topics-heading"
+        >
           <h2 id="help-topics-heading">Help topics</h2>
           <div className="help-topic-grid">
             {Object.values(helpTopics).map((topic) => (
