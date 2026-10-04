@@ -69,3 +69,53 @@ test("omnichannel source requires IVR DTMF and SMS channel parity", async () => 
   assert.match(omnichannel, /same iCamp backend/i);
   assert.match(omnichannel, /caller ID/i);
 });
+
+
+test("Build 001 exposes all required workspace shells", async () => {
+  const workspaces = await readFile("lib/workspaces.ts", "utf8");
+
+  for (const slug of [
+    "public",
+    "guest",
+    "front-desk",
+    "maintenance",
+    "security",
+    "store",
+    "staff",
+    "foreman",
+    "management",
+    "finance",
+  ]) {
+    assert.match(workspaces, new RegExp(`slug: ["']${slug}["']`));
+  }
+});
+
+test("Build 001 defines Web IVR and SMS channel capability contracts", async () => {
+  const channels = await readFile("lib/channels.ts", "utf8");
+
+  assert.match(channels, /web:/);
+  assert.match(channels, /ivr:/);
+  assert.match(channels, /sms:/);
+  assert.match(channels, /secure-link/);
+  assert.match(channels, /staff-transfer/);
+});
+
+test("Build 001 includes PWA and portable deployment baselines", async () => {
+  const manifest = await readFile("app/manifest.ts", "utf8");
+  const nextConfig = await readFile("next.config.ts", "utf8");
+  const serviceWorker = await readFile("public/sw.js", "utf8");
+
+  assert.match(manifest, /display: ["']standalone["']/);
+  assert.match(manifest, /start_url: ["']\/["']/);
+  assert.match(nextConfig, /output: ["']standalone["']/);
+  assert.match(serviceWorker, /addEventListener\(["']fetch["']/);
+});
+
+test("Build 001 architecture codifies free-first evolution and migration", async () => {
+  const architecture = await readFile("docs/ARCHITECTURE.md", "utf8");
+
+  assert.match(architecture, /Free-First Development/);
+  assert.match(architecture, /Scale-up migration/i);
+  assert.match(architecture, /feature flags/i);
+  assert.match(architecture, /provider adapters/i);
+});
