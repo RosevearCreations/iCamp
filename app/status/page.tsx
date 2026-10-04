@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import { AppShell } from "@/components/app-shell";
+import { SectionHeading } from "@/components/section-heading";
 import { SystemHealthSummary } from "@/components/system-health";
 import {
   getPublicHealthSnapshot,
@@ -33,13 +34,13 @@ export default function StatusPage() {
         </section>
 
         <section className="content-panel" aria-labelledby="status-heading">
-          <div className="section-heading">
-            <div>
-              <p className="eyebrow">Current condition</p>
-              <h2 id="status-heading">{health.status}</h2>
-            </div>
-            <span className="build-chip">{health.environment}</span>
-          </div>
+          <SectionHeading
+            eyebrow="Current condition"
+            title={health.status}
+            id="status-heading"
+            helpTopic="it.analysis"
+            trailing={<span className="build-chip">{health.environment}</span>}
+          />
 
           <SystemHealthSummary />
 
@@ -59,9 +60,13 @@ export default function StatusPage() {
           </dl>
         </section>
 
-        <section className="content-panel">
-          <p className="eyebrow">Need help?</p>
-          <h2>Client-facing status is intentionally limited.</h2>
+        <section className="content-panel" aria-labelledby="status-help-heading">
+          <SectionHeading
+            eyebrow="Need help?"
+            title="Client-facing status is intentionally limited."
+            id="status-help-heading"
+            helpTopic="it.analysis"
+          />
           <p>
             When a problem occurs, iCamp error screens provide a safe support
             reference. Authorized I.T. staff will later use that reference to
