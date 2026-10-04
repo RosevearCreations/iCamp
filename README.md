@@ -9,6 +9,7 @@ iCamp is a complete campground operations platform covering live booking, intera
 - `dev` — integration/staging
 
 ## Source of truth
+- [Master Vision](docs/MASTER_VISION.md)
 - [Architecture](docs/ARCHITECTURE.md)
 - [Build Roadmap](docs/BUILD_ROADMAP.md)
 - [Security Standard](docs/SECURITY.md)
