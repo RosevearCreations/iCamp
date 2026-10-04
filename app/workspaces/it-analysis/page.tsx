@@ -78,7 +78,9 @@ export default function ItAnalysisPage() {
             <article className="health-card">
               <span className="health-card__label">External watchdog</span>
               <strong>
-                {snapshot.featureFlags.externalWatchdog ? "Enabled" : "Not connected"}
+                {snapshot.featureFlags.externalWatchdog
+                  ? "Enabled"
+                  : "Not connected"}
               </strong>
               <span>Provider-neutral by design</span>
             </article>
