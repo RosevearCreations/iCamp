@@ -1,7 +1,7 @@
 # Build 002 — Environment, Configuration, Health & I.T. Analysis Foundation
 
 ## Status
-**GREEN on `dev` — ready for promotion.**
+**FULLY PROMOTED — `main` verification GREEN.**
 
 ## Objective
 
@@ -186,3 +186,20 @@ Delivered:
 - I.T./Analysis requirements carried into later queue/scheduler, performance, security and production-readiness builds.
 
 No detailed sensitive diagnostics are exposed before authentication, permissions and audit controls exist.
+
+
+## Promotion and production/release verification
+
+Application promotion commit: `1da61a7d86304f10f372c79415640ec3450bcd24`.
+
+The promoted `main` commit passed:
+- formatter;
+- lint;
+- strict TypeScript;
+- automated/invariant tests;
+- Next.js production build;
+- production dependency audit;
+- full dependency audit capture;
+- Gitleaks secret scan.
+
+No external hosting/monitoring provider is configured yet by design. `main` is the current production/release branch; later environment/deployment builds will attach the release to actual hosted infrastructure while preserving these health contracts.
