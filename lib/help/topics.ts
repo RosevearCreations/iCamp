@@ -61,7 +61,7 @@ export const helpTopics = {
       "Freshness metadata will later include the last successful/failed refresh and upstream source watermark.",
       "A refresh status is operational metadata; it does not duplicate sensitive client data.",
     ],
-    audience: "operational",
+    audience: "public",
   },
   "it.analysis": {
     id: "it.analysis",
@@ -74,7 +74,7 @@ export const helpTopics = {
       "Public health information is deliberately limited.",
       "An external watchdog is required to detect a completely non-responsive application.",
     ],
-    audience: "privileged",
+    audience: "public",
   },
   "customer.input": {
     id: "customer.input",
