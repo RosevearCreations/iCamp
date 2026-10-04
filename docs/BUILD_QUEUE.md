@@ -26,9 +26,9 @@ Delivered:
 - portable standalone application output.
 
 ## Next active build
-**Build 002 — Environment, Configuration & Health Framework**
+**Build 002 — Environment, Configuration, Health & I.T. Analysis Foundation**
 
-Status: **QUEUED — NOT STARTED**
+Status: **IN PROGRESS on `dev`**
 
 ## Operating rule
 - Work primarily on `dev`.
