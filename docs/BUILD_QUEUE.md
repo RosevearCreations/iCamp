@@ -40,9 +40,9 @@ Delivered:
 - safe error/support references and diagnostic redaction foundation.
 
 ## Next active build
-**Build 003 — Database, Migration & Multi-Property Foundation**
+**Build 003 — Database, Migration, Multi-Property, Admin Freshness & Help Foundation**
 
-Status: **QUEUED — NOT STARTED**
+Status: **IN PROGRESS on `dev`**
 
 ## Operating rule
 - Work primarily on `dev`.
