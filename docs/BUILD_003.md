@@ -1,7 +1,7 @@
 # Build 003 — Database, Migration, Multi-Property, Admin Freshness & Help Foundation
 
 ## Status
-**IN PROGRESS on `dev`.**
+**GREEN on `dev` — ready for promotion.**
 
 ## Objective
 
@@ -162,3 +162,51 @@ Help links and refresh/operational summaries can later be delivered through the 
 **None expected.**
 
 No database account, password, Supabase project, hosting account or secret is required for Build 003.
+
+
+## Dev verification evidence
+
+Verified on dev implementation commit `9b4ffea53a65fcddd8c3d26493d2c1b00e47548e`.
+
+### Application job
+Passed:
+- canonical formatting;
+- ESLint with zero warnings;
+- strict TypeScript;
+- repository/application invariant tests;
+- Next.js production build;
+- production dependency audit at high/critical threshold;
+- full dependency audit artifact capture.
+
+### Database migration job
+Passed against a real PostgreSQL 17 CI service:
+- migration application;
+- expected-table verification;
+- RLS-enabled verification;
+- organization/campground/section/subsection creation;
+- tenant/property foreign-key boundary test;
+- row-version increment test;
+- admin refresh-state insert;
+- idempotent migration rerun;
+- migration-history output.
+
+### Security
+- Gitleaks secret scan passed.
+- CodeQL remains configured but eligibility-skipped because the private repository does not have the GitHub private-repository Code Security entitlement.
+
+## Acceptance outcome
+
+Build 003 now establishes:
+- canonical organization/campground/section/subsection hierarchy;
+- provider-portable PostgreSQL migration history;
+- checksum protection against rewriting applied migrations;
+- immediate RLS enablement;
+- admin refresh/freshness metadata;
+- visible admin refresh control;
+- universal contextual-help registry;
+- circular accessible ⓘ controls;
+- full help-centre routes;
+- section-level help requirement in the build gate.
+
+## Next build after promotion
+**Build 004 — Authentication & Secure Sessions.**
