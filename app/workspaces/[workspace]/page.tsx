@@ -2,8 +2,10 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import { AdminRefreshControl } from "@/components/admin-refresh-control";
 import { AppShell } from "@/components/app-shell";
 import { ChannelSupportSummary } from "@/components/channel-support";
+import { SectionHeading } from "@/components/section-heading";
 import { getWorkspace, workspaces } from "@/lib/workspaces";
 
 export function generateStaticParams() {
@@ -40,6 +42,9 @@ export default async function WorkspacePage({
     notFound();
   }
 
+  const showsFreshness = !["public", "guest"].includes(workspace.slug);
+  const renderedAt = new Date().toISOString();
+
   return (
     <AppShell>
       <div className="page-stack">
@@ -59,19 +64,38 @@ export default async function WorkspacePage({
         </section>
 
         <section className="content-panel" aria-labelledby="channel-heading">
-          <div className="section-heading">
-            <div>
-              <p className="eyebrow">Omnichannel contract</p>
-              <h2 id="channel-heading">How this workspace can be reached</h2>
-            </div>
-            <span className="build-chip">Build 001</span>
-          </div>
+          <SectionHeading
+            eyebrow="Omnichannel contract"
+            title="How this workspace can be reached"
+            id="channel-heading"
+            helpTopic="shell.channels"
+            trailing={<span className="build-chip">Build 003</span>}
+          />
           <ChannelSupportSummary support={workspace.channelSupport} />
         </section>
 
+        {showsFreshness ? (
+          <section className="content-panel" aria-labelledby="freshness-heading">
+            <SectionHeading
+              eyebrow="Administrative tracking"
+              title="Data freshness and refresh"
+              id="freshness-heading"
+              helpTopic="admin.refresh"
+            />
+            <AdminRefreshControl
+              renderedAt={renderedAt}
+              sectionKey={`workspace.${workspace.slug}`}
+            />
+          </section>
+        ) : null}
+
         <section className="content-panel" aria-labelledby="future-heading">
-          <p className="eyebrow">Purpose of this build</p>
-          <h2 id="future-heading">Shell now, domain workflows later</h2>
+          <SectionHeading
+            eyebrow="Purpose of this workspace"
+            title="Shell now, domain workflows later"
+            id="future-heading"
+            helpTopic="shell.overview"
+          />
           <p>
             Build 001 establishes navigation, responsive layout and channel
             expectations without inventing unfinished campground data or
