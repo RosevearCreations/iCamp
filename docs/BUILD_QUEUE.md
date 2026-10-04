@@ -26,7 +26,7 @@ Delivered:
 - portable standalone application output.
 
 ### Build 002 — Environment, Configuration, Health & I.T. Analysis Foundation
-Status: **GREEN on `dev`; promotion in progress.**
+Status: **FULLY PROMOTED — `main` GREEN.**
 
 Delivered:
 - typed environment/runtime configuration;
