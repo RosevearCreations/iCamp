@@ -2,7 +2,7 @@
 
 **Program:** iCamp2027
 
-iCamp is a complete campground operations platform covering live booking, interactive overhead campground mapping, maintenance, front desk, guest services, POS/store delivery, rentals, events, staffing, vendors, finance, reporting and management.
+iCamp is a complete campground operations platform covering live campsite/cottage booking, a virtually realistic overhead map, maintenance, physical access/security, front desk, guest services, telephone/IVR/DTMF/SMS interaction, events/local-interest promotion, POS/store delivery, rentals, waterfront operations, staffing, vendors, finance, reporting and management.
 
 ## Branches
 
@@ -14,7 +14,13 @@ iCamp is a complete campground operations platform covering live booking, intera
 - [Master Vision](docs/MASTER_VISION.md)
 - [Architecture](docs/ARCHITECTURE.md)
 - [Build Roadmap](docs/BUILD_ROADMAP.md)
+- [Requirements Coverage Matrix](docs/REQUIREMENTS_COVERAGE.md)
 - [Security Standard](docs/SECURITY.md)
 - [Active Build Queue](docs/BUILD_QUEUE.md)
+- [Pre-Implementation Engineering Baseline](docs/PRE_IMPLEMENTATION_BASELINE.md)
 
-The roadmap begins with **Build 001 — Repository Foundation & Engineering Guardrails**.
+The completed repository/CI foundation is now an **unnumbered pre-implementation baseline**.
+
+The restarted active roadmap contains **156 builds** and begins with:
+
+**Build 001 — Responsive PWA & Omnichannel Application Shell**
