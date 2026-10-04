@@ -39,7 +39,7 @@ jobs:
 
       - name: Upload formatter diff on failure
         if: failure() && steps.formatting.outcome == 'failure'
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: prettier-diff
           path: prettier.diff
@@ -66,7 +66,7 @@ jobs:
 
       - name: Upload full dependency audit
         if: always()
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: npm-audit-full
           path: npm-audit-full.json
