@@ -108,6 +108,13 @@ At minimum:
 - reports.read
 - audit.read
 - announcement.send
+- communications.read
+- communications.send
+- communications.manage
+- voice.call
+- ivr.admin
+- sms.send
+- sms.preference.manage
 - emergency.broadcast
 - system.admin
 
