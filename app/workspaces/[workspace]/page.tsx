@@ -75,7 +75,10 @@ export default async function WorkspacePage({
         </section>
 
         {showsFreshness ? (
-          <section className="content-panel" aria-labelledby="freshness-heading">
+          <section
+            className="content-panel"
+            aria-labelledby="freshness-heading"
+          >
             <SectionHeading
               eyebrow="Administrative tracking"
               title="Data freshness and refresh"
