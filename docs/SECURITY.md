@@ -1,56 +1,106 @@
-# iCamp Security Standard
+# iCamp Security Standard — iCamp2027
 
-## Mandatory baseline
-- Deny by default.
-- Least privilege.
-- Server-side authorization for every protected mutation.
-- Database row-level/data boundary protections.
-- No trust in client-supplied prices, roles, booking availability, inventory totals, financial totals, or payment status.
-- Secrets never committed.
-- Sensitive media private by default.
-- Full audit trail for privileged/financial/booking/map/permission actions.
-- Strong validation on every API boundary.
-- Rate limiting and abuse controls for public endpoints.
-- Payment card data handled by certified payment provider, not stored by iCamp.
-- Verified and idempotent webhooks.
-- Secure cookies/session configuration.
-- CSP, CORS, CSRF strategy, XSS prevention and secure headers.
-- Dependency and code scanning in CI.
-- Environment isolation between dev and production.
-- Production change traceability to commit SHA and migration version.
+## 1. Security posture
 
-## Permission domains
+iCamp manages reservations, payments, guest/staff data, physical access, safety records, financial records and potentially financing applications. Security is therefore a product requirement, not a later hardening exercise.
+
+Mandatory principles:
+- deny by default;
+- least privilege;
+- server-side authorization for every protected mutation;
+- database row/data boundary enforcement;
+- no trust in client-supplied price, role, availability, inventory, access status, payment status or financial totals;
+- secrets never committed;
+- sensitive media private by default;
+- audit privileged and high-risk actions;
+- strict validation at API boundaries;
+- rate limiting/abuse controls;
+- verified/idempotent webhooks;
+- strong environment separation;
+- production changes traceable to commit and migration versions.
+
+## 2. Data classifications
+
+### Public
+Published campground information, public amenities, approved site/cottage images, published rates, public local-attraction/event content.
+
+### Internal
+Operational notes, maintenance assignments, non-sensitive schedules, inventory operations.
+
+### Confidential
+Guest contact information, vehicle registrations, visitor records, staff personal information, vendor contracts, detailed finance.
+
+### Highly restricted
+Authentication/recovery secrets, provider API secrets, sensitive incidents, privileged access-control details, financing applications/documents, security device credentials.
+
+Access, retention and export rules must match classification.
+
+## 3. Permission domains
+
+At minimum:
 - campground.configuration
 - campground.map
-- site.read
-- site.manage
+- campground.map.publish
+- accommodation.read
+- accommodation.manage
+- accommodation.media.manage
 - reservation.read
 - reservation.create
 - reservation.modify
 - reservation.cancel
 - reservation.override
+- pricing.manage
 - payment.read
 - payment.capture
 - refund.issue
 - discount.apply
 - guest.read
 - guest.manage
+- vehicle.read
+- vehicle.register
+- vehicle.pass.issue
+- visitor.read
+- visitor.register
+- access.credential.issue
+- access.credential.revoke
+- access.events.read
+- gate.state.read
+- gate.override.open
+- gate.override.close
+- security.incident.manage
 - maintenance.read
 - maintenance.create
 - maintenance.assign
 - maintenance.complete
-- incident.manage
+- inspection.perform
+- inspection.signoff
+- seasonal.manage
+- winterization.signoff
+- permanent_unit.manage
+- permanent_unit.transfer
+- financing.read
+- financing.manage
+- event.manage
+- event.access.manage
+- local_interest.manage
+- promotion.manage
+- waterfront.manage
+- boat.manage
+- dock.manage
+- safety.warning.issue
+- safety.suspension.issue
+- safety.suspension.review
+- rental.manage
+- pos.sell
+- pos.refund
+- inventory.read
+- inventory.manage
+- garbage.pickup.manage
 - staff.read
 - staff.manage
 - role.manage
 - schedule.manage
 - timekeeping.manage
-- pos.sell
-- pos.refund
-- inventory.read
-- inventory.manage
-- rental.manage
-- event.manage
 - vendor.read
 - vendor.manage
 - finance.read
@@ -61,30 +111,189 @@
 - emergency.broadcast
 - system.admin
 
-## High-risk operations
-High-risk operations should require explicit permission, reason capture, and audit event. Some may also require recent re-authentication or a second approver:
-- role/permission edits
-- owner/admin creation
-- refunds above threshold
-- manual payment state changes
-- financial record adjustment
-- deletion/export of sensitive data
-- campground-wide closure
-- emergency broadcast
-- map publication replacing active map
-- bulk reservation mutation
+## 4. High-risk operations
 
-## Data classes
-### Public
-Published campground descriptions, public amenities, public site photos, published rates.
+Require explicit permission, reason capture and audit. Some may additionally require recent re-authentication or second approval:
+- role/permission changes;
+- privileged staff creation;
+- refunds above threshold;
+- manual payment-state changes;
+- financial adjustments;
+- financing application access/decision recording;
+- sensitive exports/deletion;
+- campground-wide closures;
+- emergency broadcasts;
+- map publication;
+- manual gate open/close;
+- access credential provisioning/revocation;
+- mass visitor/pass operations;
+- permanent-unit ownership transfer;
+- bulk reservation mutations.
 
-### Internal
-Operational notes, staff schedules, work assignment information, inventory cost information.
+## 5. Authentication/session requirements
 
-### Confidential
-Guest contact details, staff personal details, vendor contracts, financial records.
+- secure hosted authentication;
+- verified email/identity where appropriate;
+- MFA readiness for management/security/finance;
+- secure password reset;
+- session expiration/revocation;
+- recent re-authentication support for sensitive actions;
+- secure, HTTP-only, same-site cookies where applicable;
+- device/session audit events.
 
-### Highly restricted
-Authentication secrets, payment provider secrets, sensitive incident data, recovery material.
+## 6. Authorization
 
-Access and retention must be appropriate to classification.
+- roles are permission collections, not the source of truth for access by themselves;
+- permissions are checked server-side;
+- property/campground scope is enforced;
+- database policies prevent cross-property data access;
+- client UI hiding is never considered authorization;
+- management overrides remain permission-controlled and audited.
+
+## 7. Reservation/payment security
+
+- atomic booking holds;
+- anti-double-booking constraints;
+- server-generated price quotes;
+- payment provider tokenization;
+- no raw card storage;
+- verified webhook signatures;
+- idempotency on reservation/payment/refund writes;
+- refund references original payment;
+- append-oriented financial history.
+
+## 8. Physical access/gate security
+
+Gate/security integration is treated as a privileged operational system.
+
+Requirements:
+- no direct browser-to-controller commands;
+- server-side provider adapter;
+- authenticated/authorized command path;
+- command rate limiting;
+- audit actor, gate/device, reason, timestamp, request, provider response and result;
+- credentials scoped by person/vehicle/site/time/zone;
+- revocation/expiry;
+- access-event logging;
+- device health monitoring where supported;
+- encrypted secret storage;
+- provider credentials never exposed to clients.
+
+Manual override must never bypass required physical life-safety mechanisms. iCamp cannot be the only means of emergency egress or hardware safety control.
+
+## 9. Vehicle/visitor privacy
+
+Collect only operationally required data. Plate, vehicle description, visitor identity and validity should be retained according to campground policy and applicable privacy obligations, not indefinitely by default.
+
+Visitor/pass lookups must be permission-filtered.
+
+## 10. Financing security
+
+Financing is isolated from ordinary reservation workflows.
+
+Requirements:
+- separate permissions;
+- confidential/highly restricted data classification;
+- minimal collection;
+- encrypted transport/storage through approved provider services;
+- document access audit;
+- retention policy;
+- no hidden automated lending decision unless specifically implemented through a compliant provider/process;
+- no payment card/bank credential storage unless an approved provider tokenizes it.
+
+## 11. Media/upload security
+
+- validate size/type/signature;
+- strip unsafe metadata where appropriate;
+- process customer-facing images into controlled variants;
+- private media uses signed/authorized delivery;
+- avoid executable file types unless explicitly required;
+- protect against path traversal/content-type spoofing;
+- maintain attachment audit.
+
+Public site/cottage gallery has a business limit of 10 active images; internal evidence media is separate.
+
+## 12. Local-content security and integrity
+
+Local attractions/events can contain external links/content.
+
+Requirements:
+- management approval before public promotion;
+- source reference;
+- freshness/expiry date;
+- sanitization of displayed content;
+- safe external links;
+- no unreviewed remote HTML/script;
+- marketing consent/opt-out respected;
+- expired events suppressed automatically.
+
+## 13. Garbage sticker/pass integrity
+
+Serialized garbage stickers, QR passes and access credentials must use non-guessable identifiers where digital validation matters.
+
+Redemption/voiding is server-authoritative and idempotent.
+
+## 14. Safety/incident data
+
+Warnings, suspensions and incident records are access-controlled.
+
+Changes should be append/history-oriented. Do not silently rewrite who was warned, suspended or reinstated.
+
+iCamp does not replace emergency services or qualified safety staff.
+
+## 15. Application security controls
+
+- CSP;
+- strict CORS;
+- CSRF strategy where applicable;
+- output encoding/XSS prevention;
+- parameterized queries;
+- schema validation;
+- secure headers;
+- abuse/rate limits;
+- upload controls;
+- dependency auditing;
+- secret scanning;
+- code scanning where account eligibility permits;
+- secure error handling that does not expose secrets/internal traces.
+
+## 16. Audit events
+
+Audit events should include where practical:
+- actor;
+- target;
+- action;
+- campground;
+- timestamp;
+- request/session reference;
+- reason;
+- previous/new state or event details;
+- success/failure.
+
+Audit logs are protected from ordinary editing/deletion.
+
+## 17. Security testing
+
+Every relevant build should add tests for:
+- unauthorized/forbidden access;
+- wrong campground/tenant;
+- forged IDs/roles/prices;
+- concurrent writes;
+- expired credentials/holds/passes;
+- idempotency;
+- unsafe input;
+- sensitive data exposure.
+
+Physical-access adapter tests use mocks/sandboxes, not real gate commands in ordinary CI.
+
+## 18. Development/production separation
+
+- dev uses synthetic/demo personal data;
+- payment/access integrations use sandbox/mock modes;
+- production secrets exist only in production secret stores;
+- real financing/security data is never copied casually to dev;
+- production logs must avoid secret leakage.
+
+## 19. Security gate
+
+A build cannot be GREEN if it introduces an unresolved critical/high security defect in the code or production dependency set, or if a high-risk operation lacks authorization/audit controls.
