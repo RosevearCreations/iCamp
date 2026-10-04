@@ -927,3 +927,82 @@ A later alteration should normally be implemented as:
 4. a migration with rollback/recovery documentation when compatibility is impossible.
 
 Large rewrites should be the exception.
+
+
+## 25. Multi-Property Data, Freshness and Contextual Help Foundation
+
+### 25.1 Canonical tenancy hierarchy
+The foundational tenancy hierarchy is:
+- organization;
+- campground/property;
+- campground section;
+- campground subsection.
+
+Every future property-scoped domain table should carry enough canonical scope information to enforce tenant isolation efficiently and to avoid ambiguous cross-property joins.
+
+### 25.2 Portable PostgreSQL migrations
+The initial database foundation uses plain PostgreSQL-compatible migrations and tests them against real PostgreSQL in CI.
+
+The migration layer must remain deployable to:
+- Supabase-hosted PostgreSQL;
+- another managed PostgreSQL provider;
+- self-hosted PostgreSQL.
+
+Provider-specific SQL should be isolated and documented rather than embedded throughout the schema.
+
+### 25.3 Record identity and lifecycle
+Core records use:
+- UUID primary keys;
+- created_at / updated_at timestamps;
+- archived_at where soft archival is appropriate;
+- lifecycle_state;
+- row_version for optimistic freshness/change tracking.
+
+Row version and update timestamps provide a low-level foundation for detecting stale admin views without exposing sensitive field contents.
+
+### 25.4 RLS posture before authentication
+Tables introduced in an exposed schema must have Row Level Security enabled immediately.
+
+Before authentication/authorization policies exist, the secure posture is **deny by default**: no permissive anon/authenticated policies are created in Build 003.
+
+Build 005 introduces explicit policies tied to campground/property authorization.
+
+### 25.5 Admin freshness model
+Admin/analysis freshness is represented independently of the business record payload.
+
+A refresh-state record can identify:
+- organization/campground scope;
+- workspace/section key;
+- source identifier;
+- state: idle / refreshing / fresh / stale / failed;
+- last requested/start/success/failure timestamps;
+- safe error code/fingerprint;
+- source watermark/version;
+- stale-after threshold;
+- row version.
+
+This allows management and I.T. to determine whether a panel is current without retaining a duplicate copy of sensitive client data.
+
+### 25.6 Contextual help contract
+Every UI section or form should register a help topic ID.
+
+A help topic has:
+- stable ID;
+- title;
+- concise inline summary;
+- detailed guidance;
+- audience/classification;
+- related topics;
+- full help-page route.
+
+The reusable ⓘ control displays inline help and links to the full help page.
+
+Help classifications:
+- public/guest;
+- operational staff;
+- privileged admin/I.T.
+
+The application must never expose privileged help content merely because the help route is guessable.
+
+### 25.7 Help freshness
+When help content becomes database/content-managed, it should be versioned and tied to the related feature/build so stale instructions can be detected and reviewed after workflow changes.
