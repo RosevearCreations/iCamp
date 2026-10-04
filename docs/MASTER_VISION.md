@@ -512,23 +512,131 @@ Documents and media are classified public/internal/confidential.
 
 Privileged changes are audited with actor, time, action, reason and before/after state where practical.
 
-## 27. Offline field work
+## 27. Telephone, IVR, Numeric Keypad, Voice and SMS Access
+
+iCamp is an **omnichannel campground platform**. The web/PWA interface is not the only way to use it.
+
+A campground may publish one or more telephone numbers that connect to an interactive voice response (IVR) service. Callers can use:
+- telephone numeric keypad/DTMF;
+- spoken menu choices where supported;
+- SMS/text messaging;
+- MMS for photos where supported;
+- staff-assisted call transfer;
+- secure links sent by text when a visual/payment step is required.
+
+The telephone/SMS layer uses the **same authoritative backend** as the web application. It must not create a second reservation, guest, maintenance or payment database.
+
+### Camper/visitor telephone and SMS functions
+
+Where meaningful, callers/text users should be able to:
+- check campsite/cottage availability;
+- choose dates and accommodation type;
+- request a specific site/cottage number;
+- place a temporary booking hold;
+- create or retrieve a reservation;
+- receive confirmation by SMS;
+- hear/request balances and due dates;
+- extend/cancel a stay subject to policy;
+- register a road vehicle;
+- purchase/request a day or week vehicle pass;
+- register a visitor;
+- request or replace an access credential;
+- receive gate/keypad instructions where policy permits;
+- hear campground hours/rules;
+- acknowledge rules;
+- request maintenance/assistance;
+- order common store/services such as firewood, ice or garbage pickup;
+- purchase/redeem garbage sticker/tag services where configured;
+- hear/register for campground events;
+- receive local attraction/event suggestions;
+- register boats/launch use where configured;
+- reserve rentals where practical;
+- reach campground staff.
+
+SMS may support both guided keywords and conversational/natural-language interpretation, but business actions are always converted into validated server-side commands before execution.
+
+### Staff telephone/SMS functions
+
+Authorized staff should be able to use secure telephone/SMS workflows for suitable tasks such as:
+- acknowledge/accept work orders;
+- update work-order status;
+- receive urgent alerts;
+- confirm inspections/checklists using guided prompts;
+- query a site/asset status by number;
+- record simple notes;
+- receive scheduling/shift information;
+- acknowledge incidents;
+- contact on-call staff.
+
+High-risk actions require stronger authentication. Caller ID alone is never sufficient.
+
+### DTMF design
+
+Numeric menus should be short, repeatable and accessible. Examples:
+- Press 1 for reservations.
+- Press 2 for an existing stay.
+- Press 3 for campground assistance.
+- Press 4 for visitors/vehicle passes.
+- Press 5 for store/service orders.
+- Press 6 for events/activities.
+- Press 0 for staff.
+
+Reservation/site identifiers should be usable through numeric entry where possible.
+
+### Visual-task equivalence
+
+Some iCamp functions are inherently visual. A telephone keypad cannot responsibly draw or reshape campground polygons or display photographs.
+
+For such features, iCamp must provide the closest operational telephone/SMS equivalent:
+- staff can query/change the status of Site 42 by phone;
+- staff can create a maintenance closure for Asset 17;
+- campers can request Site 42 or receive its feature description;
+- an SMS can send a secure link to the visual map/gallery when needed.
+
+The actual polygon editor and image viewing remain graphical interfaces.
+
+### Telephone payment boundary
+
+iCamp should not collect raw card numbers through a homemade voice menu or SMS.
+
+Telephone customers can instead use:
+- a secure payment link by SMS;
+- staff-assisted payment through the approved payment provider;
+- or a properly certified/provider-hosted IVR payment solution if one is adopted later.
+
+### Consent and messaging preferences
+
+Operational texts and promotional texts must be distinguishable.
+
+For commercial/promotional SMS, iCamp must store consent/preferences and support required opt-out/help mechanisms for the campground's jurisdiction.
+
+### Accessibility and resilience
+
+Telephone/DTMF and SMS are also low-bandwidth/accessibility alternatives for campers who:
+- do not use smartphones;
+- have weak campground data coverage;
+- prefer a normal telephone;
+- need a simpler interaction channel.
+
+Voice/SMS providers are replaceable adapters, not hard-coded into iCamp.
+
+## 28. Offline field work
 
 Maintenance and inspection workflows should eventually tolerate poor campground connectivity by caching assigned tasks and queuing safe field updates.
 
 Booking, payment, access-control commands and other high-risk writes remain server-authoritative.
 
-## 28. Multi-campground future
+## 29. Multi-campground future
 
 The initial deployment may serve one campground, but the architecture must support multiple properties and organizations without rebuilding the core data model.
 
-## 29. Development approach
+## 30. Development approach
 
 Development should use free or low-cost tiers where practical and avoid unnecessary provider lock-in.
 
 The active numbered roadmap is intentionally restarted after the pre-implementation engineering baseline so every Build number reflects this complete vision.
 
-## 30. Ultimate objective
+## 31. Ultimate objective
 
 Management should be able to answer:
 
