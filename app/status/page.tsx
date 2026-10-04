@@ -60,7 +60,10 @@ export default function StatusPage() {
           </dl>
         </section>
 
-        <section className="content-panel" aria-labelledby="status-help-heading">
+        <section
+          className="content-panel"
+          aria-labelledby="status-help-heading"
+        >
           <SectionHeading
             eyebrow="Need help?"
             title="Client-facing status is intentionally limited."
