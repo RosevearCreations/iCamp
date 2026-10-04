@@ -29,6 +29,7 @@ test("source-of-truth documents remain present in README", async () => {
     "BUILD_QUEUE.md",
     "PRE_IMPLEMENTATION_BASELINE.md",
     "BUILD_OPERATING_MODEL.md",
+    "IT_ANALYSIS.md",
   ]) {
     assert.ok(readme.includes(required), `README must link ${required}`);
   }
@@ -139,4 +140,74 @@ test("build operating model preserves autonomous free-first delivery", async () 
   assert.match(operatingModel, /Free-first development/);
   assert.match(operatingModel, /verbose summary/i);
   assert.match(operatingModel, /exact numbered steps/i);
+});
+
+
+test("Build 002 defines typed environment and health contracts", async () => {
+  const runtime = await readFile("lib/config/runtime.ts", "utf8");
+  const envTemplate = await readFile(".env.example", "utf8");
+
+  for (const environment of [
+    "development",
+    "test",
+    "staging",
+    "production",
+  ]) {
+    assert.match(runtime, new RegExp(`["']${environment}["']`));
+  }
+
+  assert.match(runtime, /NEXT_PUBLIC_APP_ENV and ICAMP_APP_ENV|ICAMP_APP_ENV and NEXT_PUBLIC_APP_ENV/);
+  assert.match(envTemplate, /ICAMP_BUILD_SHA/);
+  assert.match(envTemplate, /ICAMP_FEATURE_EXTERNAL_WATCHDOG/);
+});
+
+test("Build 002 exposes sanitized health readiness liveness and version routes", async () => {
+  for (const path of [
+    "app/api/health/route.ts",
+    "app/api/health/live/route.ts",
+    "app/api/health/ready/route.ts",
+    "app/api/version/route.ts",
+  ]) {
+    const source = await readFile(path, "utf8");
+    assert.match(source, /Cache-Control/);
+    assert.match(source, /no-store/);
+  }
+});
+
+test("Build 002 preserves correlation redaction and lockup watchdog contracts", async () => {
+  const proxy = await readFile("proxy.ts", "utf8");
+  const redaction = await readFile("lib/observability/redaction.ts", "utf8");
+  const watchdog = await readFile("lib/observability/watchdog.ts", "utf8");
+
+  assert.match(proxy, /x-icamp-request-id/);
+  assert.match(proxy, /createRequestId/);
+  assert.match(redaction, /REDACTED/);
+  assert.match(redaction, /password/);
+  assert.match(redaction, /token/);
+  assert.match(redaction, /pin/i);
+  assert.match(watchdog, /\/api\/health\/live/);
+  assert.match(watchdog, /recommendedCheckSeconds: 60/);
+  assert.match(watchdog, /recommendedFailureThreshold: 3/);
+});
+
+test("Build 002 includes IT analysis and client-safe status surfaces", async () => {
+  const workspaces = await readFile("lib/workspaces.ts", "utf8");
+  const itPage = await readFile("app/workspaces/it-analysis/page.tsx", "utf8");
+  const statusPage = await readFile("app/status/page.tsx", "utf8");
+  const banner = await readFile("components/environment-banner.tsx", "utf8");
+
+  assert.match(workspaces, /slug: ["']it-analysis["']/);
+  assert.match(itPage, /Sensitive diagnostics stay protected/);
+  assert.match(statusPage, /public-safe|safe service information/i);
+  assert.match(banner, /Non-production environment/);
+});
+
+test("Build 002 source of truth requires external lockup detection and diagnostic privacy", async () => {
+  const itSource = await readFile("docs/IT_ANALYSIS.md", "utf8");
+  const security = await readFile("docs/SECURITY.md", "utf8");
+
+  assert.match(itSource, /external watchdog/i);
+  assert.match(itSource, /frozen runtime/i);
+  assert.match(security, /stack traces/i);
+  assert.match(security, /I\.T\. Diagnostics and Observability Security/);
 });
