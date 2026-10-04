@@ -1,7 +1,7 @@
 # Build 001 — Responsive PWA & Omnichannel Application Shell
 
 ## Status
-**GREEN and promoted to `main`.**
+**GREEN on `dev` — ready for promotion.**
 
 ## Objective
 Create the active iCamp application shell without prematurely implementing campground business modules.
@@ -14,192 +14,147 @@ The shell establishes the surfaces and contracts that every later build will use
 - email/push notification surfaces;
 - role-specific application workspaces.
 
-## Delivered
+## Delivered workspaces
+The shell now exposes data-driven routes for:
+- Public & Visitor;
+- Guest & My Stay;
+- Front Desk & Reservations;
+- Maintenance & Housekeeping;
+- Security & Access;
+- Store & POS;
+- Staff;
+- Foreman & Supervisor;
+- Management & Administration;
+- Finance & Accounting.
 
-### Responsive application shell
-A shared `AppShell` now provides:
-- branded iCamp header;
-- build/status indicator;
-- accessible skip link;
-- workspace navigation;
-- responsive main content area;
-- product footer;
-- phone/tablet/desktop layout behavior.
+All workspace definitions live in a shared registry rather than being embedded independently in navigation components.
 
-Breakpoints are explicitly tested at the shell level:
-- tablet/smaller desktop transition at 60rem;
-- phone transition at 46rem;
-- reduced-motion support.
+## Responsive application shell
+Delivered:
+- persistent desktop workspace navigation;
+- tablet adaptation;
+- horizontally scrollable mobile workspace navigation;
+- responsive cards/panels;
+- touch-sized navigation targets;
+- skip-to-content accessibility link;
+- visible keyboard focus;
+- reduced-motion support;
+- semantic navigation, main content and headings;
+- custom not-found shell.
 
-### Data-driven workspaces
-The shell is not hard-coded as ten separate navigation systems.
+Responsive breakpoints are explicitly tested at the repository level and the production Next.js build renders every registered workspace route.
 
-`lib/workspaces.ts` defines:
-1. Public & Visitor.
-2. Guest & My Stay.
-3. Front Desk & Reservations.
-4. Maintenance & Housekeeping.
-5. Security & Access.
-6. Store & POS.
-7. Staff.
-8. Foreman & Supervisor.
-9. Management & Administration.
-10. Finance & Accounting.
-
-The same definitions generate:
-- home-page workspace cards;
-- shell navigation;
-- workspace routes;
-- audience descriptions;
-- channel-capability declarations.
-
-This makes future workspace additions/reorganization substantially safer.
-
-### Workspace routing
-`/workspaces/[workspace]` is implemented using the Next.js App Router and statically generates the known workspace shells.
-
-Unknown workspaces fail safely through the application not-found experience.
-
-### Omnichannel capability contract
-`lib/channels.ts` establishes reusable support levels:
-- full;
-- guided;
-- secure-link handoff;
-- staff transfer;
-- not applicable.
-
-Each workspace explicitly declares support for:
-- Web/PWA;
-- phone/IVR/DTMF;
-- SMS/MMS.
-
-Finance defaults more conservatively to staff-transfer/secure-link behavior for non-web channels because sensitive financial actions should not casually move into voice/SMS workflows.
-
-### Progressive Web App baseline
-Build 001 adds:
-- Next.js manifest generation;
+## PWA baseline
+Delivered:
+- application manifest;
 - standalone display mode;
 - theme/background metadata;
 - scalable application icons;
 - service-worker registration;
-- a navigation-only offline fallback cache.
+- navigation-safe offline fallback shell;
+- portable Next.js standalone production output.
 
-The service worker intentionally does **not** return cached HTML when JavaScript/assets fail. Offline fallback is limited to page navigation so the shell does not hide broken application assets behind invalid responses.
+The service worker deliberately limits fallback behavior to navigation requests so failed JavaScript, CSS or other assets are not incorrectly replaced with HTML.
 
-### Deployment portability
-Next.js now produces `standalone` output.
+## Omnichannel contract
+A reusable channel-capability model now defines:
+- Web/PWA;
+- IVR/DTMF;
+- SMS/MMS;
+- secure-link fallback;
+- staff-transfer fallback;
+- not-applicable status for inherently graphical/unsafe operations.
 
-This keeps future options open for:
-- free development hosting;
-- serverless deployment;
-- container hosting;
-- virtual machines;
-- self-hosting;
-- larger managed infrastructure.
+Every workspace carries an explicit channel-support declaration.
 
-No Build 001 feature depends on a proprietary hosting API.
+Build 001 does **not** pretend unfinished telephone/SMS business workflows exist. It establishes the contract that later domain builds must satisfy through the same canonical backend.
 
-### Free-first and live-evolution architecture
-The architecture source of truth now explicitly requires:
-- free software/free tiers during design and testing where practical;
-- no free-tier lock-in;
-- standard PostgreSQL-compatible data architecture;
+## Flexibility and live-application architecture
+The source of truth now explicitly treats iCamp as a continuously evolving application.
+
+Architecture requirements include:
+- modular bounded capabilities;
+- data-driven workspace/channel configuration;
+- feature flags for staged changes;
 - provider adapters;
-- feature flags;
-- modular domain boundaries;
-- backward-compatible migrations where practical;
-- documented scale-up/exit paths for managed providers.
+- versioned configuration;
+- portable internal identifiers;
+- backward-compatible schema evolution where practical;
+- migrations with recovery paths;
+- no campground-specific assumptions embedded into core infrastructure.
 
-iCamp is treated as a live application that will continue changing over time.
+A new `docs/BUILD_OPERATING_MODEL.md` records the autonomous development, manual-intervention, free-first and verbose build-summary rules.
 
-### Accessibility baseline
-Build 001 includes:
-- semantic page/header/nav/main/footer structure;
-- keyboard navigation;
-- skip-to-main-content link;
-- visible focus states;
-- touch-sized navigation;
-- text-responsive layouts;
-- reduced-motion handling;
-- non-visual channel contract for future telephone/text workflows.
+## Free-first and scale-ready development
+Build 001 requires no paid software or service.
 
-## Channel support matrix
+The application remains portable through:
+- standard TypeScript/React/Next.js;
+- standalone server output;
+- provider-neutral external-service boundaries;
+- planned PostgreSQL portability;
+- sandbox/mock integration strategy for future telephony, payments and access hardware.
 
-| Surface | Web/PWA | IVR/DTMF | SMS/MMS | Notes |
-| --- | --- | --- | --- | --- |
-| Public/Visitor | Full shell | Guided contract | Guided contract | Domain workflows arrive later |
-| Guest/My Stay | Full shell | Guided contract | Guided contract | Domain workflows arrive later |
-| Front Desk | Full shell | Guided contract | Guided contract | Privileged actions require authentication later |
-| Maintenance | Full shell | Guided contract | Guided contract | Suitable field actions will receive phone/text equivalents |
-| Security | Full shell | Guided contract | Guided contract | High-risk commands require stronger authentication |
-| Store/POS | Full shell | Guided contract | Guided contract | Payments remain provider-controlled |
-| Staff | Full shell | Guided contract | Guided contract | Authentication required |
-| Foreman | Full shell | Guided contract | Guided contract | Authentication required |
-| Management | Full shell | Guided contract | Guided contract | Privileged actions require stronger authentication |
-| Finance | Full shell | Staff transfer | Secure-link handoff | Sensitive financial work remains protected |
+Free development tiers may be used later, but core campground business logic must not depend on remaining on those tiers.
 
-## Security decisions
-- No feature-specific privileged operations are implemented yet.
-- No real provider credentials are required.
-- No secrets are added to client bundles.
-- Caller ID is not treated as authentication.
-- Future channel actions must route through the same server-side authorization/business-service layer.
-- Secret scanning passes.
-- Production dependency audit passes.
-- CodeQL remains eligibility-aware and is skipped for this private repository until private code scanning is available.
+## Security
+Build 001 introduces no real guest, staff, payment or campground data.
 
-## CI/tooling modernization
-During Build 001 the repository's GitHub Actions were updated to current Node 24-compatible major versions:
-- `actions/checkout@v7`;
-- `actions/setup-node@v7`;
-- `actions/upload-artifact@v6`;
-- `github/codeql-action@v4`.
+Security properties:
+- no provider secrets required;
+- no business authorization bypasses introduced;
+- telephone/SMS actions remain contracts only;
+- caller ID is not treated as identity;
+- sensitive finance workspace defaults to secure-link/staff-transfer for non-web channels;
+- existing secure headers remain enabled;
+- secret scan passes;
+- production dependency audit passes;
+- CodeQL configuration remains eligibility-aware because the private repository does not currently have the paid GitHub Code Security entitlement.
 
-Gitleaks remains on the current v3 action established in the pre-implementation baseline.
+## Important files/modules
+- `components/app-shell.tsx`
+- `components/channel-support.tsx`
+- `components/service-worker-registration.tsx`
+- `lib/workspaces.ts`
+- `lib/channels.ts`
+- `app/workspaces/[workspace]/page.tsx`
+- `app/manifest.ts`
+- `app/not-found.tsx`
+- `public/sw.js`
+- `public/icons/icon.svg`
+- `public/icons/maskable.svg`
+- `docs/BUILD_OPERATING_MODEL.md`
 
-## Automated verification
-The repository test suite now verifies:
-- required source-of-truth documents;
-- exact active Build sequence 001–156;
-- separation of the unnumbered pre-implementation baseline;
-- omnichannel source-of-truth requirements;
-- all ten workspace definitions;
-- Web/IVR/SMS capability contract;
-- PWA manifest and service worker;
-- standalone deployment output;
-- free-first/scale-migration architecture;
-- responsive phone/tablet breakpoints;
-- reduced-motion support;
-- skip-link accessibility.
-
-## Verification result
-Build 001 passed the same required verification on `dev`, the promotion pull request, and `main`:
-- formatting;
-- ESLint;
-- strict TypeScript;
-- repository/unit tests;
-- Next.js production build;
-- production dependency audit;
-- full dependency-audit capture;
+## Verification evidence
+Current `dev` verification passed:
+- formatter canonicalization;
+- ESLint with zero warnings;
+- strict TypeScript typecheck;
+- repository/application invariant tests;
+- production Next.js build;
+- production dependency audit at high/critical threshold;
+- full dependency audit artifact capture;
 - Gitleaks secret scan.
 
-## Production promotion
-- Promotion PR: #9.
-- Production squash commit: `5b6f532bf6cc148939bf573863bfe8d3b5d03dea`.
-- `main` CI: GREEN.
-- `main` secret scan: GREEN.
-- CodeQL: eligibility-aware skip on this private repository.
-- `dev` was synchronized back to the production commit before this final documentation update.
+Repository invariants now also verify:
+- exactly Builds 001–156 remain in the active roadmap;
+- all source-of-truth documents remain linked;
+- all 10 workspaces remain registered;
+- Web/IVR/SMS capability types remain present;
+- PWA/standalone deployment baselines remain present;
+- responsive/accessibility shell rules remain present;
+- free-first/provider-adapter/scale-migration principles remain documented;
+- autonomous build operating rules remain documented.
+
+## Deployment
+No external production hosting provider is configured in Build 001 by design.
+
+The repository production/release branch is `main`. Build 001 promotion therefore verifies the release branch and GitHub security/CI gates. A hosted dev/production environment will be introduced only when the roadmap calls for environment/deployment configuration, avoiding premature provider lock-in.
 
 ## Manual action
 **None.**
 
-Build 001 deliberately does not require:
-- hosting account setup;
-- database account setup;
-- telephone/SMS number purchase;
-- payment-provider setup;
-- DNS changes;
-- production secrets.
+No account, payment method, telephone number, database, domain or secret is required for Build 001.
 
-Those are introduced only when a later build genuinely needs them.
+## Next build after promotion
+**Build 002 — Environment, Configuration & Health Framework.**
