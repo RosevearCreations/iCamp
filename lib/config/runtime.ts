@@ -106,6 +106,22 @@ export function getRuntimeConfig(
   env: NodeJS.ProcessEnv = process.env,
 ): RuntimeConfig {
   const environment = parseEnvironment(env.ICAMP_APP_ENV, env.NODE_ENV);
+  const publicEnvironment = env.NEXT_PUBLIC_APP_ENV;
+
+  if (
+    publicEnvironment &&
+    !appEnvironments.includes(publicEnvironment as AppEnvironment)
+  ) {
+    throw new Error(
+      "NEXT_PUBLIC_APP_ENV must be development, test, staging, or production.",
+    );
+  }
+
+  if (publicEnvironment && publicEnvironment !== environment) {
+    throw new Error(
+      "ICAMP_APP_ENV and NEXT_PUBLIC_APP_ENV must identify the same environment.",
+    );
+  }
 
   return Object.freeze({
     appName: env.ICAMP_APP_NAME?.trim() || "iCamp",
