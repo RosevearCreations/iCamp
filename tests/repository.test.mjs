@@ -48,7 +48,10 @@ test("active roadmap contains exactly Builds 001 through 156", async () => {
 
 test("roadmap reset keeps Build 001 queued and the old foundation unnumbered", async () => {
   const queue = await readFile("docs/BUILD_QUEUE.md", "utf8");
-  const baseline = await readFile("docs/PRE_IMPLEMENTATION_BASELINE.md", "utf8");
+  const baseline = await readFile(
+    "docs/PRE_IMPLEMENTATION_BASELINE.md",
+    "utf8",
+  );
 
   assert.match(
     queue,
