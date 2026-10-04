@@ -15,6 +15,7 @@ iCamp is a complete campground operations platform covering live campsite/cottag
 - [Architecture](docs/ARCHITECTURE.md)
 - [Build Roadmap](docs/BUILD_ROADMAP.md)
 - [Requirements Coverage Matrix](docs/REQUIREMENTS_COVERAGE.md)
+- [Omnichannel Voice / DTMF / SMS](docs/OMNICHANNEL.md)
 - [Security Standard](docs/SECURITY.md)
 - [Active Build Queue](docs/BUILD_QUEUE.md)
 - [Pre-Implementation Engineering Baseline](docs/PRE_IMPLEMENTATION_BASELINE.md)
