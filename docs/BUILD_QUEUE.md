@@ -11,7 +11,7 @@ See `docs/PRE_IMPLEMENTATION_BASELINE.md`.
 The active roadmap contains **156 builds** and covers the full iCamp2027 source of truth, including Web/PWA, IVR/DTMF and SMS/MMS channel parity.
 
 ## Completed active builds
-- **Build 001 — Responsive PWA & Omnichannel Application Shell: GREEN on `dev`, pending/under production promotion.**
+- **Build 001 — Responsive PWA & Omnichannel Application Shell: GREEN and promoted to `main`.**
 
 ## Next active build
 **Build 002 — Environment, Configuration & Health Framework**
