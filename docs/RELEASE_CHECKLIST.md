@@ -18,7 +18,7 @@ A release/promotion is GREEN only when all applicable items pass.
 - [ ] Sensitive data classification reviewed.
 - [ ] Audit requirements implemented.
 - [ ] Inputs validated server-side.
-- [ ] Concurrency/idempotency considered for reservation, payment and inventory writes.
+- [ ] Concurrency/idempotency considered for reservation, payment, inventory, communications and access-control writes.
 - [ ] New secrets live only in approved secret stores.
 
 ## Product
@@ -34,3 +34,4 @@ A release/promotion is GREEN only when all applicable items pass.
 - [ ] dev is healthy before production promotion.
 - [ ] production version is traceable to a commit SHA.
 - [ ] production smoke check passes after promotion.
+- [ ] Voice/SMS provider callbacks and opt-out handling smoke-tested when the build affects communications.

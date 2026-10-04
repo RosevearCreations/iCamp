@@ -1,780 +1,1012 @@
-# iCamp Build Roadmap
+# iCamp Active Build Roadmap — Restarted Product Sequence
 
-This roadmap converts the complete iCamp vision into staged, testable builds. Each build should end with code, tests, documentation, and a security review appropriate to its scope.
+## Roadmap status
 
-## Phase 0 — Foundation and source of truth
+The repository/CI/security work completed before this document is the **Pre-Implementation Engineering Baseline** and is intentionally **not** part of the active build numbering.
 
-### Build 001 — Repository Foundation & Engineering Guardrails
-- Establish dev/main workflow.
-- Create application skeleton, formatting, linting, tests, environment validation, CI.
-- Add README, architecture, roadmap, security, contribution/deployment documentation.
-- Add branch/build conventions and release checklist.
-- Add secret scanning and dependency/security scanning.
-- No manual input unless a hosting connection requires account authorization.
+The active iCamp2027 product roadmap restarts here at **Build 001**.
 
-### Build 002 — Responsive PWA Application Shell
-- Phone/tablet/desktop layouts.
-- Public, guest, staff, maintenance, POS, management application shells.
-- Installable PWA manifest/service worker baseline.
-- Accessibility baseline.
-- Navigation adapts by role.
+No active product build should begin until this roadmap reset is accepted as the source of truth.
 
-### Build 003 — Environment, Configuration & Health Framework
-- dev/production configuration schema.
-- typed environment validation.
-- /health and build/version endpoints.
-- runtime feature flags.
-- safe error handling.
-- environment-specific banners to prevent accidental production actions.
+---
 
-### Build 004 — Database Foundation & Migration System
-- PostgreSQL schema framework.
-- organizations/campgrounds/sections/subsections/settings.
-- UUID IDs, created/updated metadata, soft-delete policy where appropriate.
-- migration CI.
-- seed/demo campground.
+# Phase 1 — Application, Data and Security Foundation
 
-### Build 005 — Authentication & Session Security
-- guest and staff authentication.
-- password reset.
-- verified identity flows.
-- secure sessions.
-- management MFA readiness.
-- sign-in event logging and session revocation.
+## Build 001 — Responsive PWA & Omnichannel Application Shell
+- Establish public, guest, front-desk, maintenance, security, POS, staff and management workspaces.
+- Phone/tablet/desktop responsive shell.
+- PWA manifest/installability baseline.
+- Accessible navigation and layout primitives.
+- Define the cross-channel contract so later features expose Web/PWA plus meaningful IVR/DTMF/SMS equivalents rather than becoming web-only by accident.
 
-### Build 006 — Roles, Permissions & Row-Level Security
-- permission catalogue.
-- role templates.
-- custom roles.
+## Build 002 — Environment, Configuration & Health Framework
+- Typed environment configuration.
+- dev/production distinction and environment banners.
+- health/version/build-SHA endpoints.
+- feature flags and safe configuration validation.
+
+## Build 003 — Database, Migration & Multi-Property Foundation
+- PostgreSQL migration system.
+- organizations, campgrounds and property boundaries.
+- UUID keys, timestamps and record lifecycle conventions.
+- migration verification in CI.
+
+## Build 004 — Authentication & Secure Sessions
+- Guest/staff authentication.
+- reset/recovery.
+- secure session lifecycle.
+- privileged MFA readiness.
+
+## Build 005 — Roles, Permissions & Row-Level Security
+- Permission catalogue.
+- role templates/custom roles.
 - campground assignments.
-- deny-by-default policy.
-- RLS/data policy tests.
-- privileged-action middleware.
+- deny-by-default server authorization and RLS tests.
 
-### Build 007 — Audit Trail & Administrative Safety Controls
-- append-only audit events.
-- before/after values where appropriate.
-- actor, reason, IP/session metadata where lawful and useful.
-- elevated action confirmations.
-- audit viewer for owners/admins.
+## Build 006 — Audit Trail & Privileged Action Controls
+- Append-oriented audit events.
+- reason capture.
+- before/after state where practical.
+- recent re-authentication hooks for high-risk operations.
 
-## Phase 1 — Campground model and visual map
+## Build 007 — Background Jobs, Scheduler & Operational Queues
+- Durable scheduled-job abstraction.
+- retry/idempotency conventions.
+- dead-letter/failed-job visibility.
+- scheduler health reporting.
 
-### Build 008 — Campground/Section/Subsection Administration
-- create/edit campground structure.
-- multiple sections/subsections.
-- display order.
-- active/inactive state.
-- future multi-property boundaries.
+## Build 008 — Secure Media & Document Storage Foundation
+- Public/internal/confidential media classes.
+- signed access for private media.
+- image/file validation and limits.
+- metadata and lifecycle records.
 
-### Build 009 — Overhead Image Library
-- secure upload/storage of aerial/drone/site-plan images.
-- image metadata, versions, active map selection.
-- zoom/pan viewer.
-- image validation and size controls.
+## Build 009 — Omnichannel Communications Foundation
+- One communications domain shared by Web/PWA, voice, DTMF, speech, SMS/MMS, email and push.
+- Replaceable provider interfaces.
+- communication endpoints, preferences, consents and provider-event records.
+- transactional/operational vs marketing purpose classification.
+- delivery/call health and retry conventions.
 
-### Build 010 — Polygon Plotter Core
-- click-to-create irregular polygons.
-- connect points/close shape.
-- select/move vertices.
-- add/remove vertices.
-- move polygon.
+## Build 010 — Inbound/Outbound Voice & IVR Gateway
+- Campground telephone number/provider adapter.
+- inbound and outbound call routing.
+- IVR state-machine foundation.
+- staff transfer/fallback.
+- signed webhook verification and idempotency.
+- provider sandbox/mock mode.
+
+## Build 011 — Numeric Keypad/DTMF Interaction Engine
+- collect numeric keypad input.
+- short menus, repeat/back/main-menu conventions.
+- site/reservation/pass numeric entry.
+- timeouts/retry limits.
+- mask sensitive PIN/verification digits in logs.
+- automated DTMF flow tests.
+
+## Build 012 — SMS/MMS Conversation & Command Gateway
+- inbound/outbound text messaging.
+- guided numbered menus and keywords.
+- structured SMS commands.
+- MMS/photo intake where supported.
+- natural-language intent may propose commands but never bypass server validation.
+- delivery/read/provider event history where available.
+
+## Build 013 — Telephone/SMS Identity, Verification & Staff Re-Authentication
+- caller ID is a hint, never authentication.
+- guest reservation/site verification.
+- one-time verification codes where appropriate.
+- staff PIN plus stronger factor/re-auth for privileged actions.
+- rate limiting, lockout and fraud/abuse signals.
+- no secrets echoed in SMS/voice.
+
+## Build 014 — Messaging Consent, STOP/START/HELP & Preference Ledger
+- separate operational/transactional and promotional purposes.
+- consent evidence and timestamps.
+- provider opt-in/opt-out/help event synchronization.
+- unsubscribe/help handling.
+- configurable jurisdiction compliance rules.
+- Canadian CASL readiness for commercial SMS.
+
+## Build 015 — Telephone/SMS Workflow Parity Harness
+- channel-support matrix for every product workflow.
+- reusable IVR/SMS adapters over canonical domain commands.
+- secure-link handoff when a visual step is unavoidable.
+- staff-assisted transfer fallback.
+- automated parity tests for key guest/staff flows.
+- explicitly document graphical-only tasks such as polygon drawing.
+
+## Build 016 — Demo Campground, Test Data & End-to-End Harness
+- Synthetic campground seed.
+- demo sites/cottages/assets.
+- browser test framework.
+- no production personal data in test fixtures.
+
+---
+
+# Phase 2 — Campground Structure and Virtually Realistic Map
+
+## Build 017 — Campground, Section & Subsection Administration
+- Multiple campground sections/subsections.
+- ordering, active/inactive state.
+- section-specific settings.
+
+## Build 018 — Overhead Image Library & Versioning
+- Upload real overhead/drone/site-plan images.
+- source image dimensions/version metadata.
+- active/published map version.
+- safe image processing.
+
+## Build 019 — Zoom/Pan Coordinate Engine
+- Store geometry in original-image/normalized coordinates.
+- shared transform matrix for image, polygons, labels and hit testing.
+- zoom/pan/high-DPI correctness tests.
+- prevent clickable-area drift.
+
+## Build 020 — Polygon Plotter Core
+- Click-to-create irregular polygons.
+- close shape.
+- vertex add/move/delete.
+- polygon validation.
+
+## Build 021 — Advanced Polygon Editing
+- Move/duplicate.
 - undo/redo.
-- normalized coordinates.
-
-### Build 011 — Polygon Editor Advanced Controls
-- duplicate.
 - lock/unlock.
-- hide/show.
-- layer order.
-- labels/icons.
-- configurable opacity.
-- bulk selection.
-- safe deletion/archive.
+- hide/archive.
+- precision and selection aids.
 
-### Build 012 — Map Layers
-- booking layer.
-- maintenance layer.
-- utility layer.
-- amenities layer.
-- management-only layer.
-- layer permissions and visibility.
+## Build 022 — Map Layers, Labels & Icons
+- Booking, maintenance, security, utilities, amenities and management layers.
+- visibility permissions.
+- labels/icons and layer order.
 
-### Build 013 — Campsite & Area Object Binding
-- bind a polygon to a site, cabin, event space, amenity, road, washroom, utility, store, dock, etc.
-- enforce unique/canonical object linkage.
-- object inspector panel.
+## Build 023 — Canonical Map Object Binding
+- Bind polygons/points to canonical sites, cottages, pools, washrooms, gates, docks, roads, buildings and assets.
+- prohibit orphan/duplicate bindings.
+- object inspector.
 
-### Build 014 — Campsite Master Data
-- site number/name/type.
-- dimensions.
-- parking.
-- surface.
-- shade.
-- RV/trailer limits.
-- site photos.
-- notes.
+## Build 024 — Unified Accommodation Model
+- Canonical accommodation parent model.
+- campsite/cottage/permanent-unit subtype linkage.
+- shared availability/status hooks.
 
-### Build 015 — Utilities, Amenities & Restrictions
-- electrical/amperage.
-- water.
-- sewer/septic.
-- Wi-Fi.
-- fire pit/picnic table.
-- swimming/waterfront/accessibility.
-- pets, vehicles, guests, generator/fire/quiet-hour restrictions.
+## Build 025 — Campsite Types & Utility/Service Model
+- Tent, RV, mixed, serviced/unserviced, waterfront, seasonal/yearly and walk-up types.
+- electrical amperage, water, sewer/septic, Wi-Fi.
+- dimensions, RV limits and site characteristics.
 
-### Build 016 — Site Status Engine
+## Build 026 — Rental Cottage Model
+- Rustic and serviced rental cottages.
+- bedrooms/beds/occupancy.
+- kitchen/kitchenette.
+- private/shared washroom/shower.
+- heating/cooling/appliances/accessibility/view.
+
+## Build 027 — Cottage Turnover & Housekeeping Model
+- Turnover templates.
+- linen/housekeeping requirements.
+- damage/security inspection.
+- cottage inventory checklist.
+
+## Build 028 — Site/Cottage Public Gallery: Up to 10 Images
+- Maximum 10 active public images per accommodation.
+- hero ordering/captions/alt text.
+- thumbnails/optimized variants.
+- internal maintenance media remains separate.
+
+## Build 029 — Operational Asset Model
+- Pools, water parks, washrooms, fields, playgrounds, halls, beaches, docks, launches, roads, garbage/septic areas and similar assets.
+- map linkage and operating status.
+
+## Build 030 — Accommodation & Asset Status Engine
 - available/occupied/maintenance/closed.
-- reserved/arriving/departing/inspection/seasonal/walk-in/management-hold states.
-- status history.
-- state transition rules.
-- map colours generated from status.
+- held/reserved/arriving/departing/inspection/winterized/etc.
+- status history and transition rules.
 
-### Build 017 — Management Map Controls
-- block one/many sites.
-- close section.
-- date-range closure.
-- maintenance/weather/private-event/emergency reason.
-- scheduled reopening.
-- auditable override.
+## Build 031 — Management Closures, Holds & Map Publication
+- Block individual/multiple accommodations/assets/sections.
+- dated closure reasons.
+- safe map publication/version switch.
+- auditable overrides.
 
-## Phase 2 — Reservation and availability engine
+---
 
-### Build 018 — Booking Calendar & Date Rules
-- check-in/check-out rules.
+# Phase 3 — Booking, Availability, Pricing and Payments
+
+## Build 032 — Booking Calendar & Date Rules
+- Check-in/out times.
 - booking windows.
-- min/max stay.
-- same-day controls.
-- weekends/holidays/season rules.
+- minimum/maximum stays.
+- weekends/holidays/seasons.
 
-### Build 019 — Site Compatibility Engine
-- filter by equipment type/length.
-- utilities.
-- accessibility.
-- pets.
-- vehicles.
-- guest counts.
-- required amenities.
+## Build 033 — Capacity, Guest & Vehicle Limit Rules
+- Maximum occupants/visitors/vehicles.
+- rules by campground, section, accommodation type and individual accommodation.
+- site-size-aware configurable limits.
 
-### Build 020 — Server-Authoritative Live Availability
-- calculate availability from reservations, holds, closures, assignments, and rules.
+## Build 034 — Accommodation Compatibility Engine
+- Tent/RV/cottage compatibility.
+- equipment length/utilities.
+- accessibility/pets/occupancy/features.
+- reject incompatible booking choices server-side.
+
+## Build 035 — Server-Authoritative Live Availability
+- Reservations, holds, closures, turnover and seasonal assignments.
 - live refresh.
-- no client-trusted availability.
 - concurrency tests.
 
-### Build 021 — Atomic Temporary Reservation Holds
-- configurable hold duration.
-- countdown timer.
-- atomic acquisition.
-- expiry/reaping.
-- conflict handling.
-- anti-double-booking tests.
+## Build 036 — Atomic Temporary Reservation Holds
+- Configurable hold duration.
+- countdown.
+- atomic conflict prevention.
+- expiry/release and idempotency.
 
-### Build 022 — Public Interactive Booking Map
-- requested dates + party/equipment filters.
-- available green.
-- occupied/unavailable grey.
-- maintenance yellow.
-- closed red.
-- selectable site details and photos.
-- accessible list alternative to map.
+## Build 037 — Public Interactive Booking Map
+- Date/filter-driven map.
+- green/grey/yellow/red operational presentation.
+- selectable accommodation polygons.
+- accessible list alternative.
 
-### Build 023 — Rate Plans & Pricing Rules
-- nightly/weekly/monthly/seasonal/yearly.
+## Build 038 — Campsite & Cottage Detail/Booking Experience
+- Features, rules, rate summary.
+- up-to-10-image gallery.
+- map context and nearby amenities.
+- cottage-specific details.
+
+## Build 039 — Rate Plans & Dynamic Date Pricing
+- Nightly/weekly/monthly/seasonal/yearly.
+- cottage rates.
 - weekend/holiday/peak/off-season/event.
-- extra guest/pet/vehicle/service fees.
-- discounts/promotions.
-- server price quotation.
+- promotional rates.
 
-### Build 024 — Reservation Checkout
-- guest identity/contact.
-- party, vehicles, pets.
-- rules acknowledgment.
-- addons.
-- price breakdown.
+## Build 040 — Add-Ons, Passes and Service Fees
+- Extra guests/vehicles.
+- visitor/day/week passes.
+- Wi-Fi, garbage pickup, rentals, launch fees and other add-ons.
+- tax/fee configuration hooks.
+
+## Build 041 — Reservation Checkout
+- Guest/contact data.
+- occupants/pets/vehicles.
+- rule acknowledgement.
+- add-ons and final server quote.
 - hold revalidation.
-- reservation creation.
 
-### Build 025 — Deposits, Balances & Payment Adapter
-- full/fixed/percent deposits.
-- balance due dates.
+## Build 042 — Deposits, Balances & Payment Provider Adapter
+- Full/fixed/percentage deposits.
 - security deposits.
-- payment-provider abstraction.
-- Stripe test-mode adapter.
-- verified idempotent webhooks.
+- balance due rules.
+- provider sandbox integration and verified webhooks.
 
-### Build 026 — Reservation Confirmation & Receipts
-- confirmation number.
+## Build 043 — Confirmations, Receipts & Reservation Documents
+- Confirmation numbers.
+- receipt/invoice records.
 - email/in-app confirmation.
-- receipt/invoice record.
-- resend workflow.
 - printable view.
 
-### Build 027 — Reservation Management Console
-- create/edit/move/extend/shorten/cancel.
-- site upgrade/change.
-- fee/addon changes.
-- reason capture.
-- full event history.
+## Build 044 — Reservation Management Console
+- Create/edit/move/extend/shorten/cancel.
+- accommodation changes.
+- fees/add-ons.
+- complete change history.
 
-### Build 028 — Refunds, Cancellations & Financial Safeguards
-- cancellation policies.
-- partial/full refunds.
+## Build 045 — Cancellation, Refund & Adjustment Safeguards
+- Policy engine.
+- partial/full refund.
 - approval thresholds.
-- original-payment linkage.
-- audit.
-- reconciliation checks.
+- original-payment linkage and audit.
 
-### Build 029 — Seasonal, Yearly & Walk-Up Site Models
-- seasonal assignment.
-- annual/long-term record.
+## Build 046 — Walk-Up, Overflow & Office Booking
+- Staff-created bookings.
 - walk-up inventory.
-- overflow.
-- owner/staff holds.
-- mixed inventory within sections.
+- overflow areas.
+- same authoritative availability engine.
 
-## Phase 3 — Front desk and guest journey
+## Build 047 — Seasonal/Yearly Assignment Foundation
+- Long-term site assignment.
+- seasonal/yearly charges.
+- non-nightly lifecycle.
+- integration point for winterization and permanent units.
 
-### Build 030 — Guest Profiles & Guest Account
-- optional account.
+---
+
+# Phase 4 — Guest, Front Desk, Vehicles, Visitors and Physical Access
+
+## Build 048 — Guest Profiles & Saved Stay Information
+- Optional account.
 - contact details.
-- saved RV/vehicle/pet profiles.
-- stay history.
-- receipts.
-- favourites.
-- privacy controls.
+- RV/vehicle/pet profiles.
+- stay/receipt history and privacy controls.
 
-### Build 031 — Check-In Workflow
-- payment verification.
-- occupants.
-- vehicles/licence plates.
-- pets.
-- rules.
-- passes/access codes.
-- add rentals/store items.
-- checked-in state.
+## Build 049 — Front Desk Check-In
+- Verify balance/occupants/pets.
+- vehicle and visitor setup.
+- rules and access credentials.
+- rentals/store add-ons.
 
-### Build 032 — Check-Out Workflow
-- outstanding balance.
-- rental return.
-- deposit handling.
-- departure state.
-- automatic post-departure task trigger.
+## Build 050 — Check-Out & Accommodation Turnover Trigger
+- Outstanding charges.
+- rentals/keys/credentials return.
+- automatic cleaning/inspection.
+- departure status.
 
-### Build 033 — My Stay Guest Portal
-- site details/map.
-- dates.
-- campground rules.
-- Wi-Fi instructions.
-- store/rentals/events.
-- assistance.
-- receipts.
-- extend-stay request.
+## Build 051 — My Stay Guest Portal
+- Reservation/site/cottage.
+- map/rules/Wi-Fi.
+- store/rentals/events/local interests.
+- assistance/receipts.
 
-### Build 034 — Extend Stay / Site Move Workflows
-- availability check.
-- repricing.
-- payment difference.
-- housekeeping/maintenance implications.
-- audit trail.
+## Build 052 — Stay Extension & Accommodation Move
+- Recheck availability.
+- repricing/payment difference.
+- maintenance/housekeeping impact.
+- audit.
 
-### Build 035 — Reviews & Moderation
-- campground/site/cabin/rental/event/amenity reviews.
-- verified-stay linkage.
-- moderation.
-- abuse reporting.
-- publication controls.
+## Build 053 — Road Vehicle Registration
+- Cars, trucks, motorcycles, tow vehicles.
+- plate/jurisdiction/description.
+- owner/driver and host accommodation.
+- validity and status.
 
-## Phase 4 — Maintenance and field operations
+## Build 054 — Day/Week Vehicle Passes & Extra-Vehicle Fees
+- Non-stay vehicle passes.
+- date/time validity.
+- fee/payment.
+- parking/access rules.
 
-### Build 036 — Maintenance Taxonomy & Priority Model
-- garbage, fire pit, septic, water, electrical, tree, road, washroom, Wi-Fi, building, rental, landscape, etc.
-- configurable priorities Emergency/Urgent/Normal/Preventive.
-- SLA/target times.
+## Build 055 — Visitor Registration & Site-Specific Limits
+- Host site/reservation.
+- visitor identity/contact as configured.
+- max-visitor rule resolution.
+- fees and visit validity.
 
-### Build 037 — Work Order Engine
-- create/assign/status.
-- site/location.
-- category/priority.
-- notes/media.
-- materials/labour.
+## Build 056 — Access Credential Abstraction
+- Key card/fob.
+- keypad PIN.
+- QR/printed/wristband pass.
+- provider credential references.
+- expiry/revocation.
+
+## Build 057 — Gate, Barrier & Access Device Registry
+- Gates/doors/barriers/controllers.
+- zones and hardware/provider mapping.
+- device health state.
+- management configuration.
+
+## Build 058 — Gate State & Access Event Monitoring
+- Open/closed/unknown when supported.
+- access attempts.
+- credential/person/vehicle association.
+- denied-access reason.
+
+## Build 059 — Manual Gate Open/Close Override
+- Permission-controlled server command.
+- required reason.
+- rate limit/re-auth hooks.
+- complete audit/provider outcome.
+
+## Build 060 — Access Zones, Schedules & Rules
+- Guest/visitor/staff/contractor access.
+- time/day/zone restrictions.
+- camper-only areas and event access.
+
+## Build 061 — Security Incident Management
+- Access/security incident.
+- severity/assignment.
+- notes/evidence.
+- escalation and resolution.
+
+## Build 062 — Wristband/QR/Pass Issuance & Validation
+- Issue/revoke/expire.
+- event/visitor/day-use linkage.
+- non-guessable validation identifiers.
+
+## Build 063 — Credential Lifecycle at Check-In/Check-Out
+- Provision on arrival.
+- extend when stay extends.
+- revoke at checkout/cancellation.
+- lost/replaced credential workflow.
+
+## Build 064 — Security & Access Operations Dashboard
+- Gate/device status.
+- active credentials.
+- recent denied access.
+- overrides.
+- expiring passes and incidents.
+
+---
+
+# Phase 5 — Maintenance, Inspections, Waste and Camper Assistance
+
+## Build 065 — Maintenance Taxonomy & Priority Model
+- Garbage/fire/septic/water/electrical/grounds/building/etc.
+- Emergency/Urgent/Normal/Preventive.
+- configurable targets.
+
+## Build 066 — Work Order Engine
+- Location/asset/accommodation.
+- assignment/status.
+- notes/media/material/labour.
 - completion evidence.
-- history.
 
-### Build 038 — Maintenance Roles & Foreman Queue
-- maintenance employee/senior/crew leader/foreman/main foreman/manager.
+## Build 067 — Maintenance Roles, Foreman Queue & Escalation
+- Crew/foreman/main foreman/manager.
 - assignment permissions.
-- escalation.
-- triage queue.
+- triage/escalation.
+
+## Build 068 — Recurring Maintenance Scheduler
+- Hourly/every-N-hours/daily/weekly/monthly/seasonal/custom.
+- discrete occurrence history.
+- overdue/missed task handling.
+
+## Build 069 — Versioned Inspection Templates & Sign-Off
+- Checklists by asset/site/cottage.
+- versioning.
+- inspector/sign-off roles.
+- failed item corrective action.
+
+## Build 070 — Pool & Water-Park Maintenance Operations
+- Recurring checks.
+- operating/closure state.
+- inspection/maintenance evidence.
+- safety-sensitive sign-off hooks.
+
+## Build 071 — Washroom, Shower & Laundry Upkeep
+- Scheduled cleaning/inspection.
+- supplies/status.
+- issue escalation and closure.
+
+## Build 072 — Sports Field, Playground, Hall & Recreation Maintenance
+- Baseball/softball fields and other facilities.
+- recurring condition checks.
+- closures/corrective work.
+
+## Build 073 — Roads, Utilities, Garbage Areas & Infrastructure Maintenance
+- Roads/parking.
+- electrical/water/septic utility assets.
+- garbage/recycling areas.
+- scheduled and reactive work.
+
+## Build 074 — Post-Departure Campsite Cleanup & Inspection
+- Automatic checkout task.
+- site-type checklist.
+- block rebooking when configured until cleared.
+
+## Build 075 — Rental Cottage Housekeeping & Turnover
+- Cleaning.
+- linen/inventory checklist.
+- damage evidence.
+- release cottage to available state after required sign-off.
+
+## Build 076 — Preventive Maintenance Program
+- Equipment/facility maintenance templates.
+- service intervals.
+- parts/labour history.
+- overdue visibility.
+
+## Build 077 — Offline Maintenance Workspace
+- Cached assigned work.
+- offline notes/checklists/media queue.
+- conflict/sync state.
+- no offline high-risk finalization.
+
+## Build 078 — Camper Assistance Request Interface
+- Maintenance/garbage/septic/electrical/water/Wi-Fi/noise/security/rental/store/other.
+- severity/media/contact preference.
+- active-stay linking.
+
+## Build 079 — Assistance Triage & Management Escalation
+- Reclassify/assign/escalate.
+- guest communication.
+- closure/outcome.
+
+## Build 080 — Garbage Service Models
+- Central bins.
+- included site pickup.
+- scheduled pickup.
+- paid on-demand pickup.
+- recycling/organics streams.
+
+## Build 081 — Paid Garbage Stickers/Tags & Pickup Redemption
+- POS/online sale.
+- optional serialized QR/barcode.
+- site/customer linkage.
+- redemption/pickup work order.
+- inventory/revenue history.
+
+---
+
+# Phase 6 — Rules, Safety, Seasonal Sites, Permanent Units and Financing
+
+## Build 082 — Versioned Campground & Facility Rule Sets
+- Campground, pool, waterfront, sports, playground, event and access rules.
+- version publication.
+- exact-version acknowledgements.
+
+## Build 083 — Warning, Suspension & Reinstatement Workflow
+- Authorized staff warnings.
+- feature/area access suspension.
+- management review/reinstatement.
+- audit history.
+
+## Build 084 — Lifeguarded Pool & Supervised Swimming Safety Workflow
+- Capacity/age/supervision rules.
+- acknowledgement.
+- warning/removal records.
+- temporary closure.
+- trained-staff decision boundary.
+
+## Build 085 — Beach, Lake/Ocean Swimming & Waterfront Safety Rules
+- Swimming zones.
+- hours/closures.
+- waterfront acknowledgements/incidents.
+- policy enforcement.
+
+## Build 086 — Emergency Communication & Safety Guardrails
+- Whole campground/section/site/staff audiences.
+- approval/audit.
+- explicit emergency-services boundary.
+
+## Build 087 — Seasonal/Yearly Winterization Workflow
+- Configurable shutdown checklist.
+- water shutoff/draining and campground-defined utility steps.
+- evidence.
+- maintenance/foreman sign-off.
+
+## Build 088 — Cold-Weather Winter-Readiness Compliance
+- Alternative to shutdown where allowed.
+- insulation/heated-water and other campground-defined evidence.
+- approval/defect loop.
+
+## Build 089 — Spring Reopening Inspection
+- Opening checklist.
+- corrective actions.
+- authorization to reopen yearly/seasonal site.
+
+## Build 090 — Permanent Unit Ownership Model
+- Unit distinct from land/site.
+- ownership/occupancy history.
+- documents and status.
+
+## Build 091 — Permanent Unit Listing & Buyer Inquiry
+- For-sale status.
+- approved listing information.
+- inquiry routing.
 - management visibility.
 
-### Build 039 — Departure Cleanup & Inspection Automation
-- checkout creates quick-clean/inspection.
-- checklist by site type.
-- keep site unavailable until required checks pass.
-- completion restores bookability when appropriate.
+## Build 092 — Permanent Unit Sale/Transfer Workflow
+- Buyer application.
+- inspections.
+- campground approval.
+- fees/documents/closing checklist.
+- agreement transfer/replacement.
 
-### Build 040 — Preventive Maintenance & Recurring Work
-- scheduled washroom/grounds/equipment/site tasks.
-- recurring templates.
-- overdue warnings.
-- seasonal maintenance plans.
+## Build 093 — Office Financing Application Intake
+- Optional financing application.
+- confidential documents.
+- staff status workflow.
+- strict permission boundary.
 
-### Build 041 — Maintenance Mobile Workspace
-- assigned jobs.
-- large touch targets.
-- map navigation.
-- start/pause/complete.
-- notes/photos.
-- quick material/labour capture.
+## Build 094 — Financing Provider/Compliance Boundary
+- External provider/reference abstraction.
+- decision/disclosure status.
+- retention/audit.
+- no improvised lending logic.
 
-### Build 042 — Offline Maintenance Queue
-- cached assigned jobs.
-- queued updates.
-- retry/sync.
-- conflicts.
-- explicit sync status.
-- booking/payment writes excluded from offline finalization.
+## Build 095 — Golf Cart, E-Bike & Recreational Device Registration
+- Owner/host site.
+- serial/description.
+- approved driver.
+- optional insurance/document references.
+- validity/status.
 
-## Phase 5 — Camper assistance, incidents and communication
+## Build 096 — Recreational Device Safety Inspection & Authorization
+- Configurable inspection.
+- approval/expiry.
+- zone/time restrictions.
+- suspension/revocation.
 
-### Build 043 — Camper Assistance Popup
-- active-stay/site linking.
-- categories: maintenance/garbage/septic/electrical/water/Wi-Fi/noise/security/store/rental/other.
-- severity.
-- description/photo/contact preference.
+---
 
-### Build 044 — Incident Triage & Escalation
-- management/foreman queue.
-- reclassify priority.
-- assign.
-- contact guest.
-- notes/media.
-- escalation.
-- close with outcome.
+# Phase 7 — Campground Events, Local Interests and Destination Promotion
 
-### Build 045 — Emergency Communication Guardrails
-- campground/section/site/staff audience.
-- templates.
-- approval controls.
-- audit.
-- explicit emergency-services disclaimer/routing.
+## Build 097 — Campground Event Series & Occurrences
+- Friday dances, Halloween events, shows, meals, tournaments, etc.
+- one-time/recurring.
+- per-occurrence change/cancellation.
 
-### Build 046 — Notification Platform
-- email/in-app foundation.
-- provider adapters for SMS/push.
-- templates.
-- opt-in/opt-out where required.
-- delivery status/retry.
+## Build 098 — Event Registration, Ticketing & Paid Access
+- Free/paid/reservation-required.
+- ticket/pass/wristband/QR.
+- payment/refund.
+- check-in.
 
-### Build 047 — Campground Announcements
-- planned outages.
-- weather-related operating notices.
-- event notices.
-- quiet-hours reminders.
-- section-specific announcements.
+## Build 099 — Event Venue, Capacity & Eligibility
+- Venue/area.
+- capacity.
+- camper-only/visitor eligibility.
+- age/access restrictions.
 
-## Phase 6 — Amenities, rentals and events
+## Build 100 — Local Places & Attractions Catalogue
+- Nearby beaches, trails, museums, shopping, restaurants, fairs and attractions.
+- category/distance/tags.
+- official/source reference.
 
-### Build 048 — Amenity Catalogue
-- pools/beaches/playgrounds/laundry/showers/washrooms/Wi-Fi/fishing/hiking/boat launch/dog park/store/etc.
-- description/location/photos/hours/rules/fees/status.
+## Build 101 — Time-Limited Local Event Catalogue & Freshness
+- Fall fairs, truck/car shows, festivals, markets and other events.
+- start/end.
+- review/expiry date.
+- suppress stale events automatically.
 
-### Build 049 — Rental Inventory
-- pedal boats/canoes/kayaks/paddleboards/bikes/golf carts/fishing gear/life jackets/BBQs/games.
-- quantities/assets.
-- hourly/daily rates.
-- deposits.
-- availability.
+## Build 102 — Contextual Destination Promotion Engine
+- Promote relevant local content in booking, confirmation, pre-arrival, My Stay and activities pages.
+- date/season/family/pet/accessibility targeting controlled by campground.
 
-### Build 050 — Rental Booking & Return Inspection
+## Build 103 — Marketing Preferences, Consent & Opt-Out
+- Promotional communication preferences.
+- opt-out handling.
+- channel rules.
+- audit/retention.
+
+## Build 104 — Local Promotion Performance & Content Review
+- impressions/clicks where appropriate.
+- freshness queue.
+- remove ineffective/stale content.
+- no hidden advertising data sharing.
+
+## Build 105 — Guest Reviews & Moderation
+- Verified-stay reviews of campground/site/cottage/rental/amenity.
+- moderation/reporting.
+- publication controls.
+
+## Build 106 — Public Activities, Events & Destination Pages
+- Campground events.
+- local interests.
+- date-aware content.
+- SEO-friendly public pages where configured.
+
+---
+
+# Phase 8 — Waterfront, Boats, Docks and Equipment Rentals
+
+## Build 107 — Water Features, Beaches & Swimming Zones
+- Lakes/rivers/ocean/beaches.
+- map linkage.
+- operating status/rules.
+
+## Build 108 — Boat Registration
+- Owner/guest.
+- host accommodation.
+- boat description/registration references.
+- validity.
+
+## Build 109 — Boat Launch/Ramp Access & Day-Use Fees
+- Active-stay eligibility by default.
+- configurable non-camper paid access.
+- tow vehicle/trailer.
+- launch session history.
+
+## Build 110 — Dock & Slip Inventory
+- Docks/slips.
+- size/features/status.
+- transient/seasonal eligibility.
+
+## Build 111 — Dock/Slip Assignment & Availability
+- Booking/assignment.
+- date ranges.
+- campsite/cottage/day-use linkage.
+- conflict prevention.
+
+## Build 112 — Equipment Rental Catalogue
+- Pedal boats, canoes, kayaks, paddleboards, bikes, golf carts, fishing equipment, life jackets, BBQs, games.
+
+## Build 113 — Rental Availability & Booking
+- Hourly/daily.
 - reservation linkage.
-- pickup/return.
+- deposit/agreement.
+- inventory availability.
+
+## Build 114 — Rental Pickup, Return & Damage Inspection
 - condition.
+- return.
 - damage.
 - deposit handling.
 - maintenance trigger.
 
-### Build 051 — Event & Facility Booking
-- halls/pavilions/shelters/fields/wedding areas/group sites.
-- date/time availability.
-- capacities.
-- rates/deposits.
-- blackout periods.
+## Build 115 — Safety Equipment & Required Rental Accessories
+- Life jackets/helmets/etc. as configurable requirements.
+- issue/return tracking.
 
-## Phase 7 — Store, POS and campsite delivery
+## Build 116 — Waterfront/Rental Operations Dashboard
+- Active launches/docks/rentals.
+- overdue returns.
+- closures/incidents.
+- maintenance status.
 
-### Build 052 — Product & Supplier Catalogue
-- products/categories/SKU/barcode.
+---
+
+# Phase 9 — Campground Store, POS, Inventory and Delivery
+
+## Build 117 — Product & Supplier Catalogue
+- SKU/barcode/category.
 - supplier.
-- purchase/sell price.
-- tax category.
-- margin.
-- images.
-- active state.
+- cost/sell price/tax.
+- images/status.
 
-### Build 053 — Inventory Ledger
+## Build 118 — Inventory Movement Ledger
+- Receipts/sales/returns/waste/adjustments/transfers.
+- low-stock.
+- traceable balances.
+
+## Build 119 — POS Register
+- Scan/search/cart.
+- cash/card/campsite account.
 - receipts.
-- sales.
-- returns.
-- waste.
-- adjustments.
-- transfers.
-- low-stock thresholds.
-- expiry tracking where applicable.
+- permissions.
 
-### Build 054 — POS Register
-- scan/search/cart.
-- campsite-account charging.
-- cash/card.
-- receipts.
-- returns/refunds.
-- cashier permissions.
-
-### Build 055 — Cash Session & POS Management Controls
-- open/close register.
-- expected/actual cash.
+## Build 120 — Cash Session & Register Controls
+- Open/close.
+- expected/actual.
 - manager variance.
-- refunds/discount permissions.
-- immutable transaction history.
+- audit.
 
-### Build 056 — Online Campground Store
-- camper catalog.
-- cart.
-- online payment or authorized campsite account.
-- availability-aware inventory.
+## Build 121 — Online Campground Store
+- Camper catalogue/cart.
+- inventory-aware purchase.
+- online payment/campsite account.
 
-### Build 057 — Campsite Delivery & Pickup
-- delivery/pickup selection.
-- delivery service global toggle.
-- delivery hours.
-- active-stay validation.
-- staff fulfillment queue.
-- delivered/picked-up state.
+## Build 122 — Campsite/Cottage Delivery & Pickup
+- Delivery/pickup.
+- delivery toggle/hours.
+- active-stay destination validation.
+- fulfillment queue.
 
-## Phase 8 — Staff and workforce
+## Build 123 — Service Products, Passes & Sticker Sales
+- Firewood/ice/propane/services.
+- vehicle/day passes.
+- garbage stickers/tags.
+- service-product linkage.
 
-### Build 058 — Staff Directory & Employment Roles
-- staff profiles.
+## Build 124 — Stock Expiry, Damage & Reorder Operations
+- Expiry.
+- damaged/waste.
+- reorder thresholds.
+- supplier replenishment.
+
+## Build 125 — POS Refund, Discount & Manager Approval
+- Returns/refunds.
+- discount permissions.
+- thresholds.
+- financial/audit linkage.
+
+## Build 126 — Campsite Account Charges & Final Settlement
+- Authorized room/site-style charges.
+- running stay balance.
+- checkout settlement/reconciliation.
+
+---
+
+# Phase 10 — Workforce, Vendors and External Services
+
+## Build 127 — Staff Directory & Department Model
+- Staff profiles.
 - department.
-- role assignments.
 - campground assignments.
-- active/inactive.
-- emergency contact data kept appropriately restricted.
+- restricted personal data.
 
-### Build 059 — Employee Scheduling
-- shifts.
-- department schedules.
-- maintenance/store/front desk coverage.
+## Build 128 — Employee Scheduling
+- Shift/department coverage.
+- conflicts.
 - phone view.
-- conflict detection.
 
-### Build 060 — Timekeeping
-- clock in/out.
+## Build 129 — Timekeeping
+- Clock in/out.
 - breaks.
 - overtime flags.
-- department/job allocation.
-- audit and manager adjustment workflow.
+- job/department allocation.
 
-### Build 061 — Training, Qualifications & Access Readiness
-- role-required training.
-- certifications.
-- expiry.
-- qualification checks for restricted work.
+## Build 130 — Training, Qualification & Expiry Tracking
+- Lifeguard/maintenance/security/etc. qualification records as configured.
+- expiry reminders.
+- role-readiness checks.
 
-## Phase 9 — Vendors, contracts and recurring services
+## Build 131 — Vendor Directory & Contract Management
+- Garbage/septic/ISP/propane/firewood/trades/etc.
+- contacts/contracts/rates/documents.
 
-### Build 062 — Vendor Directory & Contracts
-- garbage, septic, ISP, propane, firewood, pest, electrical, plumbing, etc.
-- contacts.
-- contracts.
-- start/end dates.
-- documents.
-- rates.
+## Build 132 — Recurring External Service Scheduling
+- Garbage collection.
+- septic service.
+- recurring vendor work.
+- completion/cost linkage.
 
-### Build 063 — Recurring External Services
-- garbage pickup schedules.
-- septic schedules.
-- service reminders.
-- completion records.
-- associated cost/invoice.
+## Build 133 — Accounts Payable Intake
+- Vendor invoices.
+- due/approval/payment state.
+- department/property allocation.
 
-### Build 064 — Accounts Payable Intake
-- supplier/vendor invoices.
-- due dates.
-- approval state.
-- campground/department allocation.
-- payment status.
+---
 
-## Phase 10 — Finance and management
+# Phase 11 — Finance and Management
 
-### Build 065 — Revenue & Expense Classification
-- reservation/store/rental/event/service revenue.
-- payroll/utilities/garbage/septic/internet/insurance/tax/fuel/maintenance/supplies/contractor costs.
-- configurable categories.
+## Build 134 — Revenue & Expense Classification
+- Accommodation/store/rental/event/pass/service revenue.
+- payroll/utilities/garbage/septic/internet/insurance/tax/fuel/etc. expenses.
 
-### Build 066 — Internal Ledger & Financial Event Model
-- charges/payments/refunds/deposits/taxes/expenses.
-- append-oriented financial entries.
-- traceability to source transaction.
+## Build 135 — Internal Financial Ledger
+- Charges/payments/refunds/deposits/taxes/expenses.
+- traceability to source.
 
-### Build 067 — Profit & Loss Reporting
-- daily/weekly/monthly/annual.
+## Build 136 — Profit & Loss Reporting
+- Daily/weekly/monthly/annual.
 - gross/net.
-- occupancy.
-- revenue per site/guest.
-- store/rental profitability.
+- occupancy and per-accommodation metrics.
 
-### Build 068 — Payment & Ledger Reconciliation
-- reservation vs payment.
-- POS vs payment.
-- deposit/refund matching.
+## Build 137 — Payment, POS & Ledger Reconciliation
+- Reservation/payment.
+- POS/payment.
+- deposits/refunds.
 - exception queue.
-- investigation audit notes.
 
-### Build 069 — Management Operations Dashboard
-- occupancy.
+## Build 138 — Management Operations Dashboard
+- Occupancy.
 - arrivals/departures.
-- sites awaiting inspection.
-- urgent maintenance.
+- maintenance.
+- gates/security.
 - store deliveries.
-- rentals.
-- revenue.
-- overdue vendor items.
+- rentals/events.
+- revenue and overdue items.
 
-### Build 070 — Accounting Export/Integration Adapter
-- export standardized financial data.
-- adapter framework for QuickBooks/Xero or other systems later.
-- no provider lock-in.
+## Build 139 — Accounting Export/Integration Adapter
+- Standardized exports.
+- provider abstraction for accounting systems.
 
-## Phase 11 — Search, media, documents and operational intelligence
+## Build 140 — Budgets, Cost Centres & Department Spending
+- Budget categories.
+- campground/department cost allocation.
+- variance.
 
-### Build 071 — Global Search
-- guest/reservation/site/phone/email/licence plate/work order/employee/product/rental/payment.
-- permission-filtered results.
+## Build 141 — Accommodation, Cottage, Store & Service Profitability
+- Revenue/cost attribution.
+- cottage profitability.
+- store/rental/service margins.
 
-### Build 072 — Document Management
-- contracts.
-- insurance.
-- safety.
-- vendor agreements.
-- employee docs.
-- rental agreements.
-- campground rules.
-- retention/access controls.
+## Build 142 — Tax, Fee & Financial Configuration Review
+- Configurable taxes/fees.
+- financial permission review.
+- no hard-coded jurisdictional tax assumptions.
 
-### Build 073 — Media Management
-- campsite/product/maintenance/damage/inspection media.
-- private/public classification.
-- signed access for private media.
-- attachment audit.
+---
 
-### Build 074 — Universal Timeline
-- reservation, maintenance, guest assistance, POS/rental, financial and management events in a permission-filtered timeline.
+# Phase 12 — Search, Documents, Intelligence and System-Wide Operations
 
-## Phase 12 — Reliability, accessibility, multi-property and production hardening
+## Build 143 — Global Permission-Aware Search
+- Guest/reservation/site/cottage/vehicle/visitor/work order/staff/product/rental/payment/pass.
 
-### Build 075 — Accessibility & Device Certification
-- keyboard.
-- screen reader.
-- touch.
-- contrast.
-- responsive layouts.
+## Build 144 — Document Management
+- Contracts, insurance, safety, vendor, employee, rental, financing and campground documents.
+- retention/access classes.
+
+## Build 145 — Universal Timeline
+- Reservation, access, maintenance, assistance, POS, rental, event, finance and management events.
+- permission-filtered.
+
+## Build 146 — Reports, Exports & Operational Evidence
+- Configurable reports.
+- CSV/PDF/export hooks.
+- audit-friendly evidence packages.
+
+---
+
+# Phase 13 — Reliability, Security, Privacy and Launch
+
+## Build 147 — Accessibility & Device Certification
+- Keyboard/screen reader/touch/contrast.
 - phone/tablet/desktop browser matrix.
 
-### Build 076 — Performance & Realtime Scale Review
+## Build 148 — Performance, Query Budget & Realtime Scale Review
+- Indexes.
 - query budgets.
-- indexes.
-- realtime subscriptions.
+- realtime subscription control.
 - image optimization.
-- caching.
-- load/concurrency tests for high-demand booking periods.
+- peak booking load tests.
 
-### Build 077 — Abuse, Rate-Limit & Security Hardening
-- rate limiting.
-- anti-bot controls on high-risk public actions.
-- upload abuse controls.
-- auth attack protections.
-- webhook replay protection.
+## Build 149 — Abuse, Rate-Limit & Security Hardening
+- Auth/public abuse controls.
+- upload abuse.
+- webhook replay defense.
+- access-command safeguards.
 - penetration-test checklist.
 
-### Build 078 — Backup, Restore & Disaster Recovery
-- database backup validation.
-- restoration drill.
-- storage recovery.
-- rollback.
-- incident runbook.
-- recovery objectives.
+## Build 150 — Backup, Restore & Disaster Recovery
+- Database/storage backup validation.
+- restore drill.
+- rollback and incident runbook.
 
-### Build 079 — Privacy, Retention & Data Subject Workflows
-- retention policies.
-- export.
-- correction.
-- deletion/anonymization where legally appropriate.
-- sensitive employee/incident data controls.
+## Build 151 — Privacy, Retention, Export & Deletion Workflows
+- Guest/visitor/vehicle/staff/incident/financing retention.
+- export/correction/deletion/anonymization where applicable.
 
-### Build 080 — Multi-Campground Readiness
-- property switching.
-- organization ownership.
-- cross-property owner dashboard.
-- strict tenant isolation tests.
+## Build 152 — Multi-Campground Isolation & Owner Dashboard
+- Property switching.
+- cross-property ownership.
+- strict tenant-isolation tests.
 
-## Phase 13 — Extended campground operations
+## Build 153 — Full Production Readiness Gate
+- End-to-end campsite/cottage booking.
+- payments.
+- maintenance/inspections.
+- physical access.
+- visitors/vehicles.
+- seasonal/permanent workflows.
+- events/local promotions.
+- POS/rentals/waterfront.
+- finance/security/recovery.
 
-### Build 081 — Operational Asset Maintenance Scheduler & Inspection Matrix
-- treat pools, lifeguarded pools, water parks/splash pads, washrooms, showers, laundry, playgrounds, baseball/softball fields, sports courts, beaches, docks, boat ramps, halls and similar facilities as maintainable operational assets.
-- hourly/daily/weekly/monthly/seasonal/custom recurring work.
-- configurable inspection templates and responsible department.
-- automatic work-order creation.
-- completion and missed-task history.
-- failed inspection can close/restrict the asset until cleared.
-- maintenance and management sign-off rules.
-- map/polygon linkage.
-- safety-sensitive tasks remain configurable to applicable local requirements rather than hard-coded legal claims.
+## Build 154 — First Real Campground Pilot Configuration
+- Real overhead image.
+- polygons.
+- sites/cottages/assets/gates.
+- rules/rates.
+- recurring maintenance.
+- staff.
+- test credentials and workflows.
 
-### Build 082 — Seasonal/Yearly Site Winterization & Reopening
-- seasonal/yearly lifecycle distinct from ordinary reservations.
-- configurable winter shutdown checklist.
-- water shutoff/draining and campground-defined utility/safety checks.
-- evidence/photo/document capture.
-- maintenance/foreman sign-off.
-- corrective-work loop.
-- winter-closed status only after required approvals.
-- configurable winter-occupancy alternative with winter-readiness evidence such as insulated/heated water protection where required by campground policy.
-- spring/opening inspection and reopening sign-off.
+## Build 155 — Pilot Operational Acceptance & Remediation
+- Front desk.
+- maintenance.
+- security/access.
+- booking.
+- POS.
+- real device/browser checks.
+- close pilot defects before public release.
 
-### Build 083 — Permanent Unit / Cottage-Style Ownership & Transfer
-- permanent unit record separate from campsite land record.
-- current ownership/occupancy history.
-- unit can remain physically on site while ownership changes.
-- sale/listing status.
-- buyer inquiry/application.
-- campground approval workflow.
-- transfer documents, fees and inspections.
-- agreement renewal/replacement.
-- closing checklist and audit trail.
-
-### Build 084 — Office Financing Application & Compliance Boundary
-- optional office financing/application workflow for eligible permanent units.
-- application intake and document checklist.
-- status tracking and staff permissions.
-- provider/reference abstraction for external financing.
-- lending decision, disclosure, identity verification and payment-plan boundaries treated as regulated/high-risk operations.
-- no client-calculated approval or hidden credit decision logic.
-- strong confidential-data controls and audit logging.
-
-### Build 085 — Recurring Events, Ticketing & Venue Access
-- one-time and recurring event series.
-- Friday dances, seasonal/Halloween activities, live entertainment, tournaments, meals and other campground events.
-- free/paid/reservation-required events.
-- recurrence with per-occurrence override/cancellation.
-- venue, capacity, attendee restrictions and camper/visitor eligibility.
-- ticket/pass/wristband/QR access.
-- event check-in and attendance.
-- event revenue/refunds where applicable.
-
-### Build 086 — Visitor Registration, Limits & Access Credentials
-- office visitor registration linked to host campsite/reservation.
-- adjustable maximum visitors by campground, section, site type and individual site.
-- visitor fees.
-- vehicle registration where applicable.
-- arrival/departure validity window.
-- wristband, printed pass, QR pass or future electronic-key abstraction.
-- allowed/restricted areas and events.
-- revoke/expire workflow.
-- visitor access audit history.
-
-### Build 087 — Golf Cart, E-Bike & Campground Device Registration
-- register guest/seasonal-resident mobility and recreational devices used around the campground.
-- golf carts, e-bikes and other campground-permitted vehicle/device classes.
-- owner/host site.
-- identifier/serial/plate/description.
-- document/insurance references if required by campground policy.
-- approved driver records.
-- optional safety inspection and sign-off.
-- expiry, suspension and revocation.
-- access restrictions by area/time/device class.
-
-### Build 088 — Waterfront, Boat Launch, Dock & Slip Operations
-- model lakes/rivers/ocean access, beaches and swimming zones.
-- boat registration.
-- boat launch/ramp access.
-- campsite-linked eligibility by default.
-- configurable paid day-use/non-camper access.
-- launch fees.
-- trailer/tow-vehicle record.
-- dock/slip assignment.
-- transient and seasonal dock occupancy.
-- waterfront rule acknowledgement.
-- closures and incident linkage.
-
-### Build 089 — Facility Safety Rules, Acknowledgement & Enforcement
-- versioned rule sets for pools, lifeguarded swimming areas, water parks, beaches, docks, boat ramps, sports fields, playgrounds and other controlled features.
-- hours, age/supervision rules, capacity and access restrictions.
-- required acknowledgement when configured.
-- exact rule-version evidence.
-- warning/incident records.
-- authorized-staff removal or access suspension.
-- management review and reinstatement.
-- closure controls.
-- explicit boundary that iCamp records/enforces campground policy but does not replace trained staff or statutory safety requirements.
-
-### Build 090 — Production Readiness Gate
-- complete end-to-end guest booking.
-- payment sandbox to production-readiness checklist.
-- maintenance lifecycle including recurring operational assets.
-- seasonal/yearly winterization lifecycle.
-- visitor/access, event, waterfront and safety-policy workflows.
-- POS lifecycle.
-- security matrix.
-- monitoring.
-- rollback.
-- no critical/high unresolved defects.
-
-### Build 091 — First Campground Pilot
-- configure one real campground.
-- upload real overhead image.
-- plot sites and operational assets.
-- enter site types, utilities, amenities, rules and rates.
-- configure recurring maintenance/inspection schedules.
-- configure seasonal/yearly policies if applicable.
-- configure visitor, vehicle/device, event and waterfront policies if applicable.
-- create staff roles.
-- test bookings and operations without exposing production publicly until accepted.
-
-### Build 092 — Public Launch Gate
-- production domain.
-- legal pages.
-- privacy/terms.
-- production payment credentials.
-- notification credentials.
-- backups.
-- support workflow.
+## Build 156 — Public Launch & Omnichannel Gate
+- Production domain.
+- legal/privacy/terms.
+- production payment/notification/telephony/SMS/access integrations.
+- backups/monitoring/support.
 - final GREEN verification.
 
-## Build gate applied to every build
-Every build must answer:
+---
+
+# Build Gate Applied to Every Active Build
+
+Every build must explicitly answer:
 1. What user/business requirement does it satisfy?
-2. What data changes are required?
-3. What permissions are required?
-4. What security risks are introduced?
-5. What audit events are required?
-6. What automated tests prove correctness?
-7. What responsive/accessibility checks apply?
-8. Does it affect availability, money, inventory, or permissions? If yes, are writes server-authoritative and idempotent where needed?
-9. What manual action, if any, is unavoidable?
-10. Is dev healthy and is the deployment/version traceable?
+2. What canonical data changes are required?
+3. Who may read the data?
+4. Who may change it?
+5. What server-side authorization/RLS is required?
+6. What security/privacy risks are introduced?
+7. What audit events are required?
+8. What automated tests prove correctness?
+9. What responsive/accessibility checks apply?
+10. Does it affect availability, money, inventory, physical access, credentials, safety, or permissions?
+11. What concurrency/idempotency controls are required?
+12. What failure/recovery path is required?
+13. What manual user action, if any, is truly unavoidable?
+14. Is `dev` GREEN and traceable to a commit before promotion?
+15. What is the channel-support matrix for this build: Web/PWA, IVR/DTMF, SMS, staff-assisted/secure-link fallback?
+16. Are inherently visual tasks clearly marked rather than falsely claiming numeric-keypad equivalence?
+17. Is production GREEN after promotion?
 
-## Manual actions expected later
-We should not ask for these before the corresponding build needs them.
-- Supabase/project authorization and any secret values.
-- Hosting account/project connection if no connector can perform it.
-- Payment provider account acceptance and production activation.
-- SMS/email provider account setup if selected.
-- Domain/DNS ownership changes.
-- Real business/tax/legal configuration.
-- Real campground aerial/overhead image.
-- Real rates, policies, taxes, site inventory, products, contracts, staff, and vendor data.
+# Manual Action Policy
 
-For each manual action, provide exact numbered steps at the time it is needed. Secrets should be entered directly into the provider/deployment secret store and should not be pasted into chat.
+Do not ask the user to perform work that connected tools can safely perform.
+
+Manual action is expected only for items such as:
+- provider account authorization/terms;
+- telephone/SMS number purchase, registration or regulatory verification when the chosen provider requires it;
+- billing;
+- production secret creation;
+- MFA;
+- DNS/domain ownership;
+- physical gate/access hardware enrollment;
+- real campground aerial/overhead image and real site photos;
+- real tax/legal/business data;
+- real staff/guest/vendor data;
+- financing agreements/provider onboarding.
+
+When manual action is required, provide exact numbered steps and never ask for a secret to be pasted into chat.

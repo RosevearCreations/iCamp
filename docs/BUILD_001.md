@@ -1,42 +1,60 @@
-# Build 001 — Repository Foundation & Engineering Guardrails
+# Build 001 — Responsive PWA & Omnichannel Application Shell
+
+## Status
+**Queued — not started.**
 
 ## Objective
-Create the minimum secure, testable engineering foundation on which every later iCamp build will rely.
+Create the active iCamp application shell without prematurely implementing campground business modules.
 
-## Delivered
-- dev/main branch model.
-- Next.js/React/TypeScript application foundation.
-- strict TypeScript.
-- ESLint and Prettier checks.
-- repository verification tests.
-- baseline secure HTTP headers.
-- environment template and secret-safe ignore rules.
-- CI for formatting, linting, typecheck, tests, build and dependency audit.
-- CodeQL workflow with private-repository eligibility guard.
-- secret scanning workflow.
-- Dependabot configuration for npm and GitHub Actions.
-- PR template with explicit high-risk domain review.
-- contribution and release/promotion rules.
-- architecture/master vision/security/build roadmap source of truth.
-- extended requirements for maintainable facilities, seasonal/yearly winterization, permanent-unit ownership, events, visitors, recreational devices, waterfront access and safety enforcement.
+The shell establishes the surfaces and contracts that every later build will use:
+- Web/PWA;
+- mobile/tablet/desktop layouts;
+- IVR/DTMF;
+- SMS/MMS;
+- email/push notification surfaces;
+- role-specific application workspaces.
 
-## Security decisions
-- No real credentials are required for Build 001.
-- Repository remains private.
-- Production and integration branches are distinct.
-- Runtime framework is pinned to Next.js 16.3.8, the current patched Active LTS line selected for this build.
-- Node is pinned to the Node 24 LTS line for CI/development consistency.
-- Real environment files are ignored.
-- High-risk application domains are explicitly identified in PR/release gates.
+## Required workspaces
+- Public/visitor.
+- Guest/My Stay.
+- Front Desk/Reservations.
+- Maintenance/Housekeeping.
+- Security/Access.
+- Store/POS.
+- Staff.
+- Foreman/Supervisor.
+- Management/Admin.
+- Finance/Accounting.
 
-## Acceptance criteria
-- CI workflow passes on dev.
-- Secret scan completes without a blocking finding.
-- CodeQL runs when repository eligibility is available; on a private repository without GitHub Code Security it must be explicitly skipped by the eligibility guard rather than fail or be silently removed.
-- `npm run verify` succeeds in CI.
-- No manual secret/account setup is required.
-- Build documentation is committed.
-- Only after dev gates are GREEN may Build 001 be promoted to main.
+## Omnichannel contract
+Build 001 must define a reusable per-feature support declaration:
+- Web/PWA full/partial/not applicable.
+- IVR/DTMF full/guided/staff-transfer/not applicable.
+- SMS full/guided/secure-link/not applicable.
+- reason when a channel is not applicable.
+
+Inherently graphical operations such as drawing campground polygons are allowed to remain graphical, but their operational data/actions must later have phone/SMS equivalents where meaningful.
+
+## Security
+- No feature-specific privileged operations yet.
+- No secrets in client bundles.
+- No assumption that caller ID authenticates a user.
+- All future channel actions must route through the same authorization/business service layer.
+
+## Accessibility
+- Keyboard navigation baseline.
+- semantic landmarks.
+- mobile/touch targets.
+- text scaling.
+- foundation for telephone/low-bandwidth accessibility.
+
+## Acceptance
+- responsive shell works at representative phone/tablet/desktop widths;
+- PWA metadata baseline validates;
+- workspaces/routes render;
+- channel-capability declaration exists;
+- tests/format/lint/typecheck/build/security gates GREEN;
+- source-of-truth docs remain consistent.
 
 ## Manual action
 None expected.

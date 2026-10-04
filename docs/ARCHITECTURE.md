@@ -1,105 +1,194 @@
-# iCamp Architecture Source of Truth
+# iCamp Architecture Source of Truth — iCamp2027
 
-## 1. Purpose
-iCamp is a web-first, mobile-capable campground operating platform. One authoritative data model powers guest booking, live availability, interactive campground mapping, front desk, maintenance, staff, store/POS, rentals, vendors, accounting, reporting, and management.
+## 1. Architectural purpose
 
-## 2. Architectural principles
-1. One authoritative campground database. A site, reservation, guest, work order, order, payment, rental, employee, vendor, and asset each have a canonical record.
-2. Server-authoritative business rules. Availability, holds, prices, permissions, payments, refunds, inventory, and financial totals are never trusted to browser-only logic.
-3. Security by default. Least privilege, deny-by-default authorization, row-level controls, audit history, secure secrets handling, rate limits, validation, and immutable financial/event records where appropriate.
-4. Web-first PWA. The first client is responsive and installable on phones, tablets, laptops, and desktops; native apps can be added later without replacing the backend.
-5. Role-specific experiences. Campers, front desk, maintenance, retail, foremen, managers, accounting, and owners see tailored workflows.
-6. Offline-tolerant field work. Maintenance and inspections are designed to support queued/offline work later.
-7. Provider abstraction. Payment, email, SMS, maps, accounting, and storage integrations use adapters so iCamp is not unnecessarily locked to one vendor.
-8. Auditability. Every privileged change should be attributable to a user, time, reason, and before/after state where practical.
-9. Multi-campground ready. Initial deployment can serve one campground, while IDs and authorization boundaries support future multiple properties.
-10. Accessible and responsive. Keyboard, screen reader, touch, large text, contrast, and mobile workflows are first-class requirements.
+iCamp is a web-first, mobile-capable campground operating platform. One authoritative backend powers public booking, campground mapping, cottage rentals, front desk, access/security, maintenance, guest services, store/POS, events, local discovery, waterfront operations, rentals, workforce, vendors, finance, reporting and management.
 
-## 3. Proposed development stack
-### Application
-- TypeScript
-- React/Next.js-style full-stack web architecture
-- Progressive Web App support
-- Responsive component system
-- Automated unit, integration, API, permission, and browser tests
+The current repository/application work before the roadmap reset is considered the **Pre-Implementation Engineering Baseline**. The active product roadmap restarts at Build 001.
 
-### Data and identity
-- PostgreSQL as the authoritative database
-- Supabase is the preferred initial managed development platform for PostgreSQL, Auth, Storage, Realtime, and server-side functions where appropriate.
-- Row Level Security for tenant/property/user data boundaries.
-- Application-layer permission checks in addition to database policies for privileged actions.
+## 2. Core architectural principles
+
+1. **One canonical data model.** Do not duplicate the campground between booking, maintenance, security, POS or management.
+2. **Server-authoritative high-risk decisions.** Availability, holds, price, payment status, permissions, access credentials, gate commands, inventory and finance are never trusted to browser-only logic.
+3. **Deny by default.** Every protected action requires explicit authorization.
+4. **Defense in depth.** Application authorization and database row/data policies both protect sensitive records.
+5. **Audit privileged actions.** Money, access control, permissions, closures, map publication and safety enforcement require traceability.
+6. **Web-first PWA.** One responsive codebase serves phones, tablets and computers before native clients are considered.
+7. **Provider adapters.** Payment, email, SMS, storage, maps, accounting and gate/security hardware remain replaceable.
+8. **Image-space campground mapping.** The overhead plan is not dependent on geographic tile providers.
+9. **Event/history orientation.** Financial, access, audit, maintenance and inventory history should be appended as events/movements instead of silently overwritten.
+10. **Multi-campground ready.** Organization/property boundaries are present from the beginning.
+11. **Accessibility and degraded connectivity are design requirements.**
+12. **Safety boundary.** iCamp records policies, evidence and staff actions; it does not replace certified safety systems, emergency services, trained lifeguards or legally required physical controls.
+
+## 3. Proposed technology foundation
+
+### Client/application
+- TypeScript.
+- React/Next.js full-stack web application.
+- Progressive Web App support.
+- Responsive layouts.
+- Server Components/server routes where appropriate.
+- Role-specific workspaces.
+- Automated unit, integration, permission and browser tests.
+
+### Data/identity
+- PostgreSQL as authoritative database.
+- Supabase preferred initially for managed PostgreSQL/Auth/Storage/Realtime where practical.
+- Row Level Security/data boundary policies.
+- Application-layer permission middleware for protected actions.
+- Versioned database migrations.
 
 ### Deployment
-- GitHub repository: RosevearCreations/iCamp
-- main = production
-- dev = integration/staging
-- feature/build branches may be used for risky work
-- Initial hosting should use a free/low-cost developer tier where practical.
+- GitHub: `RosevearCreations/iCamp`.
+- `main` = production/release.
+- `dev` = integration/staging.
+- Build/feature branches when useful.
 - Hosting provider remains replaceable.
 
-### Campground map engine
-The overhead campground image is treated as a managed plan rather than being dependent on paid geographic map tiles.
-- Upload an overhead/drone/site-plan image.
-- Store polygons using normalized image coordinates so overlays remain accurate at different screen sizes.
-- SVG/canvas rendering for editable polygons, labels, hit-testing, colour overlays, opacity, selection, and status.
-- Polygon editor supports irregular shapes, add/move/delete vertices, close shape, duplicate, lock, hide, reorder, and undo/redo.
-- Optional geospatial coordinates can later connect the plan to MapLibre or other GIS data.
+### Storage
+Media/document storage distinguishes:
+- public;
+- internal;
+- confidential;
+- highly restricted.
 
-### Payments
-- Payment provider adapter.
-- Stripe test mode is the preferred first integration because it provides a complete sandbox/test workflow.
-- Card data must never be stored by iCamp.
-- Webhooks are verified server-side and made idempotent.
+Private media is served with signed/authorized access rather than public permanent URLs.
 
-### Notifications
-Provider adapters for:
-- Email
-- SMS
-- Push/in-app notifications
-No guest or staff contact channel is hard-coded to one vendor.
+## 4. Campground map and coordinate architecture
 
-## 4. Core domain model
-### Organization and property
+### 4.1 Base image
+A campground map version contains:
+- original image dimensions;
+- processed/display variants;
+- orientation;
+- version;
+- publication state;
+- map calibration metadata where applicable.
+
+### 4.2 Polygon coordinate system
+All clickable geometry is stored relative to the **original image coordinate space**, preferably normalized:
+
+- `xNormalized = originalX / originalWidth`
+- `yNormalized = originalY / originalHeight`
+
+Each point therefore remains in the range 0..1.
+
+The browser never stores polygon geometry in current screen pixels.
+
+### 4.3 Rendering and zoom
+At render time:
+
+- `screenX = viewportOriginX + xNormalized * renderedImageWidth * zoomScale`
+- `screenY = viewportOriginY + yNormalized * renderedImageHeight * zoomScale`
+
+The rendering system applies the same transform matrix to:
+- the image;
+- polygon shapes;
+- labels/icons;
+- hit-testing;
+- edit handles.
+
+This prevents clickable areas drifting away from sites while zooming, panning or changing devices.
+
+### 4.4 Precision
+The plotter should use SVG or a canvas/vector layer with:
+- pointer coordinate inversion through the active transform matrix;
+- high-DPI awareness;
+- zoom-independent selection tolerance;
+- editable vertices;
+- undo/redo;
+- polygon validation;
+- optional snapping/precision aids;
+- test fixtures proving geometry alignment at multiple zoom factors and aspect ratios.
+
+### 4.5 Map objects
+A map object is a visual representation of a canonical domain entity, such as:
+- campsite;
+- rental cottage;
+- permanent unit;
+- pool;
+- washroom;
+- water park;
+- sports field;
+- dock;
+- boat ramp;
+- building;
+- amenity;
+- access gate;
+- garbage area;
+- utility;
+- road;
+- parking;
+- restricted zone.
+
+Map objects can belong to layers with separate public/staff visibility.
+
+## 5. Core domain model
+
+### Organization/property
 - organizations
 - campgrounds
 - campground_sections
 - campground_subsections
 - campground_settings
+- feature_flags
 
-### Map and physical assets
+### Map
 - map_images
+- map_image_versions
 - map_layers
 - map_objects
-- map_polygons
-- polygon_vertices or JSON geometry
-- site_assets
-- utility_assets
-- amenity_assets
+- map_geometries
+- map_labels
+- map_publication_events
 
-### Campsites and availability
-- sites
+### Accommodation inventory
+- accommodations
+- campsites
+- rental_cottages
+- permanent_units
+- accommodation_types
 - site_types
-- site_features
-- site_amenities
-- site_restrictions
-- site_status
-- site_status_history
-- closures
-- management_holds
+- accommodation_features
+- utilities
+- amenity_links
+- restrictions
+- accommodation_status
+- accommodation_status_history
 
-### Booking
+A generic `accommodations` parent lets campsites and rental cottages participate in the same booking engine while retaining type-specific detail.
+
+### Accommodation media
+- accommodation_media
+- media_variants
+- media_captions
+
+Customer-facing gallery rules:
+- maximum 10 active public gallery images per accommodation;
+- ordered hero/gallery positions;
+- internal maintenance media does not count toward the public 10-image limit.
+
+### Availability/booking
 - availability_rules
 - rate_plans
 - rate_rules
 - reservation_holds
 - reservations
 - reservation_guests
-- reservation_vehicles
 - reservation_pets
 - reservation_addons
 - reservation_events
 - checkins
 - checkouts
+- closures
+- management_holds
+
+### Cottage-specific stay operations
+- cottage_housekeeping_templates
+- cottage_turnovers
+- cottage_damage_inspections
+- cottage_inventory_checklists
 
 ### Guests
 - guest_profiles
@@ -107,6 +196,46 @@ No guest or staff contact channel is hard-coded to one vendor.
 - guest_documents
 - guest_reviews
 - guest_messages
+- marketing_preferences
+
+### Road vehicles
+- road_vehicles
+- vehicle_registrations
+- vehicle_passes
+- parking_authorizations
+
+### Visitors/access
+- visitor_registrations
+- visitor_hosts
+- visitor_vehicles
+- access_credentials
+- access_credential_events
+- access_zones
+- access_rules
+
+### Physical security
+- access_devices
+- gates
+- doors_barriers
+- access_device_health
+- gate_state_events
+- access_attempts
+- manual_access_commands
+- security_incidents
+
+### Recreational/mobility devices
+- registered_devices
+- device_types
+- device_inspections
+- device_authorizations
+- authorized_drivers
+
+### Operational assets
+- operational_assets
+- asset_types
+- asset_status
+- asset_status_history
+- asset_rules
 
 ### Maintenance
 - maintenance_categories
@@ -114,293 +243,55 @@ No guest or staff contact channel is hard-coded to one vendor.
 - work_orders
 - work_order_assignments
 - work_order_events
-- inspections
-- inspection_templates
-- inspection_results
 - maintenance_media
-- preventive_maintenance
+- maintenance_material_usage
+- maintenance_labour
+- preventive_maintenance_templates
+- recurring_maintenance_schedules
+- generated_maintenance_occurrences
 
-### Staff and authorization
-- staff_profiles
-- roles
-- permissions
-- role_permissions
-- staff_role_assignments
-- campground_staff_assignments
-- shifts
-- time_entries
-- audit_events
+### Inspections
+- inspection_templates
+- inspection_template_versions
+- inspection_occurrences
+- inspection_results
+- inspection_signoffs
+- corrective_actions
 
-### Store/POS
-- products
-- product_categories
-- suppliers
-- inventory_locations
-- inventory_balances
-- inventory_movements
-- pos_orders
-- order_lines
-- deliveries
-- pickups
-- cash_sessions
+### Garbage/waste
+- waste_service_models
+- waste_streams
+- garbage_sticker_products
+- garbage_sticker_instances
+- garbage_pickup_requests
+- garbage_pickup_routes
+- garbage_pickup_events
 
-### Rentals and events
-- rental_assets
-- rental_inventory
-- rental_bookings
-- rental_inspections
-- event_spaces
-- event_bookings
+### Seasonal/yearly
+- seasonal_assignments
+- winterization_templates
+- winterization_records
+- winter_readiness_records
+- reopening_records
 
-### Finance
-- payments
-- refunds
-- deposits
-- charges
-- taxes
-- expenses
-- vendors
-- contracts
-- recurring_services
-- invoices
-- ledger_entries
-- financial_categories
-
-### Communications
-- notifications
-- notification_templates
-- camper_assistance_requests
-- incident_events
-- announcements
-
-## 5. Availability and hold architecture
-Availability must be calculated on the server from:
-- confirmed reservations
-- active temporary holds
-- management closures
-- maintenance closures
-- seasonal/yearly assignments
-- minimum/maximum stay rules
-- site compatibility
-- date and section rules
-
-Temporary holds are database records with an expiration timestamp.
-Creating a hold must be atomic. Two users must not be able to obtain valid overlapping holds for the same inventory.
-Expired holds become invalid automatically and are ignored/reaped safely.
-Checkout revalidates the hold before creating the reservation.
-
-## 6. Map status model
-Default visual states:
-- available: translucent green
-- occupied: muted/greyed
-- maintenance: translucent yellow
-- closed: translucent red
-
-Additional states can include reserved, arriving today, departing today, inspection required, seasonal, walk-in, management hold, emergency closure, and weather closure.
-
-The map presentation is derived from authoritative operational state rather than manually painted colours.
-
-## 7. Security architecture
-### Authentication
-- Secure hosted authentication with verified email where required.
-- MFA available for management and privileged roles.
-- Password reset and account recovery flows.
-- Session expiration and revocation.
-- No credentials stored in repository.
-
-### Authorization
-- Deny by default.
-- Least privilege.
-- Permission-based authorization rather than title-only authorization.
-- Server-side checks on every protected mutation.
-- RLS/data policies at the database boundary.
-- Property/campground boundary on every protected record.
-- No client-supplied role or price is trusted.
-
-### Sensitive actions
-Require additional protections for:
-- role and permission changes
-- refunds
-- large discounts
-- manual payment changes
-- financial exports
-- deletion/anonymization
-- campground-wide closures
-- emergency notifications
-- map publication
-- vendor contract changes
-
-### Application security
-- CSRF protections where applicable
-- secure cookies
-- strict CORS
-- Content Security Policy
-- output encoding/XSS prevention
-- parameterized SQL/query builder
-- file type/size validation
-- malware-aware upload strategy
-- signed/private media URLs for sensitive material
-- rate limiting and abuse protection
-- webhook signature verification
-- idempotency for payment/order/reservation operations
-- secrets only in deployment secret stores
-- dependency scanning
-- code scanning
-- audit logging
-
-### Privacy
-Collect the minimum guest/staff information needed for campground operations.
-Define retention rules for identity records, payment references, incident media, employee records, and logs.
-Sensitive health/emergency information should not be collected unless operationally necessary.
-
-## 8. Financial integrity
-- Money values stored in integer minor units where practical.
-- Taxes and fees computed on server.
-- Immutable or append-only financial event records preferred over destructive edits.
-- Refunds reference original payment.
-- Reconciliation reports identify mismatches between reservations, POS, payments, deposits, refunds, and ledger entries.
-- Payment webhooks are deduplicated/idempotent.
-- PCI-sensitive card data remains with payment processor.
-
-## 9. Store/POS integrity
-- Inventory changes are movements, not silent quantity overwrites.
-- Sales, returns, waste, receipts, transfers, adjustments, and deliveries create traceable inventory movements.
-- Delivery can be toggled globally and by schedule.
-- Campsite delivery orders must link to an active stay or explicitly approved destination.
-- POS permissions distinguish cashier, manager, refund, discount, and cash-session functions.
-
-## 10. Maintenance architecture
-Work orders have:
-- location/site
-- category
-- severity/priority
-- reporter
-- assignee/team
-- status
-- timestamps
-- notes
-- media
-- materials
-- labour/time
-- completion evidence
-- inspection/approval
-
-Checkout can automatically create an inspection/cleanup order. A site can remain unavailable until required inspection gates pass.
-
-## 11. Camper assistance
-The guest portal can create assistance requests linked to the active reservation/site.
-Severity is guided, but management can reclassify it.
-Emergency UI must clearly direct life-threatening emergencies to appropriate emergency services rather than implying iCamp replaces emergency response.
-
-## 12. Offline and synchronization
-Later field/offline support uses:
-- locally cached assigned tasks
-- queued changes with client-generated operation IDs
-- server reconciliation
-- conflict detection
-- media upload retry
-- explicit sync state
-
-Financial and booking writes remain server-authoritative and should not be finalized offline.
-
-## 13. Observability
-Every environment should expose:
-- health checks
-- structured logs
-- error tracking
-- audit events
-- performance metrics
-- job/queue status
-- deployment version/SHA
-- database migration version
-
-## 14. Environments
-### Local/test
-Developer test data only.
-
-### dev
-Integration environment using test payment credentials and synthetic/demo data.
-
-### main/production
-Real campground data and production credentials.
-
-Production data must never be copied casually into lower environments.
-
-## 15. Promotion policy
-A build is not considered complete until:
-1. Requirements are implemented.
-2. Schema migrations are versioned.
-3. Security checks pass.
-4. Automated tests pass.
-5. Accessibility/responsive checks pass where relevant.
-6. dev deployment is healthy.
-7. Smoke tests pass.
-8. Documentation is updated.
-9. Production promotion is performed only when the build is authorized for production.
-10. Production health is verified GREEN.
-
-## 16. Manual-input policy
-The user should only be interrupted for actions that cannot be performed safely or technically through connected tools, such as:
-- accepting provider terms
-- entering payment/billing information
-- retrieving or creating secret API keys
-- domain/DNS ownership steps
-- MFA confirmation
-- uploading a real campground overhead image
-- entering real business/tax/legal information
-
-When manual action is necessary, instructions must be explicit, numbered, and tell the user exactly what to copy back without exposing secrets in chat.
-
-
-## 17. Extended operations model
-
-### Maintainable operational assets
-Amenities and operational assets are separate concepts. A pool, washroom, water park, sports field, dock, boat ramp, playground or recreation building may be publicly advertised as an amenity while simultaneously having an internal asset record with:
-- polygon/location;
-- asset type;
-- operating state;
-- inspection templates;
-- recurring maintenance schedules;
-- safety/rule set;
-- responsible department;
-- sign-off requirements;
-- condition/incident history;
-- automatic closure/work-order rules.
-
-Recurring schedules must support hourly, daily, weekly, monthly, seasonal and custom recurrence. Completion history is retained rather than overwriting the last completed task.
-
-### Seasonal/yearly lifecycle
-Long-term site assignments use a lifecycle model separate from short-stay reservations:
-- active season;
-- winterization due;
-- winterization submitted;
-- inspection required;
-- corrective work required;
-- winter closed;
-- approved winter occupancy;
-- opening inspection due;
-- reopened.
-
-The site can require evidence and maintenance/foreman sign-off before transitioning to winter closed or cold-weather approved.
-
-### Winter-readiness compliance
-Rules are configurable by campground because climate, laws and utilities differ. The system stores campground-defined requirements such as insulated/heated water protection, shutoff/draining, utility checks, photos and staff approval. Compliance records are versioned and auditable.
-
-### Permanent units and cottage-style ownership
-Land/site and permanent unit are separate entities. Proposed additional domain entities:
-- permanent_units
+### Permanent-unit ownership/transfer
 - permanent_unit_ownership
 - permanent_unit_listings
-- permanent_unit_transfer_applications
-- permanent_unit_inspections
+- transfer_inquiries
+- transfer_applications
+- transfer_inspections
+- transfer_documents
+- transfer_events
+
+### Financing
 - financing_applications
+- financing_documents
+- financing_status_events
 - financing_provider_references
 
-A unit can change ownership while the underlying site remains unchanged. Financing is isolated behind a high-risk provider/workflow boundary and must never be assumed to be an ordinary iCamp credit feature.
+Financing data is isolated as confidential/high-risk.
 
-### Events and access
-Add:
-- events
+### Events
 - event_series
 - event_occurrences
 - event_venues
@@ -409,29 +300,18 @@ Add:
 - event_tickets_passes
 - event_checkins
 
-Recurring event series generate occurrences while allowing individual dates to be cancelled or altered.
+### Local interests/discovery
+- local_places
+- local_events
+- local_interest_categories
+- source_references
+- content_freshness_reviews
+- promotion_slots
+- promotion_campaigns
+- promotion_impressions
+- promotion_clicks
 
-### Visitors and access credentials
-Add:
-- visitor_registrations
-- visitor_hosts
-- visitor_vehicles
-- access_credentials
-- access_credential_events
-
-Visitor limits resolve from the most specific applicable rule: individual site -> site type -> section -> campground. Access credentials can represent wristbands, printed passes, QR codes or future electronic keys.
-
-### Recreational/personal mobility registration
-Add:
-- registered_devices_vehicles
-- device_vehicle_inspections
-- device_vehicle_authorizations
-- authorized_drivers
-
-This is distinct from ordinary road vehicles on a reservation because campground-operating permissions and safety checks can differ.
-
-### Waterfront operations
-Add:
+### Waterfront
 - water_features
 - swimming_zones
 - boat_registrations
@@ -441,18 +321,490 @@ Add:
 - dock_slips
 - dock_assignments
 
-Access policy can require an active campsite or can explicitly allow paid day-use guests.
+### Rentals
+- rental_assets
+- rental_inventory
+- rental_bookings
+- rental_inspections
+- rental_damage_events
 
-### Rule sets and enforcement
-Rules must be versioned records, not hard-coded text. Add:
+### Rules/safety
 - rule_sets
 - rule_versions
 - rule_acknowledgements
 - safety_warnings
 - access_suspensions
-- incident_enforcements
+- incident_events
+- enforcement_events
 
-A guest acknowledgement points to the exact rule version agreed to. Staff enforcement actions require permission and audit history.
+### Store/POS
+- products
+- product_categories
+- suppliers
+- inventory_locations
+- inventory_movements
+- inventory_balances
+- pos_orders
+- order_lines
+- deliveries
+- pickups
+- cash_sessions
+- discounts
+- returns
 
-### Safety boundary
-iCamp records campground policies, inspection evidence, staff decisions and acknowledgements. It must not present campground-configured checklists as a substitute for applicable law, certified inspections, lifeguard training, marine rules or other statutory safety obligations.
+### Staff/workforce
+- staff_profiles
+- departments
+- roles
+- permissions
+- role_permissions
+- staff_role_assignments
+- campground_staff_assignments
+- shifts
+- time_entries
+- qualifications
+- training_records
+
+### Vendors/services
+- vendors
+- contracts
+- recurring_services
+- vendor_service_occurrences
+- vendor_documents
+- supplier_invoices
+
+### Finance
+- payments
+- refunds
+- deposits
+- charges
+- taxes
+- expenses
+- invoices
+- ledger_entries
+- financial_categories
+- reconciliation_items
+
+### Communications
+- notifications
+- notification_templates
+- announcements
+- camper_assistance_requests
+- message_delivery_events
+
+### Audit/observability
+- audit_events
+- system_events
+- integration_events
+
+## 6. Availability and hold engine
+
+Availability is calculated server-side from:
+- confirmed reservations;
+- active unexpired holds;
+- closures;
+- maintenance/inspection blocks;
+- management holds;
+- seasonal/yearly assignments;
+- cottage turnover blocks;
+- accommodation compatibility;
+- capacity;
+- date/rate rules.
+
+Temporary holds have:
+- accommodation;
+- date/time range;
+- owner/session/customer;
+- created time;
+- expiry;
+- state;
+- idempotency key.
+
+Overlapping hold acquisition must be atomic. Checkout revalidates before reservation creation.
+
+## 7. Accommodation type compatibility
+
+Compatibility resolves configurable rules for:
+- tent/RV/cottage;
+- equipment length;
+- hookup requirements;
+- occupancy;
+- pets;
+- vehicles;
+- accessibility;
+- required amenities;
+- seasonal/yearly restrictions.
+
+A rental cottage never inherits RV-specific requirements unless explicitly configured.
+
+## 8. Security/access-control architecture
+
+### 8.1 Credential model
+Access credentials may represent:
+- key card;
+- RFID/fob;
+- keypad PIN;
+- QR pass;
+- printed/wristband token;
+- provider-specific credential identifier.
+
+The system stores references/tokens appropriate to the provider; it should avoid storing reusable sensitive credential secrets in plaintext.
+
+### 8.2 Gate integration
+Gate/access providers implement an adapter interface:
+- read state if supported;
+- issue open command;
+- issue close command if hardware safely supports it;
+- provision/revoke credentials;
+- receive access event webhook/poll data;
+- report device health.
+
+The public/browser client never communicates directly with access hardware.
+
+### 8.3 Manual override
+Manual open/close:
+- requires explicit permission;
+- requires a reason for sensitive overrides;
+- creates an audit event;
+- records target device, actor, command, request time, provider response and outcome;
+- is rate limited;
+- may require recent re-authentication for high-risk installations.
+
+### 8.4 Fail-safe boundary
+iCamp must not defeat:
+- fire/life-safety egress;
+- physical emergency releases;
+- legally required manual controls;
+- hardware safety interlocks.
+
+If iCamp is offline, required physical security/emergency controls remain independently operable.
+
+## 9. Road vehicle access architecture
+
+Every road vehicle present on property can be associated with:
+- active accommodation;
+- seasonal/yearly site;
+- registered visitor;
+- staff/contractor;
+- day/week pass.
+
+The access engine can evaluate:
+- validity;
+- date/time;
+- campground/zone;
+- vehicle limits;
+- unpaid/revoked pass;
+- management override.
+
+Vehicle records should minimize personal information while retaining what is operationally required.
+
+## 10. Maintenance scheduling engine
+
+Recurring schedules support:
+- hourly;
+- every N hours;
+- daily;
+- weekdays;
+- weekly;
+- monthly;
+- season/start-end window;
+- custom recurrence.
+
+The schedule creates discrete **maintenance/inspection occurrences**. Completion never overwrites prior history.
+
+Examples:
+- hourly supervised-area inspection;
+- washroom cleaning every 4 hours;
+- daily garbage station check;
+- weekly ball field inspection;
+- seasonal pool opening/closing;
+- yearly winterization.
+
+Missed/failed occurrences can:
+- escalate;
+- notify;
+- create corrective work;
+- close/restrict the asset.
+
+## 11. Garbage/waste architecture
+
+Campground configuration chooses one or several waste models:
+- central bin;
+- included site collection;
+- scheduled collection;
+- on-demand paid pickup;
+- paid sticker/tag/bag.
+
+Sticker/tag handling:
+- can be a POS product;
+- can have unique serial/QR/barcode;
+- can be linked to purchaser/site;
+- can be marked issued/redeemed/void;
+- can create pickup work;
+- contributes to inventory and revenue records.
+
+## 12. Cottage booking architecture
+
+Rental cottages are first-class accommodations using:
+- same atomic hold engine;
+- same reservation/payment engine;
+- cottage-specific rate/occupancy/features;
+- housekeeping/turnover state;
+- damage/security deposit;
+- cottage inventory/condition check.
+
+The booking map can visually distinguish cottages but does not require a separate reservation database.
+
+## 13. Local-interest promotion architecture
+
+Local places/events are curated records, not blindly injected external search results.
+
+Each external/time-sensitive record stores:
+- source URL/reference;
+- retrieved/entered date;
+- event start/end if applicable;
+- freshness/review deadline;
+- publication status.
+
+Promotion logic can consider:
+- booking dates;
+- family/pet/accessibility tags;
+- season;
+- campground section;
+- customer marketing preferences;
+- configured campaign placement.
+
+Placements include:
+- booking confirmation;
+- pre-arrival;
+- My Stay;
+- event/activities page;
+- announcements.
+
+Expired local events are automatically excluded until reviewed.
+
+## 14. Financial integrity
+
+- Money stored in integer minor units where practical.
+- Tax/fees computed server-side.
+- Payments/refunds reference immutable provider IDs.
+- Webhooks verified and idempotent.
+- Financial corrections create adjustment entries rather than deleting history.
+- Financing records are segregated from ordinary reservation payments.
+
+## 15. Store/inventory integrity
+
+Inventory quantity is derived from traceable movements:
+- receipt;
+- sale;
+- return;
+- waste;
+- adjustment;
+- transfer;
+- redemption where relevant.
+
+Garbage stickers/tags can use either quantity inventory or individually serialized inventory.
+
+## 16. Rule/version model
+
+Safety, access and campground rules are versioned.
+
+Acknowledgement records point to the exact rule version viewed/accepted.
+
+Updating rules never changes historical acknowledgement evidence.
+
+## 17. Offline policy
+
+Safe offline functions may later include:
+- assigned work orders;
+- inspections;
+- notes/photos;
+- site information.
+
+The following do **not** finalize offline:
+- reservation holds;
+- reservations;
+- payments/refunds;
+- role changes;
+- gate open/close commands;
+- credential provisioning;
+- financing decisions.
+
+## 18. Security baseline
+
+- MFA readiness for privileged staff.
+- secure sessions/cookies;
+- server authorization;
+- RLS/data policies;
+- strict validation;
+- CSRF protections where applicable;
+- CSP;
+- CORS restrictions;
+- XSS prevention/output encoding;
+- parameterized data access;
+- rate limiting;
+- abuse detection;
+- upload limits/type validation;
+- signed private media;
+- webhook verification;
+- idempotency;
+- dependency/secret scanning;
+- environment isolation;
+- audit logging.
+
+## 19. Observability
+
+Every environment should expose:
+- application/version SHA;
+- health status;
+- migration version;
+- structured logs;
+- error tracking;
+- integration health;
+- queue/scheduler health;
+- access-device health where connected.
+
+## 20. Environments
+
+### Local/test
+Synthetic data only.
+
+### dev
+Integration/staging, test payments and demo campground data.
+
+### main/production
+Real campground data and production credentials.
+
+Production personal/financial/security data must not be casually copied into dev.
+
+## 21. Promotion gate
+
+A build is GREEN only after applicable:
+- requirements;
+- schema/migrations;
+- authorization/RLS;
+- audit behavior;
+- tests;
+- accessibility/responsive checks;
+- security checks;
+- integration checks;
+- dev health;
+- documentation;
+- rollback review;
+- production verification.
+
+## 22. Manual-input policy
+
+Manual steps are reserved for actions that cannot safely be automated through connected tools, such as:
+- provider terms/billing;
+- production secret creation;
+- MFA;
+- domain/DNS;
+- real campground image/media;
+- legal/tax/business data;
+- physical access-controller enrollment;
+- telephone/SMS number purchase, registration or regulatory verification required by the chosen provider;
+- real financing/provider agreements.
+
+When manual input becomes necessary, provide exact numbered instructions. Secrets are entered directly into the provider secret store and are not pasted into chat.
+
+
+## 23. Omnichannel Voice, DTMF and SMS Architecture
+
+### 23.1 Channel principle
+Web/PWA, IVR/DTMF, speech and SMS are channels over the same application/domain services. Channel handlers do not implement separate booking, pricing, maintenance, access or finance rules.
+
+### 23.2 Telephony provider adapter
+Use a replaceable telephony adapter capable of:
+- inbound/outbound voice calls;
+- DTMF digit gathering;
+- optional speech input;
+- inbound/outbound SMS and, where available, MMS;
+- delivery/call status callbacks;
+- number/provider health information;
+- verified signed webhooks.
+
+A provider such as Twilio can support DTMF/speech collection, but the domain layer must not depend on Twilio-specific objects.
+
+### 23.3 Proposed communications domain
+Add:
+- communication_endpoints
+- communication_consents
+- communication_preferences
+- voice_calls
+- voice_call_events
+- ivr_sessions
+- ivr_steps
+- ivr_inputs
+- sms_conversations
+- sms_messages
+- sms_commands
+- message_opt_events
+- call_transfer_events
+- communication_provider_events
+
+### 23.4 IVR session state
+IVR menus are state machines linked to a short-lived server session. A session can carry only the minimum context needed, such as:
+- campground;
+- language;
+- authenticated guest/staff identity;
+- reservation/site reference;
+- pending operation;
+- retry count;
+- expiry.
+
+Digits are interpreted server-side and validated before domain commands are executed.
+
+### 23.5 SMS command/conversation model
+Inbound SMS can be handled as:
+- exact keywords;
+- guided numbered menus;
+- structured commands;
+- natural-language classification.
+
+Natural-language interpretation never directly mutates data. It produces a proposed structured intent, then normal domain validation/authorization executes the action.
+
+### 23.6 Channel parity contract
+Each product build must declare a **channel support matrix**:
+- Web/PWA: full, partial, not applicable.
+- IVR/DTMF: full, guided equivalent, staff transfer, not applicable.
+- SMS: full, guided equivalent, secure-link handoff, not applicable.
+
+A channel may be marked not applicable only when the task is inherently graphical or unsafe for that channel, such as polygon drawing.
+
+### 23.7 Identity and authentication
+Caller ID/phone number is only a routing hint, not proof of identity.
+
+Guest verification may combine:
+- reservation number;
+- date/site detail;
+- short-lived one-time code;
+- account PIN where appropriately protected.
+
+Staff/high-risk verification requires stronger authentication, such as staff PIN plus a separate one-time factor or approved authenticated session.
+
+### 23.8 Telephone payments
+Do not collect raw payment-card numbers in custom IVR logic or SMS.
+
+Telephone flows use:
+- provider-hosted secure payment link;
+- staff-assisted tokenized provider workflow;
+- or a separately approved PCI-compliant IVR payment provider.
+
+### 23.9 Telephony webhooks
+Voice/SMS callbacks must:
+- verify provider signatures;
+- reject replay where supported;
+- be idempotent;
+- rate limit abuse;
+- normalize provider data into internal events;
+- avoid logging message content/DTMF secrets unnecessarily.
+
+### 23.10 Consent and messaging separation
+Store operational-message and marketing-message purposes separately. Promotional SMS requires jurisdiction-appropriate consent, sender identification and unsubscribe handling. STOP/START/HELP-style events from a provider should update the internal preference/consent history.
+
+### 23.11 Reliability
+Telephony provider failure must not corrupt reservations or payments. Calls/SMS may retry or transfer to staff, while completed domain actions remain idempotent and auditable.
+
+### 23.12 Visual-task fallback
+Graphical functions such as polygon plotting remain web/PWA tasks. Telephone/SMS offers operational equivalents using site/asset IDs and can send secure links to the relevant visual page.

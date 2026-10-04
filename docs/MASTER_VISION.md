@@ -1,297 +1,645 @@
 # iCamp Master Vision — iCamp2027
 
-## Purpose
-iCamp is a complete campground operating system for mobile phones, tablets, PCs, laptops and web/PWA use. It combines the public camper experience with internal front-desk, maintenance, retail, workforce, financial and management operations.
-
-## Core experience
-A real overhead image, drone image, aerial image, site plan or campground illustration becomes the visual center of the system. Management can draw irregular multi-point polygons directly over that image and bind each polygon to a real campground object such as a campsite, cabin, washroom, event area, dock, road, utility, store, playground or maintenance asset.
-
-The same authoritative campground model powers booking, maintenance and management instead of maintaining disconnected copies.
-
-## Interactive campground map
-Management can upload and version overhead images. Authorized users can create polygons by clicking points and closing the shape. The editor must support adding, moving and deleting vertices; moving, duplicating, locking, hiding and archiving polygons; labels/icons; opacity; undo/redo; map layers; and different permissions for public and internal data.
-
-Default campsite state presentation:
-- available — translucent green
-- occupied/unavailable — muted or greyed
-- maintenance required — translucent yellow
-- closed — translucent red
-
-Additional states may include reserved, arriving today, departing today, inspection required, seasonal, walk-in, management hold, weather closure and emergency closure.
-
-## Campsite and area records
-Each bookable or operational area can store identification, section/subsection, type, dimensions, RV/trailer limits, parking, pull-through/back-in configuration, surface, shade, utilities, electrical amperage, water, sewer/septic, Wi-Fi, fire pit, picnic table, accessibility, waterfront/swimming access, pet/vehicle/guest limits, generator/fire/quiet-hour restrictions, photographs and internal notes.
-
-## Public booking
-Guests choose arrival/departure dates, party size, pets, equipment type and size, required hookups and amenities. iCamp returns genuinely live compatible inventory.
-
-Availability is server-authoritative. A site cannot be double-booked.
-
-Selecting a site creates a configurable temporary hold, such as 5–20 minutes. Other users cannot acquire an overlapping valid hold. The guest sees a countdown. Successful checkout converts the hold to a reservation; expiry releases it.
-
-Booking rules can apply campground-wide, by section, by site, by date/season/event and by customer/inventory class. Rules include minimum/maximum stays, weekend/holiday minimums, advance windows, same-day policies and check-in/check-out times.
-
-Pricing supports nightly, weekly, monthly, seasonal and yearly rates; peak/off-season, weekend, holiday and event rates; promotions; and charges for additional people, pets, vehicles, Wi-Fi, utilities, services, rentals and other add-ons.
-
-## Deposits and payments
-Management can configure full payment, fixed or percentage deposit, security deposit and future balance rules. Payment processing is integrated through a replaceable provider adapter. iCamp never stores raw card data.
-
-Reservations support creation, modification, moves, extensions, shortening, cancellations, upgrades, add-ons, discounts, refunds and complete history.
-
-## Front desk
-Check-in can verify payment, guests, vehicles/licence plates, pets, rules and access information and can add store/rental items. Check-out settles outstanding items, handles deposits/rentals and marks departure.
-
-A departure can automatically create a cleanup/inspection task and place the site into maintenance/inspection state until required checks pass.
-
-## Maintenance
-Maintenance uses the same campground map with an operations-focused layer.
-
-Work categories may include garbage, fire-pit cleanup, site cleanup, washroom/shower cleaning, septic, water, electrical, damaged tables/fire pits, trees, roads, landscaping, pests, plumbing, Wi-Fi, buildings, rental equipment and emergencies.
-
-Priorities include Emergency, Urgent, Normal and Preventive and remain configurable.
-
-Roles may include maintenance employee, senior employee, crew leader, foreman, main foreman, operations manager, general manager and owner/admin.
-
-Work orders track location, category, priority, reporter, assignment, timestamps, media, materials, labour, status, completion notes/evidence and inspection.
-
-Preventive and recurring maintenance are supported.
-
-## Camper assistance
-A camper can open iCamp from a website/PWA/QR code and submit assistance linked to the active stay/site. Categories can include maintenance, garbage, septic, electrical, water, Wi-Fi, noise, security, store delivery, rental assistance and other.
-
-The camper can provide severity, description, media and preferred contact method. Foremen/management can reclassify, assign, escalate, contact the guest and close the issue.
-
-Life-threatening emergencies must be clearly routed toward official emergency services; iCamp must not represent itself as a replacement for them.
-
-## Sections and inventory models
-Campgrounds can contain multiple sections and subsections with their own rates, rules, staff, amenities and restrictions.
-
-Inventory may be nightly/weekly reservable, seasonal, yearly, long-term, walk-in only, overflow, staff/owner use or temporarily blocked.
-
-Management can block a site, multiple sites, a section, amenity, facility, rental item, event space, single date or date range for maintenance, weather, construction, private use, emergency or other reasons.
-
-## Amenities, rentals and events
-Amenities can include pools, lakes, beaches, playgrounds, laundry, washrooms/showers, Wi-Fi, fishing, trails, boat launches, dog parks, stores, restaurants and recreation areas with photos, hours, rules, fees, location and status.
-
-Rental inventory can include pedal boats, canoes, kayaks, paddleboards, bicycles, golf carts, fishing equipment, life jackets, BBQs and games. Rentals support quantity/assets, hourly/daily rates, deposits, availability, agreements, condition checks and maintenance.
-
-Event/facility rentals can include halls, pavilions, shelters, fire pits, meeting rooms, fields, wedding areas and group campsites.
-
-## Campground store and POS
-iCamp includes a campground store with products such as firewood, charcoal, ice, drinks, snacks, food, toiletries, camping supplies, bug spray, sunscreen, propane, batteries, souvenirs, clothing and fishing supplies.
-
-The POS supports scanning/search, cart, cash/card, campsite-account charges, receipts, refunds, cash sessions and staff permissions.
-
-Inventory tracks products, categories, suppliers, purchase/sell price, quantity, reorder levels, receipts, damage/waste, expiry, barcodes/SKUs and margins.
-
-Campers can order online from their site, choose pickup or site delivery and pay online or use an authorized campsite account.
-
-Delivery can be turned on/off and limited by schedule.
-
-## Management and business operations
-Management must have complete control over campground configuration and appropriate administrative override capabilities, with sensitive actions audited.
-
-Revenue tracking includes campsites, seasonal sites, cabins, events, rentals, store sales, firewood, propane, Wi-Fi, visitor fees, parking, laundry and services.
-
-Expenses include payroll, utilities, internet, garbage, septic, insurance, property tax, fuel, maintenance, supplies, retail inventory, contractors, repairs, equipment, marketing, banking/payment fees and other categories.
-
-Vendor/contract management covers garbage collection, septic, ISP, propane, firewood, pest control, electricians, plumbers and other providers, including contact details, contracts, dates, rates, service schedules, invoices and documents.
-
-Recurring services such as garbage pickup can be scheduled and tracked with reminders, completion and costs.
-
-## Personnel and roles
-The system supports owners, administrators, general managers, campground managers, assistants, foremen, maintenance, grounds, cleaning, store, reservation/front desk, security, accounting and contractors.
-
-Authorization is permission-based rather than solely title-based. Permissions can independently control booking changes, refunds, rates, map editing, maintenance assignment, inventory, reporting, finance, user administration and other functions.
-
-Employee scheduling, mobile schedule viewing, timekeeping, breaks, overtime and labour allocation are included in the roadmap.
-
-## Accounting and reporting
-iCamp tracks sales, deposits, payments, refunds, taxes, expenses, vendors, accounts payable, revenue/cost categories and traceable ledger events, with export/integration capability for external accounting systems.
-
-Reports include daily/weekly/monthly/annual revenue, expenses, gross/net profit, occupancy, revenue per site/guest and profitability of store/rentals.
-
-Management dashboard answers what is happening now: occupancy, arrivals/departures, inspections, urgent maintenance, store deliveries, active rentals, revenue and overdue items.
-
-## Guest account and portal
-Optional guest accounts can contain contact information, stays, vehicles, RVs, pets, receipts, rentals, orders and favorite sites.
-
-During a stay, My Stay provides the site, dates, map, rules, Wi-Fi, store, rentals, events, assistance, payments/receipts and extend-stay functions.
-
-Verified guests can review the campground, site, cabin, rental, event or amenity, subject to moderation.
-
-## Communications
-Email, SMS, push and in-app channels are provider-adapted. Use cases include confirmations, receipts, arrival/checkout reminders, work assignments, store orders, emergencies, weather/operating advisories and announcements.
-
-Management can target an entire campground, section, site or staff audience, with strong controls on emergency broadcasts.
-
-## Audit, search, documents and media
-Privileged actions log actor, action, timestamp and before/after state where practical.
-
-Global search can cover guest, reservation, site, phone/email, licence plate, work order, employee, product, rental and payment while respecting permissions.
-
-Document storage supports contracts, insurance, safety materials, vendor agreements, employee files, rental agreements, rules and inspections.
-
-Media storage supports site/product photos and private maintenance, damage, inspection and complaint evidence.
-
-## Offline field work
-Maintenance should eventually work with weak connectivity: cache assigned jobs, checklists and map/site data; capture notes/photos; queue changes; and sync with conflict handling later. Financial and booking finalization remains server-authoritative.
-
-## Multi-campground future
-Initial operation may be one campground, but architecture must support multiple campground properties/organizations without redesigning core tables.
-
-## Free/low-cost development
-Development should prioritize free or inexpensive tiers where practical while keeping providers replaceable. Suitable categories include GitHub for source control, managed PostgreSQL/Auth/Storage/Realtime such as Supabase, PWA hosting on a modern serverless platform, an open-source image/polygon engine, optional MapLibre for geographic mapping and payment-provider sandbox/test environments.
-
-## Ultimate objective
-From the management side, iCamp should answer: **What is happening in our campground right now?**
-
-From the camper side, a complex operating system should feel like a simple visual booking, stay-management, shopping, rental and assistance application.
-
-
-## Extended campground operations — permanent sites, safety, visitors, vehicles and waterfront
-
-### Operational facilities are maintainable assets
-Pools, guarded pools, water parks/splash pads, washrooms, showers, laundry buildings, recreation halls, playgrounds, baseball/softball fields, sports courts, beaches, boat launches, docks, roads, garbage areas, septic facilities and similar park features must be modeled as operational assets, not only public-facing amenities.
-
-Every applicable asset can have:
-- a location/polygon on the campground map;
-- operating/open/closed status;
-- safety rules and posted instructions;
-- maintenance categories;
-- inspection templates;
-- recurring upkeep schedules measured in hours, days, weeks, months or seasons;
-- required sign-off roles;
-- condition history and incident history;
-- photographs/documents;
-- automatic work-order generation;
-- closure until a failed inspection is resolved.
-
-Examples include hourly pool-deck checks, daily washroom cleaning, weekly sports-field inspection, scheduled water-quality/operational checks, and seasonal opening/closing procedures.
-
-### Seasonal/yearly site lifecycle and winterization
-Long-term and yearly sites require a lifecycle beyond a normal reservation.
-A site can be configured as seasonal/yearly/permanent-unit occupancy and can require a formal winter shutdown.
-
-Winterization can require:
-- owner/occupant declaration;
-- water shutoff;
-- line draining/winterization;
-- electrical/propane safety steps where applicable;
-- removal/storage requirements;
-- photo evidence;
-- maintenance inspection;
-- maintenance/foreman sign-off;
-- date completed;
-- exceptions/defects and corrective work.
-
-A site does not reach the configured winter-closed state until required sign-offs pass.
-
-Campgrounds that permit continued cold-weather occupancy can instead require a **winter-readiness compliance record**, such as documented insulated/heated water protection or other campground-defined safety requirements. Management controls the checklist; iCamp records evidence and approvals rather than inventing legal/safety standards.
-
-### Permanent-unit / cottage-style sites
-Some long-term sites contain trailers, park models or cottage-like units that are bought and sold while remaining on the same campground site.
-
-iCamp must support:
-- a permanent-unit record distinct from the land/site record;
-- current ownership/occupancy history;
-- listing-for-sale status;
-- office-managed inquiries and approval workflow;
-- transfer/application process;
-- campground fees and administrative charges;
-- documents and inspection requirements;
-- sale/transfer closing checklist;
-- site agreement continuity or replacement;
-- optional financing/application workflow offered by the campground or an external provider.
-
-Financing functions must be architected as regulated/high-risk financial workflows: iCamp may collect an application and track status, but lending decisions, disclosures, identity verification, payment schedules and legal obligations must be handled only through appropriately configured campground processes/providers.
-
-### Campground events and access control
-Campgrounds may run recurring and one-time activities such as Friday-night dances, holiday/Halloween events, live entertainment, tournaments, meals, markets and private functions.
-
-Events can be:
-- free;
-- paid;
-- reservation-required;
-- capacity-limited;
-- camper-only;
-- visitor-eligible;
-- age/restriction controlled;
-- wristband/pass/key/QR controlled.
-
-Events require recurrence rules, venue assignment, capacity, dates/times, access rules, fees, attendee registration, ticket/pass issuance, check-in and cancellation/closure controls.
-
-### Visitor registration and passes
-Visitors to campers can be required to register at the office before entering.
-
-Visitor controls include:
-- host campsite/reservation;
-- visitor identity/contact details appropriate to campground policy;
-- vehicle registration if applicable;
-- arrival/departure validity;
-- visitor fee;
-- wristband, printed pass, QR pass or access credential;
-- allowed areas/events;
-- revoked/expired status.
-
-Maximum visitors are configurable at campground, section, site-type and individual-site level and may be constrained by site size, occupancy, fire/safety capacity or management policy.
-
-### Site types and service compatibility
-Sites explicitly model camping/accommodation type and services. Examples include:
+## 1. Mission
+
+iCamp is a complete campground operating platform for phones, tablets, laptops and desktop computers. It is designed to run the public camper experience and the internal campground business from one authoritative system.
+
+iCamp is not only a reservation application. It combines:
+- live campsite and cottage booking;
+- a virtually realistic overhead campground map;
+- site, cottage and facility media;
+- front desk and guest services;
+- visitor and vehicle registration;
+- gate/access security;
+- maintenance, inspections and recurring upkeep;
+- seasonal/yearly site administration;
+- permanent-unit/cottage-style ownership transfers;
+- events, tickets and passes;
+- local-attraction discovery and promotion;
+- waterfront, dock, boat and launch operations;
+- rentals;
+- campground store, POS, pickup and delivery;
+- staff, scheduling and timekeeping;
+- vendors, contracts and recurring services;
+- accounting, costs, profits/losses and management reporting;
+- safety rules, incidents, acknowledgements and enforcement.
+
+The public experience should remain simple even though the management system behind it is comprehensive.
+
+## 2. One authoritative campground model
+
+A campsite, rental cottage, facility, dock, store item, reservation, guest, vehicle, visitor, work order and financial transaction each have one canonical record.
+
+Booking, maintenance, security, POS and management do not keep disconnected copies of the same campground objects.
+
+A site can simultaneously be:
+- a clickable polygon on the overhead map;
+- available or occupied;
+- linked to a guest reservation;
+- linked to registered vehicles and visitors;
+- receiving store delivery;
+- awaiting inspection;
+- associated with utility and maintenance history;
+- producing revenue and cost records.
+
+## 3. Virtually realistic campground map
+
+Management can upload a real overhead image, drone image, aerial photograph, site plan or high-quality illustration.
+
+Authorized staff can plot irregular areas by clicking points around:
+- campsites;
+- cottages/cabins;
+- washrooms;
+- pools;
+- water parks/splash pads;
+- beaches/swimming zones;
+- baseball/softball fields;
+- playgrounds;
+- halls/pavilions;
+- stores;
+- roads;
+- parking;
+- garbage stations;
+- boat launches;
+- docks/slips;
+- maintenance buildings;
+- utilities;
+- restricted areas;
+- other important locations.
+
+The map supports zoom and pan without losing alignment. Polygon geometry is stored in image-space/normalized coordinates and transformed at render time, so the clickable area remains accurate regardless of zoom level, device size, image scaling or high-DPI display.
+
+The plotter must support:
+- create/close irregular polygons;
+- add/move/delete vertices;
+- move/duplicate polygons;
+- lock/unlock;
+- hide/show;
+- archive;
+- undo/redo;
+- labels/icons;
+- layer ordering;
+- opacity;
+- snapping/precision aids where useful;
+- zoom-aware editing and hit testing;
+- accessible non-map alternatives.
+
+## 4. Visual status
+
+Default campsite/cottage states:
+- available — translucent green;
+- occupied/unavailable — muted/grey;
+- maintenance/inspection required — translucent yellow;
+- closed/unavailable — translucent red.
+
+Additional states may include held, reserved, arriving today, departing today, cleaning, inspection required, seasonal, yearly, winterized, winter-readiness pending, walk-up, management hold, weather closure and emergency closure.
+
+Colours are derived from authoritative operational state, not manually painted.
+
+## 5. Campsites, cottages and accommodation inventory
+
+iCamp supports distinct accommodation/site types, including:
 - tent-only;
 - RV/trailer;
 - mixed tent/RV;
-- cabin/cottage/park model;
-- full service;
+- full-service;
 - electric-only;
 - water/electric;
-- no hookups;
+- unserviced;
 - waterfront;
 - seasonal/yearly;
-- walk-up.
+- walk-up;
+- overflow;
+- cabins;
+- rustic rental cottages;
+- serviced cottages with kitchens and/or washrooms;
+- park models/permanent units.
 
-Booking compatibility must prevent selection that violates configured site/equipment/utility/occupancy rules.
+Rental cottages use the same live availability, hold, pricing, payment and reservation engine as campsites, while supporting cottage-specific attributes such as:
+- bedrooms/beds;
+- occupancy;
+- kitchen/kitchenette;
+- private/shared washroom;
+- shower;
+- linens;
+- heating/cooling;
+- appliances;
+- accessibility;
+- view/waterfront;
+- housekeeping;
+- damage/security deposit;
+- cottage-specific inspection and turnover.
 
-### Personal mobility and recreational vehicle registration
-Campground-operated or guest-owned vehicles/devices used within the property can require registration and, where campground policy requires it, inspection/approval.
+## 6. Site and cottage photography
 
-Examples:
-- golf carts;
-- e-bikes;
-- mobility/recreational carts;
-- ATVs/UTVs where permitted;
-- other campground-authorized devices.
+Each specific campsite or cottage can have up to **10 managed customer-facing images** from different views, plus separately classified internal/maintenance media.
 
-Records can include owner/host campsite, identifying description/serial/plate, insurance/document references where required, approved drivers, expiry, safety inspection checklist, approval/revocation status and access restrictions.
+The media system should support:
+- ordering/hero image;
+- captions;
+- accessibility alt text;
+- public/private classification;
+- version/replace/archive;
+- orientation metadata;
+- safe image processing;
+- thumbnails and optimized delivery.
 
-### Waterfront, boat launch and dock operations
-Waterfront campgrounds may manage:
-- lakes;
-- rivers;
-- ocean access;
+The overhead map can open the relevant gallery when a site/cottage is selected.
+
+## 7. Live booking and temporary holds
+
+Guests enter dates, party size, pets, equipment type/size, required hookups and desired features.
+
+The server determines compatible live inventory.
+
+When a site or cottage is selected, iCamp creates an atomic temporary hold for a configurable period. No overlapping valid hold or reservation can be created for the same inventory and time.
+
+Checkout revalidates:
+- availability;
+- hold ownership;
+- current price;
+- rules;
+- capacity;
+- inventory compatibility;
+- payment state.
+
+## 8. Rates, deposits and payments
+
+Pricing may include:
+- nightly, weekly, monthly, seasonal and yearly rates;
+- cottage rates;
+- peak/off-season;
+- weekday/weekend;
+- holiday/event;
+- extra adults/children;
+- pets;
+- extra vehicles;
+- visitor fees;
+- day/week passes;
+- Wi-Fi;
+- firewood/ice;
+- rentals;
+- boat launch/dock fees;
+- garbage pickup stickers;
+- other services.
+
+Management can configure full payment, fixed/percentage deposits, security deposits, scheduled balances and cancellation/refund rules.
+
+Raw card data is never stored by iCamp.
+
+## 9. Guest, front desk and check-in/out
+
+Front desk workflows can manage:
+- identity/contact;
+- guests/occupants;
+- pets;
+- vehicles;
+- visitors;
+- passes/access credentials;
+- rule acknowledgements;
+- balances;
+- store/rental add-ons;
+- check-in/check-out;
+- site/cottage changes;
+- stay extensions.
+
+Checkout can automatically create turnover/inspection work before the accommodation becomes bookable again.
+
+## 10. Vehicle registration and passes
+
+Any car, truck, motorcycle, tow vehicle or other regular road vehicle on campground property can be required to be registered to:
+- an active campsite/cottage reservation;
+- a seasonal/yearly site;
+- a staff/contractor authorization;
+- or an approved day/week pass.
+
+Records can include plate, province/state, description, owner/driver, host reservation/site, validity dates, pass/fee, and access status.
+
+Management can configure maximum vehicles by site/site type/section and paid extra-vehicle rules.
+
+## 11. Visitors and access credentials
+
+Visitors can be required to register at the office and link to the camper/site they are visiting.
+
+iCamp supports:
+- configurable maximum visitors;
+- fees;
+- arrival/departure windows;
+- vehicle registration;
+- wristbands;
+- printed passes;
+- QR passes;
+- key cards/fobs;
+- keypad/PIN credentials;
+- future electronic access credentials;
+- event-specific access;
+- expiry/revocation.
+
+## 12. Physical security and gate control
+
+iCamp includes a dedicated security/access module.
+
+It may integrate with compatible:
+- gate controllers;
+- key card/fob systems;
+- keypad systems;
+- barrier arms;
+- door/access controllers.
+
+The module should track:
+- gate/door open/closed/unknown state when hardware supports it;
+- device health/connectivity;
+- access attempts/events;
+- credential used;
+- time;
+- associated guest/site/visitor/staff record;
+- denied access reason;
+- manual staff override.
+
+Authorized staff can issue a manual open/close command where supported. Every override must be permission-controlled and audited.
+
+Hardware integration must use a server-side adapter/gateway boundary; browsers must not directly control gate hardware. Physical emergency release, fire/life-safety requirements and local code always remain independent of iCamp.
+
+## 13. Mobility/recreational devices
+
+Golf carts, e-bikes and other campground-permitted devices can require registration and optional safety checks.
+
+Records may include:
+- owner/host site;
+- serial/identifier;
+- description;
+- approved drivers;
+- insurance/document references if campground policy requires them;
+- inspection checklist;
+- approval/expiry;
+- restrictions;
+- suspension/revocation.
+
+## 14. Maintenance and operational assets
+
+Pools, washrooms, showers, water parks, beaches, baseball fields, playgrounds, halls, roads, docks, launches, garbage areas, septic facilities and other features are **operational assets**, not merely amenities.
+
+They can have:
+- map location/polygon;
+- operating/open/closed state;
+- inspection templates;
+- hourly/daily/weekly/monthly/seasonal/custom maintenance;
+- automatically generated work orders;
+- responsible team;
+- required sign-off;
+- failure/closure rules;
+- condition history;
+- incident history;
+- photos/documents.
+
+## 15. Garbage and waste service
+
+Campgrounds may use different garbage models:
+- communal garbage bins/dumpsters;
+- site pickup included in stay;
+- scheduled site pickup;
+- paid pickup;
+- purchased garbage stickers/tags/bags;
+- recycling/organics streams.
+
+iCamp should allow management to configure the model per campground/section.
+
+Paid stickers/tags can be:
+- sold through POS or online store;
+- linked to a guest/site;
+- uniquely numbered or QR/barcode identified where desired;
+- redeemed/collected by maintenance;
+- included in revenue and inventory;
+- tracked for pickup scheduling and completion.
+
+## 16. Camper assistance
+
+Guests can request assistance from My Stay or a QR-accessed interface for issues such as:
+- garbage;
+- septic;
+- electrical;
+- water;
+- Wi-Fi;
+- maintenance;
+- noise;
+- security;
+- store delivery;
+- rental;
+- other.
+
+Requests are linked to the active stay/site where possible and support severity, text, media and contact preference.
+
+## 17. Seasonal/yearly site lifecycle
+
+Long-term sites require a lifecycle beyond a normal short-stay reservation.
+
+Winter shutdown can require:
+- owner/occupant declaration;
+- water shutoff/draining;
+- campground-defined electrical/propane/safety steps;
+- removal/storage requirements;
+- photo/document evidence;
+- maintenance inspection;
+- foreman sign-off;
+- corrective work;
+- winter-closed status.
+
+Where cold-weather occupancy is permitted, management can require a winter-readiness checklist, such as documented water insulation/heating protection.
+
+Spring reopening can require another inspection and sign-off.
+
+## 18. Permanent units and cottage-style ownership
+
+Some trailers, park models or cottage-like units remain physically on the same site when bought and sold.
+
+The permanent unit is a separate object from the land/site.
+
+iCamp supports:
+- ownership history;
+- occupancy;
+- listing status;
+- buyer inquiry;
+- campground approval;
+- inspection;
+- fees;
+- transfer documents;
+- closing checklist;
+- agreement replacement/continuity;
+- optional office financing application workflow.
+
+Financing is treated as a high-risk regulated workflow and may be integrated with an appropriate external provider. iCamp must not improvise lending decisions or legal disclosures.
+
+## 19. Campground events
+
+Campgrounds may run:
+- Friday dances;
+- Halloween-in-summer;
+- live entertainment;
+- tournaments;
+- meals;
+- markets;
+- holiday events;
+- private events.
+
+Events can be free or paid, recurring or one-time, capacity-limited, camper-only or visitor-eligible.
+
+iCamp supports venue, recurrence, tickets/passes/wristbands, registration, check-in, access rules, cancellation and revenue/refunds.
+
+## 20. Local interests and destination promotion
+
+iCamp should help sell the **destination**, not only the campsite.
+
+Management can maintain nearby attractions and time-limited local events such as:
+- fall fairs;
+- truck/car shows;
+- festivals;
+- farmers' markets;
 - beaches;
+- hiking;
+- fishing;
+- museums;
+- restaurants;
+- local shopping;
+- seasonal attractions.
+
+Local-interest records can include:
+- name;
+- category;
+- location/distance;
+- dates/hours;
+- description;
+- official/source link;
+- image where licensed/appropriate;
+- expiry/review date;
+- family/pet/accessibility tags.
+
+These can be promoted contextually through:
+- booking flow;
+- confirmation;
+- pre-arrival messages;
+- My Stay;
+- event/activities pages;
+- campground announcements;
+- post-booking recommendations.
+
+Management controls what is promoted. Time-sensitive external events must have a freshness/expiry workflow so stale events are not advertised.
+
+Marketing preferences and applicable consent/opt-out requirements must be respected.
+
+## 21. Waterfront, boat launches and docks
+
+Waterfront operations can include:
+- lakes/rivers/ocean access;
 - swimming zones;
 - boat launches/ramps;
 - docks/slips;
-- transient boat access.
+- transient/seasonal dock occupancy.
 
-Boat registrations can be linked to an active campsite/reservation by default, while management can optionally allow non-camper day access for a fee.
+Boats can be linked to an active site/cottage by default, with configurable paid day-use access for non-campers.
 
-Records can include boat owner, registration/description, host site, launch fee, launch permission, dock/slip assignment, arrival/departure, trailer/vehicle information and rules acknowledgement.
+Rules, launch fees, registrations, tow vehicles, dock assignments, closures and incidents are tracked.
 
-### Safety-rule acknowledgement and enforcement
-Pools, lifeguarded swimming areas, beaches, water parks, docks, boat ramps, sports facilities, playgrounds and other controlled features can have versioned rule sets.
+## 22. Safety rules and enforcement
 
-iCamp must support:
+Pools, lifeguarded swimming, beaches, water parks, docks, boat ramps, sports areas, playgrounds and other controlled features can have versioned rules.
+
+iCamp supports:
 - displayed rules;
-- required acknowledgement where configured;
+- acknowledgements;
 - age/supervision restrictions;
-- capacity limits;
-- opening hours;
-- temporary closures;
-- incident/warning records;
-- access suspension/removal by authorized staff;
-- reinstatement/management review;
-- audit history.
+- capacity;
+- hours;
+- warnings;
+- incidents;
+- access suspension/removal;
+- reinstatement/review;
+- closure.
 
-For lifeguarded or supervised areas, staff can record warnings and enforce facility removal/suspension according to campground policy. iCamp records policy and enforcement; it does not replace trained staff judgment or statutory safety requirements.
+iCamp records campground policy and staff action. It does not replace trained staff, certified inspections, emergency services or statutory safety obligations.
+
+## 23. Rentals
+
+Rental inventory can include pedal boats, canoes, kayaks, paddleboards, bicycles, golf carts, fishing equipment, life jackets, BBQs, games and other equipment.
+
+Rental records include availability, pricing, deposits, agreements, condition, return inspection, damage and maintenance.
+
+## 24. Store and POS
+
+The campground store can sell:
+- firewood;
+- charcoal;
+- ice;
+- food/drinks/snacks;
+- toiletries;
+- camping supplies;
+- propane;
+- batteries;
+- souvenirs;
+- fishing supplies;
+- garbage stickers/tags;
+- passes;
+- other goods/services.
+
+POS supports barcode/search, cash/card, campsite account charges, refunds, receipts, cash sessions and permissions.
+
+Campers can order online for pickup or site delivery when management enables the service.
+
+## 25. Staff, vendors and business administration
+
+iCamp supports roles such as owner, administrator, manager, foreman, maintenance, housekeeping, store, reservation/front desk, security, accounting and contractors.
+
+Permissions are granular rather than relying only on job title.
+
+Business administration includes:
+- employee scheduling/timekeeping;
+- vendors/contracts;
+- garbage/septic/ISP/propane/firewood providers;
+- recurring service schedules;
+- supplier invoices;
+- costs and expenses;
+- revenue;
+- taxes;
+- payments/refunds/deposits;
+- accounting exports/integrations;
+- profit/loss;
+- operational dashboards.
+
+## 26. Search, documents, media and audit
+
+Global search respects permissions and can cover guests, reservations, sites, cottages, vehicles, visitors, work orders, staff, products, rentals, payments and passes.
+
+Documents and media are classified public/internal/confidential.
+
+Privileged changes are audited with actor, time, action, reason and before/after state where practical.
+
+## 27. Telephone, IVR, Numeric Keypad, Voice and SMS Access
+
+iCamp is an **omnichannel campground platform**. The web/PWA interface is not the only way to use it.
+
+A campground may publish one or more telephone numbers that connect to an interactive voice response (IVR) service. Callers can use:
+- telephone numeric keypad/DTMF;
+- spoken menu choices where supported;
+- SMS/text messaging;
+- MMS for photos where supported;
+- staff-assisted call transfer;
+- secure links sent by text when a visual/payment step is required.
+
+The telephone/SMS layer uses the **same authoritative backend** as the web application. It must not create a second reservation, guest, maintenance or payment database.
+
+### Camper/visitor telephone and SMS functions
+
+Where meaningful, callers/text users should be able to:
+- check campsite/cottage availability;
+- choose dates and accommodation type;
+- request a specific site/cottage number;
+- place a temporary booking hold;
+- create or retrieve a reservation;
+- receive confirmation by SMS;
+- hear/request balances and due dates;
+- extend/cancel a stay subject to policy;
+- register a road vehicle;
+- purchase/request a day or week vehicle pass;
+- register a visitor;
+- request or replace an access credential;
+- receive gate/keypad instructions where policy permits;
+- hear campground hours/rules;
+- acknowledge rules;
+- request maintenance/assistance;
+- order common store/services such as firewood, ice or garbage pickup;
+- purchase/redeem garbage sticker/tag services where configured;
+- hear/register for campground events;
+- receive local attraction/event suggestions;
+- register boats/launch use where configured;
+- reserve rentals where practical;
+- reach campground staff.
+
+SMS may support both guided keywords and conversational/natural-language interpretation, but business actions are always converted into validated server-side commands before execution.
+
+### Staff telephone/SMS functions
+
+Authorized staff should be able to use secure telephone/SMS workflows for suitable tasks such as:
+- acknowledge/accept work orders;
+- update work-order status;
+- receive urgent alerts;
+- confirm inspections/checklists using guided prompts;
+- query a site/asset status by number;
+- record simple notes;
+- receive scheduling/shift information;
+- acknowledge incidents;
+- contact on-call staff.
+
+High-risk actions require stronger authentication. Caller ID alone is never sufficient.
+
+### DTMF design
+
+Numeric menus should be short, repeatable and accessible. Examples:
+- Press 1 for reservations.
+- Press 2 for an existing stay.
+- Press 3 for campground assistance.
+- Press 4 for visitors/vehicle passes.
+- Press 5 for store/service orders.
+- Press 6 for events/activities.
+- Press 0 for staff.
+
+Reservation/site identifiers should be usable through numeric entry where possible.
+
+### Visual-task equivalence
+
+Some iCamp functions are inherently visual. A telephone keypad cannot responsibly draw or reshape campground polygons or display photographs.
+
+For such features, iCamp must provide the closest operational telephone/SMS equivalent:
+- staff can query/change the status of Site 42 by phone;
+- staff can create a maintenance closure for Asset 17;
+- campers can request Site 42 or receive its feature description;
+- an SMS can send a secure link to the visual map/gallery when needed.
+
+The actual polygon editor and image viewing remain graphical interfaces.
+
+### Telephone payment boundary
+
+iCamp should not collect raw card numbers through a homemade voice menu or SMS.
+
+Telephone customers can instead use:
+- a secure payment link by SMS;
+- staff-assisted payment through the approved payment provider;
+- or a properly certified/provider-hosted IVR payment solution if one is adopted later.
+
+### Consent and messaging preferences
+
+Operational texts and promotional texts must be distinguishable.
+
+For commercial/promotional SMS, iCamp must store consent/preferences and support required opt-out/help mechanisms for the campground's jurisdiction.
+
+### Accessibility and resilience
+
+Telephone/DTMF and SMS are also low-bandwidth/accessibility alternatives for campers who:
+- do not use smartphones;
+- have weak campground data coverage;
+- prefer a normal telephone;
+- need a simpler interaction channel.
+
+Voice/SMS providers are replaceable adapters, not hard-coded into iCamp.
+
+## 28. Offline field work
+
+Maintenance and inspection workflows should eventually tolerate poor campground connectivity by caching assigned tasks and queuing safe field updates.
+
+Booking, payment, access-control commands and other high-risk writes remain server-authoritative.
+
+## 29. Multi-campground future
+
+The initial deployment may serve one campground, but the architecture must support multiple properties and organizations without rebuilding the core data model.
+
+## 30. Development approach
+
+Development should use free or low-cost tiers where practical and avoid unnecessary provider lock-in.
+
+The active numbered roadmap is intentionally restarted after the pre-implementation engineering baseline so every Build number reflects this complete vision.
+
+## 31. Ultimate objective
+
+Management should be able to answer:
+
+**What is happening in our campground right now?**
+
+Campers should experience a simple visual system for choosing a place to stay, understanding the property, discovering nearby activities, managing their stay, accessing facilities, shopping, renting equipment and obtaining help.
