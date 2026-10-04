@@ -18,7 +18,10 @@ Every change must identify the build or requirement it belongs to. A build is no
 - Do not silently rewrite financial, audit or safety history.
 
 ## Review expectations
-Changes affecting authentication, authorization, payment, refunds, booking concurrency, visitor access, safety enforcement, financial records or data retention require explicit security review in the PR.
+Changes affecting authentication, authorization, payment, refunds, booking concurrency, visitor access, physical gate/access commands, voice/IVR/DTMF/SMS, safety enforcement, financial records or data retention require explicit security review in the PR.
+
+## Omnichannel discipline
+Every product build must document support for Web/PWA, IVR/DTMF and SMS/MMS. A feature may use staff-transfer or secure-link fallback when that is safer or the operation is inherently visual. Channel-specific code must call the same canonical domain services rather than duplicate business rules.
 
 ## Manual actions
 Manual user steps are reserved for provider/account/legal/secret operations that cannot safely be automated. Never ask a user to paste a production secret into an issue, commit, PR or chat.
