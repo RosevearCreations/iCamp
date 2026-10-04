@@ -1,9 +1,5 @@
 export type ChannelSupportLevel =
-  | "full"
-  | "guided"
-  | "secure-link"
-  | "staff-transfer"
-  | "not-applicable";
+  "full" | "guided" | "secure-link" | "staff-transfer" | "not-applicable";
 
 export type ChannelKey = "web" | "ivr" | "sms";
 
