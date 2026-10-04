@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { EnvironmentBanner } from "@/components/environment-banner";
 import { workspaces } from "@/lib/workspaces";
 
 export function AppShell({
@@ -12,6 +13,8 @@ export function AppShell({
       <a className="skip-link" href="#main-content">
         Skip to main content
       </a>
+
+      <EnvironmentBanner />
 
       <header className="topbar">
         <Link className="brand" href="/" aria-label="iCamp home">
@@ -26,7 +29,7 @@ export function AppShell({
 
         <div className="topbar__status" aria-label="Build status">
           <span className="status-dot" aria-hidden="true" />
-          Build 001 · Application shell
+          Build 002 · Health & I.T. foundation
         </div>
       </header>
 
@@ -58,7 +61,11 @@ export function AppShell({
 
       <footer className="site-footer">
         <span>iCamp · evolving campground operations platform</span>
-        <span>Web · Phone / DTMF · SMS / MMS</span>
+        <span className="site-footer__links">
+          <Link href="/status">System status</Link>
+          <span aria-hidden="true">·</span>
+          <span>Web · Phone / DTMF · SMS / MMS</span>
+        </span>
       </footer>
     </div>
   );

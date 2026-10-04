@@ -653,3 +653,73 @@ Management should be able to answer:
 **What is happening in our campground right now?**
 
 Campers should experience a simple visual system for choosing a place to stay, understanding the property, discovering nearby activities, managing their stay, accessing facilities, shopping, renting equipment and obtaining help.
+
+
+## 32. I.T., Analysis, Diagnostics and Global Client Web Interface
+
+iCamp requires a robust **I.T. & Analysis subsystem behind the entire application**.
+
+Its purpose is to help authorized operators detect, understand and resolve:
+- application errors;
+- repeated failures;
+- slow requests;
+- lockups/non-responsive deployments;
+- unhealthy integrations;
+- queue/scheduler stalls;
+- database/connectivity problems;
+- storage problems;
+- payment/communications/access-provider failures;
+- unusual error rates;
+- version/configuration mismatches;
+- degraded campground services.
+
+The I.T. subsystem must not become a back door into sensitive guest, employee, financial, security or financing information.
+
+### Global client web interface
+
+iCamp remains a globally accessible web/PWA front end for campground clients and authorized users, subject to authentication, permissions and campground configuration.
+
+Public/client-facing status information may include only safe operational facts such as:
+- service operational/degraded/unavailable;
+- planned maintenance;
+- public incident notices;
+- application version/release reference where appropriate.
+
+Internal diagnostics, logs, stack traces, environment secrets, infrastructure topology, personal information and security-device details are never exposed through the public status experience.
+
+### Internal I.T. & Analysis workspace
+
+Authorized I.T./system administrators should eventually have a dedicated workspace capable of:
+- health overview by service/environment/campground;
+- release/build/version correlation;
+- sanitized error grouping;
+- request/correlation IDs;
+- integration health;
+- scheduler/queue health;
+- resource and latency trends;
+- incident timeline;
+- alert acknowledgement/escalation;
+- diagnostic evidence packages;
+- safe support references for client-reported problems.
+
+### Lockup detection
+
+A completely frozen application cannot reliably report that it is frozen.
+
+Therefore iCamp uses two layers:
+1. **internal health/readiness instrumentation** inside the application; and
+2. an **independent external watchdog** that checks health from outside the application process.
+
+The watchdog/provider remains replaceable and can begin with free/self-hosted monitoring before moving to larger-scale observability infrastructure.
+
+### Privacy and diagnostic minimization
+
+Diagnostics must be useful without unnecessarily copying sensitive information.
+
+Default rules:
+- structured events over raw dumps;
+- redact secrets/tokens/PINs/payment data;
+- avoid logging full SMS bodies, guest notes or incident narratives unless explicitly necessary and access-controlled;
+- use IDs/correlation references instead of personal data where possible;
+- separate public status from private diagnostics;
+- define retention and access controls before storing production telemetry long term.

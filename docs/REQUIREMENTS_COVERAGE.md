@@ -12,6 +12,11 @@ This matrix cross-checks the complete iCamp vision against the restarted active 
 | Secure telephony identity; caller ID not authentication | 013, 149 |
 | Secure telephone payment handoff | 013, 042, 149 |
 | Environment/configuration/health | 002 |
+| I.T./Analysis workspace and troubleshooting | 002, 007, 148-150, 153 |
+| Lockup/non-response detection via external watchdog | 002, 153 |
+| Sanitized global client system-status web interface | 002, 149, 153 |
+| Request/correlation IDs and safe support references | 002, 006, 148 |
+| Error/integration/queue health analysis | 002, 007, 148, 153 |
 | Database/migrations/multi-property foundation | 003, 152 |
 | Authentication/sessions/MFA readiness | 004 |
 | Roles, granular permissions and RLS | 005-006 |

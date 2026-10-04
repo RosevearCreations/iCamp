@@ -20,6 +20,7 @@ iCamp is a complete campground operations platform covering live campsite/cottag
 - [Active Build Queue](docs/BUILD_QUEUE.md)
 - [Pre-Implementation Engineering Baseline](docs/PRE_IMPLEMENTATION_BASELINE.md)
 - [Build Operating Model](docs/BUILD_OPERATING_MODEL.md)
+- [I.T. & Analysis](docs/IT_ANALYSIS.md)
 
 The completed repository/CI foundation is now an **unnumbered pre-implementation baseline**.
 

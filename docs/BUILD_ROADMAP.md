@@ -19,11 +19,16 @@ No active product build should begin until this roadmap reset is accepted as the
 - Accessible navigation and layout primitives.
 - Define the cross-channel contract so later features expose Web/PWA plus meaningful IVR/DTMF/SMS equivalents rather than becoming web-only by accident.
 
-## Build 002 — Environment, Configuration & Health Framework
+## Build 002 — Environment, Configuration, Health & I.T. Analysis Foundation
 - Typed environment configuration.
-- dev/production distinction and environment banners.
-- health/version/build-SHA endpoints.
+- dev/staging/production distinction and unmistakable non-production banners.
+- liveness, readiness, public health, version and build-SHA endpoints.
 - feature flags and safe configuration validation.
+- request/correlation IDs and client-safe error references.
+- I.T. & Analysis workspace foundation with sanitized health information only until authentication/permissions exist.
+- globally accessible client-safe system status page.
+- external-watchdog contract for detecting a non-responsive/locked application from outside the process.
+- structured diagnostics/redaction conventions that prohibit secrets and sensitive client content from public telemetry.
 
 ## Build 003 — Database, Migration & Multi-Property Foundation
 - PostgreSQL migration system.
@@ -54,6 +59,7 @@ No active product build should begin until this roadmap reset is accepted as the
 - retry/idempotency conventions.
 - dead-letter/failed-job visibility.
 - scheduler health reporting.
+- queue heartbeat, stalled-worker and overdue-job signals for the I.T./Analysis subsystem.
 
 ## Build 008 — Secure Media & Document Storage Foundation
 - Public/internal/confidential media classes.
@@ -905,18 +911,23 @@ No active product build should begin until this roadmap reset is accepted as the
 - Keyboard/screen reader/touch/contrast.
 - phone/tablet/desktop browser matrix.
 
-## Build 148 — Performance, Query Budget & Realtime Scale Review
+## Build 148 — Performance, Query Budget, Realtime & Observability Scale Review
 - Indexes.
 - query budgets.
 - realtime subscription control.
 - image optimization.
 - peak booking load tests.
+- latency/error/resource trend analysis.
+- integration/dependency health aggregation.
+- I.T. dashboard performance views and diagnostic sampling/retention review.
 
-## Build 149 — Abuse, Rate-Limit & Security Hardening
+## Build 149 — Abuse, Rate-Limit, Diagnostics & Security Hardening
 - Auth/public abuse controls.
 - upload abuse.
 - webhook replay defense.
 - access-command safeguards.
+- health/status endpoint rate-limit and information-disclosure review.
+- diagnostic redaction/export authorization tests.
 - penetration-test checklist.
 
 ## Build 150 — Backup, Restore & Disaster Recovery
@@ -933,7 +944,7 @@ No active product build should begin until this roadmap reset is accepted as the
 - cross-property ownership.
 - strict tenant-isolation tests.
 
-## Build 153 — Full Production Readiness Gate
+## Build 153 — Full Production & I.T. Operations Readiness Gate
 - End-to-end campsite/cottage booking.
 - payments.
 - maintenance/inspections.
@@ -943,6 +954,9 @@ No active product build should begin until this roadmap reset is accepted as the
 - events/local promotions.
 - POS/rentals/waterfront.
 - finance/security/recovery.
+- external watchdog/lockup detection verification.
+- I.T. incident, release, health and diagnostic operating procedures.
+- public status information-disclosure review.
 
 ## Build 154 — First Real Campground Pilot Configuration
 - Real overhead image.

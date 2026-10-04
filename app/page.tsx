@@ -10,7 +10,7 @@ export default function HomePage() {
     <AppShell>
       <div className="page-stack">
         <section className="hero-panel">
-          <p className="eyebrow">Build 001 · Active application shell</p>
+          <p className="eyebrow">Build 002 · Environment, health & I.T.</p>
           <h1>One campground platform. Every operating surface.</h1>
           <p className="hero-panel__lead">
             iCamp is being built as a flexible, free-first development platform
@@ -85,6 +85,27 @@ export default function HomePage() {
                 <span className="workspace-card__link">Open shell →</span>
               </Link>
             ))}
+          </div>
+        </section>
+
+        <section className="content-panel" aria-labelledby="health-heading">
+          <p className="eyebrow">Operational foundation</p>
+          <h2 id="health-heading">Health and I.T. analysis are built in.</h2>
+          <p>
+            iCamp now exposes client-safe service status and a dedicated I.T.
+            workspace foundation. Sensitive diagnostics remain intentionally
+            unavailable until authentication and permissions are implemented.
+          </p>
+          <div className="hero-actions">
+            <Link className="primary-link primary-link--dark" href="/status">
+              View system status
+            </Link>
+            <Link
+              className="primary-link primary-link--dark"
+              href="/workspaces/it-analysis"
+            >
+              Open I.T. & Analysis
+            </Link>
           </div>
         </section>
 

@@ -369,3 +369,31 @@ iCamp must support configurable compliance requirements rather than hard-code on
 For Canadian commercial SMS, the communications module must support evidence of consent where required, sender identification and a functioning unsubscribe mechanism. Transactional/operational notices and marketing messages must be purpose-tagged and reviewed separately.
 
 Provider-level opt-out handling is synchronized into iCamp's consent/preference records instead of being treated as an external black box.
+
+
+## 22. I.T. Diagnostics and Observability Security
+
+Diagnostics are potentially sensitive because logs and traces can accidentally reveal personal data, tokens, payment references, infrastructure details or access-control information.
+
+Mandatory controls:
+- public health/status endpoints return a strict allow-list of safe fields;
+- detailed diagnostics require authenticated, explicitly authorized I.T./system permissions once authentication exists;
+- stack traces are never returned to ordinary clients in production;
+- client error pages use safe correlation/support references;
+- secrets/tokens/passwords/PINs/payment-card data are redacted or excluded before logging;
+- request/response bodies are not logged by default;
+- diagnostic exports are permission-controlled and audited;
+- health endpoints are rate-limited/abuse-reviewed before public production launch;
+- external monitoring credentials are stored only in approved secret stores;
+- diagnostic retention is configurable and minimized.
+
+Add permission domains when authorization is implemented:
+- it.health.read
+- it.diagnostics.read
+- it.incident.manage
+- it.integration.read
+- it.release.read
+- it.diagnostics.export
+- system.status.publish
+
+Until Builds 004–006 implement identity/permissions/audit, the I.T. workspace and public status page must expose **sanitized non-sensitive information only**.
