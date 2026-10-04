@@ -397,3 +397,43 @@ Add permission domains when authorization is implemented:
 - system.status.publish
 
 Until Builds 004–006 implement identity/permissions/audit, the I.T. workspace and public status page must expose **sanitized non-sensitive information only**.
+
+
+## 23. Database Foundation, Refresh Tracking and Help Security
+
+### Database
+- new exposed-schema tables enable RLS immediately;
+- no permissive anon/authenticated policies are introduced before Build 005;
+- foreign keys enforce organization/campground hierarchy;
+- UUIDs are generated server-side/database-side;
+- migration SQL is reviewed/tested in CI against PostgreSQL;
+- destructive schema changes require explicit migration/recovery planning.
+
+### Refresh/freshness tracking
+Refresh tracking stores operational metadata, not copies of sensitive payloads.
+
+Safe fields include timestamps, status, source watermark/version and sanitized error codes/fingerprints.
+
+Do not persist:
+- raw exception dumps;
+- guest/staff form payloads;
+- payment data;
+- access credentials;
+- authentication tokens;
+merely to record that a refresh succeeded or failed.
+
+Manual refresh actions that later trigger privileged data access must use normal authorization and audit controls.
+
+### Contextual help
+Help content is classified.
+
+Public help may describe public/guest workflows.
+
+Privileged internal help may contain operational guidance but must not expose:
+- credentials;
+- secret configuration;
+- security bypass procedures;
+- private infrastructure details;
+- sensitive financial or client information.
+
+Help controls themselves do not bypass authorization; a user who cannot access a feature must not gain its privileged data through help content.
