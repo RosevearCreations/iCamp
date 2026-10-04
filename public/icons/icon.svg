@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="iCamp">
+  <rect width="512" height="512" rx="112" fill="#173f35"/>
+  <path d="M256 86 94 388h324L256 86Zm0 91 84 157H172l84-157Z" fill="#f4f0df"/>
+  <circle cx="256" cy="344" r="26" fill="#d87a45"/>
+</svg>
