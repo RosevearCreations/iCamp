@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import { AppShell } from "@/components/app-shell";
 import { ChannelSupportSummary } from "@/components/channel-support";
+import { SectionHeading } from "@/components/section-heading";
 import { shellChannelSupport } from "@/lib/channels";
 import { workspaces } from "@/lib/workspaces";
 
@@ -10,7 +11,7 @@ export default function HomePage() {
     <AppShell>
       <div className="page-stack">
         <section className="hero-panel">
-          <p className="eyebrow">Build 002 · Environment, health & I.T.</p>
+          <p className="eyebrow">Build 003 · Data, refresh & contextual help</p>
           <h1>One campground platform. Every operating surface.</h1>
           <p className="hero-panel__lead">
             iCamp is being built as a flexible, free-first development platform
@@ -28,10 +29,12 @@ export default function HomePage() {
         </section>
 
         <section className="content-panel" aria-labelledby="principles-heading">
-          <p className="eyebrow">Architecture principles</p>
-          <h2 id="principles-heading">
-            Designed to change without starting over
-          </h2>
+          <SectionHeading
+            eyebrow="Architecture principles"
+            title="Designed to change without starting over"
+            id="principles-heading"
+            helpTopic="shell.overview"
+          />
           <div className="principle-grid">
             <article>
               <strong>Free-first development</strong>
@@ -62,13 +65,15 @@ export default function HomePage() {
           id="workspaces"
           aria-labelledby="workspaces-heading"
         >
-          <div className="section-heading">
-            <div>
-              <p className="eyebrow">Role-specific surfaces</p>
-              <h2 id="workspaces-heading">iCamp workspaces</h2>
-            </div>
-            <span className="build-chip">{workspaces.length} shells</span>
-          </div>
+          <SectionHeading
+            eyebrow="Role-specific surfaces"
+            title="iCamp workspaces"
+            id="workspaces-heading"
+            helpTopic="shell.workspaces"
+            trailing={
+              <span className="build-chip">{workspaces.length} workspaces</span>
+            }
+          />
 
           <div className="workspace-grid">
             {workspaces.map((workspace) => (
@@ -89,8 +94,12 @@ export default function HomePage() {
         </section>
 
         <section className="content-panel" aria-labelledby="health-heading">
-          <p className="eyebrow">Operational foundation</p>
-          <h2 id="health-heading">Health and I.T. analysis are built in.</h2>
+          <SectionHeading
+            eyebrow="Operational foundation"
+            title="Health and I.T. analysis are built in."
+            id="health-heading"
+            helpTopic="it.analysis"
+          />
           <p>
             iCamp now exposes client-safe service status and a dedicated I.T.
             workspace foundation. Sensitive diagnostics remain intentionally
@@ -110,8 +119,12 @@ export default function HomePage() {
         </section>
 
         <section className="content-panel" aria-labelledby="channels-heading">
-          <p className="eyebrow">Omnichannel foundation</p>
-          <h2 id="channels-heading">The web app is only one interface</h2>
+          <SectionHeading
+            eyebrow="Omnichannel foundation"
+            title="The web app is only one interface"
+            id="channels-heading"
+            helpTopic="shell.channels"
+          />
           <p>
             Every later operational feature must declare a meaningful Web/PWA,
             telephone keypad and text-message path—or document why a secure
