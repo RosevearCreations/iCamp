@@ -30,11 +30,18 @@ No active product build should begin until this roadmap reset is accepted as the
 - external-watchdog contract for detecting a non-responsive/locked application from outside the process.
 - structured diagnostics/redaction conventions that prohibit secrets and sensitive client content from public telemetry.
 
-## Build 003 — Database, Migration & Multi-Property Foundation
-- PostgreSQL migration system.
-- organizations, campgrounds and property boundaries.
-- UUID keys, timestamps and record lifecycle conventions.
-- migration verification in CI.
+## Build 003 — Database, Migration, Multi-Property, Admin Freshness & Help Foundation
+- provider-portable PostgreSQL migration system.
+- organizations, campgrounds, sections/subsections and strict property boundaries.
+- UUID keys, timestamps, row-version and record lifecycle conventions.
+- deny-by-default RLS enabled on newly introduced public tables; policies arrive with the authorization model in Build 005.
+- migration verification against real PostgreSQL in CI.
+- admin freshness/refresh state model with last-requested, successful, failed, stale and source-watermark tracking.
+- reusable admin refresh control that shows data freshness instead of silently reloading.
+- universal contextual help registry.
+- accessible circular ⓘ help control for every section/form, with inline guidance plus full help-page handoff.
+- public/client-safe help centre foundation and help-content security rules.
+- build acceptance rule that new UI sections register contextual help metadata.
 
 ## Build 004 — Authentication & Secure Sessions
 - Guest/staff authentication.
@@ -1001,10 +1008,12 @@ Every build must explicitly answer:
 11. What concurrency/idempotency controls are required?
 12. What failure/recovery path is required?
 13. What manual user action, if any, is truly unavoidable?
-14. Is `dev` GREEN and traceable to a commit before promotion?
-15. What is the channel-support matrix for this build: Web/PWA, IVR/DTMF, SMS, staff-assisted/secure-link fallback?
-16. Are inherently visual tasks clearly marked rather than falsely claiming numeric-keypad equivalence?
-17. Is production GREEN after promotion?
+14. Does every new user-facing/admin section register contextual help and expose an accessible ⓘ entry point?
+15. Does data shown in an admin/analysis surface expose an appropriate freshness/last-refresh state when staleness matters?
+16. Is `dev` GREEN and traceable to a commit before promotion?
+17. What is the channel-support matrix for this build: Web/PWA, IVR/DTMF, SMS, staff-assisted/secure-link fallback?
+18. Are inherently visual tasks clearly marked rather than falsely claiming numeric-keypad equivalence?
+19. Is production GREEN after promotion?
 
 # Manual Action Policy
 
