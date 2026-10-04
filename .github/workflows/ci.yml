@@ -71,3 +71,62 @@ jobs:
           name: npm-audit-full
           path: npm-audit-full.json
           retention-days: 3
+
+
+  database:
+    name: Database migrations
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: icamp_ci
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d icamp_ci"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 12
+    env:
+      DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:5432/icamp_ci
+      PGPASSWORD: postgres
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Use Node.js 24
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24
+
+      - name: Install PostgreSQL client
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y postgresql-client
+
+      - name: Apply migrations
+        run: node scripts/apply-database-migrations.mjs
+
+      - name: Verify schema, RLS and tenant boundaries
+        run: >-
+          psql "$DATABASE_URL"
+          -X
+          --no-psqlrc
+          -v ON_ERROR_STOP=1
+          -f database/verify/0001_core_multi_property_and_refresh.sql
+
+      - name: Re-run migrations to prove idempotent history handling
+        run: node scripts/apply-database-migrations.mjs
+
+      - name: Show migration history
+        run: >-
+          psql "$DATABASE_URL"
+          -X
+          --no-psqlrc
+          --tuples-only
+          --no-align
+          -c "select version || ':' || name from icamp_meta.schema_migrations order by version;"
