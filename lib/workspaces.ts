@@ -1,7 +1,4 @@
-import {
-  defineChannelSupport,
-  type ChannelSupport,
-} from "@/lib/channels";
+import { defineChannelSupport, type ChannelSupport } from "@/lib/channels";
 
 export interface WorkspaceDefinition {
   slug: string;
