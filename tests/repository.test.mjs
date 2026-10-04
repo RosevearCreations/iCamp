@@ -212,7 +212,6 @@ test("Build 002 source of truth requires external lockup detection and diagnosti
   assert.match(security, /I\.T\. Diagnostics and Observability Security/);
 });
 
-
 test("Build 003 defines provider-portable multi-property migrations", async () => {
   const migration = await readFile(
     "database/migrations/0001_core_multi_property_and_refresh.sql",
@@ -272,7 +271,10 @@ test("Build 003 provides visible admin freshness controls", async () => {
 
 test("Build 003 contextual help uses a circular information control and full help pages", async () => {
   const helpInfo = await readFile("components/help-info.tsx", "utf8");
-  const sectionHeading = await readFile("components/section-heading.tsx", "utf8");
+  const sectionHeading = await readFile(
+    "components/section-heading.tsx",
+    "utf8",
+  );
   const topics = await readFile("lib/help/topics.ts", "utf8");
   const css = await readFile("app/globals.css", "utf8");
 
@@ -291,7 +293,10 @@ test("Build 003 source of truth requires help on new sections and freshness on a
   const help = await readFile("docs/HELP_SYSTEM.md", "utf8");
   const freshness = await readFile("docs/ADMIN_FRESHNESS.md", "utf8");
 
-  assert.match(roadmap, /every new user-facing\/admin section register contextual help/i);
+  assert.match(
+    roadmap,
+    /every new user-facing\/admin section register contextual help/i,
+  );
   assert.match(roadmap, /freshness\/last-refresh state/i);
   assert.match(help, /circular \*\*ⓘ\*\*/);
   assert.match(freshness, /last successful refresh/i);
