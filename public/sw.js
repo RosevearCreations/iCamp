@@ -2,7 +2,9 @@ const CACHE_NAME = "icamp-shell-v1";
 const SHELL_URLS = ["/", "/manifest.webmanifest"];
 
 self.addEventListener("install", (event) => {
-  event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(SHELL_URLS)));
+  event.waitUntil(
+    caches.open(CACHE_NAME).then((cache) => cache.addAll(SHELL_URLS)),
+  );
   self.skipWaiting();
 });
 
@@ -22,7 +24,7 @@ self.addEventListener("activate", (event) => {
 });
 
 self.addEventListener("fetch", (event) => {
-  if (event.request.method !== "GET") {
+  if (event.request.method !== "GET" || event.request.mode !== "navigate") {
     return;
   }
 
