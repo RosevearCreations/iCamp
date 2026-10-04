@@ -75,8 +75,8 @@ export default async function WorkspacePage({
           <p>
             Build 001 establishes navigation, responsive layout and channel
             expectations without inventing unfinished campground data or
-            permissions. Later builds add real capabilities through shared domain
-            services so Web, telephone and text remain synchronized.
+            permissions. Later builds add real capabilities through shared
+            domain services so Web, telephone and text remain synchronized.
           </p>
         </section>
       </div>
