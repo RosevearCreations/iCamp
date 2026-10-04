@@ -1,7 +1,7 @@
 # Build 001 — Responsive PWA & Omnichannel Application Shell
 
 ## Status
-**GREEN on `dev` — ready for promotion.**
+**FULLY PROMOTED — `main` verification GREEN.**
 
 ## Objective
 Create the active iCamp application shell without prematurely implementing campground business modules.
@@ -145,6 +145,23 @@ Repository invariants now also verify:
 - responsive/accessibility shell rules remain present;
 - free-first/provider-adapter/scale-migration principles remain documented;
 - autonomous build operating rules remain documented.
+
+## Promotion and release verification
+The Build 001 application changes were promoted through the protected dev-to-main workflow and verified on the production/release branch.
+
+Application promotion verification commit: `feb14d3b1c966f51d34d414f164534083500bd6d`.
+
+Production/release verification passed:
+- formatter;
+- lint;
+- strict TypeScript;
+- automated tests;
+- production Next.js build;
+- production dependency audit;
+- full dependency audit capture;
+- Gitleaks secret scan.
+
+CodeQL remains configured but is skipped because the repository is private and the current GitHub account does not have the private-repository Code Security entitlement.
 
 ## Deployment
 No external production hosting provider is configured in Build 001 by design.
