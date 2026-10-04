@@ -29,7 +29,9 @@ export default function HomePage() {
 
         <section className="content-panel" aria-labelledby="principles-heading">
           <p className="eyebrow">Architecture principles</p>
-          <h2 id="principles-heading">Designed to change without starting over</h2>
+          <h2 id="principles-heading">
+            Designed to change without starting over
+          </h2>
           <div className="principle-grid">
             <article>
               <strong>Free-first development</strong>
@@ -41,8 +43,8 @@ export default function HomePage() {
             <article>
               <strong>Live and modular</strong>
               <p>
-                Workspaces and channel capabilities are data-driven so campground
-                needs can evolve without rebuilding the shell.
+                Workspaces and channel capabilities are data-driven so
+                campground needs can evolve without rebuilding the shell.
               </p>
             </article>
             <article>
@@ -91,8 +93,8 @@ export default function HomePage() {
           <h2 id="channels-heading">The web app is only one interface</h2>
           <p>
             Every later operational feature must declare a meaningful Web/PWA,
-            telephone keypad and text-message path—or document why a secure visual
-            or staff-assisted handoff is safer.
+            telephone keypad and text-message path—or document why a secure
+            visual or staff-assisted handoff is safer.
           </p>
           <ChannelSupportSummary support={shellChannelSupport} />
         </section>
