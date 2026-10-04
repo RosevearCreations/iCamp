@@ -29,7 +29,7 @@ The active roadmap contains **156 builds**.
 ## Next active build
 **Build 001 — Responsive PWA & Omnichannel Application Shell**
 
-Status: **QUEUED — NOT STARTED**
+Status: **IN PROGRESS on `dev`**
 
 Build 002 from the previous roadmap is cancelled/superseded by this reset.
 
