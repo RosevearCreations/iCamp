@@ -3,10 +3,7 @@ const REDACTED = "[REDACTED]";
 const sensitiveKeyPattern =
   /(authorization|cookie|password|passwd|secret|token|api[-_]?key|pin|card|cvv|session)/i;
 
-export function redactDiagnosticValue(
-  key: string,
-  value: unknown,
-): unknown {
+export function redactDiagnosticValue(key: string, value: unknown): unknown {
   if (sensitiveKeyPattern.test(key)) {
     return REDACTED;
   }
