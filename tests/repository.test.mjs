@@ -70,7 +70,6 @@ test("omnichannel source requires IVR DTMF and SMS channel parity", async () => 
   assert.match(omnichannel, /caller ID/i);
 });
 
-
 test("Build 001 exposes all required workspace shells", async () => {
   const workspaces = await readFile("lib/workspaces.ts", "utf8");
 
@@ -119,7 +118,6 @@ test("Build 001 architecture codifies free-first evolution and migration", async
   assert.match(architecture, /feature flags/i);
   assert.match(architecture, /provider adapters/i);
 });
-
 
 test("Build 001 responsive shell includes tablet and phone breakpoints", async () => {
   const css = await readFile("app/globals.css", "utf8");
