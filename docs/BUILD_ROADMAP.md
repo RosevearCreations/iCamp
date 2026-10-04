@@ -620,25 +620,130 @@ This roadmap converts the complete iCamp vision into staged, testable builds. Ea
 - cross-property owner dashboard.
 - strict tenant isolation tests.
 
-### Build 081 — Production Readiness Gate
+## Phase 13 — Extended campground operations
+
+### Build 081 — Operational Asset Maintenance Scheduler & Inspection Matrix
+- treat pools, lifeguarded pools, water parks/splash pads, washrooms, showers, laundry, playgrounds, baseball/softball fields, sports courts, beaches, docks, boat ramps, halls and similar facilities as maintainable operational assets.
+- hourly/daily/weekly/monthly/seasonal/custom recurring work.
+- configurable inspection templates and responsible department.
+- automatic work-order creation.
+- completion and missed-task history.
+- failed inspection can close/restrict the asset until cleared.
+- maintenance and management sign-off rules.
+- map/polygon linkage.
+- safety-sensitive tasks remain configurable to applicable local requirements rather than hard-coded legal claims.
+
+### Build 082 — Seasonal/Yearly Site Winterization & Reopening
+- seasonal/yearly lifecycle distinct from ordinary reservations.
+- configurable winter shutdown checklist.
+- water shutoff/draining and campground-defined utility/safety checks.
+- evidence/photo/document capture.
+- maintenance/foreman sign-off.
+- corrective-work loop.
+- winter-closed status only after required approvals.
+- configurable winter-occupancy alternative with winter-readiness evidence such as insulated/heated water protection where required by campground policy.
+- spring/opening inspection and reopening sign-off.
+
+### Build 083 — Permanent Unit / Cottage-Style Ownership & Transfer
+- permanent unit record separate from campsite land record.
+- current ownership/occupancy history.
+- unit can remain physically on site while ownership changes.
+- sale/listing status.
+- buyer inquiry/application.
+- campground approval workflow.
+- transfer documents, fees and inspections.
+- agreement renewal/replacement.
+- closing checklist and audit trail.
+
+### Build 084 — Office Financing Application & Compliance Boundary
+- optional office financing/application workflow for eligible permanent units.
+- application intake and document checklist.
+- status tracking and staff permissions.
+- provider/reference abstraction for external financing.
+- lending decision, disclosure, identity verification and payment-plan boundaries treated as regulated/high-risk operations.
+- no client-calculated approval or hidden credit decision logic.
+- strong confidential-data controls and audit logging.
+
+### Build 085 — Recurring Events, Ticketing & Venue Access
+- one-time and recurring event series.
+- Friday dances, seasonal/Halloween activities, live entertainment, tournaments, meals and other campground events.
+- free/paid/reservation-required events.
+- recurrence with per-occurrence override/cancellation.
+- venue, capacity, attendee restrictions and camper/visitor eligibility.
+- ticket/pass/wristband/QR access.
+- event check-in and attendance.
+- event revenue/refunds where applicable.
+
+### Build 086 — Visitor Registration, Limits & Access Credentials
+- office visitor registration linked to host campsite/reservation.
+- adjustable maximum visitors by campground, section, site type and individual site.
+- visitor fees.
+- vehicle registration where applicable.
+- arrival/departure validity window.
+- wristband, printed pass, QR pass or future electronic-key abstraction.
+- allowed/restricted areas and events.
+- revoke/expire workflow.
+- visitor access audit history.
+
+### Build 087 — Golf Cart, E-Bike & Campground Device Registration
+- register guest/seasonal-resident mobility and recreational devices used around the campground.
+- golf carts, e-bikes and other campground-permitted vehicle/device classes.
+- owner/host site.
+- identifier/serial/plate/description.
+- document/insurance references if required by campground policy.
+- approved driver records.
+- optional safety inspection and sign-off.
+- expiry, suspension and revocation.
+- access restrictions by area/time/device class.
+
+### Build 088 — Waterfront, Boat Launch, Dock & Slip Operations
+- model lakes/rivers/ocean access, beaches and swimming zones.
+- boat registration.
+- boat launch/ramp access.
+- campsite-linked eligibility by default.
+- configurable paid day-use/non-camper access.
+- launch fees.
+- trailer/tow-vehicle record.
+- dock/slip assignment.
+- transient and seasonal dock occupancy.
+- waterfront rule acknowledgement.
+- closures and incident linkage.
+
+### Build 089 — Facility Safety Rules, Acknowledgement & Enforcement
+- versioned rule sets for pools, lifeguarded swimming areas, water parks, beaches, docks, boat ramps, sports fields, playgrounds and other controlled features.
+- hours, age/supervision rules, capacity and access restrictions.
+- required acknowledgement when configured.
+- exact rule-version evidence.
+- warning/incident records.
+- authorized-staff removal or access suspension.
+- management review and reinstatement.
+- closure controls.
+- explicit boundary that iCamp records/enforces campground policy but does not replace trained staff or statutory safety requirements.
+
+### Build 090 — Production Readiness Gate
 - complete end-to-end guest booking.
 - payment sandbox to production-readiness checklist.
-- maintenance lifecycle.
+- maintenance lifecycle including recurring operational assets.
+- seasonal/yearly winterization lifecycle.
+- visitor/access, event, waterfront and safety-policy workflows.
 - POS lifecycle.
 - security matrix.
 - monitoring.
 - rollback.
 - no critical/high unresolved defects.
 
-### Build 082 — First Campground Pilot
+### Build 091 — First Campground Pilot
 - configure one real campground.
 - upload real overhead image.
-- plot sites.
-- enter amenities/rules/rates.
+- plot sites and operational assets.
+- enter site types, utilities, amenities, rules and rates.
+- configure recurring maintenance/inspection schedules.
+- configure seasonal/yearly policies if applicable.
+- configure visitor, vehicle/device, event and waterfront policies if applicable.
 - create staff roles.
-- test bookings without exposing production publicly until accepted.
+- test bookings and operations without exposing production publicly until accepted.
 
-### Build 083 — Public Launch Gate
+### Build 092 — Public Launch Gate
 - production domain.
 - legal pages.
 - privacy/terms.
