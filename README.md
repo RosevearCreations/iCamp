@@ -5,10 +5,12 @@
 iCamp is a complete campground operations platform covering live booking, interactive overhead campground mapping, maintenance, front desk, guest services, POS/store delivery, rentals, events, staffing, vendors, finance, reporting and management.
 
 ## Branches
+
 - `main` — production/release
 - `dev` — integration/staging
 
 ## Source of truth
+
 - [Master Vision](docs/MASTER_VISION.md)
 - [Architecture](docs/ARCHITECTURE.md)
 - [Build Roadmap](docs/BUILD_ROADMAP.md)
