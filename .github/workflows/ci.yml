@@ -72,7 +72,6 @@ jobs:
           path: npm-audit-full.json
           retention-days: 3
 
-
   database:
     name: Database migrations
     runs-on: ubuntu-latest
