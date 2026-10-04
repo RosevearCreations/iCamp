@@ -1,29 +1,102 @@
+import Link from "next/link";
+
+import { AppShell } from "@/components/app-shell";
+import { ChannelSupportSummary } from "@/components/channel-support";
+import { shellChannelSupport } from "@/lib/channels";
+import { workspaces } from "@/lib/workspaces";
+
 export default function HomePage() {
   return (
-    <main className="foundation">
-      <section className="foundation__card" aria-labelledby="foundation-title">
-        <p className="foundation__eyebrow">iCamp2027</p>
-        <h1 id="foundation-title">Campground operations platform</h1>
-        <p>
-          Repository foundation established. The next build will create the
-          responsive application shell for campers, staff, maintenance, POS, and
-          management.
-        </p>
-        <dl className="foundation__status">
-          <div>
-            <dt>Production branch</dt>
-            <dd>main</dd>
+    <AppShell>
+      <div className="page-stack">
+        <section className="hero-panel">
+          <p className="eyebrow">Build 001 · Active application shell</p>
+          <h1>One campground platform. Every operating surface.</h1>
+          <p className="hero-panel__lead">
+            iCamp is being built as a flexible, free-first development platform
+            that can scale to larger infrastructure without replacing its core
+            campground logic.
+          </p>
+          <div className="hero-actions">
+            <Link className="primary-link" href="/workspaces/public">
+              Explore the public shell
+            </Link>
+            <a className="secondary-link" href="#workspaces">
+              View all workspaces
+            </a>
           </div>
-          <div>
-            <dt>Integration branch</dt>
-            <dd>dev</dd>
+        </section>
+
+        <section className="content-panel" aria-labelledby="principles-heading">
+          <p className="eyebrow">Architecture principles</p>
+          <h2 id="principles-heading">Designed to change without starting over</h2>
+          <div className="principle-grid">
+            <article>
+              <strong>Free-first development</strong>
+              <p>
+                No paid provider is required for this build. Provider-specific
+                services arrive later behind replaceable adapters.
+              </p>
+            </article>
+            <article>
+              <strong>Live and modular</strong>
+              <p>
+                Workspaces and channel capabilities are data-driven so campground
+                needs can evolve without rebuilding the shell.
+              </p>
+            </article>
+            <article>
+              <strong>Scale-ready</strong>
+              <p>
+                Standard web, TypeScript and portable server output keep future
+                self-hosted, container and managed deployment options open.
+              </p>
+            </article>
           </div>
-          <div>
-            <dt>Build</dt>
-            <dd>001</dd>
+        </section>
+
+        <section
+          className="content-panel"
+          id="workspaces"
+          aria-labelledby="workspaces-heading"
+        >
+          <div className="section-heading">
+            <div>
+              <p className="eyebrow">Role-specific surfaces</p>
+              <h2 id="workspaces-heading">iCamp workspaces</h2>
+            </div>
+            <span className="build-chip">{workspaces.length} shells</span>
           </div>
-        </dl>
-      </section>
-    </main>
+
+          <div className="workspace-grid">
+            {workspaces.map((workspace) => (
+              <Link
+                className="workspace-card"
+                href={`/workspaces/${workspace.slug}`}
+                key={workspace.slug}
+              >
+                <span className="workspace-card__audience">
+                  {workspace.audience}
+                </span>
+                <strong>{workspace.title}</strong>
+                <p>{workspace.summary}</p>
+                <span className="workspace-card__link">Open shell →</span>
+              </Link>
+            ))}
+          </div>
+        </section>
+
+        <section className="content-panel" aria-labelledby="channels-heading">
+          <p className="eyebrow">Omnichannel foundation</p>
+          <h2 id="channels-heading">The web app is only one interface</h2>
+          <p>
+            Every later operational feature must declare a meaningful Web/PWA,
+            telephone keypad and text-message path—or document why a secure visual
+            or staff-assisted handoff is safer.
+          </p>
+          <ChannelSupportSummary support={shellChannelSupport} />
+        </section>
+      </div>
+    </AppShell>
   );
 }
