@@ -703,6 +703,7 @@ Manual steps are reserved for actions that cannot safely be automated through co
 - real campground image/media;
 - legal/tax/business data;
 - physical access-controller enrollment;
+- telephone/SMS number purchase, registration or regulatory verification required by the chosen provider;
 - real financing/provider agreements.
 
 When manual input becomes necessary, provide exact numbered instructions. Secrets are entered directly into the provider secret store and are not pasted into chat.
