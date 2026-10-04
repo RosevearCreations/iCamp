@@ -12,7 +12,7 @@ Create the minimum secure, testable engineering foundation on which every later 
 - baseline secure HTTP headers.
 - environment template and secret-safe ignore rules.
 - CI for formatting, linting, typecheck, tests, build and dependency audit.
-- CodeQL workflow.
+- CodeQL workflow with private-repository eligibility guard.
 - secret scanning workflow.
 - Dependabot configuration for npm and GitHub Actions.
 - PR template with explicit high-risk domain review.
@@ -31,7 +31,8 @@ Create the minimum secure, testable engineering foundation on which every later 
 
 ## Acceptance criteria
 - CI workflow passes on dev.
-- CodeQL and secret scan complete without a blocking finding.
+- Secret scan completes without a blocking finding.
+- CodeQL runs when repository eligibility is available; on a private repository without GitHub Code Security it must be explicitly skipped by the eligibility guard rather than fail or be silently removed.
 - `npm run verify` succeeds in CI.
 - No manual secret/account setup is required.
 - Build documentation is committed.
