@@ -1,0 +1,73 @@
+name: CI
+
+on:
+  push:
+    branches: [dev, main]
+  pull_request:
+    branches: [dev, main]
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    name: Verify
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Use Node.js 24
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Install dependencies
+        run: npm install --ignore-scripts
+
+      - name: Apply formatter in verification workspace
+        run: npm exec prettier -- --write .
+
+      - name: Verify formatter produced no changes
+        id: formatting
+        run: git diff --exit-code
+
+      - name: Save formatter diff on failure
+        if: failure() && steps.formatting.outcome == 'failure'
+        run: git diff > prettier.diff
+
+      - name: Upload formatter diff on failure
+        if: failure() && steps.formatting.outcome == 'failure'
+        uses: actions/upload-artifact@v4
+        with:
+          name: prettier-diff
+          path: prettier.diff
+          retention-days: 3
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Test
+        run: npm test
+
+      - name: Build
+        run: npm run build
+
+      - name: Audit production dependencies for high/critical vulnerabilities
+        run: npm audit --omit=dev --audit-level=high
+
+      - name: Capture full dependency audit
+        if: always()
+        run: npm audit --json > npm-audit-full.json || true
+
+      - name: Upload full dependency audit
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: npm-audit-full
+          path: npm-audit-full.json
+          retention-days: 3
