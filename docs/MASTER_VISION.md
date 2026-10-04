@@ -147,3 +147,151 @@ Development should prioritize free or inexpensive tiers where practical while ke
 From the management side, iCamp should answer: **What is happening in our campground right now?**
 
 From the camper side, a complex operating system should feel like a simple visual booking, stay-management, shopping, rental and assistance application.
+
+
+## Extended campground operations — permanent sites, safety, visitors, vehicles and waterfront
+
+### Operational facilities are maintainable assets
+Pools, guarded pools, water parks/splash pads, washrooms, showers, laundry buildings, recreation halls, playgrounds, baseball/softball fields, sports courts, beaches, boat launches, docks, roads, garbage areas, septic facilities and similar park features must be modeled as operational assets, not only public-facing amenities.
+
+Every applicable asset can have:
+- a location/polygon on the campground map;
+- operating/open/closed status;
+- safety rules and posted instructions;
+- maintenance categories;
+- inspection templates;
+- recurring upkeep schedules measured in hours, days, weeks, months or seasons;
+- required sign-off roles;
+- condition history and incident history;
+- photographs/documents;
+- automatic work-order generation;
+- closure until a failed inspection is resolved.
+
+Examples include hourly pool-deck checks, daily washroom cleaning, weekly sports-field inspection, scheduled water-quality/operational checks, and seasonal opening/closing procedures.
+
+### Seasonal/yearly site lifecycle and winterization
+Long-term and yearly sites require a lifecycle beyond a normal reservation.
+A site can be configured as seasonal/yearly/permanent-unit occupancy and can require a formal winter shutdown.
+
+Winterization can require:
+- owner/occupant declaration;
+- water shutoff;
+- line draining/winterization;
+- electrical/propane safety steps where applicable;
+- removal/storage requirements;
+- photo evidence;
+- maintenance inspection;
+- maintenance/foreman sign-off;
+- date completed;
+- exceptions/defects and corrective work.
+
+A site does not reach the configured winter-closed state until required sign-offs pass.
+
+Campgrounds that permit continued cold-weather occupancy can instead require a **winter-readiness compliance record**, such as documented insulated/heated water protection or other campground-defined safety requirements. Management controls the checklist; iCamp records evidence and approvals rather than inventing legal/safety standards.
+
+### Permanent-unit / cottage-style sites
+Some long-term sites contain trailers, park models or cottage-like units that are bought and sold while remaining on the same campground site.
+
+iCamp must support:
+- a permanent-unit record distinct from the land/site record;
+- current ownership/occupancy history;
+- listing-for-sale status;
+- office-managed inquiries and approval workflow;
+- transfer/application process;
+- campground fees and administrative charges;
+- documents and inspection requirements;
+- sale/transfer closing checklist;
+- site agreement continuity or replacement;
+- optional financing/application workflow offered by the campground or an external provider.
+
+Financing functions must be architected as regulated/high-risk financial workflows: iCamp may collect an application and track status, but lending decisions, disclosures, identity verification, payment schedules and legal obligations must be handled only through appropriately configured campground processes/providers.
+
+### Campground events and access control
+Campgrounds may run recurring and one-time activities such as Friday-night dances, holiday/Halloween events, live entertainment, tournaments, meals, markets and private functions.
+
+Events can be:
+- free;
+- paid;
+- reservation-required;
+- capacity-limited;
+- camper-only;
+- visitor-eligible;
+- age/restriction controlled;
+- wristband/pass/key/QR controlled.
+
+Events require recurrence rules, venue assignment, capacity, dates/times, access rules, fees, attendee registration, ticket/pass issuance, check-in and cancellation/closure controls.
+
+### Visitor registration and passes
+Visitors to campers can be required to register at the office before entering.
+
+Visitor controls include:
+- host campsite/reservation;
+- visitor identity/contact details appropriate to campground policy;
+- vehicle registration if applicable;
+- arrival/departure validity;
+- visitor fee;
+- wristband, printed pass, QR pass or access credential;
+- allowed areas/events;
+- revoked/expired status.
+
+Maximum visitors are configurable at campground, section, site-type and individual-site level and may be constrained by site size, occupancy, fire/safety capacity or management policy.
+
+### Site types and service compatibility
+Sites explicitly model camping/accommodation type and services. Examples include:
+- tent-only;
+- RV/trailer;
+- mixed tent/RV;
+- cabin/cottage/park model;
+- full service;
+- electric-only;
+- water/electric;
+- no hookups;
+- waterfront;
+- seasonal/yearly;
+- walk-up.
+
+Booking compatibility must prevent selection that violates configured site/equipment/utility/occupancy rules.
+
+### Personal mobility and recreational vehicle registration
+Campground-operated or guest-owned vehicles/devices used within the property can require registration and, where campground policy requires it, inspection/approval.
+
+Examples:
+- golf carts;
+- e-bikes;
+- mobility/recreational carts;
+- ATVs/UTVs where permitted;
+- other campground-authorized devices.
+
+Records can include owner/host campsite, identifying description/serial/plate, insurance/document references where required, approved drivers, expiry, safety inspection checklist, approval/revocation status and access restrictions.
+
+### Waterfront, boat launch and dock operations
+Waterfront campgrounds may manage:
+- lakes;
+- rivers;
+- ocean access;
+- beaches;
+- swimming zones;
+- boat launches/ramps;
+- docks/slips;
+- transient boat access.
+
+Boat registrations can be linked to an active campsite/reservation by default, while management can optionally allow non-camper day access for a fee.
+
+Records can include boat owner, registration/description, host site, launch fee, launch permission, dock/slip assignment, arrival/departure, trailer/vehicle information and rules acknowledgement.
+
+### Safety-rule acknowledgement and enforcement
+Pools, lifeguarded swimming areas, beaches, water parks, docks, boat ramps, sports facilities, playgrounds and other controlled features can have versioned rule sets.
+
+iCamp must support:
+- displayed rules;
+- required acknowledgement where configured;
+- age/supervision restrictions;
+- capacity limits;
+- opening hours;
+- temporary closures;
+- incident/warning records;
+- access suspension/removal by authorized staff;
+- reinstatement/management review;
+- audit history.
+
+For lifeguarded or supervised areas, staff can record warnings and enforce facility removal/suspension according to campground policy. iCamp records policy and enforcement; it does not replace trained staff judgment or statutory safety requirements.
