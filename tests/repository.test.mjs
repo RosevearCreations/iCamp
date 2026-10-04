@@ -46,7 +46,7 @@ test("active roadmap contains exactly Builds 001 through 156", async () => {
   );
 });
 
-test("roadmap reset keeps Build 001 queued and the old foundation unnumbered", async () => {
+test("roadmap reset keeps the active sequence and old foundation separated", async () => {
   const queue = await readFile("docs/BUILD_QUEUE.md", "utf8");
   const baseline = await readFile(
     "docs/PRE_IMPLEMENTATION_BASELINE.md",
@@ -57,7 +57,7 @@ test("roadmap reset keeps Build 001 queued and the old foundation unnumbered", a
     queue,
     /Build 001 — Responsive PWA & Omnichannel Application Shell/,
   );
-  assert.match(queue, /QUEUED — NOT STARTED/);
+  assert.match(queue, /The active roadmap contains \*\*156 builds\*\*/);
   assert.match(baseline, /intentionally \*\*unnumbered\*\*/);
 });
 
