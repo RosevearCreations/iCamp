@@ -706,3 +706,104 @@ Manual steps are reserved for actions that cannot safely be automated through co
 - real financing/provider agreements.
 
 When manual input becomes necessary, provide exact numbered instructions. Secrets are entered directly into the provider secret store and are not pasted into chat.
+
+
+## 23. Omnichannel Voice, DTMF and SMS Architecture
+
+### 23.1 Channel principle
+Web/PWA, IVR/DTMF, speech and SMS are channels over the same application/domain services. Channel handlers do not implement separate booking, pricing, maintenance, access or finance rules.
+
+### 23.2 Telephony provider adapter
+Use a replaceable telephony adapter capable of:
+- inbound/outbound voice calls;
+- DTMF digit gathering;
+- optional speech input;
+- inbound/outbound SMS and, where available, MMS;
+- delivery/call status callbacks;
+- number/provider health information;
+- verified signed webhooks.
+
+A provider such as Twilio can support DTMF/speech collection, but the domain layer must not depend on Twilio-specific objects.
+
+### 23.3 Proposed communications domain
+Add:
+- communication_endpoints
+- communication_consents
+- communication_preferences
+- voice_calls
+- voice_call_events
+- ivr_sessions
+- ivr_steps
+- ivr_inputs
+- sms_conversations
+- sms_messages
+- sms_commands
+- message_opt_events
+- call_transfer_events
+- communication_provider_events
+
+### 23.4 IVR session state
+IVR menus are state machines linked to a short-lived server session. A session can carry only the minimum context needed, such as:
+- campground;
+- language;
+- authenticated guest/staff identity;
+- reservation/site reference;
+- pending operation;
+- retry count;
+- expiry.
+
+Digits are interpreted server-side and validated before domain commands are executed.
+
+### 23.5 SMS command/conversation model
+Inbound SMS can be handled as:
+- exact keywords;
+- guided numbered menus;
+- structured commands;
+- natural-language classification.
+
+Natural-language interpretation never directly mutates data. It produces a proposed structured intent, then normal domain validation/authorization executes the action.
+
+### 23.6 Channel parity contract
+Each product build must declare a **channel support matrix**:
+- Web/PWA: full, partial, not applicable.
+- IVR/DTMF: full, guided equivalent, staff transfer, not applicable.
+- SMS: full, guided equivalent, secure-link handoff, not applicable.
+
+A channel may be marked not applicable only when the task is inherently graphical or unsafe for that channel, such as polygon drawing.
+
+### 23.7 Identity and authentication
+Caller ID/phone number is only a routing hint, not proof of identity.
+
+Guest verification may combine:
+- reservation number;
+- date/site detail;
+- short-lived one-time code;
+- account PIN where appropriately protected.
+
+Staff/high-risk verification requires stronger authentication, such as staff PIN plus a separate one-time factor or approved authenticated session.
+
+### 23.8 Telephone payments
+Do not collect raw payment-card numbers in custom IVR logic or SMS.
+
+Telephone flows use:
+- provider-hosted secure payment link;
+- staff-assisted tokenized provider workflow;
+- or a separately approved PCI-compliant IVR payment provider.
+
+### 23.9 Telephony webhooks
+Voice/SMS callbacks must:
+- verify provider signatures;
+- reject replay where supported;
+- be idempotent;
+- rate limit abuse;
+- normalize provider data into internal events;
+- avoid logging message content/DTMF secrets unnecessarily.
+
+### 23.10 Consent and messaging separation
+Store operational-message and marketing-message purposes separately. Promotional SMS requires jurisdiction-appropriate consent, sender identification and unsubscribe handling. STOP/START/HELP-style events from a provider should update the internal preference/consent history.
+
+### 23.11 Reliability
+Telephony provider failure must not corrupt reservations or payments. Calls/SMS may retry or transfer to staff, while completed domain actions remain idempotent and auditable.
+
+### 23.12 Visual-task fallback
+Graphical functions such as polygon plotting remain web/PWA tasks. Telephone/SMS offers operational equivalents using site/asset IDs and can send secure links to the relevant visual page.
