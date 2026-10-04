@@ -107,6 +107,21 @@ export const workspaces: readonly WorkspaceDefinition[] = [
     channelSupport: staffChannels,
   },
   {
+    slug: "it-analysis",
+    title: "I.T. & Analysis",
+    shortTitle: "I.T. / Analysis",
+    audience: "Authorized I.T., system administration and support staff",
+    summary:
+      "Review system health, releases, safe diagnostics, integration status and troubleshooting references without exposing client-sensitive information.",
+    channelSupport: defineChannelSupport({
+      web: "full",
+      ivr: "staff-transfer",
+      sms: "secure-link",
+      fallback: "secure-link",
+      note: "Detailed diagnostics require future authenticated I.T. permissions.",
+    }),
+  },
+  {
     slug: "finance",
     title: "Finance & Accounting",
     shortTitle: "Finance",
