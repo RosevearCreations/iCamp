@@ -632,7 +632,17 @@ The initial deployment may serve one campground, but the architecture must suppo
 
 ## 30. Development approach
 
-Development should use free or low-cost tiers where practical and avoid unnecessary provider lock-in.
+iCamp is a live application expected to change continuously as campground needs, regulations, providers and operating practices evolve.
+
+Development should:
+- use free software/free development tiers wherever practical during design and testing;
+- keep core data and business logic portable;
+- use provider adapters instead of locking business logic to one hosting, database, telephony, payment, storage or access-control vendor;
+- use configuration and feature flags for campground-specific variations;
+- support versioned migrations and rollback/recovery;
+- preserve an explicit migration path to larger managed or self-hosted infrastructure as scale grows.
+
+Free-first development must not mean free-tier lock-in. The system should be able to move to paid/high-scale infrastructure without redesigning campground business logic.
 
 The active numbered roadmap is intentionally restarted after the pre-implementation engineering baseline so every Build number reflects this complete vision.
 
