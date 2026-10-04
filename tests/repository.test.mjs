@@ -28,6 +28,7 @@ test("source-of-truth documents remain present in README", async () => {
     "SECURITY.md",
     "BUILD_QUEUE.md",
     "PRE_IMPLEMENTATION_BASELINE.md",
+    "BUILD_OPERATING_MODEL.md",
   ]) {
     assert.ok(readme.includes(required), `README must link ${required}`);
   }
@@ -126,4 +127,17 @@ test("Build 001 responsive shell includes tablet and phone breakpoints", async (
   assert.match(css, /@media \(max-width: 46rem\)/);
   assert.match(css, /prefers-reduced-motion/);
   assert.match(css, /skip-link/);
+});
+
+
+test("build operating model preserves autonomous free-first delivery", async () => {
+  const operatingModel = await readFile(
+    "docs/BUILD_OPERATING_MODEL.md",
+    "utf8",
+  );
+
+  assert.match(operatingModel, /Autonomous development by default/);
+  assert.match(operatingModel, /Free-first development/);
+  assert.match(operatingModel, /verbose summary/i);
+  assert.match(operatingModel, /exact numbered steps/i);
 });
