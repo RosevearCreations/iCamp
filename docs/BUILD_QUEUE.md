@@ -13,7 +13,7 @@ The active roadmap contains **156 builds** and incorporates the complete iCamp v
 ## Completed active builds
 
 ### Build 001 — Responsive PWA & Omnichannel Application Shell
-Status: **GREEN on `dev`; promotion in progress.**
+Status: **FULLY PROMOTED — `main` GREEN.**
 
 Delivered:
 - responsive phone/tablet/desktop shell;
