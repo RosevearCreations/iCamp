@@ -652,17 +652,78 @@ The following do **not** finalize offline:
 - environment isolation;
 - audit logging.
 
-## 19. Observability
+## 19. I.T., Analysis and Observability Architecture
 
-Every environment should expose:
-- application/version SHA;
-- health status;
-- migration version;
-- structured logs;
-- error tracking;
-- integration health;
-- queue/scheduler health;
-- access-device health where connected.
+I.T./Analysis is a first-class operational subsystem spanning every iCamp domain.
+
+### 19.1 Health model
+Every environment exposes distinct health contracts:
+- **liveness** — the application process can respond;
+- **readiness** — required runtime configuration/dependencies are usable;
+- **version** — release/application/build identity;
+- **aggregate public status** — sanitized operational state only.
+
+A health check must never return secrets, connection strings, raw exceptions, stack traces, personal information or detailed security topology.
+
+### 19.2 External watchdog boundary
+A fully locked process cannot self-report reliably. Production lockup detection therefore requires an independent monitor outside the iCamp process to call the liveness/readiness endpoints.
+
+The watchdog is an adapter:
+- free/self-hosted monitoring can be used during development/pilot;
+- larger managed observability services can be adopted later;
+- the health contract remains unchanged.
+
+### 19.3 Correlation and support references
+Every relevant web request should receive an iCamp-generated correlation/request ID. Error screens and server events use safe support references so an operator can correlate a client report with diagnostics without exposing stack traces to the client.
+
+### 19.4 Structured diagnostic events
+The eventual diagnostic event model includes:
+- timestamp;
+- environment;
+- release/build SHA;
+- service/component;
+- severity;
+- category;
+- correlation ID;
+- campground/property scope where applicable;
+- sanitized error fingerprint;
+- duration/status metrics;
+- dependency/integration reference;
+- remediation/incident linkage.
+
+Do not make raw request bodies the default telemetry model.
+
+### 19.5 Error and lockup analysis
+The I.T. subsystem should support detection/analysis of:
+- unhandled exceptions;
+- repeated error fingerprints;
+- high latency/timeouts;
+- event-loop/runtime stalls where measurable;
+- queue/scheduler backlog or heartbeat loss;
+- failed provider callbacks;
+- database/storage/integration outages;
+- resource saturation;
+- deployment/configuration mismatch;
+- repeated client failures.
+
+### 19.6 Data separation
+Public/client status and private diagnostics are separate surfaces.
+
+Until authentication/authorization is available, the I.T. workspace may display only the same safe data allowed on the public status surface. Detailed logs and sensitive diagnostics must wait for Builds 004–006 and later persistence/audit work.
+
+### 19.7 Retention and privacy
+Telemetry retention is configurable by data class. Secrets, payment-card data, authentication codes, keypad PINs, sensitive financing data and unnecessary personal content must be redacted or excluded before persistence.
+
+### 19.8 Evolution path
+Build 002 establishes contracts and in-process health. Later builds extend:
+- Build 007 — queue/scheduler heartbeat and stalled-job visibility;
+- Build 148 — performance, query, realtime and observability scale analysis;
+- Build 149 — diagnostics abuse/security hardening;
+- Build 150 — recovery/incident runbooks;
+- Build 153 — production I.T. operations readiness and external watchdog verification.
+
+### 19.9 Global client web status
+A safe web status surface may be globally accessible and should communicate service condition without exposing internal diagnostics.
 
 ## 20. Environments
 
