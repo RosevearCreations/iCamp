@@ -17,6 +17,7 @@ Describe the user/business requirement and the implementation.
 - [ ] Dependency/security checks
 - [ ] Permission/security review where applicable
 - [ ] Responsive/accessibility review where applicable
+- [ ] Web/PWA + IVR/DTMF + SMS channel support/fallback documented
 - [ ] Documentation updated
 - [ ] Migration reviewed where applicable
 - [ ] Manual action documented where unavoidable
@@ -32,6 +33,8 @@ Check every affected domain:
 - [ ] Personal/confidential information
 - [ ] Inventory
 - [ ] Safety / incidents / facility access
+- [ ] Voice / IVR / DTMF / SMS
+- [ ] Physical gate/access commands or credentials
 - [ ] None of the above
 
 ## Verification evidence
