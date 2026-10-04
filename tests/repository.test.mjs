@@ -129,7 +129,6 @@ test("Build 001 responsive shell includes tablet and phone breakpoints", async (
   assert.match(css, /skip-link/);
 });
 
-
 test("build operating model preserves autonomous free-first delivery", async () => {
   const operatingModel = await readFile(
     "docs/BUILD_OPERATING_MODEL.md",
