@@ -119,3 +119,13 @@ test("Build 001 architecture codifies free-first evolution and migration", async
   assert.match(architecture, /feature flags/i);
   assert.match(architecture, /provider adapters/i);
 });
+
+
+test("Build 001 responsive shell includes tablet and phone breakpoints", async () => {
+  const css = await readFile("app/globals.css", "utf8");
+
+  assert.match(css, /@media \(max-width: 60rem\)/);
+  assert.match(css, /@media \(max-width: 46rem\)/);
+  assert.match(css, /prefers-reduced-motion/);
+  assert.match(css, /skip-link/);
+});
