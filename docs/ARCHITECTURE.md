@@ -350,3 +350,109 @@ The user should only be interrupted for actions that cannot be performed safely 
 - entering real business/tax/legal information
 
 When manual action is necessary, instructions must be explicit, numbered, and tell the user exactly what to copy back without exposing secrets in chat.
+
+
+## 17. Extended operations model
+
+### Maintainable operational assets
+Amenities and operational assets are separate concepts. A pool, washroom, water park, sports field, dock, boat ramp, playground or recreation building may be publicly advertised as an amenity while simultaneously having an internal asset record with:
+- polygon/location;
+- asset type;
+- operating state;
+- inspection templates;
+- recurring maintenance schedules;
+- safety/rule set;
+- responsible department;
+- sign-off requirements;
+- condition/incident history;
+- automatic closure/work-order rules.
+
+Recurring schedules must support hourly, daily, weekly, monthly, seasonal and custom recurrence. Completion history is retained rather than overwriting the last completed task.
+
+### Seasonal/yearly lifecycle
+Long-term site assignments use a lifecycle model separate from short-stay reservations:
+- active season;
+- winterization due;
+- winterization submitted;
+- inspection required;
+- corrective work required;
+- winter closed;
+- approved winter occupancy;
+- opening inspection due;
+- reopened.
+
+The site can require evidence and maintenance/foreman sign-off before transitioning to winter closed or cold-weather approved.
+
+### Winter-readiness compliance
+Rules are configurable by campground because climate, laws and utilities differ. The system stores campground-defined requirements such as insulated/heated water protection, shutoff/draining, utility checks, photos and staff approval. Compliance records are versioned and auditable.
+
+### Permanent units and cottage-style ownership
+Land/site and permanent unit are separate entities. Proposed additional domain entities:
+- permanent_units
+- permanent_unit_ownership
+- permanent_unit_listings
+- permanent_unit_transfer_applications
+- permanent_unit_inspections
+- financing_applications
+- financing_provider_references
+
+A unit can change ownership while the underlying site remains unchanged. Financing is isolated behind a high-risk provider/workflow boundary and must never be assumed to be an ordinary iCamp credit feature.
+
+### Events and access
+Add:
+- events
+- event_series
+- event_occurrences
+- event_venues
+- event_access_rules
+- event_registrations
+- event_tickets_passes
+- event_checkins
+
+Recurring event series generate occurrences while allowing individual dates to be cancelled or altered.
+
+### Visitors and access credentials
+Add:
+- visitor_registrations
+- visitor_hosts
+- visitor_vehicles
+- access_credentials
+- access_credential_events
+
+Visitor limits resolve from the most specific applicable rule: individual site -> site type -> section -> campground. Access credentials can represent wristbands, printed passes, QR codes or future electronic keys.
+
+### Recreational/personal mobility registration
+Add:
+- registered_devices_vehicles
+- device_vehicle_inspections
+- device_vehicle_authorizations
+- authorized_drivers
+
+This is distinct from ordinary road vehicles on a reservation because campground-operating permissions and safety checks can differ.
+
+### Waterfront operations
+Add:
+- water_features
+- swimming_zones
+- boat_registrations
+- boat_launches
+- boat_launch_sessions
+- docks
+- dock_slips
+- dock_assignments
+
+Access policy can require an active campsite or can explicitly allow paid day-use guests.
+
+### Rule sets and enforcement
+Rules must be versioned records, not hard-coded text. Add:
+- rule_sets
+- rule_versions
+- rule_acknowledgements
+- safety_warnings
+- access_suspensions
+- incident_enforcements
+
+A guest acknowledgement points to the exact rule version agreed to. Staff enforcement actions require permission and audit history.
+
+### Safety boundary
+iCamp records campground policies, inspection evidence, staff decisions and acknowledgements. It must not present campground-configured checklists as a substitute for applicable law, certified inspections, lifeguard training, marine rules or other statutory safety obligations.
