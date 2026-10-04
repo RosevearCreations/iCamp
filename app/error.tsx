@@ -20,8 +20,8 @@ export default function ErrorPage({
         <p className="eyebrow">iCamp encountered a problem</p>
         <h1>That operation could not be completed.</h1>
         <p>
-          No sensitive technical detail is displayed here. You can try again,
-          or provide the support reference to authorized campground support.
+          No sensitive technical detail is displayed here. You can try again, or
+          provide the support reference to authorized campground support.
         </p>
         {error.digest ? (
           <p className="support-reference">
