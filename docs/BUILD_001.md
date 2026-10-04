@@ -1,7 +1,7 @@
 # Build 001 — Responsive PWA & Omnichannel Application Shell
 
 ## Status
-**GREEN on `dev` — ready for production promotion.**
+**GREEN and promoted to `main`.**
 
 ## Objective
 Create the active iCamp application shell without prematurely implementing campground business modules.
@@ -172,8 +172,8 @@ The repository test suite now verifies:
 - reduced-motion support;
 - skip-link accessibility.
 
-## Dev gate result
-Latest Build 001 `dev` verification passed:
+## Verification result
+Build 001 passed the same required verification on `dev`, the promotion pull request, and `main`:
 - formatting;
 - ESLint;
 - strict TypeScript;
@@ -182,6 +182,14 @@ Latest Build 001 `dev` verification passed:
 - production dependency audit;
 - full dependency-audit capture;
 - Gitleaks secret scan.
+
+## Production promotion
+- Promotion PR: #9.
+- Production squash commit: `5b6f532bf6cc148939bf573863bfe8d3b5d03dea`.
+- `main` CI: GREEN.
+- `main` secret scan: GREEN.
+- CodeQL: eligibility-aware skip on this private repository.
+- `dev` was synchronized back to the production commit before this final documentation update.
 
 ## Manual action
 **None.**
