@@ -29,7 +29,7 @@ export function AppShell({
 
         <div className="topbar__status" aria-label="Build status">
           <span className="status-dot" aria-hidden="true" />
-          Build 002 · Health & I.T. foundation
+          Build 003 · Data, refresh & help foundation
         </div>
       </header>
 
@@ -62,6 +62,8 @@ export function AppShell({
       <footer className="site-footer">
         <span>iCamp · evolving campground operations platform</span>
         <span className="site-footer__links">
+          <Link href="/help">Help</Link>
+          <span aria-hidden="true">·</span>
           <Link href="/status">System status</Link>
           <span aria-hidden="true">·</span>
           <span>Web · Phone / DTMF · SMS / MMS</span>
