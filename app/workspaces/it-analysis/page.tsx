@@ -27,8 +27,8 @@ export default async function ItAnalysisPage() {
           <h1>System health without exposing sensitive information.</h1>
           <p className="hero-panel__lead">
             Build 002 establishes diagnostics and support contracts. Until
-            authentication, permissions and audit controls are available, this
-            workspace intentionally shows only public-safe health information.
+            permissions and audit controls are available, this workspace
+            intentionally shows only public-safe health information.
           </p>
         </section>
 
