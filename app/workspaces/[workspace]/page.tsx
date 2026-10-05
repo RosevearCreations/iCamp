@@ -6,7 +6,8 @@ import { AdminRefreshControl } from "@/components/admin-refresh-control";
 import { AppShell } from "@/components/app-shell";
 import { ChannelSupportSummary } from "@/components/channel-support";
 import { SectionHeading } from "@/components/section-heading";
-import { requireSignedIn, requireStaff } from "@/lib/auth/current-session";
+import { requireSignedIn } from "@/lib/auth/current-session";
+import { requireAnyCampgroundPermission } from "@/lib/authz/current-user";
 import { getWorkspace } from "@/lib/workspaces";
 
 export const dynamic = "force-dynamic";
@@ -43,8 +44,11 @@ export default async function WorkspacePage({
 
   if (workspace.slug === "guest") {
     await requireSignedIn(`/workspaces/${workspace.slug}`);
-  } else if (workspace.slug !== "public") {
-    await requireStaff(`/workspaces/${workspace.slug}`);
+  } else if (workspace.requiredPermission) {
+    await requireAnyCampgroundPermission(
+      workspace.requiredPermission,
+      `/workspaces/${workspace.slug}`,
+    );
   }
 
   const showsFreshness = !["public", "guest"].includes(workspace.slug);
