@@ -28,7 +28,12 @@ const setupPool = new Pool({ connectionString: databaseUrl, max: 2 });
 
 const testPassword = ["authorization", "fixture", "password", "one"].join("-");
 
-async function createCampground(organizationName, organizationSlug, campgroundName, campgroundSlug) {
+async function createCampground(
+  organizationName,
+  organizationSlug,
+  campgroundName,
+  campgroundSlug,
+) {
   const organization = await setupPool.query(
     `insert into public.organizations (name, slug)
      values ($1, $2)
@@ -56,7 +61,12 @@ async function createCampground(organizationName, organizationSlug, campgroundNa
   };
 }
 
-async function assignTemplateDirect(userId, organizationId, campgroundId, roleCode) {
+async function assignTemplateDirect(
+  userId,
+  organizationId,
+  campgroundId,
+  roleCode,
+) {
   const assignment = await setupPool.query(
     `insert into icamp_private.campground_assignments (
        user_id,
@@ -186,10 +196,10 @@ try {
     permissions: ["reports.read", "maintenance.read"],
   });
 
-  assert.deepEqual(
-    [...customRole.permissions].sort(),
-    ["maintenance.read", "reports.read"],
-  );
+  assert.deepEqual([...customRole.permissions].sort(), [
+    "maintenance.read",
+    "reports.read",
+  ]);
 
   await assignStaffToCampground({
     actorUserId: owner.id,
