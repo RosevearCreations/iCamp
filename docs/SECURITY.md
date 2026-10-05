@@ -437,3 +437,56 @@ Privileged internal help may contain operational guidance but must not expose:
 - sensitive financial or client information.
 
 Help controls themselves do not bypass authorization; a user who cannot access a feature must not gain its privileged data through help content.
+
+
+## 24. Authentication and Session Security Controls
+
+### Passwords
+- passwords are hashed server-side with scrypt and random salts;
+- plaintext passwords are never persisted or logged;
+- password hashes remain in the private database schema;
+- public APIs never expose password verifiers.
+
+### Account enumeration
+- login uses generic invalid-credential messages;
+- unknown-account login performs password-verification work against a dummy verifier to reduce timing differences;
+- registration does not reveal whether an email already exists;
+- recovery responses do not reveal account existence.
+
+### Failed sign-in handling
+- active accounts track failed attempts;
+- five failed password attempts trigger an initial 15-minute lock;
+- lockout behavior is server/database controlled;
+- future I.T./Analysis can surface abuse patterns without publishing account existence.
+
+### Sessions
+- session tokens contain at least 256 bits of cryptographic randomness;
+- only SHA-256 token hashes are persisted;
+- sessions expire and can be revoked server-side;
+- production cookie uses `__Host-`, Secure, HttpOnly and SameSite=Lax;
+- logout revokes the database session before clearing the cookie.
+
+### Recovery
+- recovery tokens are random, expiring and single-use;
+- only token hashes are stored;
+- password reset revokes all existing sessions;
+- raw recovery tokens are not logged by the no-op delivery adapter.
+
+### Browser mutations
+- authentication POST requests require same-origin Origin validation;
+- redirect targets are constrained to local application paths;
+- mutation endpoints do not use GET.
+
+### Staff and privilege boundary
+Build 004 staff identity is not itself permission to perform every staff operation.
+
+Build 005 must enforce campground/property scope and permission checks before staff business data becomes available.
+
+### Repository release protection
+The production/release `main` branch should be protected:
+- pull request required;
+- required GREEN status checks;
+- no force pushes;
+- no branch deletion;
+- no routine direct-push bypass;
+- no mandatory human approval count while autonomous single-maintainer development is in use, unless the owner later chooses otherwise.
