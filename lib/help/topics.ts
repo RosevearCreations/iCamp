@@ -128,6 +128,19 @@ export const helpTopics = {
     ],
     audience: "public",
   },
+  "auth.authorization": {
+    id: "auth.authorization",
+    slug: "roles-permissions-and-campground-access",
+    title: "Roles, permissions and campground access",
+    summary:
+      "Signing in identifies you; campground assignments and explicit permissions determine what operational areas and records you may use.",
+    details: [
+      "Staff access is deny-by-default until an active campground assignment and role grant the required permission.",
+      "Role templates provide common starting points, while organization-specific custom roles can grant a smaller approved permission set.",
+      "Database row-level security adds a second boundary so an assigned user cannot read or change another campground merely by changing a URL or request.",
+    ],
+    audience: "public",
+  },
   "customer.input": {
     id: "customer.input",
     slug: "customer-input-guidance",
