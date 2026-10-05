@@ -1,9 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import {
-  authenticatePassword,
-  createSession,
-} from "@/lib/auth/postgres.mjs";
+import { authenticatePassword, createSession } from "@/lib/auth/postgres.mjs";
 import {
   isSameOriginMutation,
   safeReturnPath,
@@ -16,7 +13,10 @@ import {
 
 export async function POST(request: NextRequest) {
   if (!isSameOriginMutation(request)) {
-    return NextResponse.json({ error: "Invalid request origin." }, { status: 403 });
+    return NextResponse.json(
+      { error: "Invalid request origin." },
+      { status: 403 },
+    );
   }
 
   const formData = await request.formData();
