@@ -33,7 +33,6 @@ test("source-of-truth documents remain present in README", async () => {
     "HELP_SYSTEM.md",
     "ADMIN_FRESHNESS.md",
     "AUTHENTICATION.md",
-    "HELP_SYSTEM.md",
   ]) {
     assert.ok(readme.includes(required), `README must link ${required}`);
   }
@@ -248,7 +247,7 @@ test("Build 003 CI verifies migrations against PostgreSQL", async () => {
   assert.match(workflow, /postgres:17-alpine/);
   assert.match(workflow, /Database migrations/);
   assert.match(workflow, /apply-database-migrations\.mjs/);
-  assert.match(workflow, /Verify schema, RLS and tenant boundaries/);
+  assert.match(workflow, /Verify all database contracts/);
 });
 
 test("Build 003 provides visible admin freshness controls", async () => {
