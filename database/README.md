@@ -27,3 +27,12 @@ Build 003 intentionally creates no permissive RLS policies. Authentication and t
 iCamp does not require Supabase to develop or test Build 003. The SQL remains PostgreSQL-compatible so a future Supabase project can use the same canonical schema rather than becoming the source of truth.
 
 When a remote provider is connected, schema changes must continue to originate from version-controlled migrations rather than ad-hoc dashboard edits.
+
+
+## Current hosted development target
+
+The current remote development database is the **RosevearCreations Supabase iCamp** project (`cxgszmpbeswdikzofvjv`, Canada Central).
+
+GitHub migration files remain canonical.
+
+Supabase's migration interface is used to apply those canonical migrations remotely; vanilla PostgreSQL CI remains the portability/compatibility proof.
