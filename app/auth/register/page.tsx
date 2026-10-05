@@ -64,7 +64,8 @@ export default async function RegisterPage({
             </label>
 
             <p className="field-guidance" id="password-guidance">
-              Use at least 12 characters. A long memorable passphrase is welcome.
+              Use at least 12 characters. A long memorable passphrase is
+              welcome.
             </p>
 
             <button className="primary-button" type="submit">
