@@ -12,10 +12,7 @@ export async function requireAnyCampgroundPermission(
   returnPath = "/",
 ) {
   const session = await requireStaff(returnPath);
-  const allowed = await hasAnyCampgroundPermission(
-    session.user.id,
-    permission,
-  );
+  const allowed = await hasAnyCampgroundPermission(session.user.id, permission);
 
   if (!allowed) {
     redirect("/auth/not-authorized");
