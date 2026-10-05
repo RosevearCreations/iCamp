@@ -28,7 +28,6 @@ iCamp does not require Supabase to develop or test Build 003. The SQL remains Po
 
 When a remote provider is connected, schema changes must continue to originate from version-controlled migrations rather than ad-hoc dashboard edits.
 
-
 ## Current hosted development target
 
 The current remote development database is the **RosevearCreations Supabase iCamp** project (`cxgszmpbeswdikzofvjv`, Canada Central).
