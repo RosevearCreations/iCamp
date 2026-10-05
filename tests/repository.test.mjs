@@ -32,6 +32,7 @@ test("source-of-truth documents remain present in README", async () => {
     "IT_ANALYSIS.md",
     "HELP_SYSTEM.md",
     "ADMIN_FRESHNESS.md",
+    "AUTHENTICATION.md",
     "HELP_SYSTEM.md",
   ]) {
     assert.ok(readme.includes(required), `README must link ${required}`);
@@ -301,4 +302,120 @@ test("Build 003 source of truth requires help on new sections and freshness on a
   assert.match(help, /circular \*\*ⓘ\*\*/);
   assert.match(freshness, /last successful refresh/i);
   assert.match(freshness, /source watermark/i);
+});
+
+
+test("Build 004 keeps authentication secrets in the private schema", async () => {
+  const migration = await readFile(
+    "database/migrations/0002_authentication_and_sessions.sql",
+    "utf8",
+  );
+
+  for (const table of [
+    "user_accounts",
+    "password_credentials",
+    "auth_sessions",
+    "password_recovery_tokens",
+    "mfa_factors",
+  ]) {
+    assert.match(
+      migration,
+      new RegExp(`create table icamp_private\\.${table}`),
+    );
+    assert.doesNotMatch(
+      migration,
+      new RegExp(`create table public\\.${table}`),
+    );
+  }
+
+  assert.match(migration, /token_hash bytea/);
+  assert.doesNotMatch(migration, /\bsession_token\b/);
+  assert.doesNotMatch(migration, /\brecovery_token\b/);
+});
+
+test("Build 004 session cookies are server-only and production hardened", async () => {
+  const cookies = await readFile("lib/auth/session-cookie.ts", "utf8");
+
+  assert.match(cookies, /__Host-icamp_session/);
+  assert.match(cookies, /httpOnly: true/);
+  assert.match(cookies, /sameSite: "lax"/);
+  assert.match(cookies, /secure: process\.env\.NODE_ENV === "production"/);
+  assert.match(cookies, /maxAge: SESSION_MAX_AGE_SECONDS/);
+});
+
+test("Build 004 protects authentication mutations and return paths", async () => {
+  const security = await readFile("lib/auth/request-security.ts", "utf8");
+
+  assert.match(security, /isSameOriginMutation/);
+  assert.match(security, /origin/);
+  assert.match(security, /safeReturnPath/);
+  assert.match(security, /startsWith\("\/\/"\)/);
+});
+
+test("Build 004 public auth flows avoid account enumeration", async () => {
+  const login = await readFile("lib/auth/postgres.mjs", "utf8");
+  const register = await readFile("app/api/auth/register/route.ts", "utf8");
+  const recovery = await readFile(
+    "app/api/auth/recovery/request/route.ts",
+    "utf8",
+  );
+
+  assert.match(login, /DUMMY_PASSWORD_HASH/);
+  assert.match(login, /locked_until/);
+  assert.match(register, /23505/);
+  assert.match(register, /status=registration/);
+  assert.match(recovery, /status=requested/);
+});
+
+test("Build 004 gates guest and staff workspace identities", async () => {
+  const workspace = await readFile(
+    "app/workspaces/[workspace]/page.tsx",
+    "utf8",
+  );
+  const itWorkspace = await readFile(
+    "app/workspaces/it-analysis/page.tsx",
+    "utf8",
+  );
+
+  assert.match(workspace, /requireSignedIn/);
+  assert.match(workspace, /requireStaff/);
+  assert.match(workspace, /workspace\.slug === "guest"/);
+  assert.match(itWorkspace, /requireStaff/);
+});
+
+test("Build 004 CI verifies the full authentication lifecycle", async () => {
+  const workflow = await readFile(".github/workflows/ci.yml", "utf8");
+  const lifecycle = await readFile(
+    "scripts/verify-auth-lifecycle.mjs",
+    "utf8",
+  );
+
+  assert.match(workflow, /Verify authentication lifecycle/);
+  assert.match(workflow, /npm run auth:verify/);
+  assert.match(lifecycle, /createGuestAccount/);
+  assert.match(lifecycle, /createStaffAccountForBootstrap/);
+  assert.match(lifecycle, /resetPasswordWithToken/);
+  assert.match(lifecycle, /revokedSession/);
+});
+
+test("Build 004 auth forms include contextual help topics", async () => {
+  const topics = await readFile("lib/help/topics.ts", "utf8");
+
+  for (const topic of [
+    "auth.login",
+    "auth.register",
+    "auth.recovery",
+    "auth.sessions",
+  ]) {
+    assert.match(topics, new RegExp(`"${topic}"`));
+  }
+});
+
+test("Build 004 source of truth records portable Supabase development hosting", async () => {
+  const auth = await readFile("docs/AUTHENTICATION.md", "utf8");
+
+  assert.match(auth, /rosevearcreations/);
+  assert.match(auth, /cxgszmpbeswdikzofvjv/);
+  assert.match(auth, /vanilla PostgreSQL 17/i);
+  assert.match(auth, /source of truth for schema design/i);
 });
