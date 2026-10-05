@@ -45,9 +45,19 @@ try {
   assert.equal(activeSession?.user.id, guest.id);
   assert.equal(activeSession?.assuranceLevel, "aal1");
 
+  const firstRecovery = await issuePasswordRecovery({ email: guestEmail });
+  assert.ok(firstRecovery);
+  assert.ok(firstRecovery.token.length >= 40);
+
   const recovery = await issuePasswordRecovery({ email: guestEmail });
   assert.ok(recovery);
   assert.ok(recovery.token.length >= 40);
+
+  const superseded = await resetPasswordWithToken({
+    token: firstRecovery.token,
+    newPassword: replacementPassword,
+  });
+  assert.equal(superseded, false);
 
   const reset = await resetPasswordWithToken({
     token: recovery.token,
