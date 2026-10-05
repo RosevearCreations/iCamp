@@ -1,7 +1,7 @@
 # Build 004 — Authentication & Secure Sessions
 
 ## Status
-**IMPLEMENTATION COMPLETE on `dev` — promotion blocked by GitHub Actions runner startup.**
+**IMPLEMENTATION COMPLETE on `dev` — public-repository CI verification rerun in progress.**
 
 ## Objective
 
@@ -231,4 +231,4 @@ Observed on multiple commits and a failed-job rerun:
 
 This pattern is external to the Build 004 code and is consistent with an account/repository Actions usage, billing/spending-limit or runner-availability restriction. The connected GitHub integration cannot read the account billing annotation shown in the web UI.
 
-Build 004 must not be promoted until the checks can actually start and complete GREEN.
+After the repository visibility change to public, Build 004 requires a fresh CI run that must complete GREEN before promotion.
