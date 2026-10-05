@@ -9,7 +9,10 @@ import {
 
 export async function POST(request: NextRequest) {
   if (!isSameOriginMutation(request)) {
-    return NextResponse.json({ error: "Invalid request origin." }, { status: 403 });
+    return NextResponse.json(
+      { error: "Invalid request origin." },
+      { status: 403 },
+    );
   }
 
   const rawToken = request.cookies.get(getSessionCookieName())?.value;
