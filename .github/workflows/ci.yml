@@ -102,6 +102,9 @@ jobs:
         with:
           node-version: 24
 
+      - name: Install dependencies
+        run: npm install --ignore-scripts
+
       - name: Install PostgreSQL client
         run: |
           sudo apt-get update
@@ -110,13 +113,11 @@ jobs:
       - name: Apply migrations
         run: node scripts/apply-database-migrations.mjs
 
-      - name: Verify schema, RLS and tenant boundaries
-        run: >-
-          psql "$DATABASE_URL"
-          -X
-          --no-psqlrc
-          -v ON_ERROR_STOP=1
-          -f database/verify/0001_core_multi_property_and_refresh.sql
+      - name: Verify all database contracts
+        run: npm run db:verify
+
+      - name: Verify authentication lifecycle
+        run: npm run auth:verify
 
       - name: Re-run migrations to prove idempotent history handling
         run: node scripts/apply-database-migrations.mjs
