@@ -44,10 +44,20 @@ No active product build should begin until this roadmap reset is accepted as the
 - build acceptance rule that new UI sections register contextual help metadata.
 
 ## Build 004 — Authentication & Secure Sessions
-- Guest/staff authentication.
-- reset/recovery.
-- secure session lifecycle.
-- privileged MFA readiness.
+- guest/staff global identity model separated from campground authorization.
+- private-schema password/session/recovery storage.
+- scrypt password hashing with random per-password salts.
+- enumeration-resistant sign-in, registration and recovery.
+- temporary lockout after repeated failed sign-in attempts.
+- cryptographically random opaque browser sessions with hash-only database persistence.
+- HTTP-only, SameSite session cookies; Secure + __Host- prefix in production.
+- server-side session expiry/revocation and logout.
+- password-reset engine with single-use expiring tokens and all-session revocation.
+- provider-neutral recovery-delivery adapter; email/SMS delivery connects later through communications builds.
+- privileged MFA data-model readiness without prematurely storing factor secrets.
+- guest identity gate for My Stay and staff identity gate for operational workspaces.
+- real PostgreSQL authentication-lifecycle verification in CI.
+- RosevearCreations Supabase iCamp project as current hosted development PostgreSQL target while retaining portable migrations.
 
 ## Build 005 — Roles, Permissions & Row-Level Security
 - Permission catalogue.

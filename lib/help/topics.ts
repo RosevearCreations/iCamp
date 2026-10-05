@@ -76,6 +76,58 @@ export const helpTopics = {
     ],
     audience: "public",
   },
+  "auth.login": {
+    id: "auth.login",
+    slug: "sign-in-and-account-security",
+    title: "Signing in securely",
+    summary:
+      "iCamp uses a server-managed session after your email and password are verified.",
+    details: [
+      "Your browser receives an opaque session cookie; the raw session token is not stored in the database.",
+      "Repeated failed sign-in attempts can temporarily lock an account.",
+      "Campground roles and permissions are separate from authentication and are applied in the authorization layer.",
+    ],
+    audience: "public",
+  },
+  "auth.register": {
+    id: "auth.register",
+    slug: "creating-a-guest-account",
+    title: "Creating a guest account",
+    summary:
+      "Guest accounts use an email address plus a long password or passphrase.",
+    details: [
+      "Use at least 12 characters and avoid reusing a password from another service.",
+      "iCamp deliberately avoids revealing whether an address was already registered.",
+      "Staff accounts are not created through the public guest-registration page.",
+    ],
+    audience: "public",
+  },
+  "auth.recovery": {
+    id: "auth.recovery",
+    slug: "password-recovery",
+    title: "Password recovery",
+    summary:
+      "Recovery tokens are single-use, expire quickly, and are stored only as hashes.",
+    details: [
+      "The recovery request response is identical whether or not the email address exists.",
+      "Changing a password revokes the account's existing sessions.",
+      "Recovery delivery remains behind a replaceable communications adapter.",
+    ],
+    audience: "public",
+  },
+  "auth.sessions": {
+    id: "auth.sessions",
+    slug: "sessions-and-account-access",
+    title: "Sessions and account access",
+    summary:
+      "A signed-in browser uses an HTTP-only same-site session cookie with server-side revocation.",
+    details: [
+      "Signing out revokes the server session and clears the browser cookie.",
+      "Management, finance, security and other privileged operations can later require stronger authentication.",
+      "MFA readiness is built into the account model; enrollment workflows arrive in later security builds.",
+    ],
+    audience: "public",
+  },
   "customer.input": {
     id: "customer.input",
     slug: "customer-input-guidance",

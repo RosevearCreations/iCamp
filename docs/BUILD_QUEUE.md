@@ -54,9 +54,9 @@ Delivered:
 - public-safe help centre and customer-input guidance foundation.
 
 ## Next active build
-**Build 004 — Authentication & Secure Sessions**
+**Build 005 — Roles, Permissions & Row-Level Security**
 
-Status: **QUEUED — NOT STARTED**
+Status: **GREEN on `dev`; promotion in progress.**
 
 ## Operating rule
 - Work primarily on `dev`.

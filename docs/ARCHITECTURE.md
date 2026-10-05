@@ -1006,3 +1006,56 @@ The application must never expose privileged help content merely because the hel
 
 ### 25.7 Help freshness
 When help content becomes database/content-managed, it should be versioned and tied to the related feature/build so stale instructions can be detected and reviewed after workflow changes.
+
+
+## 26. Authentication and Secure Session Architecture
+
+### 26.1 Identity vs authorization
+Authentication identifies a global user account.
+
+Authorization remains separate and is applied through roles, permissions and campground/property assignments in Build 005.
+
+This separation prevents a global identity record from silently granting access to every campground.
+
+### 26.2 Private auth storage
+Authentication records are stored in the non-exposed `icamp_private` schema:
+- user accounts;
+- password verifiers;
+- sessions;
+- password-recovery tokens;
+- MFA-factor readiness records.
+
+### 26.3 Passwords
+Passwords are server-hashed with scrypt and unique random salts.
+
+The browser/server API never stores or returns plaintext passwords after processing.
+
+### 26.4 Sessions
+The browser receives a random opaque token.
+
+PostgreSQL stores only a one-way hash of that token.
+
+Session validity is checked server-side against:
+- token hash;
+- expiry;
+- revocation;
+- account active state.
+
+### 26.5 Recovery
+Recovery tokens follow the same opaque-token/hash-only pattern.
+
+Recovery consumption changes the password, consumes the token and revokes existing sessions in one database transaction.
+
+Delivery is an adapter boundary.
+
+### 26.6 Identity gates
+Public content can remain anonymous.
+
+My Stay requires an authenticated identity.
+
+Operational workspaces require a staff identity before Build 005 adds fine-grained authorization.
+
+### 26.7 Managed hosting without lock-in
+RosevearCreations Supabase iCamp currently hosts the development PostgreSQL database.
+
+The application does not rely on Supabase-only table semantics for its canonical identity/session model. Vanilla PostgreSQL CI remains the portability test.
