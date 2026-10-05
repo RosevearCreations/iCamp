@@ -787,6 +787,66 @@ a {
   opacity: 0.65;
 }
 
+
+.auth-panel {
+  width: min(42rem, 100%);
+  margin-inline: auto;
+}
+
+.auth-form {
+  display: grid;
+  gap: 1rem;
+}
+
+.auth-form label {
+  display: grid;
+  gap: 0.4rem;
+  color: var(--ink);
+  font-weight: 700;
+}
+
+.auth-form input {
+  width: 100%;
+  min-height: 2.9rem;
+  padding: 0.7rem 0.8rem;
+  border: 1px solid var(--line);
+  border-radius: 0.72rem;
+  background: #ffffff;
+  color: var(--ink);
+  font: inherit;
+}
+
+.auth-form input:focus {
+  border-color: var(--focus);
+}
+
+.auth-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.9rem;
+  margin-top: 1rem;
+}
+
+.auth-links a {
+  color: var(--brand);
+  font-weight: 750;
+}
+
+.field-guidance,
+.form-message {
+  padding: 0.75rem 0.9rem;
+  border-radius: 0.72rem;
+  background: var(--surface-soft);
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.form-message--error {
+  border: 1px solid #c97b6e;
+  background: #fff1ee;
+  color: #6d2b20;
+}
+
 @media (max-width: 60rem) {
   .shell-grid {
     grid-template-columns: 1fr;
