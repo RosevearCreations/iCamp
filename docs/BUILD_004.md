@@ -1,0 +1,213 @@
+# Build 004 — Authentication & Secure Sessions
+
+## Status
+**IN PROGRESS on `dev`.**
+
+## Objective
+
+Establish secure guest/staff identity, browser sessions, password recovery and MFA readiness without mixing authentication with Build 005 authorization.
+
+## Development database target
+
+The current hosted development PostgreSQL target is:
+- Supabase organization: `rosevearcreations`
+- project: `iCamp`
+- ref: `cxgszmpbeswdikzofvjv`
+- region: Canada Central
+
+Build 003 and Build 004 canonical migrations have been applied successfully to that project.
+
+GitHub remains the source of truth for schema/migration design, and CI verifies the same migrations against vanilla PostgreSQL 17.
+
+## Authentication storage
+
+Sensitive records live under `icamp_private`:
+- `user_accounts`;
+- `password_credentials`;
+- `auth_sessions`;
+- `password_recovery_tokens`;
+- `mfa_factors`.
+
+Authentication tables are not exposed through the public schema.
+
+## Password security
+
+Passwords use Node's built-in scrypt with:
+- random 16-byte salt;
+- N=32768;
+- r=8;
+- p=1;
+- 32-byte derived key.
+
+Policy:
+- minimum 12 characters;
+- maximum 128 characters;
+- long passphrases allowed;
+- no arbitrary composition rule.
+
+## Enumeration resistance
+
+### Login
+- generic invalid-credentials response;
+- unknown email still performs scrypt verification against a dummy verifier;
+- disabled/locked accounts do not receive distinct public errors.
+
+### Registration
+- public registration creates guest identities only;
+- duplicate email follows the same external confirmation path as successful registration;
+- invalid input is reported without disclosing account existence.
+
+### Recovery
+- response is identical whether or not the email exists;
+- raw recovery tokens are not logged or returned through public status messages.
+
+## Failed sign-in / lockout
+
+Active accounts track failed password attempts.
+
+Initial rule:
+- 5 failed attempts;
+- 15-minute lock.
+
+The rule is enforced server-side and can be made configurable in later policy-management builds.
+
+## Sessions
+
+Browser sessions:
+- use 32 random bytes / 256 bits;
+- persist only SHA-256 token hashes;
+- use server-side expiration;
+- support explicit revocation/reason;
+- default to 12 hours;
+- update last-seen at a throttled cadence;
+- require active account state.
+
+Production cookie:
+- `__Host-icamp_session`;
+- HttpOnly;
+- Secure;
+- SameSite=Lax;
+- Path=/;
+- no Domain attribute.
+
+Development cookie remains usable over local non-TLS development while retaining HttpOnly/SameSite behavior.
+
+## Logout
+
+Logout:
+1. validates same origin;
+2. revokes the matching server-side session;
+3. clears the session cookie;
+4. redirects to iCamp home.
+
+## Password reset
+
+Recovery tokens:
+- are cryptographically random;
+- are stored only as hashes;
+- expire after 30 minutes;
+- are single-use.
+
+A successful password reset:
+- replaces the password hash;
+- consumes the recovery token;
+- revokes every active session for the account.
+
+## Recovery delivery boundary
+
+Build 004 includes a provider-neutral recovery-delivery interface.
+
+The current no-op adapter:
+- does not log the raw token;
+- does not expose it in the browser;
+- reports no false claim that email/SMS delivery is operational.
+
+Actual email/SMS delivery connects through the communications foundation beginning in Build 009.
+
+## MFA readiness
+
+The private data model supports future:
+- TOTP;
+- WebAuthn/passkeys;
+- recovery codes.
+
+Build 004 does not prematurely create factor secrets or claim MFA enrollment is operational.
+
+## Web interfaces
+
+Added:
+- `/auth/login`;
+- `/auth/register`;
+- `/auth/recover`;
+- `/auth/reset`;
+- `/auth/account`;
+- `/auth/not-authorized`.
+
+Contextual ⓘ help topics cover sign-in, registration, recovery and sessions.
+
+## Coarse identity protection
+
+- Public workspace: anonymous.
+- Guest/My Stay workspace: signed-in identity required.
+- Operational workspaces: staff identity required.
+- I.T./Analysis: staff identity required.
+
+This is intentionally not the final authorization system. Build 005 adds roles, permissions, campground assignments and row-level policies.
+
+## Mutation safeguards
+
+Authentication POST handlers require matching request Origin.
+
+Return paths are constrained to same-application paths to prevent open redirects.
+
+## CI verification
+
+The PostgreSQL CI job is extended to:
+- apply all migrations;
+- verify all database contracts;
+- run a real guest/staff authentication lifecycle;
+- prove failed login;
+- prove successful login;
+- create/resolve session;
+- issue recovery token;
+- reset password;
+- reject token reuse;
+- verify old session revoked;
+- verify old password rejected;
+- verify new password accepted.
+
+Unit tests additionally cover:
+- email normalization;
+- password policy;
+- unique scrypt salts;
+- password verification;
+- opaque-token uniqueness/entropy;
+- token-hash behavior.
+
+## Supabase advisor review
+
+After applying the migrations to the real iCamp project:
+- security advisor reports Build 003 public tables with RLS enabled/no policies — expected until Build 005;
+- performance advisor reports new indexes unused — expected on a new database with no workload.
+
+No advisor finding requires weakening security or deleting new indexes in Build 004.
+
+## Manual action
+
+### GitHub main-branch protection
+The connected GitHub integration cannot modify repository administration settings.
+
+The repository owner should enable protection on `main`.
+
+Recommended settings:
+- require pull request before merging;
+- zero required approving reviews during current autonomous single-maintainer development;
+- require application Verify check;
+- require Database migrations check;
+- require Gitleaks check;
+- require conversation resolution where offered;
+- prohibit force pushes;
+- prohibit deletion;
+- do not lock the branch.
+
+No other manual action is required for Build 004 at this stage.
