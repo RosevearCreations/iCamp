@@ -1,4 +1,5 @@
 import { defineChannelSupport, type ChannelSupport } from "@/lib/channels";
+import type { Permission } from "@/lib/authz/permissions";
 
 export interface WorkspaceDefinition {
   slug: string;
@@ -7,6 +8,7 @@ export interface WorkspaceDefinition {
   audience: string;
   summary: string;
   channelSupport: Readonly<ChannelSupport>;
+  requiredPermission?: Permission;
 }
 
 const operationalChannels = defineChannelSupport({
@@ -51,6 +53,7 @@ export const workspaces: readonly WorkspaceDefinition[] = [
     summary:
       "Handle reservations, arrivals, departures, passes, guest records and campground office workflows.",
     channelSupport: staffChannels,
+    requiredPermission: "reservation.read",
   },
   {
     slug: "maintenance",
@@ -60,6 +63,7 @@ export const workspaces: readonly WorkspaceDefinition[] = [
     summary:
       "Run work orders, inspections, recurring upkeep, site turnover and facility maintenance.",
     channelSupport: staffChannels,
+    requiredPermission: "maintenance.read",
   },
   {
     slug: "security",
@@ -69,6 +73,7 @@ export const workspaces: readonly WorkspaceDefinition[] = [
     summary:
       "Monitor access, credentials, vehicles, visitors, gates and security incidents.",
     channelSupport: staffChannels,
+    requiredPermission: "gate.state.read",
   },
   {
     slug: "store",
@@ -78,6 +83,7 @@ export const workspaces: readonly WorkspaceDefinition[] = [
     summary:
       "Operate retail sales, campsite delivery, pickup, service products and inventory workflows.",
     channelSupport: staffChannels,
+    requiredPermission: "inventory.read",
   },
   {
     slug: "staff",
@@ -87,6 +93,7 @@ export const workspaces: readonly WorkspaceDefinition[] = [
     summary:
       "See schedules, assignments, notices, training and role-appropriate operational information.",
     channelSupport: staffChannels,
+    requiredPermission: "staff.read",
   },
   {
     slug: "foreman",
@@ -96,6 +103,7 @@ export const workspaces: readonly WorkspaceDefinition[] = [
     summary:
       "Triage work, coordinate teams, approve inspections and escalate operational issues.",
     channelSupport: staffChannels,
+    requiredPermission: "maintenance.assign",
   },
   {
     slug: "management",
@@ -105,6 +113,7 @@ export const workspaces: readonly WorkspaceDefinition[] = [
     summary:
       "Control campground configuration, operations, access, pricing, staffing, vendors and reporting.",
     channelSupport: staffChannels,
+    requiredPermission: "reports.read",
   },
   {
     slug: "it-analysis",
@@ -114,6 +123,7 @@ export const workspaces: readonly WorkspaceDefinition[] = [
     summary:
       "Review system health, releases, safe diagnostics, integration status and troubleshooting references without exposing client-sensitive information.",
     channelSupport: defineChannelSupport({
+    requiredPermission: "it.health.read",
       web: "full",
       ivr: "staff-transfer",
       sms: "secure-link",
@@ -129,6 +139,7 @@ export const workspaces: readonly WorkspaceDefinition[] = [
     summary:
       "Review payments, expenses, reconciliation, profitability and accounting integrations.",
     channelSupport: defineChannelSupport({
+    requiredPermission: "finance.read",
       web: "full",
       ivr: "staff-transfer",
       sms: "secure-link",
