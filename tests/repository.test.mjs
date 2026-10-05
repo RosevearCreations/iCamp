@@ -303,7 +303,6 @@ test("Build 003 source of truth requires help on new sections and freshness on a
   assert.match(freshness, /source watermark/i);
 });
 
-
 test("Build 004 keeps authentication secrets in the private schema", async () => {
   const migration = await readFile(
     "database/migrations/0002_authentication_and_sessions.sql",
@@ -384,10 +383,7 @@ test("Build 004 gates guest and staff workspace identities", async () => {
 
 test("Build 004 CI verifies the full authentication lifecycle", async () => {
   const workflow = await readFile(".github/workflows/ci.yml", "utf8");
-  const lifecycle = await readFile(
-    "scripts/verify-auth-lifecycle.mjs",
-    "utf8",
-  );
+  const lifecycle = await readFile("scripts/verify-auth-lifecycle.mjs", "utf8");
 
   assert.match(workflow, /Verify authentication lifecycle/);
   assert.match(workflow, /npm run auth:verify/);
@@ -418,7 +414,6 @@ test("Build 004 source of truth records portable Supabase development hosting", 
   assert.match(auth, /vanilla PostgreSQL 17/i);
   assert.match(auth, /source of truth for schema design/i);
 });
-
 
 test("Build 004 auth session trigger has its required timestamp", async () => {
   const migration = await readFile(
