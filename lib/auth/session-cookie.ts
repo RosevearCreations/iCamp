@@ -1,5 +1,3 @@
-import type { ResponseCookie } from "next/dist/compiled/@edge-runtime/cookies";
-
 const SESSION_MAX_AGE_SECONDS = 12 * 60 * 60;
 
 export function getSessionCookieName(): string {
