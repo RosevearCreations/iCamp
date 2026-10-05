@@ -25,7 +25,10 @@ export default async function LoginPage({
   return (
     <AppShell>
       <div className="page-stack">
-        <section className="content-panel auth-panel" aria-labelledby="login-heading">
+        <section
+          className="content-panel auth-panel"
+          aria-labelledby="login-heading"
+        >
           <SectionHeading
             eyebrow="Secure account"
             title="Sign in to iCamp"
