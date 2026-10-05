@@ -35,4 +35,6 @@ for (const file of files) {
   );
 }
 
-process.stdout.write(`Verified ${files.length} database verification file(s).\n`);
+process.stdout.write(
+  `Verified ${files.length} database verification file(s).\n`,
+);
