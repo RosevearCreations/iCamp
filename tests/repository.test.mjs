@@ -365,20 +365,14 @@ test("Build 004 public auth flows avoid account enumeration", async () => {
   assert.match(recovery, /status=requested/);
 });
 
-test("Build 004 gates guest and staff workspace identities", async () => {
+test("Build 004 keeps guest workspace behind authenticated identity", async () => {
   const workspace = await readFile(
     "app/workspaces/[workspace]/page.tsx",
     "utf8",
   );
-  const itWorkspace = await readFile(
-    "app/workspaces/it-analysis/page.tsx",
-    "utf8",
-  );
 
   assert.match(workspace, /requireSignedIn/);
-  assert.match(workspace, /requireStaff/);
   assert.match(workspace, /workspace\.slug === "guest"/);
-  assert.match(itWorkspace, /requireStaff/);
 });
 
 test("Build 004 CI verifies the full authentication lifecycle", async () => {
@@ -436,4 +430,118 @@ test("Build 004 recovery verification proves token supersession", async () => {
   assert.match(lifecycle, /firstRecovery/);
   assert.match(lifecycle, /superseded/);
   assert.match(lifecycle, /assert\.equal\(superseded, false\)/);
+});
+
+test("Build 005 defines the permission and campground assignment model", async () => {
+  const migration = await readFile(
+    "database/migrations/0004_roles_permissions_rls.sql",
+    "utf8",
+  );
+
+  for (const table of [
+    "permission_catalog",
+    "roles",
+    "role_permissions",
+    "campground_assignments",
+    "campground_assignment_roles",
+  ]) {
+    assert.match(
+      migration,
+      new RegExp(`create table icamp_private\\.${table}`),
+    );
+  }
+
+  assert.match(migration, /create role icamp_app nologin noinherit/);
+  assert.match(migration, /validate_staff_assignment/);
+  assert.match(migration, /validate_assignment_role_scope/);
+  assert.match(migration, /Custom roles cannot cross organization boundaries/);
+});
+
+test("Build 005 forces RLS and revokes public access on scoped tables", async () => {
+  const migration = await readFile(
+    "database/migrations/0004_roles_permissions_rls.sql",
+    "utf8",
+  );
+
+  for (const table of [
+    "organizations",
+    "campgrounds",
+    "campground_sections",
+    "campground_subsections",
+    "admin_refresh_states",
+  ]) {
+    assert.match(
+      migration,
+      new RegExp(`revoke all on public\\.${table} from public`),
+    );
+    assert.match(
+      migration,
+      new RegExp(`alter table public\\.${table} force row level security`),
+    );
+  }
+
+  assert.match(migration, /request_user_id/);
+  assert.match(migration, /invalid_text_representation/);
+  assert.match(migration, /has_campground_permission/);
+  assert.match(migration, /has_organization_permission/);
+});
+
+test("Build 005 replaces coarse staff gates with workspace permissions", async () => {
+  const workspace = await readFile(
+    "app/workspaces/[workspace]/page.tsx",
+    "utf8",
+  );
+  const itWorkspace = await readFile(
+    "app/workspaces/it-analysis/page.tsx",
+    "utf8",
+  );
+  const registry = await readFile("lib/workspaces.ts", "utf8");
+
+  assert.match(workspace, /requireAnyCampgroundPermission/);
+  assert.match(workspace, /workspace\.requiredPermission/);
+  assert.match(itWorkspace, /requireAnyCampgroundPermission/);
+  assert.match(itWorkspace, /"it\.health\.read"/);
+  assert.match(registry, /requiredPermission: "reservation\.read"/);
+  assert.match(registry, /requiredPermission: "finance\.read"/);
+});
+
+test("Build 005 CI verifies authorization and cross-property isolation", async () => {
+  const workflow = await readFile(".github/workflows/ci.yml", "utf8");
+  const lifecycle = await readFile(
+    "scripts/verify-authorization-lifecycle.mjs",
+    "utf8",
+  );
+  const verification = await readFile(
+    "database/verify/0004_roles_permissions_rls.sql",
+    "utf8",
+  );
+
+  assert.match(workflow, /Verify authorization lifecycle/);
+  assert.match(workflow, /npm run authz:verify/);
+  assert.match(lifecycle, /createCustomRole/);
+  assert.match(lifecycle, /assignStaffToCampground/);
+  assert.match(lifecycle, /listVisibleCampgroundsViaRls/);
+  assert.match(lifecycle, /campB\.campgroundId/);
+  assert.match(verification, /cross_org_role_rejected_ok/);
+  assert.match(verification, /cross_property_update_denied_ok/);
+  assert.match(verification, /unassigned_sees_nothing_ok/);
+});
+
+test("Build 005 permission catalogue covers privileged operational domains", async () => {
+  const permissions = await readFile("lib/authz/permissions.ts", "utf8");
+
+  for (const permission of [
+    "role.manage",
+    "refund.issue",
+    "gate.override.open",
+    "winterization.signoff",
+    "financing.manage",
+    "it.diagnostics.export",
+    "system.admin",
+  ]) {
+    assert.match(
+      permissions,
+      new RegExp(`"${permission.replace(".", "\\.")}"`),
+    );
+  }
 });

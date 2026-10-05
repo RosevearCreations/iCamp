@@ -17,7 +17,7 @@ export default function NotAuthorizedPage() {
             eyebrow="Access control"
             title="This account cannot open that area."
             id="not-authorized-heading"
-            helpTopic="auth.sessions"
+            helpTopic="auth.authorization"
           />
           <p>
             Authentication confirms identity. Campground roles and permissions

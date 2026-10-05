@@ -1059,3 +1059,71 @@ Operational workspaces require a staff identity before Build 005 adds fine-grain
 RosevearCreations Supabase iCamp currently hosts the development PostgreSQL database.
 
 The application does not rely on Supabase-only table semantics for its canonical identity/session model. Vanilla PostgreSQL CI remains the portability test.
+
+
+## 27. Authorization and Row-Level Security Architecture
+
+### 27.1 Identity is not authority
+Build 004 authenticates a global identity. Build 005 authorizes that identity for explicit campground/property scopes.
+
+A staff account alone grants no campground data access.
+
+### 27.2 Assignment hierarchy
+Operational authorization resolves through:
+1. staff identity;
+2. active campground assignment;
+3. one or more role templates/custom roles;
+4. granular permission keys;
+5. server action guard;
+6. PostgreSQL RLS policy.
+
+Each layer is independently meaningful; UI visibility never substitutes for server/database enforcement.
+
+### 27.3 Permission catalogue
+Permission keys are capability-oriented and stable across interfaces. Job titles are represented by roles that aggregate permissions rather than hard-coded conditionals throughout domain code.
+
+Permissions carry a risk level so Build 006 and later security work can require additional reason/audit/re-authentication for sensitive capabilities.
+
+### 27.4 Template and custom roles
+System templates provide sensible campground operating defaults.
+
+Custom roles are organization-scoped. Database triggers prevent a custom role from being assigned across organizations and prevent inactive roles from being assigned.
+
+### 27.5 Trusted application role
+`icamp_app` is a PostgreSQL NOLOGIN/NOINHERIT role with limited grants.
+
+Trusted server/database code deliberately assumes it inside a transaction after setting the canonical request-user context.
+
+The role is not granted to browser-facing Supabase `anon` or `authenticated` roles.
+
+### 27.6 Request identity
+RLS resolves identity from transaction-local `icamp.user_id`.
+
+Missing, empty or malformed identity resolves to null and therefore no assignment/permission match.
+
+Do not derive RLS identity from client-provided role names, headers or unverified JWT claims.
+
+### 27.7 Forced RLS
+Current property-scoped public tables FORCE RLS, and broad `public` privileges are revoked.
+
+As later domain tables are introduced, each build must define the correct tenant/permission policy rather than relying only on application routing.
+
+### 27.8 Workspace versus action authorization
+A workspace has a minimum permission required to enter it.
+
+Individual actions within that workspace must still check their own narrower permission. For example, opening Finance does not automatically grant refund issuance.
+
+### 27.9 Omnichannel authorization
+Web/PWA, IVR/DTMF, SMS/MMS, staff-assisted calls and future integrations invoke the same canonical server permission engine.
+
+Channel identity is never authority. Caller ID, SMS sender identity or possession of a UI route cannot bypass campground assignment and permission checks.
+
+### 27.10 Hosted PostgreSQL portability
+Supabase currently hosts the development PostgreSQL database, but the authorization migration is continuously verified against vanilla PostgreSQL 17.
+
+Provider-specific browser roles remain outside iCamp's private authorization schema and app role.
+
+### 27.11 Build 006 boundary
+Build 005 answers whether an action is permitted.
+
+Build 006 adds evidence and extra safeguards for privileged permitted actions: audit events, reasons, before/after state and recent re-authentication hooks.

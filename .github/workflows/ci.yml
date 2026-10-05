@@ -119,6 +119,9 @@ jobs:
       - name: Verify authentication lifecycle
         run: npm run auth:verify
 
+      - name: Verify authorization lifecycle
+        run: npm run authz:verify
+
       - name: Re-run migrations to prove idempotent history handling
         run: node scripts/apply-database-migrations.mjs
 

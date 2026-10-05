@@ -20,6 +20,11 @@ This matrix cross-checks the complete iCamp vision against the restarted active 
 | Database/migrations/multi-property foundation | 003, 152 |
 | Authentication/sessions/MFA readiness | 004 |
 | Roles, granular permissions and RLS | 005-006 |
+| Staff-to-campground/property assignment isolation | 005, 152 |
+| Role templates and organization-scoped custom roles | 005, 127 |
+| Permission-specific workspace/server authorization | 005, then every protected domain build |
+| Forced PostgreSQL RLS and fail-closed request identity | 005, then every scoped data build |
+| Cross-channel canonical authorization (Web/phone/SMS) | 005, 009-015 |
 | Audit and privileged action controls | 006 |
 | Recurring scheduler/background jobs | 007, 068 |
 | Secure media/document storage | 008, 028, 144 |

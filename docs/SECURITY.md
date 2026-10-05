@@ -490,3 +490,80 @@ The production/release `main` branch should be protected:
 - no branch deletion;
 - no routine direct-push bypass;
 - no mandatory human approval count while autonomous single-maintainer development is in use, unless the owner later chooses otherwise.
+
+
+## 25. Authorization, Roles and Row-Level Security Controls
+
+### Authentication is not authorization
+A valid staff session does not grant universal staff access.
+
+Every protected operation must resolve the staff identity against an active campground assignment and the required granular permission.
+
+### Default deny
+If an assignment, active role, permission, campground scope or trusted request-user context is missing, access is denied.
+
+Malformed RLS request-user context resolves to no identity rather than an elevated/default user.
+
+### Never trust client authority claims
+Do not authorize from:
+- client-submitted role names;
+- hidden form fields;
+- browser UI state;
+- caller ID;
+- SMS sender identity;
+- arbitrary headers;
+- unverified external claims.
+
+Authorization is resolved server-side from canonical database assignments/roles/permissions.
+
+### Private authorization records
+Permission catalogues, roles, assignments and assignment-role links live in `icamp_private`.
+
+Supabase `anon` and `authenticated` roles have no private-schema USAGE and are not members of `icamp_app`.
+
+### Application database role
+`icamp_app` is NOLOGIN and NOINHERIT.
+
+Only a trusted server/migration principal may assume it. Its table privileges are intentionally narrower than the migration owner's privileges and remain constrained by forced RLS.
+
+### Tenant and custom-role boundaries
+A campground assignment carries organization and campground scope.
+
+Custom roles belong to one organization and are rejected if attached to another organization's assignment.
+
+Only staff authentication identities may receive staff assignments.
+
+### Forced RLS
+Current scoped public tables FORCE RLS, and broad public grants are revoked.
+
+Server guards and RLS are defense-in-depth; neither is considered a substitute for the other.
+
+### Permission-specific UI/server guards
+Opening an operational workspace requires an explicit minimum permission.
+
+Each sensitive action inside the workspace must check its own capability rather than inheriting every capability from workspace entry.
+
+### High-risk permissions
+Capabilities such as refunds, gate overrides, role management, financing, emergency broadcasting, diagnostic exports and system administration are marked high-risk/elevated where appropriate.
+
+Build 006 adds audit/reason/re-authentication controls; possession of the permission alone will not be the final safeguard for those actions.
+
+### Cross-channel enforcement
+Telephone, DTMF, SMS, secure-link and staff-assisted workflows must use the same canonical authorization services as Web/PWA.
+
+No channel adapter may create an authorization bypass.
+
+### Verification requirements
+CI and production-readiness checks must prove at minimum:
+- unassigned users see no scoped campground rows;
+- a limited role cannot perform an owner/admin update;
+- an authorized role can perform its permitted update;
+- one campground assignment cannot modify another campground;
+- organization-scoped custom roles cannot cross organizations;
+- missing/malformed request identity fails closed;
+- migration history remains reproducible.
+
+### Hosted database verification
+Build 005 remote tests run in rollback-only transactions against the iCamp Supabase development project and retain no synthetic authorization records.
+
+Supabase security-advisor findings must be reviewed after authorization migrations; security findings are not waived merely because CI is GREEN.

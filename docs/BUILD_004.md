@@ -1,7 +1,7 @@
 # Build 004 — Authentication & Secure Sessions
 
 ## Status
-**GREEN on `dev` — ready for promotion.**
+**FULLY PROMOTED — `main` verification GREEN.**
 
 ## Objective
 
@@ -251,3 +251,21 @@ Passed on the final public-repository verification:
 - CodeQL JavaScript/TypeScript analysis.
 
 The previous GitHub Actions billing blocker is resolved by the repository's public visibility and no longer affects Build 004 verification.
+
+
+## Production/release verification
+
+Build 004 production commit: `d2364119e5d3e19af74a17f91913ecba8689d567`.
+
+Verified GREEN on `main`:
+- canonical formatting;
+- ESLint;
+- strict TypeScript;
+- tests;
+- Next.js production build;
+- production dependency audit;
+- PostgreSQL migrations and authentication lifecycle;
+- Gitleaks;
+- CodeQL JavaScript/TypeScript analysis.
+
+The repository is public, so standard GitHub-hosted Actions and CodeQL now run without consuming the prior private-repository Actions allowance.
