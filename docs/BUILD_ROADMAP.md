@@ -60,10 +60,19 @@ No active product build should begin until this roadmap reset is accepted as the
 - RosevearCreations Supabase iCamp project as current hosted development PostgreSQL target while retaining portable migrations.
 
 ## Build 005 — Roles, Permissions & Row-Level Security
-- Permission catalogue.
-- role templates/custom roles.
-- campground assignments.
-- deny-by-default server authorization and RLS tests.
+- canonical granular permission catalogue with risk classification.
+- reusable role templates plus organization-scoped custom roles.
+- explicit staff-to-campground assignments with active/start/end lifecycle.
+- database enforcement that only staff identities receive staff assignments.
+- database enforcement that custom roles cannot cross organization boundaries.
+- permission-specific server/workspace authorization guards.
+- trusted NOLOGIN/NOINHERIT `icamp_app` database role for RLS-enforced server queries.
+- transaction-local request-user context that fails closed when missing or malformed.
+- revoke broad public table grants and FORCE RLS on current property-scoped public tables.
+- assignment/permission-aware RLS policies for organizations, campgrounds, sections/subsections and admin freshness.
+- PostgreSQL CI proving permission, role, assignment, cross-property and unassigned-user isolation.
+- RosevearCreations Supabase remote rollback verification with zero retained synthetic records.
+- hosted database security-advisor review and authorization foreign-key index completion.
 
 ## Build 006 — Audit Trail & Privileged Action Controls
 - Append-oriented audit events.

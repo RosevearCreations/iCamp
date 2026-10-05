@@ -53,12 +53,38 @@ Delivered:
 - universal contextual-help registry and circular ⓘ controls;
 - public-safe help centre and customer-input guidance foundation.
 
-## Next active build
-**Build 005 — Roles, Permissions & Row-Level Security**
-
-Status: **IN PROGRESS on `dev`**
-
+### Build 004 — Authentication & Secure Sessions
 Status: **FULLY PROMOTED — `main` GREEN.**
+
+Delivered:
+- guest/staff global identity model;
+- private-schema password/session/recovery storage;
+- scrypt password hashing and enumeration-resistant public auth flows;
+- opaque hash-only server sessions and secure cookie contract;
+- password recovery with token supersession and all-session revocation;
+- authentication lifecycle verification against PostgreSQL;
+- hosted iCamp Supabase authentication schema verification.
+
+### Build 005 — Roles, Permissions & Row-Level Security
+Status: **PROMOTION CANDIDATE on `dev` — implementation/application/remote-database gates GREEN; final source-of-truth verification in progress.**
+
+Delivered:
+- granular permission catalogue and risk classification;
+- role templates and organization-scoped custom roles;
+- staff-to-campground assignments;
+- staff-only and cross-organization database guards;
+- permission-specific workspace/server authorization;
+- trusted `icamp_app` RLS database role;
+- forced RLS and scoped policies on current property tables;
+- PostgreSQL authorization lifecycle and cross-property isolation tests;
+- remote Supabase rollback verification with zero retained synthetic records;
+- clean Supabase security advisor;
+- authorization foreign-key/query indexes.
+
+## Next active build
+**Build 006 — Audit Trail & Privileged Action Controls**
+
+Status: **QUEUED — NOT STARTED**
 
 ## Operating rule
 - Work primarily on `dev`.
