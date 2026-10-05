@@ -6,7 +6,10 @@ import { isSameOriginMutation } from "@/lib/auth/request-security";
 
 export async function POST(request: NextRequest) {
   if (!isSameOriginMutation(request)) {
-    return NextResponse.json({ error: "Invalid request origin." }, { status: 403 });
+    return NextResponse.json(
+      { error: "Invalid request origin." },
+      { status: 403 },
+    );
   }
 
   const formData = await request.formData();
