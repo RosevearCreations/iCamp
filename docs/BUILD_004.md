@@ -1,7 +1,7 @@
 # Build 004 — Authentication & Secure Sessions
 
 ## Status
-**IN PROGRESS on `dev`.**
+**IMPLEMENTATION COMPLETE on `dev` — promotion blocked by GitHub Actions runner startup.**
 
 ## Objective
 
@@ -16,6 +16,10 @@ The current hosted development PostgreSQL target is:
 - region: Canada Central
 
 Build 003 and Build 004 canonical migrations have been applied successfully to that project.
+
+A rollback-only live Supabase verification exposed a trigger mismatch in the initial auth-session schema: `auth_sessions` used the shared `touch_row` trigger but did not yet contain `updated_at`.
+
+The already-applied migration was **not rewritten**. A new canonical migration, `0003_auth_session_updated_at.sql`, added the required timestamp. The remote rollback verification then passed and retained zero synthetic test accounts.
 
 GitHub remains the source of truth for schema/migration design, and CI verifies the same migrations against vanilla PostgreSQL 17.
 
@@ -106,7 +110,8 @@ Recovery tokens:
 - are cryptographically random;
 - are stored only as hashes;
 - expire after 30 minutes;
-- are single-use.
+- are single-use;
+- supersede older outstanding recovery tokens when a new request is issued.
 
 A successful password reset:
 - replaces the password hash;
@@ -211,3 +216,19 @@ Recommended settings:
 - do not lock the branch.
 
 No other manual action is required for Build 004 at this stage.
+
+
+## Current GitHub Actions blocker
+
+The current `dev` implementation cannot yet be called GREEN because GitHub Actions is not starting runners.
+
+Observed on multiple commits and a failed-job rerun:
+- CI Verify check fails before step 1;
+- Database migrations check fails before step 1;
+- Gitleaks check fails before step 1;
+- GitHub timing API reports **0 ms billable runner time** for every failed job;
+- CodeQL remains separately eligibility-skipped as expected.
+
+This pattern is external to the Build 004 code and is consistent with an account/repository Actions usage, billing/spending-limit or runner-availability restriction. The connected GitHub integration cannot read the account billing annotation shown in the web UI.
+
+Build 004 must not be promoted until the checks can actually start and complete GREEN.
