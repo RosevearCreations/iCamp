@@ -418,3 +418,30 @@ test("Build 004 source of truth records portable Supabase development hosting", 
   assert.match(auth, /vanilla PostgreSQL 17/i);
   assert.match(auth, /source of truth for schema design/i);
 });
+
+
+test("Build 004 auth session trigger has its required timestamp", async () => {
+  const migration = await readFile(
+    "database/migrations/0003_auth_session_updated_at.sql",
+    "utf8",
+  );
+  const verification = await readFile(
+    "database/verify/0003_auth_session_updated_at.sql",
+    "utf8",
+  );
+
+  assert.match(migration, /alter table icamp_private\.auth_sessions/);
+  assert.match(migration, /updated_at timestamptz/);
+  assert.match(verification, /auth_sessions\.updated_at is required/);
+});
+
+test("Build 004 recovery verification proves token supersession", async () => {
+  const lifecycle = await readFile(
+    "scripts/verify-auth-lifecycle.mjs",
+    "utf8",
+  );
+
+  assert.match(lifecycle, /firstRecovery/);
+  assert.match(lifecycle, /superseded/);
+  assert.match(lifecycle, /assert\.equal\(superseded, false\)/);
+});
