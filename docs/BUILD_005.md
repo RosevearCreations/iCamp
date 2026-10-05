@@ -2,7 +2,7 @@
 
 ## Status
 
-**GREEN on `dev` — promotion pending final repository/source-of-truth commit.**
+**FULLY PROMOTED — `main` production GREEN.**
 
 ## Objective
 
@@ -179,3 +179,26 @@ No role, user or campground data must be entered manually for Build 005.
 ## Next build
 
 **Build 006 — Audit Trail & Privileged Action Controls.**
+
+
+## Production / release evidence
+
+Build 005 implementation was promoted through PR #18.
+
+Verified on the production/release branch:
+- formatter GREEN;
+- ESLint GREEN;
+- strict TypeScript GREEN;
+- repository/security invariant tests GREEN;
+- Next.js production build GREEN;
+- production dependency high/critical audit GREEN;
+- PostgreSQL migration verification GREEN;
+- authentication lifecycle GREEN;
+- authorization lifecycle GREEN;
+- migration idempotency GREEN;
+- CodeQL JavaScript/TypeScript analysis GREEN;
+- Gitleaks verified on the final Build 005 source state.
+
+The RosevearCreations iCamp Supabase development database contains canonical migrations through 0006. Remote rollback-only authorization verification retained zero synthetic organizations, campgrounds, users or custom roles. The Supabase security advisor reports no security lints.
+
+A GitHub Actions hosted-runner incident caused delayed/cancelled security jobs during promotion; those delays were infrastructure scheduling, not iCamp test failures. Final closeout validation was run on the completed source state before the build was considered closed.
