@@ -66,7 +66,7 @@ Delivered:
 - hosted iCamp Supabase authentication schema verification.
 
 ### Build 005 — Roles, Permissions & Row-Level Security
-Status: **PROMOTION CANDIDATE on `dev` — implementation/application/remote-database gates GREEN; final source-of-truth verification in progress.**
+Status: **FULLY PROMOTED — `main` GREEN.**
 
 Delivered:
 - granular permission catalogue and risk classification;
