@@ -56,7 +56,7 @@ Delivered:
 ## Next active build
 **Build 004 — Authentication & Secure Sessions**
 
-Status: **QUEUED — NOT STARTED**
+Status: **IN PROGRESS on `dev`**
 
 ## Operating rule
 - Work primarily on `dev`.
