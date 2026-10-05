@@ -39,9 +39,11 @@ export default async function LoginPage({
             </p>
           ) : null}
 
-          {status === "created" ? (
+          {status === "registration" ? (
             <p className="form-message" role="status">
-              Your guest account was created. You can sign in now.
+              If the address was eligible for a new guest account, registration
+              is complete. You can sign in or use account recovery without iCamp
+              revealing whether an address was already registered.
             </p>
           ) : null}
 
