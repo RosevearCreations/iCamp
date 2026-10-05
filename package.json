@@ -16,12 +16,14 @@
     "format:check": "prettier --check .",
     "verify": "npm run format:check && npm run lint && npm run typecheck && npm test && npm run build",
     "db:migrate": "node scripts/apply-database-migrations.mjs",
-    "db:verify": "psql \"$DATABASE_URL\" -X --no-psqlrc -v ON_ERROR_STOP=1 -f database/verify/0001_core_multi_property_and_refresh.sql"
+    "db:verify": "node scripts/verify-database.mjs",
+    "auth:verify": "node scripts/verify-auth-lifecycle.mjs"
   },
   "dependencies": {
     "next": "16.3.8",
     "react": "19.3.0",
-    "react-dom": "19.3.0"
+    "react-dom": "19.3.0",
+    "pg": "8.16.3"
   },
   "devDependencies": {
     "@types/node": "^24.0.0",
