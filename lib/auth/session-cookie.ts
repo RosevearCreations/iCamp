@@ -8,14 +8,14 @@ export function getSessionCookieName(): string {
     : "icamp_session";
 }
 
-export function getSessionCookieOptions(): Partial<ResponseCookie> {
+export function getSessionCookieOptions() {
   return {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "lax",
     path: "/",
     maxAge: SESSION_MAX_AGE_SECONDS,
-  };
+  } as const;
 }
 
 export const sessionMaxAgeSeconds = SESSION_MAX_AGE_SECONDS;
