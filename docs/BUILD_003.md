@@ -1,7 +1,7 @@
 # Build 003 — Database, Migration, Multi-Property, Admin Freshness & Help Foundation
 
 ## Status
-**GREEN on `dev` — ready for promotion.**
+**FULLY PROMOTED — `main` verification GREEN.**
 
 ## Objective
 
@@ -210,3 +210,19 @@ Build 003 now establishes:
 
 ## Next build after promotion
 **Build 004 — Authentication & Secure Sessions.**
+
+
+## Production/release verification
+
+Application promotion commit: `3e2b27a5b4fddf87c7295f41636264a79a3d8e85`.
+
+Verified on `main`:
+- application CI GREEN;
+- PostgreSQL 17 database-migration job GREEN;
+- RLS/tenant-boundary verification GREEN;
+- migration idempotency GREEN;
+- production build GREEN;
+- production dependency audit GREEN;
+- secret scan GREEN.
+
+No remote production database was provisioned in this build by design; the canonical schema is version-controlled and verified against real PostgreSQL in CI.
