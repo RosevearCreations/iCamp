@@ -21,7 +21,10 @@ export default async function ResetPage({
   return (
     <AppShell>
       <div className="page-stack">
-        <section className="content-panel auth-panel" aria-labelledby="reset-heading">
+        <section
+          className="content-panel auth-panel"
+          aria-labelledby="reset-heading"
+        >
           <SectionHeading
             eyebrow="Account recovery"
             title="Choose a new password"
@@ -61,7 +64,8 @@ export default async function ResetPage({
 
           {!token ? (
             <p className="field-guidance">
-              A valid recovery link is required before a password can be changed.
+              A valid recovery link is required before a password can be
+              changed.
             </p>
           ) : null}
 
