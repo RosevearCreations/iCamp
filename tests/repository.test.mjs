@@ -432,7 +432,6 @@ test("Build 004 recovery verification proves token supersession", async () => {
   assert.match(lifecycle, /assert\.equal\(superseded, false\)/);
 });
 
-
 test("Build 005 defines the permission and campground assignment model", async () => {
   const migration = await readFile(
     "database/migrations/0004_roles_permissions_rls.sql",
@@ -540,6 +539,9 @@ test("Build 005 permission catalogue covers privileged operational domains", asy
     "it.diagnostics.export",
     "system.admin",
   ]) {
-    assert.match(permissions, new RegExp(`"${permission.replace(".", "\\.")}"`));
+    assert.match(
+      permissions,
+      new RegExp(`"${permission.replace(".", "\\.")}"`),
+    );
   }
 });
