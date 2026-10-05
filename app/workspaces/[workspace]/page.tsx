@@ -7,7 +7,7 @@ import { AppShell } from "@/components/app-shell";
 import { ChannelSupportSummary } from "@/components/channel-support";
 import { SectionHeading } from "@/components/section-heading";
 import { requireSignedIn, requireStaff } from "@/lib/auth/current-session";
-import { getWorkspace, workspaces } from "@/lib/workspaces";
+import { getWorkspace } from "@/lib/workspaces";
 
 export const dynamic = "force-dynamic";
 
