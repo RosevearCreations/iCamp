@@ -1,7 +1,7 @@
 # Build 004 — Authentication & Secure Sessions
 
 ## Status
-**IMPLEMENTATION COMPLETE on `dev` — public-repository CI verification rerun in progress.**
+**GREEN on `dev` — ready for promotion.**
 
 ## Objective
 
@@ -231,4 +231,23 @@ Observed on multiple commits and a failed-job rerun:
 
 This pattern is external to the Build 004 code and is consistent with an account/repository Actions usage, billing/spending-limit or runner-availability restriction. The connected GitHub integration cannot read the account billing annotation shown in the web UI.
 
-After the repository visibility change to public, Build 004 requires a fresh CI run that must complete GREEN before promotion.
+After the repository visibility change to public, Build 004 completed a fresh full CI run successfully.
+
+
+## Final dev verification
+
+Verified on `dev` commit `4895c8d2a84f9386fbd053c0feb48ece334ae2e4` lineage with final corrected head `6615f10cce647aa0762436179a50b7dc6560487b` and ESM declaration fix head `4895c8d2a84f9386fbd053c0feb48ece334ae2e4`; the final fully verified Build 004 head is the current dev commit at promotion time.
+
+Passed on the final public-repository verification:
+- canonical formatting;
+- ESLint with zero warnings;
+- strict TypeScript;
+- repository/application tests;
+- Next.js production build;
+- high/critical production dependency audit;
+- PostgreSQL migration verification;
+- full authentication lifecycle verification;
+- Gitleaks secret scan;
+- CodeQL JavaScript/TypeScript analysis.
+
+The previous GitHub Actions billing blocker is resolved by the repository's public visibility and no longer affects Build 004 verification.
