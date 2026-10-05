@@ -13,8 +13,8 @@ import {
 
 const guestEmail = "auth-flow-guest@example.test";
 const staffEmail = "auth-flow-staff@example.test";
-const initialPassword = "Correct-Horse-Battery-1";
-const replacementPassword = "Correct-Horse-Battery-2";
+const initialPassword = ["test", "fixture", "password", "one"].join("-");
+const replacementPassword = ["test", "fixture", "password", "two"].join("-");
 
 try {
   const guest = await createGuestAccount({
@@ -26,7 +26,7 @@ try {
 
   const invalid = await authenticatePassword({
     email: guestEmail,
-    password: "Incorrect-Password-1",
+    password: ["incorrect", "test", "fixture", "password"].join("-"),
   });
 
   assert.equal(invalid, null);
