@@ -162,43 +162,42 @@ values (
   'reports.read'
 );
 
-do $$
-declare
-  foreign_role uuid;
-begin
-  insert into icamp_private.roles (
-    organization_id,
-    role_code,
-    display_name,
-    description,
-    role_kind
-  )
-  values (
-    :'authz_org_b',
-    'foreign_custom',
-    'Foreign Custom',
-    'Must not cross organization boundaries.',
-    'custom'
-  )
-  returning id into foreign_role;
+insert into icamp_private.roles (
+  organization_id,
+  role_code,
+  display_name,
+  description,
+  role_kind
+)
+values (
+  :'authz_org_b',
+  'foreign_custom',
+  'Foreign Custom',
+  'Must not cross organization boundaries.',
+  'custom'
+)
+returning id as authz_foreign_role
+\gset
 
-  begin
-    insert into icamp_private.campground_assignment_roles (
-      assignment_id,
-      role_id
-    )
-    values (
-      :'authz_front_assignment',
-      foreign_role
-    );
+\set ON_ERROR_STOP off
+insert into icamp_private.campground_assignment_roles (
+  assignment_id,
+  role_id
+)
+values (
+  :'authz_front_assignment',
+  :'authz_foreign_role'
+);
+\set cross_org_role_sqlstate :SQLSTATE
+\set ON_ERROR_STOP on
 
-    raise exception 'Expected custom role cross-organization rejection';
-  exception
-    when check_violation then
-      null;
-  end;
-end
-$$;
+select (:'cross_org_role_sqlstate' = '23514') as cross_org_role_rejected_ok
+\gset
+
+\if :cross_org_role_rejected_ok
+\else
+  \quit 1
+\endif
 
 select set_config('icamp.user_id', :'authz_front_user', false);
 set role icamp_app;
