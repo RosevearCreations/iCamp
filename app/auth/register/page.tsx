@@ -15,7 +15,7 @@ export default async function RegisterPage({
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }>) {
   const params = await searchParams;
-  const review = params.status === "review";
+  const invalid = params.status === "invalid";
 
   return (
     <AppShell>
@@ -31,10 +31,10 @@ export default async function RegisterPage({
             helpTopic="auth.register"
           />
 
-          {review ? (
+          {invalid ? (
             <p className="form-message form-message--error" role="alert">
-              The account could not be created with those details. Check the
-              information and try again.
+              Check the email address and use a password between 12 and 128
+              characters.
             </p>
           ) : null}
 
