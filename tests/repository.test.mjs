@@ -431,10 +431,7 @@ test("Build 004 auth session trigger has its required timestamp", async () => {
 });
 
 test("Build 004 recovery verification proves token supersession", async () => {
-  const lifecycle = await readFile(
-    "scripts/verify-auth-lifecycle.mjs",
-    "utf8",
-  );
+  const lifecycle = await readFile("scripts/verify-auth-lifecycle.mjs", "utf8");
 
   assert.match(lifecycle, /firstRecovery/);
   assert.match(lifecycle, /superseded/);
