@@ -4,7 +4,7 @@ import Link from "next/link";
 import { AdminRefreshControl } from "@/components/admin-refresh-control";
 import { AppShell } from "@/components/app-shell";
 import { SectionHeading } from "@/components/section-heading";
-import { requireStaff } from "@/lib/auth/current-session";
+import { requireAnyCampgroundPermission } from "@/lib/authz/current-user";
 import { getSafeItSnapshot } from "@/lib/observability/health";
 
 export const metadata: Metadata = {
@@ -15,7 +15,10 @@ export const metadata: Metadata = {
 export const dynamic = "force-dynamic";
 
 export default async function ItAnalysisPage() {
-  await requireStaff("/workspaces/it-analysis");
+  await requireAnyCampgroundPermission(
+    "it.health.read",
+    "/workspaces/it-analysis",
+  );
   const snapshot = getSafeItSnapshot();
   const renderedAt = new Date().toISOString();
 
