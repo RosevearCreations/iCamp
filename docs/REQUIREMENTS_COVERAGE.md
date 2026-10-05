@@ -132,3 +132,9 @@ For every applicable build, acceptance criteria must explicitly state whether th
 - secure-link handoff.
 
 An inherently visual task such as polygon drawing may be marked graphical-only, but its resulting operational object must still be addressable through non-visual channels by site/asset identifier where meaningful.
+
+
+| Universal contextual ⓘ help for sections/forms/input sheets | 003, then required by every applicable UI build |
+| Inline help plus full external/help-centre article | 003, then maintained with each applicable UI build |
+| Admin data freshness, manual refresh and refresh-state tracking | 003, 007, 148, 153 |
+| Persisted source watermark / stale / failed refresh metadata | 003, 007, 148 |

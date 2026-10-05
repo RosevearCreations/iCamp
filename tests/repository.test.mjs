@@ -30,6 +30,9 @@ test("source-of-truth documents remain present in README", async () => {
     "PRE_IMPLEMENTATION_BASELINE.md",
     "BUILD_OPERATING_MODEL.md",
     "IT_ANALYSIS.md",
+    "HELP_SYSTEM.md",
+    "ADMIN_FRESHNESS.md",
+    "HELP_SYSTEM.md",
   ]) {
     assert.ok(readme.includes(required), `README must link ${required}`);
   }
@@ -207,4 +210,95 @@ test("Build 002 source of truth requires external lockup detection and diagnosti
   assert.match(itSource, /frozen runtime/i);
   assert.match(security, /stack traces/i);
   assert.match(security, /I\.T\. Diagnostics and Observability Security/);
+});
+
+test("Build 003 defines provider-portable multi-property migrations", async () => {
+  const migration = await readFile(
+    "database/migrations/0001_core_multi_property_and_refresh.sql",
+    "utf8",
+  );
+  const runner = await readFile(
+    "scripts/apply-database-migrations.mjs",
+    "utf8",
+  );
+
+  for (const table of [
+    "organizations",
+    "campgrounds",
+    "campground_sections",
+    "campground_subsections",
+    "admin_refresh_states",
+  ]) {
+    assert.match(migration, new RegExp(`create table public\\.${table}`));
+    assert.match(
+      migration,
+      new RegExp(`alter table public\\.${table} enable row level security`),
+    );
+  }
+
+  assert.match(runner, /schema_migrations/);
+  assert.match(runner, /sha256/);
+  assert.match(runner, /different checksum/);
+});
+
+test("Build 003 CI verifies migrations against PostgreSQL", async () => {
+  const workflow = await readFile(".github/workflows/ci.yml", "utf8");
+
+  assert.match(workflow, /postgres:17-alpine/);
+  assert.match(workflow, /Database migrations/);
+  assert.match(workflow, /apply-database-migrations\.mjs/);
+  assert.match(workflow, /Verify schema, RLS and tenant boundaries/);
+});
+
+test("Build 003 provides visible admin freshness controls", async () => {
+  const component = await readFile(
+    "components/admin-refresh-control.tsx",
+    "utf8",
+  );
+  const migration = await readFile(
+    "database/migrations/0001_core_multi_property_and_refresh.sql",
+    "utf8",
+  );
+
+  assert.match(component, /Refresh data/);
+  assert.match(component, /Data freshness/);
+  assert.match(component, /router\.refresh/);
+  assert.match(migration, /refresh_status/);
+  assert.match(migration, /source_watermark/);
+  assert.match(migration, /last_succeeded_at/);
+  assert.match(migration, /last_failed_at/);
+});
+
+test("Build 003 contextual help uses a circular information control and full help pages", async () => {
+  const helpInfo = await readFile("components/help-info.tsx", "utf8");
+  const sectionHeading = await readFile(
+    "components/section-heading.tsx",
+    "utf8",
+  );
+  const topics = await readFile("lib/help/topics.ts", "utf8");
+  const css = await readFile("app/globals.css", "utf8");
+
+  assert.match(helpInfo, /<summary/);
+  assert.match(helpInfo, /aria-label/);
+  assert.match(helpInfo, /Open full help/);
+  assert.match(sectionHeading, /helpTopic/);
+  assert.match(topics, /"customer\.input"/);
+  assert.match(topics, /"admin\.refresh"/);
+  assert.match(css, /border-radius: 999px/);
+  assert.match(css, /\.help-info/);
+});
+
+test("Build 003 source of truth requires help on new sections and freshness on admin data", async () => {
+  const roadmap = await readFile("docs/BUILD_ROADMAP.md", "utf8");
+  const help = await readFile("docs/HELP_SYSTEM.md", "utf8");
+  const freshness = await readFile("docs/ADMIN_FRESHNESS.md", "utf8");
+
+  assert.match(
+    roadmap,
+    /every new user-facing\/admin section register contextual help/i,
+  );
+  assert.match(roadmap, /freshness\/last-refresh state/i);
+  assert.match(help, /circular \*\*ⓘ\*\*/);
+  assert.match(freshness, /last successful refresh/i);
+  assert.match(freshness, /source watermark/i);
 });

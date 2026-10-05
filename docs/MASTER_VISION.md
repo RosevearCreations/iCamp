@@ -723,3 +723,67 @@ Default rules:
 - use IDs/correlation references instead of personal data where possible;
 - separate public status from private diagnostics;
 - define retention and access controls before storing production telemetry long term.
+
+
+## 33. Universal Contextual Help and Admin Data Freshness
+
+### Contextual help everywhere
+
+Every meaningful iCamp section, form, input sheet, workflow and administrative panel should have contextual help.
+
+The standard visual affordance is a clear **ⓘ information control**:
+- present inside/next to the section title or field group;
+- keyboard accessible;
+- screen-reader labelled;
+- large enough for touch use;
+- opens concise inline guidance;
+- provides a path to a fuller help article outside the immediate workflow.
+
+Examples include:
+- customer/guest input sheets;
+- booking forms;
+- map editors;
+- maintenance forms;
+- POS screens;
+- gate/security controls;
+- finance screens;
+- I.T./Analysis dashboards;
+- configuration screens.
+
+Help content should explain:
+- what the section does;
+- what information belongs there;
+- why the information is needed where appropriate;
+- examples;
+- common mistakes;
+- permission/safety implications;
+- links to related help.
+
+Help is versioned/content-managed later so application changes do not leave guidance stale.
+
+Public/guest help and privileged internal help are separate classifications. Public help must never reveal internal security, financial or infrastructure details.
+
+### Admin freshness and refresh tracking
+
+Administrative and analytical interfaces must make data freshness visible.
+
+Where staleness matters, a section should show:
+- current freshness state;
+- when the view was rendered;
+- last refresh requested;
+- last successful refresh;
+- last failed refresh;
+- whether refresh is currently running;
+- data/source watermark when meaningful;
+- stale-after threshold;
+- a manual refresh action;
+- automatic/realtime refresh state when later supported.
+
+A browser refresh alone is not sufficient for operational tracking. iCamp will preserve refresh metadata so operators can distinguish:
+- data is fresh;
+- data is stale;
+- a refresh is running;
+- the last refresh failed;
+- the upstream source has not advanced.
+
+This tracking must avoid storing sensitive payloads merely to prove freshness.

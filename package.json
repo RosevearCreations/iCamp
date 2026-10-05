@@ -14,7 +14,9 @@
     "typecheck": "tsc --noEmit",
     "test": "node --test tests/*.test.mjs",
     "format:check": "prettier --check .",
-    "verify": "npm run format:check && npm run lint && npm run typecheck && npm test && npm run build"
+    "verify": "npm run format:check && npm run lint && npm run typecheck && npm test && npm run build",
+    "db:migrate": "node scripts/apply-database-migrations.mjs",
+    "db:verify": "psql \"$DATABASE_URL\" -X --no-psqlrc -v ON_ERROR_STOP=1 -f database/verify/0001_core_multi_property_and_refresh.sql"
   },
   "dependencies": {
     "next": "16.3.8",

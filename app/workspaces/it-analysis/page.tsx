@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
+import { AdminRefreshControl } from "@/components/admin-refresh-control";
 import { AppShell } from "@/components/app-shell";
+import { SectionHeading } from "@/components/section-heading";
 import { getSafeItSnapshot } from "@/lib/observability/health";
 
 export const metadata: Metadata = {
@@ -13,6 +15,7 @@ export const dynamic = "force-dynamic";
 
 export default function ItAnalysisPage() {
   const snapshot = getSafeItSnapshot();
+  const renderedAt = new Date().toISOString();
 
   return (
     <AppShell>
@@ -28,13 +31,13 @@ export default function ItAnalysisPage() {
         </section>
 
         <section className="content-panel" aria-labelledby="it-health-heading">
-          <div className="section-heading">
-            <div>
-              <p className="eyebrow">Runtime</p>
-              <h2 id="it-health-heading">Health foundation</h2>
-            </div>
-            <span className="build-chip">{snapshot.health}</span>
-          </div>
+          <SectionHeading
+            eyebrow="Runtime"
+            title="Health foundation"
+            id="it-health-heading"
+            helpTopic="it.analysis"
+            trailing={<span className="build-chip">{snapshot.health}</span>}
+          />
 
           <dl className="status-details">
             <div>
@@ -56,9 +59,26 @@ export default function ItAnalysisPage() {
           </dl>
         </section>
 
+        <section className="content-panel" aria-labelledby="freshness-heading">
+          <SectionHeading
+            eyebrow="Tracking"
+            title="I.T. view freshness"
+            id="freshness-heading"
+            helpTopic="admin.refresh"
+          />
+          <AdminRefreshControl
+            renderedAt={renderedAt}
+            sectionKey="workspace.it-analysis"
+          />
+        </section>
+
         <section className="content-panel" aria-labelledby="watchdog-heading">
-          <p className="eyebrow">Lockup detection</p>
-          <h2 id="watchdog-heading">External watchdog required</h2>
+          <SectionHeading
+            eyebrow="Lockup detection"
+            title="External watchdog required"
+            id="watchdog-heading"
+            helpTopic="it.analysis"
+          />
           <p>
             A frozen application cannot reliably announce that it is frozen.
             iCamp therefore exposes liveness/readiness contracts for an
@@ -88,8 +108,12 @@ export default function ItAnalysisPage() {
         </section>
 
         <section className="content-panel" aria-labelledby="privacy-heading">
-          <p className="eyebrow">Diagnostic privacy</p>
-          <h2 id="privacy-heading">Sensitive diagnostics stay protected.</h2>
+          <SectionHeading
+            eyebrow="Diagnostic privacy"
+            title="Sensitive diagnostics stay protected."
+            id="privacy-heading"
+            helpTopic="it.analysis"
+          />
           <p>
             Detailed logs, traces, error payloads, client records and
             infrastructure information are deliberately unavailable here until

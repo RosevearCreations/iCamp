@@ -39,8 +39,22 @@ Delivered:
 - provider-neutral external watchdog contract;
 - safe error/support references and diagnostic redaction foundation.
 
+### Build 003 — Database, Migration, Multi-Property, Admin Freshness & Help Foundation
+Status: **GREEN on `dev`; promotion in progress.**
+
+Delivered:
+- provider-portable PostgreSQL migration system;
+- organization/campground/section/subsection tenant hierarchy;
+- UUID/timestamp/lifecycle/row-version conventions;
+- RLS enabled on all new public tables;
+- PostgreSQL 17 migration verification in CI;
+- checksum-protected migration history;
+- admin refresh/freshness database metadata and UI control;
+- universal contextual-help registry and circular ⓘ controls;
+- public-safe help centre and customer-input guidance foundation.
+
 ## Next active build
-**Build 003 — Database, Migration & Multi-Property Foundation**
+**Build 004 — Authentication & Secure Sessions**
 
 Status: **QUEUED — NOT STARTED**
 
