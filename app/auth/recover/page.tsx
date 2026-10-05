@@ -32,11 +32,17 @@ export default async function RecoverPage({
           />
 
           {requested ? (
-            <p className="form-message" role="status">
-              If that account is eligible for recovery, the recovery workflow has
-              been requested. iCamp does not reveal whether an email address
-              exists.
-            </p>
+            <>
+              <p className="form-message" role="status">
+                If that account is eligible for recovery, the recovery workflow
+                has been requested. iCamp does not reveal whether an email
+                address exists.
+              </p>
+              <p className="field-guidance">
+                Build 004 has not connected the recovery delivery provider yet,
+                so no email or SMS is sent at this stage.
+              </p>
+            </>
           ) : (
             <p className="field-guidance">
               Enter the account email. The response is intentionally identical
