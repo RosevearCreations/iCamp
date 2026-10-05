@@ -24,6 +24,7 @@ iCamp is a complete campground operations platform covering live campsite/cottag
 - [Database](database/README.md)
 - [Contextual Help](docs/HELP_SYSTEM.md)
 - [Admin Freshness & Refresh](docs/ADMIN_FRESHNESS.md)
+- [Authentication & Secure Sessions](docs/AUTHENTICATION.md)
 
 The completed repository/CI foundation is now an **unnumbered pre-implementation baseline**.
 
