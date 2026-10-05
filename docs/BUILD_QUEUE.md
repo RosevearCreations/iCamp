@@ -56,7 +56,7 @@ Delivered:
 ## Next active build
 **Build 004 — Authentication & Secure Sessions**
 
-Status: **IN PROGRESS on `dev`**
+Status: **IMPLEMENTATION COMPLETE on `dev` — GitHub Actions runner blocked; NOT PROMOTED.**
 
 ## Operating rule
 - Work primarily on `dev`.
