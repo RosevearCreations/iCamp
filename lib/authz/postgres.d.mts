@@ -68,9 +68,7 @@ export function assignStaffToCampground(input: {
   roleIds: string[];
 }): Promise<{ assignmentId: string; roleIds: string[] }>;
 
-export function listVisibleCampgroundsViaRls(
-  userId: string,
-): Promise<
+export function listVisibleCampgroundsViaRls(userId: string): Promise<
   Array<{
     id: string;
     organizationId: string;
