@@ -11,10 +11,6 @@ import { getWorkspace, workspaces } from "@/lib/workspaces";
 
 export const dynamic = "force-dynamic";
 
-export function generateStaticParams() {
-  return workspaces.map((workspace) => ({ workspace: workspace.slug }));
-}
-
 export async function generateMetadata({
   params,
 }: Readonly<{
