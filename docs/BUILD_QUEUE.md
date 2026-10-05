@@ -56,7 +56,9 @@ Delivered:
 ## Next active build
 **Build 005 — Roles, Permissions & Row-Level Security**
 
-Status: **GREEN on `dev`; promotion in progress.**
+Status: **IN PROGRESS on `dev`**
+
+Status: **FULLY PROMOTED — `main` GREEN.**
 
 ## Operating rule
 - Work primarily on `dev`.
