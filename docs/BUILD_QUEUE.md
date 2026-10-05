@@ -40,7 +40,7 @@ Delivered:
 - safe error/support references and diagnostic redaction foundation.
 
 ### Build 003 — Database, Migration, Multi-Property, Admin Freshness & Help Foundation
-Status: **GREEN on `dev`; promotion in progress.**
+Status: **FULLY PROMOTED — `main` GREEN.**
 
 Delivered:
 - provider-portable PostgreSQL migration system;
