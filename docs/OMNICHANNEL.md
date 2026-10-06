@@ -252,3 +252,15 @@ Build 009 now provides the canonical shared communications records used by every
 - delivery/call/retry health.
 
 The development adapter is `mock`. Builds 010–014 progressively connect real voice/IVR, DTMF, SMS/MMS, identity verification and compliance synchronization without creating a second communications business model.
+
+## Build 010 voice gateway implementation
+
+Build 010 promotes voice from foundation-only to a provider-neutral sandbox gateway:
+
+- inbound signed webhook ingestion;
+- outbound call placement;
+- semantic IVR state sessions;
+- staff transfer/fallback;
+- provider event idempotency and replay controls.
+
+DTMF digit collection remains queued for Build 011. SMS/MMS remains queued for Build 012. Voice callers therefore receive the gateway/state-machine foundation without creating a parallel business-logic path.

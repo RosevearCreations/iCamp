@@ -9,6 +9,7 @@ import { getCommunicationsHealth } from "@/lib/communications/postgres.mjs";
 import { getOperationalQueueHealth } from "@/lib/jobs/postgres.mjs";
 import { getMediaStorageHealth } from "@/lib/media/postgres.mjs";
 import { getSafeItSnapshot } from "@/lib/observability/health";
+import { getVoiceGatewayHealth } from "@/lib/voice/postgres.mjs";
 
 export const metadata: Metadata = {
   title: "I.T. & Analysis · iCamp",
@@ -23,11 +24,13 @@ export default async function ItAnalysisPage() {
     "/workspaces/it-analysis",
   );
   const snapshot = getSafeItSnapshot();
-  const [queueHealth, mediaHealth, communicationsHealth] = await Promise.all([
-    getOperationalQueueHealth(),
-    getMediaStorageHealth(),
-    getCommunicationsHealth(),
-  ]);
+  const [queueHealth, mediaHealth, communicationsHealth, voiceHealth] =
+    await Promise.all([
+      getOperationalQueueHealth(),
+      getMediaStorageHealth(),
+      getCommunicationsHealth(),
+      getVoiceGatewayHealth(),
+    ]);
   const renderedAt = new Date().toISOString();
 
   return (
@@ -161,6 +164,41 @@ export default async function ItAnalysisPage() {
               <span>
                 Endpoints, bodies and provider payloads remain private
               </span>
+            </article>
+          </div>
+        </section>
+
+        <section
+          className="content-panel"
+          aria-labelledby="voice-health-heading"
+        >
+          <SectionHeading
+            eyebrow="Voice / IVR"
+            title="Voice gateway health"
+            id="voice-health-heading"
+            helpTopic="it.analysis"
+            trailing={<span className="build-chip">{voiceHealth.status}</span>}
+          />
+          <div className="health-grid">
+            <article className="health-card">
+              <span className="health-card__label">Lines</span>
+              <strong>{voiceHealth.lines.active} active</strong>
+              <span>{voiceHealth.lines.sandbox} sandbox</span>
+            </article>
+            <article className="health-card">
+              <span className="health-card__label">Calls</span>
+              <strong>{voiceHealth.calls.active} active</strong>
+              <span>{voiceHealth.calls.failed24h} failed in 24h</span>
+            </article>
+            <article className="health-card">
+              <span className="health-card__label">IVR</span>
+              <strong>{voiceHealth.ivr.active} active</strong>
+              <span>{voiceHealth.ivr.expired} expired sessions</span>
+            </article>
+            <article className="health-card">
+              <span className="health-card__label">Transfer fallback</span>
+              <strong>{voiceHealth.calls.transferFallbacks}</strong>
+              <span>Phone numbers, audio and transcripts remain private</span>
             </article>
           </div>
         </section>

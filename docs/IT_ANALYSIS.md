@@ -159,3 +159,14 @@ Build 009 adds aggregate communication health to the protected I.T. workspace:
 - normalized provider-event activity.
 
 The I.T. view never exposes raw phone numbers, email addresses, push destinations, message bodies, call transcripts/recordings, raw webhook payloads or provider secrets.
+
+## Voice/IVR gateway health
+
+Build 010 adds aggregate voice gateway signals:
+
+- active and sandbox voice-line counts;
+- active and failed-call counts;
+- active and expired IVR sessions;
+- staff-transfer fallback counts.
+
+The view never exposes phone numbers, provider call references, webhook bodies/signatures, audio, transcripts or DTMF values.
