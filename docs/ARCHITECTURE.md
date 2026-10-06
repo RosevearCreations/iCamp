@@ -1199,3 +1199,29 @@ Build 007 remains the durable execution substrate for later communications worke
 ### 29.6 Health and privacy
 
 I.T. receives aggregate delivery/call/retry/provider-event health only. Raw endpoints, bodies, transcripts, recordings, webhook payloads and secrets stay outside ordinary diagnostics.
+
+## 30. Inbound/Outbound Voice & IVR Gateway
+
+### 30.1 Campground voice lines
+
+A campground voice line binds a private phone endpoint to a replaceable provider number reference. The canonical iCamp line ID remains stable when providers or telephone numbers change.
+
+### 30.2 Signed inbound boundary
+
+Provider webhooks are untrusted until their adapter verifies a signature and freshness window over the raw body. Verified provider-event IDs are processed transactionally and idempotently.
+
+### 30.3 Outbound calls
+
+Authenticated staff outbound calls use the existing `communications.send` permission and Build 009 dispatch/idempotency layer. The provider adapter receives raw destinations only inside trusted server code.
+
+### 30.4 IVR state
+
+IVR state is stored independently from provider markup. Semantic state transitions are provider-neutral; Build 011 maps DTMF digits into those semantic events.
+
+### 30.5 Staff transfer/fallback
+
+A line may define a same-campground staff transfer endpoint. The provider adapter performs the transfer without exposing the raw destination through caller-facing responses.
+
+### 30.6 Sandbox portability
+
+The mock sandbox implements the same place-call, transfer and webhook-normalization contract required by a future external provider adapter. No campground workflow depends on provider-specific markup.

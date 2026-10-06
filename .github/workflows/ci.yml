@@ -134,6 +134,9 @@ jobs:
       - name: Verify omnichannel communications lifecycle
         run: npm run communications:verify
 
+      - name: Verify inbound/outbound voice and IVR lifecycle
+        run: npm run voice:verify
+
       - name: Re-run migrations to prove idempotent history handling
         run: node scripts/apply-database-migrations.mjs
 

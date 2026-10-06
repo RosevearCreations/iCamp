@@ -161,3 +161,44 @@ The canonical data model is vanilla PostgreSQL and the provider interface is ord
 Build 009 adds no paid provider. The default mock adapter is free.
 
 Later provider replacement does not require replacing consent history, endpoint identities, dispatch IDs, provider-event evidence or campground authorization.
+
+## Build 010 voice and IVR gateway
+
+Build 010 adds the real voice gateway contract above the Build 009 communications domain:
+
+- campground voice-line/provider bindings;
+- inbound and outbound call records;
+- provider-call idempotency;
+- IVR session/state records;
+- staff-transfer fallback;
+- signed webhook verification;
+- replay-window enforcement;
+- sandbox/mock provider operation.
+
+The default provider remains `mock`, so no external telephone number or provider account is required to verify the gateway.
+
+### Signed webhook boundary
+
+Inbound webhook traffic is accepted only after HMAC-SHA256 verification over the exact timestamp and raw request body.
+
+The default replay tolerance is 300 seconds and is configurable only within 30–900 seconds.
+
+Raw webhook bodies and signatures are not stored.
+
+Provider-event IDs remain the durable idempotency key, and the event row plus call side effects occur in one database transaction so a failed transaction remains safely retryable.
+
+### IVR state machine
+
+Build 010 introduces semantic IVR events such as repeat, timeout, staff transfer and hangup.
+
+It deliberately does **not** bind numeric keypad digits to menu choices yet. Build 011 owns DTMF collection, masking and numeric menu behavior.
+
+IVR event evidence records semantic transitions only and never stores keypad digits, PINs, payment data, audio or transcripts.
+
+### Staff transfer
+
+A voice line may point to a same-campground private phone endpoint for staff transfer.
+
+The transfer destination is fetched only inside trusted server code and never returned through the caller-facing API response or I.T. diagnostics.
+
+If no active staff target exists, the call enters a safe fallback state rather than exposing or guessing a destination.

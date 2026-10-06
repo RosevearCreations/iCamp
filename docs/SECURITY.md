@@ -642,3 +642,19 @@ Web/PWA, IVR/DTMF and SMS may enqueue the same canonical job types, but queueing
 - Retryable provider failures use bounded attempts and capped backoff; terminal failure remains visible to operators.
 - Real webhook signature verification and replay protection are required by provider-specific gateway builds before external inbound traffic is trusted.
 - The Build 009 mock provider has no external account, number, billing or secret requirement.
+
+## Build 010 — Voice and IVR gateway security
+
+- Voice provider webhooks require signature verification before any event is trusted.
+- The default signature contract uses HMAC-SHA256 over the exact timestamp plus raw body and a bounded freshness window.
+- Replay/stale webhook requests are rejected before database processing.
+- Provider event IDs are idempotent and event ingestion plus call state changes share one transaction.
+- Raw webhook bodies and signatures are never persisted.
+- Caller ID and provider call references remain routing hints, not authentication.
+- Outbound calls require the canonical `communications.send` permission.
+- Voice-line administration requires `communications.manage`.
+- Voice line and staff-transfer endpoints are constrained to the same campground.
+- Raw phone numbers are not returned by voice-line/call objects and never appear in I.T. health.
+- IVR transition evidence stores semantic events only. DTMF digits, PINs, MFA codes, payment-card data, audio and transcripts are forbidden from ordinary IVR event metadata.
+- Staff-transfer destinations are resolved only inside trusted server code.
+- Build 010 defaults to a mock sandbox. External provider credentials and provider-specific signature adapters are not required until an external provider is intentionally connected.
