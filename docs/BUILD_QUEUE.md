@@ -123,8 +123,23 @@ Delivered:
 - hosted Supabase migration 0010 with zero security-advisor lints;
 - rollback-only hosted lifecycle proof with zero retained synthetic rows.
 
+### Build 009 — Omnichannel Communications Foundation
+Status: **FULLY PROMOTED — `main` GREEN.**
+
+Delivered:
+- one provider-neutral communications domain for Web/PWA, voice, DTMF, speech, SMS/MMS, email and push;
+- private communication endpoints and purpose/channel preferences;
+- append-only consent and normalized provider-event evidence;
+- transactional, operational and marketing purpose classification;
+- campground-scoped dispatch idempotency and cross-property endpoint isolation;
+- bounded provider attempts with retryable/terminal failure conventions and capped backoff;
+- free replaceable mock provider boundary;
+- sanitized aggregate communications health in I.T. & Analysis;
+- hosted Supabase migrations 0011/0012 with zero security-advisor lints;
+- advisor-driven foreign-key index completion and rollback-only hosted verification with zero retained synthetic rows.
+
 ## Next active build
-**Build 009 — Omnichannel Communications Foundation**
+**Build 010 — Inbound/Outbound Voice & IVR Gateway**
 
 Status: **QUEUED — NOT STARTED**
 
