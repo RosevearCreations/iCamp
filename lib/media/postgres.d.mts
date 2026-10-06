@@ -12,12 +12,7 @@ export interface MediaAsset {
   byteSize: number;
   checksumSha256: string | null;
   validationState: "pending" | "validated" | "rejected";
-  lifecycleState:
-    | "pending"
-    | "active"
-    | "quarantined"
-    | "archived"
-    | "deleted";
+  lifecycleState: "pending" | "active" | "quarantined" | "archived" | "deleted";
   createdByUserId: string | null;
   createdAt: Date | string;
   updatedAt: Date | string;
