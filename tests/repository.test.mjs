@@ -882,7 +882,6 @@ test("Build 009 CI proves communications lifecycle and I.T. exposes aggregates o
   assert.match(build, /Build 010 — Inbound\/Outbound Voice & IVR Gateway/);
 });
 
-
 test("Build 010 defines campground-scoped voice lines, calls and IVR evidence", async () => {
   const migration = await readFile(
     "database/migrations/0013_voice_ivr_gateway.sql",
@@ -963,9 +962,6 @@ test("Build 010 CI proves voice lifecycle and advances toward DTMF", async () =>
   assert.match(lifecycle, /transfer\.transfer\.transferred, true/);
   assert.match(lifecycle, /append-only/);
   assert.match(itPage, /getVoiceGatewayHealth/);
-  assert.match(
-    itPage,
-    /Phone numbers, audio and transcripts remain private/,
-  );
+  assert.match(itPage, /Phone numbers, audio and transcripts remain private/);
   assert.match(build, /Build 011 — Numeric Keypad\/DTMF Interaction Engine/);
 });
