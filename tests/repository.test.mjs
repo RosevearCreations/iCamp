@@ -824,6 +824,12 @@ test("Build 009 isolates endpoints and keeps consent/provider evidence append-on
   );
 
   assert.match(migration, /communication_dispatches_endpoint_scope_fk/);
+
+  const fkIndexes = await readFile(
+    "database/migrations/0012_communications_fk_indexes.sql",
+    "utf8",
+  );
+  assert.match(fkIndexes, /communication_preferences_updated_by_idx/);
   assert.match(migration, /communication_consents_append_only/);
   assert.match(migration, /communication_provider_events_append_only/);
   assert.match(
