@@ -210,13 +210,14 @@ Current hosted development project:
 - project ref: `cxgszmpbeswdikzofvjv`;
 - region: Canada Central.
 
-Canonical GitHub migrations applied through Build 005:
+Canonical GitHub migrations applied through Build 006:
 - 0001 core multi-property;
 - 0002 authentication/sessions;
 - 0003 auth-session timestamp;
 - 0004 roles/permissions/RLS;
 - 0005 trusted app-role membership;
-- 0006 authorization FK/query indexes.
+- 0006 authorization FK/query indexes;
+- 0007 audit trail and privileged-action controls.
 
 Supabase remains a PostgreSQL hosting target; GitHub migration files remain canonical.
 
@@ -245,7 +246,7 @@ Remote role verification proved:
 - `anon` has no private-schema usage;
 - `authenticated` has no private-schema usage.
 
-Supabase security advisor result after Build 005: **no security lints**.
+Supabase security advisor result after Build 006: **no security lints**.
 
 ## Performance
 
