@@ -11,6 +11,9 @@ where reauthenticated_at is null;
 alter table icamp_private.auth_sessions
   alter column reauthenticated_at set not null;
 
+alter table icamp_private.auth_sessions
+  alter column reauthenticated_at set default statement_timestamp();
+
 create index auth_sessions_recent_reauth_idx
   on icamp_private.auth_sessions (
     user_id,
