@@ -1,9 +1,5 @@
-import type {
-  CommunicationPurpose,
-} from "../communications/postgres.d.mts";
-import type {
-  IvrTransitionResult,
-} from "./ivr.d.mts";
+import type { CommunicationPurpose } from "../communications/postgres.d.mts";
+import type { IvrTransitionResult } from "./ivr.d.mts";
 import type {
   NormalizedVoiceWebhook,
   VoiceProviderAdapter,
@@ -33,7 +29,8 @@ export interface VoiceCall {
   providerKey: string;
   direction: "inbound" | "outbound";
   routeKey: string;
-  callState: "ringing" | "in_progress" | "transferring" | "completed" | "failed";
+  callState:
+    "ringing" | "in_progress" | "transferring" | "completed" | "failed";
   transferState: "none" | "requested" | "completed" | "fallback" | "failed";
   lastErrorCode: string | null;
   lastErrorSummary: string | null;
