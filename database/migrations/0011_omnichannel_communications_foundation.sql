@@ -33,7 +33,9 @@ create table icamp_private.communication_endpoints (
     on update cascade
     on delete restrict,
   constraint communication_endpoints_scope_value_unique
-    unique (organization_id, campground_id, endpoint_kind, endpoint_value)
+    unique (organization_id, campground_id, endpoint_kind, endpoint_value),
+  constraint communication_endpoints_campground_id_unique
+    unique (campground_id, id)
 );
 
 create table icamp_private.communication_preferences (
@@ -124,10 +126,7 @@ create table icamp_private.communication_dispatches (
     on update cascade
     on delete restrict,
   campground_id uuid not null,
-  endpoint_id uuid
-    references icamp_private.communication_endpoints(id)
-    on update cascade
-    on delete restrict,
+  endpoint_id uuid,
   direction text not null
     check (direction in ('inbound', 'outbound')),
   channel text not null
@@ -188,6 +187,11 @@ create table icamp_private.communication_dispatches (
   constraint communication_dispatches_campground_fk
     foreign key (organization_id, campground_id)
     references public.campgrounds(organization_id, id)
+    on update cascade
+    on delete restrict,
+  constraint communication_dispatches_endpoint_scope_fk
+    foreign key (campground_id, endpoint_id)
+    references icamp_private.communication_endpoints(campground_id, id)
     on update cascade
     on delete restrict,
   constraint communication_dispatches_scope_idempotency_unique
