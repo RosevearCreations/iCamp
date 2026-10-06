@@ -397,6 +397,12 @@ Financing data is isolated as confidential/high-risk.
 - system_events
 - integration_events
 
+### Background execution
+- job_schedules
+- job_queue
+- queue_workers
+- scheduler_heartbeats
+
 ## 6. Availability and hold engine
 
 Availability is calculated server-side from:
@@ -722,7 +728,22 @@ Build 002 establishes contracts and in-process health. Later builds extend:
 - Build 150 — recovery/incident runbooks;
 - Build 153 — production I.T. operations readiness and external watchdog verification.
 
-### 19.9 Global client web status
+### 19.9 Background job and scheduler health
+Build 007 provides one provider-portable PostgreSQL execution layer for later domains.
+
+The execution contract is:
+- durable queued jobs and interval schedules;
+- per-queue idempotency keys;
+- at-least-once worker delivery;
+- finite worker leases and heartbeats;
+- bounded exponential retry;
+- dead-letter state after exhausted attempts;
+- scheduler heartbeat/tick evidence;
+- aggregate I.T. signals for overdue work, stalled workers and expired leases.
+
+Queue payloads remain private. Web/PWA, IVR/DTMF and SMS enqueue canonical domain work through the same server-side layer rather than creating channel-specific schedulers.
+
+### 19.10 Global client web status
 A safe web status surface may be globally accessible and should communicate service condition without exposing internal diagnostics.
 
 ## 20. Environments

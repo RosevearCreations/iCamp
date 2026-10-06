@@ -5,6 +5,7 @@ import { AdminRefreshControl } from "@/components/admin-refresh-control";
 import { AppShell } from "@/components/app-shell";
 import { SectionHeading } from "@/components/section-heading";
 import { requireAnyCampgroundPermission } from "@/lib/authz/current-user";
+import { getOperationalQueueHealth } from "@/lib/jobs/postgres.mjs";
 import { getSafeItSnapshot } from "@/lib/observability/health";
 
 export const metadata: Metadata = {
@@ -20,6 +21,7 @@ export default async function ItAnalysisPage() {
     "/workspaces/it-analysis",
   );
   const snapshot = getSafeItSnapshot();
+  const queueHealth = await getOperationalQueueHealth();
   const renderedAt = new Date().toISOString();
 
   return (
@@ -29,9 +31,9 @@ export default async function ItAnalysisPage() {
           <p className="eyebrow">I.T. & Analysis</p>
           <h1>System health without exposing sensitive information.</h1>
           <p className="hero-panel__lead">
-            Build 002 establishes diagnostics and support contracts. Until
-            permissions and audit controls are available, this workspace
-            intentionally shows only public-safe health information.
+            Runtime health stays sanitized, while authenticated I.T. operators
+            can now see aggregate queue and scheduler signals without exposing
+            job payloads, credentials or private infrastructure details.
           </p>
         </section>
 
@@ -62,6 +64,50 @@ export default async function ItAnalysisPage() {
               <dd>{snapshot.readiness.configuration}</dd>
             </div>
           </dl>
+        </section>
+
+        <section
+          className="content-panel"
+          aria-labelledby="queue-health-heading"
+        >
+          <SectionHeading
+            eyebrow="Background operations"
+            title="Queue & scheduler health"
+            id="queue-health-heading"
+            helpTopic="it.analysis"
+            trailing={<span className="build-chip">{queueHealth.status}</span>}
+          />
+          <div className="health-grid">
+            <article className="health-card">
+              <span className="health-card__label">Jobs</span>
+              <strong>
+                {queueHealth.jobs.queued} queued · {queueHealth.jobs.running}{" "}
+                running
+              </strong>
+              <span>
+                {queueHealth.jobs.deadLetter} dead-letter ·{" "}
+                {queueHealth.jobs.overdue} overdue
+              </span>
+            </article>
+            <article className="health-card">
+              <span className="health-card__label">Workers</span>
+              <strong>{queueHealth.workers.active} active</strong>
+              <span>{queueHealth.workers.stalled} stalled</span>
+            </article>
+            <article className="health-card">
+              <span className="health-card__label">Scheduler</span>
+              <strong>{queueHealth.schedules.schedulerState}</strong>
+              <span>
+                {queueHealth.schedules.active} active schedule(s) ·{" "}
+                {queueHealth.schedules.overdue} overdue
+              </span>
+            </article>
+            <article className="health-card">
+              <span className="health-card__label">Leases</span>
+              <strong>{queueHealth.jobs.expiredLeases} expired</strong>
+              <span>Payloads remain private</span>
+            </article>
+          </div>
         </section>
 
         <section className="content-panel" aria-labelledby="freshness-heading">

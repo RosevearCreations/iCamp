@@ -51,7 +51,24 @@ The I.T. & Analysis workspace will mature into:
 - alert acknowledgement/escalation;
 - support evidence packages.
 
-Build 002 exposes only safe information because authentication, permissions and audit controls do not arrive until Builds 004–006.
+Build 002 established the safe public/runtime baseline. Builds 004–006 added authentication, authorization and audit controls. Build 007 now adds protected aggregate queue/scheduler health while keeping job payloads and sensitive diagnostics private.
+
+## Queue and scheduler health
+
+Build 007 adds authorized operational signals for:
+- queued and running work;
+- dead-letter jobs;
+- overdue queued jobs;
+- expired job leases;
+- active and stalled workers;
+- active and overdue schedules;
+- scheduler heartbeat/tick state.
+
+The I.T. workspace exposes aggregate counts and safe timestamps only. It does not expose job payloads, raw exception bodies, credentials, personal data or private infrastructure topology.
+
+A deployment with no active schedules reports scheduler **standby** rather than failure. When active schedules exist, missing/stale scheduler heartbeat is a degraded signal.
+
+The canonical queue implementation remains provider-portable PostgreSQL. An external timer/worker host is an adapter and can change without changing iCamp job semantics.
 
 ## Error handling
 
