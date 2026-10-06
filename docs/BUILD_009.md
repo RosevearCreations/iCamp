@@ -36,6 +36,7 @@ Build 014 adds compliance-specific unsubscribe/help synchronization and jurisdic
 
 ## Reliability
 
+- advisor-driven covering index for communication preference updater foreign keys;
 - per-campground dispatch idempotency;
 - per-provider event idempotency;
 - bounded attempts;
