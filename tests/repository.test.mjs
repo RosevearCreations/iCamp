@@ -621,7 +621,6 @@ test("Build 006 source of truth preserves channel-neutral privileged controls", 
   );
 });
 
-
 test("Build 007 defines private durable schedules queues and operational heartbeats", async () => {
   const migration = await readFile(
     "database/migrations/0008_background_jobs_scheduler_queues.sql",
