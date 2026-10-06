@@ -128,6 +128,9 @@ jobs:
       - name: Verify background jobs and scheduler lifecycle
         run: npm run jobs:verify
 
+      - name: Verify secure media and document lifecycle
+        run: npm run media:verify
+
       - name: Re-run migrations to prove idempotent history handling
         run: node scripts/apply-database-migrations.mjs
 

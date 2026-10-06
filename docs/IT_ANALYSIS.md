@@ -51,7 +51,7 @@ The I.T. & Analysis workspace will mature into:
 - alert acknowledgement/escalation;
 - support evidence packages.
 
-Build 002 established the safe public/runtime baseline. Builds 004–006 added authentication, authorization and audit controls. Build 007 now adds protected aggregate queue/scheduler health while keeping job payloads and sensitive diagnostics private.
+Build 002 established the safe public/runtime baseline. Builds 004–006 added authentication, authorization and audit controls. Build 007 added protected aggregate queue/scheduler health while keeping job payloads and sensitive diagnostics private. Build 008 adds aggregate media/document registry health without exposing filenames, object paths, signed URLs or document contents.
 
 ## Queue and scheduler health
 
@@ -138,3 +138,13 @@ Health/status/diagnostic contracts belong to iCamp, allowing later use of:
 - larger enterprise tooling.
 
 Changing monitoring providers must not require changing campground business logic.
+
+
+## Media and document storage health
+
+Build 008 adds authorized aggregate signals for:
+- total registered and active media records;
+- quarantined media requiring review;
+- active public/internal/confidential counts.
+
+The I.T. workspace never exposes storage credentials, object keys, signed URLs, original filenames, media bytes or document contents. Storage-provider health can later extend this section without changing the iCamp classification and lifecycle model.

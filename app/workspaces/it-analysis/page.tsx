@@ -6,6 +6,7 @@ import { AppShell } from "@/components/app-shell";
 import { SectionHeading } from "@/components/section-heading";
 import { requireAnyCampgroundPermission } from "@/lib/authz/current-user";
 import { getOperationalQueueHealth } from "@/lib/jobs/postgres.mjs";
+import { getMediaStorageHealth } from "@/lib/media/postgres.mjs";
 import { getSafeItSnapshot } from "@/lib/observability/health";
 
 export const metadata: Metadata = {
@@ -21,7 +22,10 @@ export default async function ItAnalysisPage() {
     "/workspaces/it-analysis",
   );
   const snapshot = getSafeItSnapshot();
-  const queueHealth = await getOperationalQueueHealth();
+  const [queueHealth, mediaHealth] = await Promise.all([
+    getOperationalQueueHealth(),
+    getMediaStorageHealth(),
+  ]);
   const renderedAt = new Date().toISOString();
 
   return (
@@ -106,6 +110,46 @@ export default async function ItAnalysisPage() {
               <span className="health-card__label">Leases</span>
               <strong>{queueHealth.jobs.expiredLeases} expired</strong>
               <span>Payloads remain private</span>
+            </article>
+          </div>
+        </section>
+
+        <section
+          className="content-panel"
+          aria-labelledby="media-health-heading"
+        >
+          <SectionHeading
+            eyebrow="Storage"
+            title="Media & document health"
+            id="media-health-heading"
+            helpTopic="it.analysis"
+            trailing={<span className="build-chip">{mediaHealth.status}</span>}
+          />
+          <div className="health-grid">
+            <article className="health-card">
+              <span className="health-card__label">Registry</span>
+              <strong>{mediaHealth.registered} registered</strong>
+              <span>{mediaHealth.active} active</span>
+            </article>
+            <article className="health-card">
+              <span className="health-card__label">Quarantine</span>
+              <strong>{mediaHealth.quarantined}</strong>
+              <span>Requires operator review when non-zero</span>
+            </article>
+            <article className="health-card">
+              <span className="health-card__label">Active classes</span>
+              <strong>
+                {mediaHealth.byClassification.public} public ·{" "}
+                {mediaHealth.byClassification.internal} internal
+              </strong>
+              <span>
+                {mediaHealth.byClassification.confidential} confidential
+              </span>
+            </article>
+            <article className="health-card">
+              <span className="health-card__label">Diagnostic privacy</span>
+              <strong>Metadata protected</strong>
+              <span>Object paths and document contents remain private</span>
             </article>
           </div>
         </section>

@@ -611,3 +611,19 @@ Dead-letter replay/remediation is intentionally not introduced as an unaudited b
 
 ### Cross-channel boundary
 Web/PWA, IVR/DTMF and SMS may enqueue the same canonical job types, but queueing never substitutes for authorization. Privileged source actions must complete normal permission, re-authentication and audit requirements before the command is accepted for background execution.
+
+
+## Build 008 — Secure media and document storage
+
+- Media is classified as `public`, `internal` or `confidential`; classification is server-authoritative.
+- Internal reads require an active campground assignment with `media.read`.
+- Confidential reads require the narrower `media.confidential.read` permission.
+- Media mutations require `media.manage` and produce audit/lifecycle evidence.
+- Browser-facing database roles have no direct access to the private media metadata tables.
+- Provider secret/service credentials are server-only and must never use a `NEXT_PUBLIC_*` variable.
+- Private provider URLs are short-lived, bounded to 60–900 seconds, and must not be persisted in database rows, queues, logs, analytics or message history.
+- Upload validation checks MIME type, extension, byte size and binary signature; SVG, HTML and executable formats are not accepted by this foundation.
+- User filenames are metadata only. Storage object keys use UUID scope/asset identifiers to avoid path traversal and sensitive filename leakage.
+- Public storage permits deliberate unauthenticated reads only for the public bucket; upload/update/delete remain trusted-server operations.
+- Internal and confidential buckets remain private.
+- Object deletion is the reliable emergency access cutoff when a previously issued signed URL must be invalidated; token expiry alone is not treated as an immediate-revocation mechanism.
