@@ -548,7 +548,6 @@ test("Build 005 permission catalogue covers privileged operational domains", asy
   }
 });
 
-
 test("Build 006 defines append-only audit evidence and reauthentication state", async () => {
   const migration = await readFile(
     "database/migrations/0007_audit_privileged_actions.sql",
@@ -559,8 +558,14 @@ test("Build 006 defines append-only audit evidence and reauthentication state", 
   assert.match(migration, /reauthenticated_at timestamptz/);
   assert.match(migration, /audit_events_privileged_reason_check/);
   assert.match(migration, /prevent_audit_event_mutation/);
-  assert.match(migration, /before update or delete on icamp_private\.audit_events/);
-  assert.match(migration, /revoke all on icamp_private\.audit_events from public/);
+  assert.match(
+    migration,
+    /before update or delete on icamp_private\.audit_events/,
+  );
+  assert.match(
+    migration,
+    /revoke all on icamp_private\.audit_events from public/,
+  );
 });
 
 test("Build 006 enforces privileged reason and recent reauthentication", async () => {
@@ -604,14 +609,14 @@ test("Build 006 CI verifies audit and privileged-action lifecycle", async () => 
 });
 
 test("Build 006 source of truth preserves channel-neutral privileged controls", async () => {
-  const source = await readFile(
-    "docs/AUDIT_AND_PRIVILEGED_ACTIONS.md",
-    "utf8",
-  );
+  const source = await readFile("docs/AUDIT_AND_PRIVILEGED_ACTIONS.md", "utf8");
   const build = await readFile("docs/BUILD_006.md", "utf8");
 
   assert.match(source, /Append-only audit evidence/);
   assert.match(source, /Web\/PWA, IVR\/DTMF and SMS/);
   assert.match(source, /same database transaction/);
-  assert.match(build, /Build 007 — Background Jobs, Scheduler & Operational Queues/);
+  assert.match(
+    build,
+    /Build 007 — Background Jobs, Scheduler & Operational Queues/,
+  );
 });
