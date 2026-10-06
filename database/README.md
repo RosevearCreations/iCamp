@@ -43,3 +43,9 @@ Supabase's migration interface is used to apply those canonical migrations remot
 Build 008 stores only provider-neutral media metadata and lifecycle evidence in PostgreSQL. Binary objects remain in an object-storage adapter.
 
 Provider-specific storage setup is versioned separately from the portable migration runner under `providers/`. The current Supabase bucket definition is `providers/supabase/storage/0001_media_buckets.sql`.
+
+## Omnichannel communications
+
+Build 009 stores private communication endpoints, purpose/channel preferences, append-only consent evidence, provider-neutral dispatch metadata, bounded provider attempts and normalized append-only provider events in `icamp_private`.
+
+The canonical schema does not depend on a telephony/SMS/email/push vendor. Provider adapters are application boundaries, and browser-facing database roles do not receive direct communications-table access.

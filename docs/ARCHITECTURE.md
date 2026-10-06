@@ -1169,3 +1169,33 @@ The current development adapter uses Supabase Storage. The canonical schema and 
 
 ### 28.6 Non-visual channels
 IVR/DTMF and SMS do not receive durable private object URLs. They address canonical asset IDs and use staff-assisted or secure authenticated handoff where visual access is required. Later MMS intake reuses the same validation and lifecycle boundary.
+
+## 29. Omnichannel Communications Foundation
+
+### 29.1 One communications domain
+
+Web/PWA, voice, DTMF, speech, SMS/MMS, email and push are interfaces to one canonical communications domain. Provider adapters do not own campground business rules.
+
+### 29.2 Endpoint identity
+
+Communication endpoints have durable iCamp IDs and private endpoint values. Phone numbers, email addresses and push destinations are contact/routing data, not authentication or authorization proof.
+
+### 29.3 Purpose and preference model
+
+Every dispatch is classified as transactional, operational or marketing. Preferences are purpose/channel-specific, while consent evidence is append-only.
+
+Build 014 adds the compliance-specific STOP/START/HELP and jurisdiction synchronization layer.
+
+### 29.4 Provider portability
+
+Provider-neutral dispatches and attempts sit above replaceable provider adapters. Development uses the local mock adapter. Voice, SMS/MMS, email or push providers can be replaced without changing campground-domain IDs or consent history.
+
+### 29.5 Retry and idempotency
+
+Dispatches have campground-scoped idempotency keys, bounded attempts and capped exponential retry metadata. Provider event IDs are unique per provider to tolerate webhook retries.
+
+Build 007 remains the durable execution substrate for later communications workers.
+
+### 29.6 Health and privacy
+
+I.T. receives aggregate delivery/call/retry/provider-event health only. Raw endpoints, bodies, transcripts, recordings, webhook payloads and secrets stay outside ordinary diagnostics.
