@@ -1,8 +1,6 @@
 import { NextResponse } from "next/server";
 
-import {
-  ingestVoiceProviderEvent,
-} from "@/lib/voice/postgres.mjs";
+import { ingestVoiceProviderEvent } from "@/lib/voice/postgres.mjs";
 import {
   createVoiceProviderAdapter,
   getVoiceProviderConfig,
