@@ -1,17 +1,8 @@
 export type CommunicationChannel =
-  | "web"
-  | "voice"
-  | "dtmf"
-  | "speech"
-  | "sms"
-  | "mms"
-  | "email"
-  | "push";
+  "web" | "voice" | "dtmf" | "speech" | "sms" | "mms" | "email" | "push";
 
 export type CommunicationPurpose =
-  | "transactional"
-  | "operational"
-  | "marketing";
+  "transactional" | "operational" | "marketing";
 
 export interface CommunicationEndpoint {
   id: string;
