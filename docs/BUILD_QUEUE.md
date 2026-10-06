@@ -138,8 +138,24 @@ Delivered:
 - hosted Supabase migrations 0011/0012 with zero security-advisor lints;
 - advisor-driven foreign-key index completion and rollback-only hosted verification with zero retained synthetic rows.
 
+### Build 010 — Inbound/Outbound Voice & IVR Gateway
+Status: **FULLY PROMOTED — `main` GREEN.**
+
+Delivered:
+- campground-scoped private voice-line/provider bindings;
+- inbound signed webhook gateway with bounded replay window;
+- authenticated outbound voice routing through the canonical communications permission engine;
+- transactional provider-event idempotency and call/dispatch/IVR state updates;
+- provider-neutral semantic IVR state-machine foundation;
+- same-campground staff transfer with safe fallback;
+- free mock/sandbox voice provider for call placement, transfer and webhook normalization;
+- append-only semantic IVR event evidence with no DTMF/PIN/payment/audio/transcript storage;
+- sanitized voice-line/call/IVR/transfer health in I.T. & Analysis;
+- hosted Supabase migrations 0013/0014 with zero security-advisor lints;
+- advisor-driven voice foreign-key indexes and rollback-only hosted verification with zero retained synthetic rows.
+
 ## Next active build
-**Build 010 — Inbound/Outbound Voice & IVR Gateway**
+**Build 011 — Numeric Keypad/DTMF Interaction Engine**
 
 Status: **QUEUED — NOT STARTED**
 
