@@ -15,7 +15,9 @@ Build 007 delivers the provider-portable operational execution foundation define
 
 ### Database
 - `database/migrations/0008_background_jobs_scheduler_queues.sql`
+- `database/migrations/0009_background_jobs_fk_indexes.sql`
 - `database/verify/0008_background_jobs_scheduler_queues.sql`
+- `database/verify/0009_background_jobs_fk_indexes.sql`
 
 Private operational tables:
 - `icamp_private.job_schedules`
@@ -57,7 +59,7 @@ Web/PWA, IVR/DTMF and SMS all use the same canonical background-job layer. Queue
 
 ## Supabase
 
-The canonical Build 007 migration will be applied to the connected RosevearCreations iCamp project and checked with:
+The canonical Build 007 migrations will be applied to the connected RosevearCreations iCamp project and checked with:
 - structural SQL verification;
 - rollback-only lifecycle/security checks;
 - security advisor;
