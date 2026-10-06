@@ -22,7 +22,9 @@ export interface NormalizedVoiceWebhook {
   sandbox: boolean;
 }
 
-export function getVoiceProviderConfig(env?: NodeJS.ProcessEnv): VoiceProviderConfig;
+export function getVoiceProviderConfig(
+  env?: NodeJS.ProcessEnv,
+): VoiceProviderConfig;
 
 export function signMockVoiceWebhook(input: {
   rawBody: string;
