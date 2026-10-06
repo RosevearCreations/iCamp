@@ -26,6 +26,10 @@ begin
     raise exception 'Missing communication dispatch scope/state index';
   end if;
 
+  if to_regclass('icamp_private.communication_dispatches_endpoint_scope_idx') is null then
+    raise exception 'Missing communication dispatch endpoint-scope index';
+  end if;
+
   if has_schema_privilege('public', 'icamp_private', 'USAGE') then
     raise exception 'PUBLIC must not have USAGE on icamp_private';
   end if;
