@@ -38,7 +38,6 @@ GitHub migration files remain canonical.
 
 Supabase's migration interface is used to apply those canonical migrations remotely; vanilla PostgreSQL CI remains the portability/compatibility proof.
 
-
 ## Secure media storage
 
 Build 008 stores only provider-neutral media metadata and lifecycle evidence in PostgreSQL. Binary objects remain in an object-storage adapter.
