@@ -620,3 +620,77 @@ test("Build 006 source of truth preserves channel-neutral privileged controls", 
     /Build 007 — Background Jobs, Scheduler & Operational Queues/,
   );
 });
+
+test("Build 007 defines private durable schedules queues and operational heartbeats", async () => {
+  const migration = await readFile(
+    "database/migrations/0008_background_jobs_scheduler_queues.sql",
+    "utf8",
+  );
+
+  for (const table of [
+    "job_schedules",
+    "job_queue",
+    "queue_workers",
+    "scheduler_heartbeats",
+  ]) {
+    assert.match(
+      migration,
+      new RegExp("create table icamp_private\\." + table),
+    );
+  }
+
+  const fkIndexes = await readFile(
+    "database/migrations/0009_background_jobs_fk_indexes.sql",
+    "utf8",
+  );
+
+  assert.match(migration, /job_queue_idempotency_idx/);
+  assert.match(migration, /job_queue_claim_idx/);
+  assert.match(fkIndexes, /job_schedules_scope_idx/);
+  assert.match(fkIndexes, /job_queue_scope_idx/);
+  assert.match(
+    migration,
+    /state in \('queued', 'running', 'succeeded', 'dead_letter'\)/,
+  );
+  assert.match(migration, /revoke all on icamp_private\.job_queue from public/);
+});
+
+test("Build 007 queue runtime enforces idempotency leases retries and dead-letter recovery", async () => {
+  const jobs = await readFile("lib/jobs/postgres.mjs", "utf8");
+
+  assert.match(jobs, /on conflict \(queue_name, idempotency_key\)/);
+  assert.match(jobs, /for update skip locked/);
+  assert.match(jobs, /lease_expires_at > statement_timestamp\(\)/);
+  assert.match(jobs, /recoverExpiredLeases/);
+  assert.match(jobs, /retryDelaySeconds/);
+  assert.match(jobs, /dead_letter/);
+  assert.match(jobs, /runDueSchedules/);
+});
+
+test("Build 007 CI proves the queue lifecycle and I.T. shows safe aggregate health", async () => {
+  const workflow = await readFile(".github/workflows/ci.yml", "utf8");
+  const lifecycle = await readFile(
+    "scripts/verify-background-jobs-lifecycle.mjs",
+    "utf8",
+  );
+  const itPage = await readFile("app/workspaces/it-analysis/page.tsx", "utf8");
+
+  assert.match(workflow, /Verify background jobs and scheduler lifecycle/);
+  assert.match(workflow, /npm run jobs:verify/);
+  assert.match(lifecycle, /duplicateEnqueue/);
+  assert.match(lifecycle, /Synthetic final-attempt verification/);
+  assert.match(lifecycle, /leaseExpiryFixture/);
+  assert.match(itPage, /getOperationalQueueHealth/);
+  assert.match(itPage, /Payloads remain private/);
+});
+
+test("Build 007 source of truth keeps execution provider-portable and channel-neutral", async () => {
+  const source = await readFile("docs/BACKGROUND_JOBS.md", "utf8");
+  const build = await readFile("docs/BUILD_007.md", "utf8");
+
+  assert.match(source, /provider-portable PostgreSQL/i);
+  assert.match(source, /at-least-once processing/i);
+  assert.match(source, /Web\/PWA, IVR\/DTMF and SMS/);
+  assert.match(source, /job payloads/i);
+  assert.match(build, /Build 008 — Secure Media & Document Storage Foundation/);
+});

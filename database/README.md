@@ -22,6 +22,8 @@ Tables introduced in the exposed `public` schema enable RLS immediately.
 
 Build 003 intentionally creates no permissive RLS policies. Authentication and tenant-aware policies arrive in Build 005.
 
+Authentication, authorization, audit, background-job, scheduler and worker-heartbeat records live in the private schema and are not exposed to browser-facing database roles.
+
 ## Supabase compatibility
 
 iCamp does not require Supabase to develop or test Build 003. The SQL remains PostgreSQL-compatible so a future Supabase project can use the same canonical schema rather than becoming the source of truth.
