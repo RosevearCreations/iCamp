@@ -101,11 +101,7 @@ try {
   });
   const camp = await createCampground();
 
-  await assignOwnerTemplate(
-    owner.id,
-    camp.organizationId,
-    camp.campgroundId,
-  );
+  await assignOwnerTemplate(owner.id, camp.organizationId, camp.campgroundId);
 
   const createdSession = await createSession({ userId: owner.id });
   const session = await getSessionByToken(createdSession.token);
@@ -231,10 +227,9 @@ try {
 
   await assert.rejects(
     () =>
-      setupPool.query(
-        "delete from icamp_private.audit_events where id = $1",
-        [assignmentEvent.id],
-      ),
+      setupPool.query("delete from icamp_private.audit_events where id = $1", [
+        assignmentEvent.id,
+      ]),
     /Audit events are append-only/,
   );
 
