@@ -148,3 +148,14 @@ Build 008 adds authorized aggregate signals for:
 - active public/internal/confidential counts.
 
 The I.T. workspace never exposes storage credentials, object keys, signed URLs, original filenames, media bytes or document contents. Storage-provider health can later extend this section without changing the iCamp classification and lifecycle model.
+
+## Communications health
+
+Build 009 adds aggregate communication health to the protected I.T. workspace:
+
+- queued/submitted/delivered/failed dispatch counts;
+- overdue delivery/call work;
+- retryable and terminal provider-attempt failures;
+- normalized provider-event activity.
+
+The I.T. view never exposes raw phone numbers, email addresses, push destinations, message bodies, call transcripts/recordings, raw webhook payloads or provider secrets.
