@@ -42,8 +42,14 @@ create table icamp_private.voice_lines (
   constraint voice_lines_provider_number_unique
     unique (provider_key, provider_number_reference),
   constraint voice_lines_campground_endpoint_unique
-    unique (campground_id, endpoint_id)
+    unique (campground_id, endpoint_id),
+  constraint voice_lines_campground_id_unique
+    unique (campground_id, id)
 );
+
+alter table icamp_private.communication_dispatches
+  add constraint communication_dispatches_campground_id_unique
+  unique (campground_id, id);
 
 create table icamp_private.voice_calls (
   id uuid primary key default gen_random_uuid(),
@@ -52,14 +58,8 @@ create table icamp_private.voice_calls (
     on update cascade
     on delete restrict,
   campground_id uuid not null,
-  line_id uuid not null
-    references icamp_private.voice_lines(id)
-    on update cascade
-    on delete restrict,
-  dispatch_id uuid not null
-    references icamp_private.communication_dispatches(id)
-    on update cascade
-    on delete restrict,
+  line_id uuid not null,
+  dispatch_id uuid not null,
   remote_endpoint_id uuid,
   provider_key text not null
     check (provider_key ~ '^[a-z][a-z0-9_-]{1,63}$'),
@@ -107,6 +107,16 @@ create table icamp_private.voice_calls (
   constraint voice_calls_campground_fk
     foreign key (organization_id, campground_id)
     references public.campgrounds(organization_id, id)
+    on update cascade
+    on delete restrict,
+  constraint voice_calls_line_scope_fk
+    foreign key (campground_id, line_id)
+    references icamp_private.voice_lines(campground_id, id)
+    on update cascade
+    on delete restrict,
+  constraint voice_calls_dispatch_scope_fk
+    foreign key (campground_id, dispatch_id)
+    references icamp_private.communication_dispatches(campground_id, id)
     on update cascade
     on delete restrict,
   constraint voice_calls_remote_endpoint_scope_fk
