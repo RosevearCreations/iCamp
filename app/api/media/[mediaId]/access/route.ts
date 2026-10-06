@@ -27,7 +27,10 @@ export async function GET(
   const asset = await getMediaAccessDescriptor(mediaId);
 
   if (!asset || asset.lifecycleState !== "active") {
-    return NextResponse.json({ error: "Media was not found." }, { status: 404 });
+    return NextResponse.json(
+      { error: "Media was not found." },
+      { status: 404 },
+    );
   }
 
   if (asset.storageProvider !== "supabase") {
