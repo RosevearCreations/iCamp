@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 
 import pg from "pg";
 
+import { closeAuthorizationPoolForTests } from "../lib/authz/postgres.mjs";
 import {
   closeCommunicationsPoolForTests,
   communicationRetryDelaySeconds,
@@ -311,5 +312,6 @@ try {
   );
 } finally {
   await closeCommunicationsPoolForTests();
+  await closeAuthorizationPoolForTests();
   await setupPool.end();
 }
