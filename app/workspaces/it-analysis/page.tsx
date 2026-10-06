@@ -66,24 +66,27 @@ export default async function ItAnalysisPage() {
           </dl>
         </section>
 
-        <section className="content-panel" aria-labelledby="queue-health-heading">
+        <section
+          className="content-panel"
+          aria-labelledby="queue-health-heading"
+        >
           <SectionHeading
             eyebrow="Background operations"
             title="Queue & scheduler health"
             id="queue-health-heading"
             helpTopic="it.analysis"
-            trailing={
-              <span className="build-chip">{queueHealth.status}</span>
-            }
+            trailing={<span className="build-chip">{queueHealth.status}</span>}
           />
           <div className="health-grid">
             <article className="health-card">
               <span className="health-card__label">Jobs</span>
               <strong>
-                {queueHealth.jobs.queued} queued · {queueHealth.jobs.running} running
+                {queueHealth.jobs.queued} queued · {queueHealth.jobs.running}{" "}
+                running
               </strong>
               <span>
-                {queueHealth.jobs.deadLetter} dead-letter · {queueHealth.jobs.overdue} overdue
+                {queueHealth.jobs.deadLetter} dead-letter ·{" "}
+                {queueHealth.jobs.overdue} overdue
               </span>
             </article>
             <article className="health-card">
@@ -95,7 +98,8 @@ export default async function ItAnalysisPage() {
               <span className="health-card__label">Scheduler</span>
               <strong>{queueHealth.schedules.schedulerState}</strong>
               <span>
-                {queueHealth.schedules.active} active schedule(s) · {queueHealth.schedules.overdue} overdue
+                {queueHealth.schedules.active} active schedule(s) ·{" "}
+                {queueHealth.schedules.overdue} overdue
               </span>
             </article>
             <article className="health-card">
