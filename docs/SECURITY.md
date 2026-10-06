@@ -571,3 +571,43 @@ CI and production-readiness checks must prove at minimum:
 Build 005 remote tests run in rollback-only transactions against the iCamp Supabase development project and retain no synthetic authorization records.
 
 Supabase security-advisor findings must be reviewed after authorization migrations; security findings are not waived merely because CI is GREEN.
+
+
+## 26. Background Job, Scheduler and Queue Security
+
+### Private execution state
+Build 007 queue, schedule, worker and scheduler records live in `icamp_private`.
+
+Browser-facing Supabase roles do not receive private-schema access. Queue payloads are server-side operational data, not a client API.
+
+### At-least-once execution
+A claimed job is protected by a finite worker lease. Workers may heartbeat, complete or fail a job only while they still own an unexpired lease.
+
+Expired work is recovered safely:
+- attempts remaining → return to queue;
+- final attempt exhausted → dead-letter.
+
+Because processing is at-least-once, side-effecting handlers must use domain/provider idempotency in addition to queue-record idempotency.
+
+### Idempotency
+Non-null idempotency keys are unique within a queue. Scheduled occurrences use a stable schedule/occurrence key so repeated scheduler ticks do not create duplicate records for the same occurrence.
+
+### Retry and error hygiene
+Retries are bounded. Error fields store short sanitized codes/summaries only.
+
+Never put the following in queue error evidence, worker metadata or scheduler metadata:
+- passwords or authentication tokens;
+- API/service secrets;
+- payment-card data;
+- authentication, MFA or keypad codes;
+- reusable access credentials;
+- raw request/response bodies by default;
+- sensitive financing, incident or message content.
+
+### I.T. visibility
+The protected I.T./Analysis health surface receives aggregate counts and safe heartbeat timestamps. It does not receive job payloads.
+
+Dead-letter replay/remediation is intentionally not introduced as an unaudited button in Build 007. Later controls that mutate/replay privileged work must use authorization and audit safeguards.
+
+### Cross-channel boundary
+Web/PWA, IVR/DTMF and SMS may enqueue the same canonical job types, but queueing never substitutes for authorization. Privileged source actions must complete normal permission, re-authentication and audit requirements before the command is accepted for background execution.
