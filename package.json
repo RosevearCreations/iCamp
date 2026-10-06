@@ -21,7 +21,8 @@
     "authz:verify": "node scripts/verify-authorization-lifecycle.mjs",
     "audit:verify": "node scripts/verify-audit-lifecycle.mjs",
     "jobs:verify": "node scripts/verify-background-jobs-lifecycle.mjs",
-    "media:verify": "node scripts/verify-media-lifecycle.mjs"
+    "media:verify": "node scripts/verify-media-lifecycle.mjs",
+    "communications:verify": "node scripts/verify-communications-lifecycle.mjs"
   },
   "dependencies": {
     "next": "16.3.8",
