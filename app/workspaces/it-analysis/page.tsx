@@ -114,7 +114,10 @@ export default async function ItAnalysisPage() {
           </div>
         </section>
 
-        <section className="content-panel" aria-labelledby="media-health-heading">
+        <section
+          className="content-panel"
+          aria-labelledby="media-health-heading"
+        >
           <SectionHeading
             eyebrow="Storage"
             title="Media & document health"
