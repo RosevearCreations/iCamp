@@ -5,6 +5,7 @@ import { AdminRefreshControl } from "@/components/admin-refresh-control";
 import { AppShell } from "@/components/app-shell";
 import { SectionHeading } from "@/components/section-heading";
 import { requireAnyCampgroundPermission } from "@/lib/authz/current-user";
+import { getCommunicationsHealth } from "@/lib/communications/postgres.mjs";
 import { getOperationalQueueHealth } from "@/lib/jobs/postgres.mjs";
 import { getMediaStorageHealth } from "@/lib/media/postgres.mjs";
 import { getSafeItSnapshot } from "@/lib/observability/health";
@@ -22,9 +23,10 @@ export default async function ItAnalysisPage() {
     "/workspaces/it-analysis",
   );
   const snapshot = getSafeItSnapshot();
-  const [queueHealth, mediaHealth] = await Promise.all([
+  const [queueHealth, mediaHealth, communicationsHealth] = await Promise.all([
     getOperationalQueueHealth(),
     getMediaStorageHealth(),
+    getCommunicationsHealth(),
   ]);
   const renderedAt = new Date().toISOString();
 
@@ -110,6 +112,53 @@ export default async function ItAnalysisPage() {
               <span className="health-card__label">Leases</span>
               <strong>{queueHealth.jobs.expiredLeases} expired</strong>
               <span>Payloads remain private</span>
+            </article>
+          </div>
+        </section>
+
+        <section
+          className="content-panel"
+          aria-labelledby="communications-health-heading"
+        >
+          <SectionHeading
+            eyebrow="Omnichannel"
+            title="Communications health"
+            id="communications-health-heading"
+            helpTopic="it.analysis"
+            trailing={
+              <span className="build-chip">{communicationsHealth.status}</span>
+            }
+          />
+          <div className="health-grid">
+            <article className="health-card">
+              <span className="health-card__label">Delivery</span>
+              <strong>
+                {communicationsHealth.delivery.queued} queued ·{" "}
+                {communicationsHealth.delivery.submitted} submitted
+              </strong>
+              <span>
+                {communicationsHealth.delivery.delivered} delivered ·{" "}
+                {communicationsHealth.delivery.failed} failed
+              </span>
+            </article>
+            <article className="health-card">
+              <span className="health-card__label">Overdue</span>
+              <strong>{communicationsHealth.delivery.overdue}</strong>
+              <span>Delivery/call work past the health threshold</span>
+            </article>
+            <article className="health-card">
+              <span className="health-card__label">Retries</span>
+              <strong>
+                {communicationsHealth.retries.retryableFailures} retryable
+              </strong>
+              <span>
+                {communicationsHealth.retries.terminalAttemptFailures} terminal
+              </span>
+            </article>
+            <article className="health-card">
+              <span className="health-card__label">Provider events</span>
+              <strong>{communicationsHealth.providers.events24h} in 24h</strong>
+              <span>Endpoints, bodies and provider payloads remain private</span>
             </article>
           </div>
         </section>
