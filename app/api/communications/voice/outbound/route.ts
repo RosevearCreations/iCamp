@@ -73,18 +73,24 @@ export async function POST(request: Request) {
     );
   }
 
+  const organizationId = body.organizationId as string;
+  const campgroundId = body.campgroundId as string;
+  const lineId = body.lineId as string;
+  const destinationEndpointId = body.destinationEndpointId as string;
+  const idempotencyKey = body.idempotencyKey;
+
   try {
     const provider = createVoiceProviderAdapter(getVoiceProviderConfig());
     const call = await startOutboundVoiceCall({
       actorUserId: session.user.id,
-      organizationId: body.organizationId,
-      campgroundId: body.campgroundId,
-      lineId: body.lineId,
-      destinationEndpointId: body.destinationEndpointId,
+      organizationId,
+      campgroundId,
+      lineId,
+      destinationEndpointId,
       purpose:
         (body.purpose as "transactional" | "operational" | "marketing") ??
         "operational",
-      idempotencyKey: body.idempotencyKey,
+      idempotencyKey,
       provider,
     });
 
