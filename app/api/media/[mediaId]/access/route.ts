@@ -18,7 +18,10 @@ export async function GET(
   const { mediaId } = await context.params;
 
   if (!uuidPattern.test(mediaId)) {
-    return NextResponse.json({ error: "Media was not found." }, { status: 404 });
+    return NextResponse.json(
+      { error: "Media was not found." },
+      { status: 404 },
+    );
   }
 
   const asset = await getMediaAccessDescriptor(mediaId);
@@ -61,7 +64,10 @@ export async function GET(
   const session = await getCurrentSession();
 
   if (!session || session.user.accountType !== "staff") {
-    return NextResponse.json({ error: "Authentication required." }, { status: 401 });
+    return NextResponse.json(
+      { error: "Authentication required." },
+      { status: 401 },
+    );
   }
 
   const permission =
