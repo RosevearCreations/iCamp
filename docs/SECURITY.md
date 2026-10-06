@@ -627,3 +627,18 @@ Web/PWA, IVR/DTMF and SMS may enqueue the same canonical job types, but queueing
 - Public storage permits deliberate unauthenticated reads only for the public bucket; upload/update/delete remain trusted-server operations.
 - Internal and confidential buckets remain private.
 - Object deletion is the reliable emergency access cutoff when a previously issued signed URL must be invalidated; token expiry alone is not treated as an immediate-revocation mechanism.
+
+## Build 009 — Omnichannel communications security
+
+- Phone numbers, email addresses and push destinations are private routing data and must not appear in public diagnostics or ordinary audit snapshots.
+- Caller ID, sender address and endpoint possession are never sufficient authentication or campground authorization.
+- Endpoint/preference/consent administration uses the canonical campground permission engine.
+- Communication sends use `communications.send`; administration uses `communications.manage`.
+- Dispatch purpose is server-authoritative and must remain transactional, operational or marketing.
+- Consent evidence and provider events are append-only.
+- Provider event IDs are idempotent per provider.
+- Raw provider webhook bodies, signatures and service credentials are not persisted in provider-event metadata.
+- Message bodies, call recordings/transcripts, payment-card data, MFA/PIN/DTMF secrets and reusable credentials must not be placed in ordinary dispatch errors, provider metadata, audit snapshots or I.T. health.
+- Retryable provider failures use bounded attempts and capped backoff; terminal failure remains visible to operators.
+- Real webhook signature verification and replay protection are required by provider-specific gateway builds before external inbound traffic is trusted.
+- The Build 009 mock provider has no external account, number, billing or secret requirement.
