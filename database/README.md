@@ -22,7 +22,7 @@ Tables introduced in the exposed `public` schema enable RLS immediately.
 
 Build 003 intentionally creates no permissive RLS policies. Authentication and tenant-aware policies arrive in Build 005.
 
-Authentication, authorization, audit, background-job, scheduler and worker-heartbeat records live in the private schema and are not exposed to browser-facing database roles.
+Authentication, authorization, audit, background-job, scheduler, worker-heartbeat and secure media metadata/lifecycle records live in the private schema and are not exposed to browser-facing database roles.
 
 ## Supabase compatibility
 
@@ -37,3 +37,10 @@ The current remote development database is the **RosevearCreations Supabase iCam
 GitHub migration files remain canonical.
 
 Supabase's migration interface is used to apply those canonical migrations remotely; vanilla PostgreSQL CI remains the portability/compatibility proof.
+
+
+## Secure media storage
+
+Build 008 stores only provider-neutral media metadata and lifecycle evidence in PostgreSQL. Binary objects remain in an object-storage adapter.
+
+Provider-specific storage setup is versioned separately from the portable migration runner under `providers/`. The current Supabase bucket definition is `providers/supabase/storage/0001_media_buckets.sql`.
