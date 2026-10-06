@@ -95,8 +95,22 @@ Delivered:
 - campground staff-role assignment protected and audited;
 - PostgreSQL audit/privileged-action lifecycle verification.
 
+### Build 007 — Background Jobs, Scheduler & Operational Queues
+Status: **FULLY PROMOTED — `main` GREEN.**
+
+Delivered:
+- provider-portable durable PostgreSQL job and schedule foundation;
+- per-queue idempotency and at-least-once worker delivery;
+- finite worker leases, heartbeats and expired-lease recovery;
+- bounded retries and dead-letter visibility;
+- scheduler ticks and heartbeat evidence;
+- protected aggregate queue/scheduler health in I.T. & Analysis;
+- PostgreSQL 17 lifecycle verification in CI;
+- hosted Supabase migrations 0008/0009 with zero security-advisor lints;
+- advisor-driven foreign-key indexes and rollback-only hosted verification.
+
 ## Next active build
-**Build 007 — Background Jobs, Scheduler & Operational Queues**
+**Build 008 — Secure Media & Document Storage Foundation**
 
 Status: **QUEUED — NOT STARTED**
 
