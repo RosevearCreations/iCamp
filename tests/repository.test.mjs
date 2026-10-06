@@ -642,7 +642,10 @@ test("Build 007 defines private durable schedules queues and operational heartbe
 
   assert.match(migration, /job_queue_idempotency_idx/);
   assert.match(migration, /job_queue_claim_idx/);
-  assert.match(migration, /state in \('queued', 'running', 'succeeded', 'dead_letter'\)/);
+  assert.match(
+    migration,
+    /state in \('queued', 'running', 'succeeded', 'dead_letter'\)/,
+  );
   assert.match(migration, /revoke all on icamp_private\.job_queue from public/);
 });
 
@@ -683,8 +686,5 @@ test("Build 007 source of truth keeps execution provider-portable and channel-ne
   assert.match(source, /at-least-once processing/i);
   assert.match(source, /Web\/PWA, IVR\/DTMF and SMS/);
   assert.match(source, /job payloads/i);
-  assert.match(
-    build,
-    /Build 008 — Secure Media & Document Storage Foundation/,
-  );
+  assert.match(build, /Build 008 — Secure Media & Document Storage Foundation/);
 });
