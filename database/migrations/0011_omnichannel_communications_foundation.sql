@@ -196,7 +196,7 @@ create table icamp_private.communication_dispatches (
     on delete restrict,
   constraint communication_dispatches_scope_idempotency_unique
     unique (campground_id, idempotency_key),
-  constraint communication_dispatches_attempt_count_check
+  constraint communication_dispatches_attempts_within_max_check
     check (attempt_count <= max_attempts),
   constraint communication_dispatches_completed_check
     check (
