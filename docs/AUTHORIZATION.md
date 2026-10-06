@@ -273,10 +273,13 @@ Builds 009–015 add the communications/channel authentication adapters on top o
 
 Build 005 decides **whether an action is permitted**.
 
-Build 006 adds:
-- append-oriented audit evidence;
+Build 006 now adds:
+- append-only audit evidence;
 - privileged-action reason capture;
 - before/after evidence where appropriate;
-- recent re-authentication/AAL requirements for high-risk actions.
+- recent re-authentication and assurance-level hooks for high-risk actions;
+- transactional audit evidence on custom-role creation and campground staff-role assignment.
+
+See `docs/AUDIT_AND_PRIVILEGED_ACTIONS.md` for the canonical privileged-action contract.
 
 Permission alone is not the final safeguard for high-risk operations such as refunds, financing, gate overrides or role administration.
