@@ -101,6 +101,7 @@ export function createCommunicationDispatch(input: {
   idempotencyKey: string;
   contentReference?: string | null;
   maxAttempts?: number;
+  reason?: string;
 }): Promise<CommunicationDispatch>;
 
 export function recordCommunicationAttempt(input: {
