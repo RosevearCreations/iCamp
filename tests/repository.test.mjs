@@ -694,3 +694,84 @@ test("Build 007 source of truth keeps execution provider-portable and channel-ne
   assert.match(source, /job payloads/i);
   assert.match(build, /Build 008 — Secure Media & Document Storage Foundation/);
 });
+
+
+test("Build 008 defines classified private media metadata and append-only lifecycle evidence", async () => {
+  const migration = await readFile(
+    "database/migrations/0010_secure_media_document_storage.sql",
+    "utf8",
+  );
+
+  assert.match(migration, /create table icamp_private\.media_assets/);
+  assert.match(migration, /create table icamp_private\.media_lifecycle_events/);
+  assert.match(
+    migration,
+    /classification in \('public', 'internal', 'confidential'\)/,
+  );
+  assert.match(migration, /media_assets_lifecycle_guard/);
+  assert.match(migration, /media_lifecycle_events_append_only/);
+  assert.match(
+    migration,
+    /revoke all on icamp_private\.media_assets from public/,
+  );
+});
+
+test("Build 008 validates file identity size and safe opaque object paths", async () => {
+  const validation = await readFile("lib/media/validation.mjs", "utf8");
+
+  assert.match(validation, /IMAGE_MAX_BYTES = 12 \* 1024 \* 1024/);
+  assert.match(validation, /DOCUMENT_MAX_BYTES = 25 \* 1024 \* 1024/);
+  assert.match(validation, /signature_mismatch/);
+  assert.match(
+    validation,
+    /Only JPEG, PNG, WebP, GIF, and PDF files are accepted/,
+  );
+  assert.match(validation, /buildMediaObjectKey/);
+  assert.match(validation, /mediaBucketForClassification/);
+});
+
+test("Build 008 private access remains behind iCamp campground authorization", async () => {
+  const route = await readFile(
+    "app/api/media/[mediaId]/access/route.ts",
+    "utf8",
+  );
+  const storage = await readFile("lib/media/storage.mjs", "utf8");
+
+  assert.match(route, /media\.confidential\.read/);
+  assert.match(route, /media\.read/);
+  assert.match(route, /hasCampgroundPermission/);
+  assert.match(route, /createSignedReadUrl/);
+  assert.match(storage, /between 60 and 900 seconds/);
+  assert.match(storage, /ICAMP_SUPABASE_SECRET_KEY/);
+});
+
+test("Build 008 versions Supabase bucket restrictions without browser write policies", async () => {
+  const provider = await readFile(
+    "providers/supabase/storage/0001_media_buckets.sql",
+    "utf8",
+  );
+
+  assert.match(provider, /icamp-public-media/);
+  assert.match(provider, /icamp-internal-media/);
+  assert.match(provider, /icamp-confidential-media/);
+  assert.match(provider, /26214400/);
+  assert.match(provider, /application\/pdf/);
+  assert.doesNotMatch(provider, /create policy/i);
+});
+
+test("Build 008 CI proves media lifecycle and source of truth advances to communications", async () => {
+  const workflow = await readFile(".github/workflows/ci.yml", "utf8");
+  const lifecycle = await readFile("scripts/verify-media-lifecycle.mjs", "utf8");
+  const source = await readFile("docs/MEDIA_STORAGE.md", "utf8");
+  const build = await readFile("docs/BUILD_008.md", "utf8");
+
+  assert.match(workflow, /Verify secure media and document lifecycle/);
+  assert.match(workflow, /npm run media:verify/);
+  assert.match(lifecycle, /Not authorized to manage media/);
+  assert.match(lifecycle, /append-only/);
+  assert.match(source, /Web\/PWA/);
+  assert.match(source, /IVR\/DTMF/);
+  assert.match(source, /SMS\/MMS/);
+  assert.match(source, /provider-neutral/i);
+  assert.match(build, /Build 009 — Omnichannel Communications Foundation/);
+});
