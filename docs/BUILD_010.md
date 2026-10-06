@@ -24,6 +24,8 @@ Migration `0013_voice_ivr_gateway.sql` adds:
 
 Campground-scoped foreign keys prevent a voice call from binding to a line, communications dispatch, remote endpoint or transfer endpoint from another campground.
 
+Migration `0014_voice_fk_indexes.sql` adds the advisor-driven covering indexes for the composite voice-call line and dispatch foreign keys.
+
 ## Runtime
 
 - `lib/voice/provider.mjs` — replaceable voice provider contract, mock sandbox, HMAC signing/verification and event normalization.
