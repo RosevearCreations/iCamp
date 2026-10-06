@@ -131,6 +131,9 @@ jobs:
       - name: Verify secure media and document lifecycle
         run: npm run media:verify
 
+      - name: Verify omnichannel communications lifecycle
+        run: npm run communications:verify
+
       - name: Re-run migrations to prove idempotent history handling
         run: node scripts/apply-database-migrations.mjs
 
