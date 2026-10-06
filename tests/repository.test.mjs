@@ -777,3 +777,99 @@ test("Build 008 CI proves media lifecycle and source of truth advances to commun
   assert.match(source, /provider-neutral/i);
   assert.match(build, /Build 009 — Omnichannel Communications Foundation/);
 });
+
+
+test("Build 009 defines one private communications domain across all required channels", async () => {
+  const migration = await readFile(
+    "database/migrations/0011_omnichannel_communications_foundation.sql",
+    "utf8",
+  );
+
+  for (const table of [
+    "communication_endpoints",
+    "communication_preferences",
+    "communication_consents",
+    "communication_dispatches",
+    "communication_attempts",
+    "communication_provider_events",
+  ]) {
+    assert.match(
+      migration,
+      new RegExp("create table icamp_private\\." + table),
+    );
+  }
+
+  for (const channel of [
+    "web",
+    "voice",
+    "dtmf",
+    "speech",
+    "sms",
+    "mms",
+    "email",
+    "push",
+  ]) {
+    assert.match(migration, new RegExp("'" + channel + "'"));
+  }
+
+  assert.match(
+    migration,
+    /purpose in \('transactional', 'operational', 'marketing'\)/,
+  );
+});
+
+test("Build 009 isolates endpoints and keeps consent/provider evidence append-only", async () => {
+  const migration = await readFile(
+    "database/migrations/0011_omnichannel_communications_foundation.sql",
+    "utf8",
+  );
+
+  assert.match(migration, /communication_dispatches_endpoint_scope_fk/);
+  assert.match(migration, /communication_consents_append_only/);
+  assert.match(migration, /communication_provider_events_append_only/);
+  assert.match(migration, /communication_provider_events_provider_event_unique/);
+  assert.match(migration, /communication_dispatches_scope_idempotency_unique/);
+  assert.match(
+    migration,
+    /revoke all on icamp_private\.communication_endpoints from public/,
+  );
+});
+
+test("Build 009 implements replaceable provider retry and privacy boundaries", async () => {
+  const provider = await readFile("lib/communications/provider.mjs", "utf8");
+  const runtime = await readFile("lib/communications/postgres.mjs", "utf8");
+  const source = await readFile("docs/COMMUNICATIONS.md", "utf8");
+
+  assert.match(provider, /createMockCommunicationsProvider/);
+  assert.match(provider, /ICAMP_COMMUNICATIONS_PROVIDER/);
+  assert.match(runtime, /communicationRetryDelaySeconds/);
+  assert.match(runtime, /MAX_RETRY_DELAY_SECONDS = 3600/);
+  assert.match(runtime, /communications\.manage/);
+  assert.match(runtime, /communications\.send/);
+  assert.match(runtime, /rawEndpointExcluded/);
+  assert.match(source, /raw webhook request bodies/i);
+  assert.match(source, /caller ID\/phone ownership is not authentication/i);
+});
+
+test("Build 009 CI proves communications lifecycle and I.T. exposes aggregates only", async () => {
+  const workflow = await readFile(".github/workflows/ci.yml", "utf8");
+  const lifecycle = await readFile(
+    "scripts/verify-communications-lifecycle.mjs",
+    "utf8",
+  );
+  const itPage = await readFile("app/workspaces/it-analysis/page.tsx", "utf8");
+  const build = await readFile("docs/BUILD_009.md", "utf8");
+
+  assert.match(workflow, /Verify omnichannel communications lifecycle/);
+  assert.match(workflow, /npm run communications:verify/);
+  assert.match(lifecycle, /Not authorized for communication operation/);
+  assert.match(lifecycle, /communication_dispatches_endpoint_scope_fk/);
+  assert.match(lifecycle, /duplicateEvent\.inserted, false/);
+  assert.match(lifecycle, /append-only/);
+  assert.match(itPage, /getCommunicationsHealth/);
+  assert.match(
+    itPage,
+    /Endpoints, bodies and provider payloads remain private/,
+  );
+  assert.match(build, /Build 010 — Inbound\/Outbound Voice & IVR Gateway/);
+});
