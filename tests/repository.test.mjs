@@ -695,7 +695,6 @@ test("Build 007 source of truth keeps execution provider-portable and channel-ne
   assert.match(build, /Build 008 — Secure Media & Document Storage Foundation/);
 });
 
-
 test("Build 008 defines classified private media metadata and append-only lifecycle evidence", async () => {
   const migration = await readFile(
     "database/migrations/0010_secure_media_document_storage.sql",
@@ -761,7 +760,10 @@ test("Build 008 versions Supabase bucket restrictions without browser write poli
 
 test("Build 008 CI proves media lifecycle and source of truth advances to communications", async () => {
   const workflow = await readFile(".github/workflows/ci.yml", "utf8");
-  const lifecycle = await readFile("scripts/verify-media-lifecycle.mjs", "utf8");
+  const lifecycle = await readFile(
+    "scripts/verify-media-lifecycle.mjs",
+    "utf8",
+  );
   const source = await readFile("docs/MEDIA_STORAGE.md", "utf8");
   const build = await readFile("docs/BUILD_008.md", "utf8");
 
