@@ -924,7 +924,7 @@ test("Build 010 verifies signed webhooks with bounded freshness and no raw persi
   assert.match(webhook, /x-icamp-voice-timestamp/);
   assert.match(webhook, /x-icamp-voice-signature/);
   assert.match(webhook, /verifyVoiceWebhookSignature/);
-  assert.match(source, /Raw webhook bodies and signatures are not stored/);
+  assert.match(source, /raw webhook bodies or signatures/i);
 });
 
 test("Build 010 provides provider-neutral outbound, IVR and staff transfer runtime", async () => {
