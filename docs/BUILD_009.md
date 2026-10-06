@@ -52,7 +52,9 @@ Development uses a free mock provider. No production telephone/SMS/email/push pr
 
 ## Automated proof
 
-CI verifies schema contracts, authorization rejection, endpoint privacy, preference/consent behavior, dispatch idempotency, retry recovery, mock provider delivery, provider-event idempotency, append-only consent evidence and aggregate health.
+CI verifies schema contracts, authorization rejection, endpoint privacy, preference/consent behavior, dispatch idempotency, cross-campground endpoint isolation, retry recovery, mock provider delivery, provider-event idempotency, append-only consent evidence and aggregate health.
+
+The normal repository gates remain mandatory: formatting, lint, typecheck, unit/repository tests, production build, dependency audit, PostgreSQL migration/lifecycle verification, Secret Scan and CodeQL.
 
 ## Channel matrix
 
