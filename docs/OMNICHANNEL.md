@@ -238,3 +238,17 @@ Each build must maintain a channel matrix:
 | Not applicable | Inherently graphical or technically meaningless for this channel; reason required. |
 
 A build is not complete if a non-visual operational workflow becomes Web-only accidentally.
+
+## Build 009 foundation implementation
+
+Build 009 now provides the canonical shared communications records used by every channel:
+
+- private endpoints;
+- purpose/channel preferences;
+- append-only consent evidence;
+- provider-neutral dispatches;
+- bounded provider attempts;
+- append-only normalized provider events;
+- delivery/call/retry health.
+
+The development adapter is `mock`. Builds 010–014 progressively connect real voice/IVR, DTMF, SMS/MMS, identity verification and compliance synchronization without creating a second communications business model.
