@@ -49,3 +49,9 @@ Provider-specific storage setup is versioned separately from the portable migrat
 Build 009 stores private communication endpoints, purpose/channel preferences, append-only consent evidence, provider-neutral dispatch metadata, bounded provider attempts and normalized append-only provider events in `icamp_private`.
 
 The canonical schema does not depend on a telephony/SMS/email/push vendor. Provider adapters are application boundaries, and browser-facing database roles do not receive direct communications-table access.
+
+## Voice and IVR gateway
+
+Build 010 adds private campground voice-line bindings, provider-neutral call metadata, IVR sessions and append-only semantic IVR events.
+
+The schema enforces campground-scoped line, dispatch, remote-endpoint and staff-transfer relationships. Raw audio, transcripts, keypad digits, webhook bodies and provider secrets are not stored in ordinary voice tables.
