@@ -28,6 +28,7 @@ iCamp is a complete campground operations platform covering live campsite/cottag
 - [Authorization & Row-Level Security](docs/AUTHORIZATION.md)
 - [Audit Trail & Privileged Actions](docs/AUDIT_AND_PRIVILEGED_ACTIONS.md)
 - [Background Jobs, Scheduler & Queues](docs/BACKGROUND_JOBS.md)
+- [Secure Media & Document Storage](docs/MEDIA_STORAGE.md)
 
 The completed repository/CI foundation is now an **unnumbered pre-implementation baseline**.
 

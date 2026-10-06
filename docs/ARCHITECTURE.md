@@ -1148,3 +1148,24 @@ Provider-specific browser roles remain outside iCamp's private authorization sch
 Build 005 answers whether an action is permitted.
 
 Build 006 adds evidence and extra safeguards for privileged permitted actions: audit events, reasons, before/after state and recent re-authentication hooks.
+
+
+## 28. Secure Media & Document Storage Foundation
+
+### 28.1 Canonical media identity
+Media and documents use durable iCamp asset IDs and provider-neutral metadata. Object storage is an adapter boundary; provider object identifiers never become the business-domain identity.
+
+### 28.2 Classification boundary
+Every asset is classified as public, internal or confidential. Public classification permits intentional unauthenticated retrieval. Internal and confidential assets remain private and require canonical iCamp campground authorization before a temporary provider access URL may be issued.
+
+### 28.3 Validation boundary
+The server validates approved MIME type, extension, size and binary signature before upload. Object keys are generated from UUID scope/asset identifiers rather than client filenames.
+
+### 28.4 Lifecycle evidence
+Media metadata follows explicit pending, active, quarantined, archived and deleted lifecycle states. Lifecycle events are append-only. Deleted is terminal and only validated assets may become active.
+
+### 28.5 Provider portability
+The current development adapter uses Supabase Storage. The canonical schema and authorization rules remain portable to S3-compatible, self-hosted or other object storage. Provider-specific bucket configuration is isolated under `providers/`.
+
+### 28.6 Non-visual channels
+IVR/DTMF and SMS do not receive durable private object URLs. They address canonical asset IDs and use staff-assisted or secure authenticated handoff where visual access is required. Later MMS intake reuses the same validation and lifecycle boundary.
