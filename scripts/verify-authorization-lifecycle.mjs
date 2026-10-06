@@ -194,6 +194,9 @@ try {
     displayName: "Report & Maintenance",
     description: "Build 005 custom-role verification.",
     permissions: ["reports.read", "maintenance.read"],
+    reason: "Verify authorized custom-role creation.",
+    reauthenticatedAt: new Date(),
+    assuranceLevel: "aal1",
   });
 
   assert.deepEqual([...customRole.permissions].sort(), [
@@ -206,6 +209,9 @@ try {
     targetUserId: customStaff.id,
     campgroundId: campA.campgroundId,
     roleIds: [customRole.id],
+    reason: "Verify authorized staff role assignment.",
+    reauthenticatedAt: new Date(),
+    assuranceLevel: "aal1",
   });
 
   const customAuthorization = await getCampgroundAuthorization(
