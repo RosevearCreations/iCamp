@@ -31,11 +31,13 @@ begin
     raise exception 'Missing due-schedule index';
   end if;
 
-  if has_schema_privilege('anon', 'icamp_private', 'USAGE') then
+  if exists (select 1 from pg_roles where rolname = 'anon')
+     and has_schema_privilege('anon', 'icamp_private', 'USAGE') then
     raise exception 'anon must not have private schema usage';
   end if;
 
-  if has_schema_privilege('authenticated', 'icamp_private', 'USAGE') then
+  if exists (select 1 from pg_roles where rolname = 'authenticated')
+     and has_schema_privilege('authenticated', 'icamp_private', 'USAGE') then
     raise exception 'authenticated must not have private schema usage';
   end if;
 end
