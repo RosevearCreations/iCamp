@@ -639,8 +639,15 @@ test("Build 007 defines private durable schedules queues and operational heartbe
     );
   }
 
+  const fkIndexes = await readFile(
+    "database/migrations/0009_background_jobs_fk_indexes.sql",
+    "utf8",
+  );
+
   assert.match(migration, /job_queue_idempotency_idx/);
   assert.match(migration, /job_queue_claim_idx/);
+  assert.match(fkIndexes, /job_schedules_scope_idx/);
+  assert.match(fkIndexes, /job_queue_scope_idx/);
   assert.match(
     migration,
     /state in \('queued', 'running', 'succeeded', 'dead_letter'\)/,
