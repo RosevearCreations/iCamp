@@ -881,3 +881,91 @@ test("Build 009 CI proves communications lifecycle and I.T. exposes aggregates o
   );
   assert.match(build, /Build 010 — Inbound\/Outbound Voice & IVR Gateway/);
 });
+
+
+test("Build 010 defines campground-scoped voice lines, calls and IVR evidence", async () => {
+  const migration = await readFile(
+    "database/migrations/0013_voice_ivr_gateway.sql",
+    "utf8",
+  );
+
+  for (const table of [
+    "voice_lines",
+    "voice_calls",
+    "voice_ivr_sessions",
+    "voice_ivr_events",
+  ]) {
+    assert.match(
+      migration,
+      new RegExp("create table icamp_private\\." + table),
+    );
+  }
+
+  assert.match(migration, /voice_calls_line_scope_fk/);
+  assert.match(migration, /voice_calls_dispatch_scope_fk/);
+  assert.match(migration, /voice_lines_staff_transfer_scope_fk/);
+  assert.match(migration, /voice_ivr_events_append_only/);
+  assert.match(
+    migration,
+    /revoke all on icamp_private\.voice_calls from public/,
+  );
+});
+
+test("Build 010 verifies signed webhooks with bounded freshness and no raw persistence", async () => {
+  const provider = await readFile("lib/voice/provider.mjs", "utf8");
+  const webhook = await readFile(
+    "app/api/communications/voice/webhook/route.ts",
+    "utf8",
+  );
+  const source = await readFile("docs/VOICE_IVR.md", "utf8");
+
+  assert.match(provider, /createHmac\("sha256"/);
+  assert.match(provider, /timingSafeEqual/);
+  assert.match(provider, /between 30 and 900 seconds/);
+  assert.match(webhook, /x-icamp-voice-timestamp/);
+  assert.match(webhook, /x-icamp-voice-signature/);
+  assert.match(webhook, /verifyVoiceWebhookSignature/);
+  assert.match(source, /Raw webhook bodies and signatures are not stored/);
+});
+
+test("Build 010 provides provider-neutral outbound, IVR and staff transfer runtime", async () => {
+  const runtime = await readFile("lib/voice/postgres.mjs", "utf8");
+  const ivr = await readFile("lib/voice/ivr.mjs", "utf8");
+  const outbound = await readFile(
+    "app/api/communications/voice/outbound/route.ts",
+    "utf8",
+  );
+
+  assert.match(runtime, /startOutboundVoiceCall/);
+  assert.match(runtime, /ingestVoiceProviderEvent/);
+  assert.match(runtime, /transferVoiceCallToStaff/);
+  assert.match(runtime, /getVoiceGatewayHealth/);
+  assert.match(runtime, /communications\.send/);
+  assert.match(runtime, /communications\.manage/);
+  assert.match(ivr, /staff_transfer/);
+  assert.match(ivr, /DEFAULT_IVR_MAX_RETRIES = 3/);
+  assert.match(outbound, /Authentication required/);
+});
+
+test("Build 010 CI proves voice lifecycle and advances toward DTMF", async () => {
+  const workflow = await readFile(".github/workflows/ci.yml", "utf8");
+  const lifecycle = await readFile(
+    "scripts/verify-voice-lifecycle.mjs",
+    "utf8",
+  );
+  const itPage = await readFile("app/workspaces/it-analysis/page.tsx", "utf8");
+  const build = await readFile("docs/BUILD_010.md", "utf8");
+
+  assert.match(workflow, /Verify inbound\/outbound voice and IVR lifecycle/);
+  assert.match(workflow, /npm run voice:verify/);
+  assert.match(lifecycle, /Not authorized for voice gateway operation/);
+  assert.match(lifecycle, /duplicateInbound\.duplicate, true/);
+  assert.match(lifecycle, /transfer\.transfer\.transferred, true/);
+  assert.match(lifecycle, /append-only/);
+  assert.match(itPage, /getVoiceGatewayHealth/);
+  assert.match(
+    itPage,
+    /Phone numbers, audio and transcripts remain private/,
+  );
+  assert.match(build, /Build 011 — Numeric Keypad\/DTMF Interaction Engine/);
+});
