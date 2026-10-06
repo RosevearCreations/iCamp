@@ -158,7 +158,9 @@ export default async function ItAnalysisPage() {
             <article className="health-card">
               <span className="health-card__label">Provider events</span>
               <strong>{communicationsHealth.providers.events24h} in 24h</strong>
-              <span>Endpoints, bodies and provider payloads remain private</span>
+              <span>
+                Endpoints, bodies and provider payloads remain private
+              </span>
             </article>
           </div>
         </section>
