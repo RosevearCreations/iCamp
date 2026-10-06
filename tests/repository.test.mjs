@@ -33,6 +33,8 @@ test("source-of-truth documents remain present in README", async () => {
     "HELP_SYSTEM.md",
     "ADMIN_FRESHNESS.md",
     "AUTHENTICATION.md",
+    "AUTHORIZATION.md",
+    "AUDIT_AND_PRIVILEGED_ACTIONS.md",
   ]) {
     assert.ok(readme.includes(required), `README must link ${required}`);
   }
@@ -544,4 +546,72 @@ test("Build 005 permission catalogue covers privileged operational domains", asy
       new RegExp(`"${permission.replace(".", "\\.")}"`),
     );
   }
+});
+
+
+test("Build 006 defines append-only audit evidence and reauthentication state", async () => {
+  const migration = await readFile(
+    "database/migrations/0007_audit_privileged_actions.sql",
+    "utf8",
+  );
+
+  assert.match(migration, /create table icamp_private\.audit_events/);
+  assert.match(migration, /reauthenticated_at timestamptz/);
+  assert.match(migration, /audit_events_privileged_reason_check/);
+  assert.match(migration, /prevent_audit_event_mutation/);
+  assert.match(migration, /before update or delete on icamp_private\.audit_events/);
+  assert.match(migration, /revoke all on icamp_private\.audit_events from public/);
+});
+
+test("Build 006 enforces privileged reason and recent reauthentication", async () => {
+  const privileged = await readFile("lib/audit/privileged.mjs", "utf8");
+  const auth = await readFile("lib/auth/postgres.mjs", "utf8");
+
+  assert.match(privileged, /PRIVILEGED_REASON_MIN_LENGTH = 8/);
+  assert.match(privileged, /RECENT_REAUTHENTICATION_SECONDS = 10 \* 60/);
+  assert.match(privileged, /assertRecentReauthentication/);
+  assert.match(privileged, /hasRequiredAssurance/);
+  assert.match(auth, /reauthenticateSession/);
+  assert.match(auth, /reauthenticated_at = statement_timestamp\(\)/);
+});
+
+test("Build 006 audits existing high-risk role mutations transactionally", async () => {
+  const authorization = await readFile("lib/authz/postgres.mjs", "utf8");
+  const auditWriter = await readFile("lib/audit/postgres.mjs", "utf8");
+
+  assert.match(authorization, /assertPrivilegedActionControl/);
+  assert.match(authorization, /authorization\.role\.create/);
+  assert.match(authorization, /authorization\.staff_assignment\.upsert/);
+  assert.match(authorization, /permissionKey: "role\.manage"/);
+  assert.match(authorization, /beforeState/);
+  assert.match(authorization, /afterState/);
+  assert.match(auditWriter, /insert into icamp_private\.audit_events/);
+});
+
+test("Build 006 CI verifies audit and privileged-action lifecycle", async () => {
+  const workflow = await readFile(".github/workflows/ci.yml", "utf8");
+  const lifecycle = await readFile(
+    "scripts/verify-audit-lifecycle.mjs",
+    "utf8",
+  );
+
+  assert.match(workflow, /Verify audit and privileged-action lifecycle/);
+  assert.match(workflow, /npm run audit:verify/);
+  assert.match(lifecycle, /Recent re-authentication is required/);
+  assert.match(lifecycle, /authorization\.role\.create/);
+  assert.match(lifecycle, /authorization\.staff_assignment\.upsert/);
+  assert.match(lifecycle, /Audit events are append-only/);
+});
+
+test("Build 006 source of truth preserves channel-neutral privileged controls", async () => {
+  const source = await readFile(
+    "docs/AUDIT_AND_PRIVILEGED_ACTIONS.md",
+    "utf8",
+  );
+  const build = await readFile("docs/BUILD_006.md", "utf8");
+
+  assert.match(source, /Append-only audit evidence/);
+  assert.match(source, /Web\/PWA, IVR\/DTMF and SMS/);
+  assert.match(source, /same database transaction/);
+  assert.match(build, /Build 007 — Background Jobs, Scheduler & Operational Queues/);
 });
