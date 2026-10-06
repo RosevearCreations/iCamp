@@ -173,12 +173,16 @@ values (
   'Build 008 schema verification activation.'
 );
 
+savepoint media_event_mutation_check;
+
 \set ON_ERROR_STOP off
 update icamp_private.media_lifecycle_events
 set reason = 'Mutation must fail.'
 where media_asset_id = :'media_verify_asset';
 \set media_event_mutation_sqlstate :SQLSTATE
 \set ON_ERROR_STOP on
+
+rollback to savepoint media_event_mutation_check;
 
 select (:'media_event_mutation_sqlstate' = '55000') as media_append_only_ok
 \gset
