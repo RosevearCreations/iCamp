@@ -109,8 +109,22 @@ Delivered:
 - hosted Supabase migrations 0008/0009 with zero security-advisor lints;
 - advisor-driven foreign-key indexes and rollback-only hosted verification.
 
+### Build 008 — Secure Media & Document Storage Foundation
+Status: **FULLY PROMOTED — `main` GREEN.**
+
+Delivered:
+- public/internal/confidential media classification;
+- provider-neutral private media metadata and append-only lifecycle evidence;
+- strict image/PDF validation, signature checks and application size limits;
+- server-authorized public/private media access contract;
+- short-lived signed private access after canonical campground permission checks;
+- three version-controlled Supabase Storage buckets with MIME/size restrictions;
+- safe aggregate media health in I.T. & Analysis;
+- hosted Supabase migration 0010 with zero security-advisor lints;
+- rollback-only hosted lifecycle proof with zero retained synthetic rows.
+
 ## Next active build
-**Build 008 — Secure Media & Document Storage Foundation**
+**Build 009 — Omnichannel Communications Foundation**
 
 Status: **QUEUED — NOT STARTED**
 
