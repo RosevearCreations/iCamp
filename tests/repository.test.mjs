@@ -635,7 +635,7 @@ test("Build 007 defines private durable schedules queues and operational heartbe
   ]) {
     assert.match(
       migration,
-      new RegExp("create table icamp_private\\\\." + table),
+      new RegExp("create table icamp_private\\." + table),
     );
   }
 
