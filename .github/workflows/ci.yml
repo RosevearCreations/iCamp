@@ -122,6 +122,9 @@ jobs:
       - name: Verify authorization lifecycle
         run: npm run authz:verify
 
+      - name: Verify audit and privileged-action lifecycle
+        run: npm run audit:verify
+
       - name: Re-run migrations to prove idempotent history handling
         run: node scripts/apply-database-migrations.mjs
 
