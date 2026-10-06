@@ -35,6 +35,6 @@ export function getMediaStorageConfig(
 
 export function createSupabaseStorageAdapter(input: {
   projectUrl: string;
-  secretKey: string;
+  secretKey?: string | null;
   fetchImpl?: typeof fetch;
 }): SupabaseStorageAdapter;
