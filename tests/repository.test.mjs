@@ -903,6 +903,13 @@ test("Build 010 defines campground-scoped voice lines, calls and IVR evidence", 
   assert.match(migration, /voice_calls_line_scope_fk/);
   assert.match(migration, /voice_calls_dispatch_scope_fk/);
   assert.match(migration, /voice_lines_staff_transfer_scope_fk/);
+
+  const fkIndexes = await readFile(
+    "database/migrations/0014_voice_fk_indexes.sql",
+    "utf8",
+  );
+  assert.match(fkIndexes, /voice_calls_dispatch_scope_idx/);
+  assert.match(fkIndexes, /voice_calls_line_scope_idx/);
   assert.match(migration, /voice_ivr_events_append_only/);
   assert.match(
     migration,
