@@ -778,7 +778,6 @@ test("Build 008 CI proves media lifecycle and source of truth advances to commun
   assert.match(build, /Build 009 — Omnichannel Communications Foundation/);
 });
 
-
 test("Build 009 defines one private communications domain across all required channels", async () => {
   const migration = await readFile(
     "database/migrations/0011_omnichannel_communications_foundation.sql",
@@ -827,7 +826,10 @@ test("Build 009 isolates endpoints and keeps consent/provider evidence append-on
   assert.match(migration, /communication_dispatches_endpoint_scope_fk/);
   assert.match(migration, /communication_consents_append_only/);
   assert.match(migration, /communication_provider_events_append_only/);
-  assert.match(migration, /communication_provider_events_provider_event_unique/);
+  assert.match(
+    migration,
+    /communication_provider_events_provider_event_unique/,
+  );
   assert.match(migration, /communication_dispatches_scope_idempotency_unique/);
   assert.match(
     migration,
