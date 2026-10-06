@@ -73,6 +73,7 @@ export const helpTopics = {
       "Detailed diagnostics remain protected until authentication and permissions are available.",
       "Public health information is deliberately limited.",
       "An external watchdog is required to detect a completely non-responsive application.",
+      "Queue, media and communications health are shown only as sanitized aggregate operational signals.",
     ],
     audience: "public",
   },
