@@ -82,7 +82,7 @@ Delivered:
 - authorization foreign-key/query indexes.
 
 ### Build 006 — Audit Trail & Privileged Action Controls
-Status: **IMPLEMENTED — validation and promotion pending.**
+Status: **FULLY PROMOTED — `main` GREEN.**
 
 Delivered:
 - private append-only audit-event schema;
