@@ -89,9 +89,7 @@ values
     '+15555551002',
     'staff line ending 1002',
     statement_timestamp()
-  )
-returning id
-\gset
+  );
 
 select id as voice_verify_line_endpoint
 from icamp_private.communication_endpoints
