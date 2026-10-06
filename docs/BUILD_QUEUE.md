@@ -81,8 +81,22 @@ Delivered:
 - clean Supabase security advisor;
 - authorization foreign-key/query indexes.
 
+### Build 006 — Audit Trail & Privileged Action Controls
+Status: **IMPLEMENTED — validation and promotion pending.**
+
+Delivered:
+- private append-only audit-event schema;
+- privileged reason capture with database enforcement;
+- before/after state evidence where safe;
+- session recent re-authentication timestamp and server refresh hook;
+- assurance-aware high-risk action control;
+- transactional audit-event writer;
+- custom-role creation protected and audited;
+- campground staff-role assignment protected and audited;
+- PostgreSQL audit/privileged-action lifecycle verification.
+
 ## Next active build
-**Build 006 — Audit Trail & Privileged Action Controls**
+**Build 007 — Background Jobs, Scheduler & Operational Queues**
 
 Status: **QUEUED — NOT STARTED**
 

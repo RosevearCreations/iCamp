@@ -18,7 +18,8 @@
     "db:migrate": "node scripts/apply-database-migrations.mjs",
     "db:verify": "node scripts/verify-database.mjs",
     "auth:verify": "node scripts/verify-auth-lifecycle.mjs",
-    "authz:verify": "node scripts/verify-authorization-lifecycle.mjs"
+    "authz:verify": "node scripts/verify-authorization-lifecycle.mjs",
+    "audit:verify": "node scripts/verify-audit-lifecycle.mjs"
   },
   "dependencies": {
     "next": "16.3.8",

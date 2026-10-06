@@ -266,18 +266,22 @@ iCamp does not replace emergency services or qualified safety staff.
 
 ## 16. Audit events
 
-Audit events should include where practical:
+Build 006 makes audit evidence append-only in the private database schema.
+
+Audit events include where practical:
 - actor;
 - target;
 - action;
-- campground;
+- campground/organization scope;
 - timestamp;
 - request/session reference;
+- permission and risk classification;
 - reason;
 - previous/new state or event details;
+- re-authentication/assurance evidence for high-risk actions;
 - success/failure.
 
-Audit logs are protected from ordinary editing/deletion.
+A database trigger rejects UPDATE and DELETE against canonical audit rows. Audit JSON must never contain passwords, raw tokens, PINs, MFA secrets, payment credentials or similarly sensitive values.
 
 ## 17. Security testing
 
