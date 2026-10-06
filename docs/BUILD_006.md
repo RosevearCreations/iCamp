@@ -2,7 +2,7 @@
 
 ## Status
 
-**IMPLEMENTATION IN PROGRESS — promotion gates pending.**
+**FULLY PROMOTED — `main` production GREEN.**
 
 ## Objective
 
@@ -76,7 +76,36 @@ Web/PWA, IVR/DTMF and SMS may invoke privileged operations only through the same
 
 No manual application configuration is required for the repository/CI implementation.
 
-Hosted development database application and security-advisor verification remain release evidence steps when the canonical migration is promoted.
+Hosted development database application and security-advisor verification are complete.
+
+## Production / release evidence
+
+Build 006 was promoted through PR #20 to `dev` and PR #21 to `main`.
+
+Verified on the exact production merge state:
+- formatter GREEN;
+- ESLint GREEN;
+- strict TypeScript GREEN;
+- repository/security invariant tests GREEN;
+- Next.js production build GREEN;
+- production dependency high/critical audit GREEN;
+- PostgreSQL migration verification GREEN;
+- authentication lifecycle GREEN;
+- authorization lifecycle GREEN;
+- audit/privileged-action lifecycle GREEN;
+- migration idempotency GREEN;
+- CodeQL JavaScript/TypeScript analysis GREEN;
+- Gitleaks / Secret Scan GREEN.
+
+Hosted iCamp Supabase verification:
+- project status ACTIVE_HEALTHY on PostgreSQL 17.11;
+- canonical migration `0007_audit_privileged_actions` applied;
+- append-only UPDATE/DELETE rejection verified in a rollback-only transaction;
+- retained synthetic audit verification rows: 0;
+- `anon` and `authenticated` have no private-schema usage and no audit-table SELECT access;
+- Supabase Security Advisor: zero security lints.
+
+Performance advisor notices are INFO-only unused-index findings expected on the new low-traffic development database; they are not release blockers.
 
 ## Next build
 
