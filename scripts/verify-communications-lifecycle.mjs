@@ -159,6 +159,54 @@ try {
 
   assert.ok(consent.id);
 
+  const otherOrganization = await setupPool.query(
+    `insert into public.organizations (name, slug)
+     values ('Build 009 Other Org', 'build-009-other-org')
+     returning id`,
+  );
+  const otherCampground = await setupPool.query(
+    `insert into public.campgrounds (
+       organization_id,
+       name,
+       slug,
+       timezone
+     )
+     values (
+       $1,
+       'Build 009 Other Camp',
+       'build-009-other-camp',
+       'America/Toronto'
+     )
+     returning id`,
+    [otherOrganization.rows[0].id],
+  );
+  const otherEndpoint = await setupPool.query(
+    `insert into icamp_private.communication_endpoints (
+       organization_id,
+       campground_id,
+       endpoint_kind,
+       endpoint_value,
+       display_hint
+     )
+     values ($1, $2, 'email', 'other@example.test', 'other email')
+     returning id`,
+    [otherOrganization.rows[0].id, otherCampground.rows[0].id],
+  );
+
+  await assert.rejects(
+    () =>
+      createCommunicationDispatch({
+        actorUserId: ownerId,
+        organizationId,
+        campgroundId,
+        endpointId: otherEndpoint.rows[0].id,
+        channel: "email",
+        purpose: "operational",
+        idempotencyKey: "build009-cross-camp-endpoint",
+      }),
+    /communication_dispatches_endpoint_scope_fk/,
+  );
+
   const dispatch = await createCommunicationDispatch({
     actorUserId: ownerId,
     organizationId,
