@@ -324,11 +324,12 @@ create index communication_dispatches_scope_state_idx
     created_at desc
   );
 
-create index communication_dispatches_endpoint_idx
+create index communication_dispatches_endpoint_scope_idx
   on icamp_private.communication_dispatches (
-    endpoint_id,
-    created_at desc
-  );
+    campground_id,
+    endpoint_id
+  )
+  where endpoint_id is not null;
 
 create index communication_dispatches_created_by_idx
   on icamp_private.communication_dispatches (
