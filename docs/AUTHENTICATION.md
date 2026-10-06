@@ -156,6 +156,14 @@ The public browser/API never receives:
 - factor secrets;
 - lockout internals beyond necessary user-facing messages.
 
+## Build 006 recent re-authentication hook
+
+Sessions now record `reauthenticated_at`, initialized from the successful sign-in/session creation point.
+
+Authenticated staff can be challenged for their password again through the server re-authentication helper. A successful challenge refreshes only the session's re-authentication timestamp; it does not bypass authorization or silently increase the session assurance level.
+
+High-risk action policy consumes this timestamp through the Build 006 privileged-action controls.
+
 ## Testing
 
 CI must verify:
