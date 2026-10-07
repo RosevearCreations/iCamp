@@ -117,4 +117,4 @@ No external account, phone number, billing setup, regulatory registration or pro
 
 ## Next build
 
-**Build 012 — SMS/MMS Conversation Gateway**
+**Build 012 — SMS/MMS Conversation & Command Gateway**
