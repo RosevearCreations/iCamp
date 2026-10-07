@@ -204,8 +204,23 @@ Delivered:
 - hosted Supabase migration 0017 with zero Security Advisor findings;
 - exact-tree `dev` and `main` promotion with independent GREEN GitHub gates.
 
-## Next active build
+## Current active build
 **Build 014 — Messaging Consent, STOP/START/HELP & Preference Ledger**
+
+Status: **IMPLEMENTED — PROMOTION GATES PENDING.**
+
+Delivered on the feature branch:
+- provider-level STOP suppression before outbound provider dispatch;
+- START transport restoration without implicit Canadian marketing re-consent;
+- HELP availability under suppression;
+- purpose-specific marketing preference and append-only consent evidence;
+- configurable jurisdiction rules with conservative Canadian fallback;
+- normalized idempotent provider preference-event ledger;
+- aggregate I.T. consent/preference health;
+- PostgreSQL lifecycle and CI verification.
+
+## Next queued build
+**Build 015 — Telephone/SMS Workflow Parity Harness**
 
 Status: **QUEUED — NOT STARTED**
 
