@@ -121,7 +121,7 @@ test("Build 012 closes advisor findings for composite messaging foreign keys", a
   }
 });
 
-test("Build 012 queue closeout advances to Build 013", async () => {
+test("Build 012 remains closed after Build 013 promotion", async () => {
   const queue = await readFile("docs/BUILD_QUEUE.md", "utf8");
 
   assert.match(
@@ -130,6 +130,6 @@ test("Build 012 queue closeout advances to Build 013", async () => {
   );
   assert.match(
     queue,
-    /Next active build[\s\S]*Build 013 — Telephone\/SMS Identity, Verification & Staff Re-Authentication[\s\S]*IMPLEMENTED — PROMOTION PENDING/u,
+    /Build 013 — Telephone\/SMS Identity, Verification & Staff Re-Authentication[\s\S]*FULLY PROMOTED — `main` GREEN/u,
   );
 });

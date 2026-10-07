@@ -1,6 +1,6 @@
 # Build 013 — Telephone/SMS Identity, Verification & Staff Re-Authentication
 
-Status: **IMPLEMENTED — PROMOTION PENDING**
+Status: **FULLY PROMOTED — `main` GREEN.**
 
 ## Roadmap scope
 
@@ -75,6 +75,28 @@ Build 013 adds:
 - CI database lifecycle execution;
 - hosted iCamp Supabase rollback-only migration proof with zero retained Build 013 tables;
 - aggregate verification health in I.T. & Analysis.
+
+## Production promotion evidence
+
+- implementation PR #43 promoted the exact tested Build 013 feature tree to `dev`;
+- final tested feature head: `9a1c0f589bccd94b8ca77afe01479ffe8ab7571a`;
+- exact-tree `dev` merge commit: `5f58ef767ca7584c598fd456e96e1014ccc8fbaa`;
+- independent `dev` CI run `37668138194`: GREEN;
+- independent `dev` CodeQL run `37668138168`: GREEN;
+- independent `dev` Secret Scan run `37668138114`: GREEN;
+- production PR #44 promoted the exact GREEN `dev` tree to `main`;
+- runtime production merge commit: `eb002853fc1647d747b0f87715df78dfa429f3ce`;
+- independent runtime `main` CI run `37668978314`: GREEN;
+- independent runtime `main` CodeQL run `37668978240`: GREEN;
+- independent runtime `main` Secret Scan run `37668978317`: GREEN;
+- hosted iCamp Supabase migration `20261007183559 / 0017_channel_identity_verification`: applied;
+- hosted rollback-only migration proof retained zero Build 013 tables before permanent application;
+- hosted verification confirms all Build 013 tables and covering indexes exist;
+- browser-facing `anon` and `authenticated` roles cannot select verification challenges directly;
+- hosted Supabase Security Advisor: zero findings;
+- Supabase performance advisor reports only expected INFO-level unused-index notices on the new/low-traffic schema.
+
+The connected iCamp release boundary remains repository `main` plus hosted Supabase verification; no separate live telephony/SMS provider or paid production number is required by Build 013.
 
 ## Manual action
 

@@ -113,13 +113,17 @@ test("Build 013 source of truth preserves channel parity and no-secret-echo rule
   assert.match(source, /salted scrypt verifier/u);
   assert.match(source, /No secret echo/u);
   assert.match(source, /Build 006 recent re-authentication/u);
-  assert.match(build, /IMPLEMENTED — PROMOTION PENDING/u);
+  assert.match(build, /FULLY PROMOTED — `main` GREEN/u);
   assert.match(
     queue,
-    /Build 013 — Telephone\/SMS Identity, Verification & Staff Re-Authentication[\s\S]*IMPLEMENTED — PROMOTION PENDING/u,
+    /Build 013 — Telephone\/SMS Identity, Verification & Staff Re-Authentication[\s\S]*FULLY PROMOTED — `main` GREEN/u,
   );
   assert.match(
     build,
     /Build 014 — Messaging Consent, STOP\/START\/HELP & Preference Ledger/u,
+  );
+  assert.match(
+    queue,
+    /Next active build[\s\S]*Build 014 — Messaging Consent, STOP\/START\/HELP & Preference Ledger[\s\S]*QUEUED — NOT STARTED/u,
   );
 });
