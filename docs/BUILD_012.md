@@ -40,7 +40,7 @@ Build 012 deliberately does not make sender phone number, caller ID or a known c
 
 ## Persistence
 
-Migration `0015_sms_mms_conversation_gateway.sql` adds private:
+Migrations `0015_sms_mms_conversation_gateway.sql` and `0016_messaging_fk_indexes.sql` add private messaging persistence plus covering indexes for every new composite foreign key:
 
 - messaging lines;
 - active conversations;
@@ -120,7 +120,8 @@ Coverage includes:
 - delivery/read history;
 - MMS pending-scan intake;
 - database proof that raw message body columns do not exist;
-- database proof that a known test reservation number/message phrase does not enter provider metadata.
+- database proof that a known test reservation number/message phrase does not enter provider metadata;
+- Supabase-advisor-driven covering-index proof for the new composite messaging foreign keys.
 
 ## Provider/cost boundary
 
