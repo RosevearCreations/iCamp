@@ -154,8 +154,24 @@ Delivered:
 - hosted Supabase migrations 0013/0014 with zero security-advisor lints;
 - advisor-driven voice foreign-key indexes and rollback-only hosted verification with zero retained synthetic rows.
 
+### Build 011 — Numeric Keypad/DTMF Interaction Engine
+Status: **FULLY PROMOTED — `main` GREEN.**
+
+Delivered:
+- provider-neutral numeric keypad/DTMF routing on the Build 010 voice gateway;
+- short menu conventions for site, reservation and pass entry;
+- repeat, back, main-menu and staff-transfer keypad conventions;
+- transient multi-digit site/reservation/pass collection with no raw durable keypad storage;
+- bounded timeout/invalid-input retries with staff fallback;
+- sensitive PIN/verification classification and redaction;
+- signed-provider DTMF normalization with campground/provider-event idempotency;
+- append-only semantic IVR evidence and digit-free provider metadata;
+- safe aggregate DTMF health in I.T. & Analysis;
+- automated unit, repository and PostgreSQL lifecycle proof;
+- hosted Supabase rollback verification with zero retained synthetic rows and zero security-advisor lints.
+
 ## Next active build
-**Build 011 — Numeric Keypad/DTMF Interaction Engine**
+**Build 012 — SMS/MMS Conversation & Command Gateway**
 
 Status: **QUEUED — NOT STARTED**
 
