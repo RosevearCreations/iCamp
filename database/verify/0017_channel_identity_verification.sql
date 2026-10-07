@@ -8,16 +8,16 @@ declare
     'channel_verification_challenges',
     'channel_verification_attempts'
   ];
-  table_name text;
+  expected_table text;
   forbidden_columns integer;
 begin
-  foreach table_name in array expected_tables loop
-    if to_regclass('icamp_private.' || table_name) is null then
-      raise exception 'Missing Build 013 private table: icamp_private.%', table_name;
+  foreach expected_table in array expected_tables loop
+    if to_regclass('icamp_private.' || expected_table) is null then
+      raise exception 'Missing Build 013 private table: icamp_private.%', expected_table;
     end if;
 
-    if to_regclass('public.' || table_name) is not null then
-      raise exception 'Build 013 table must not exist in public schema: public.%', table_name;
+    if to_regclass('public.' || expected_table) is not null then
+      raise exception 'Build 013 table must not exist in public schema: public.%', expected_table;
     end if;
   end loop;
 
