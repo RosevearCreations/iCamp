@@ -311,3 +311,19 @@ Build 013 makes telephone/SMS identity proof channel-neutral:
 - authorization is checked after identity verification, not replaced by it;
 - DTMF site/reservation/pass entries and structured SMS lookup commands return `verify.identity` before protected business lookup;
 - raw PINs, OTPs, phone numbers and guest references are excluded from verification/audit/health evidence.
+
+
+## Build 014 messaging-consent implementation
+
+Build 014 makes the Build 009 purpose/consent model enforceable for SMS/MMS:
+
+- exact STOP/START/HELP controls are normalized before ordinary messaging intents;
+- STOP creates provider-level suppression and withdraws marketing messaging;
+- ordinary outbound SMS/MMS is blocked before provider dispatch while suppressed;
+- START removes transport suppression but does not silently restore marketing consent under the conservative Canadian fallback;
+- HELP/compliance responses can remain available while suppressed;
+- marketing dispatch requires current granted consent when the active jurisdiction rule requires it;
+- campground/jurisdiction compliance rules are configurable without provider lock-in;
+- the append-only preference ledger excludes raw message bodies and endpoint values.
+
+This provides technical CASL readiness without treating application configuration as legal certification.

@@ -6,6 +6,7 @@ import { AppShell } from "@/components/app-shell";
 import { SectionHeading } from "@/components/section-heading";
 import { requireAnyCampgroundPermission } from "@/lib/authz/current-user";
 import { getCommunicationsHealth } from "@/lib/communications/postgres.mjs";
+import { getMessagingConsentHealth } from "@/lib/consent/postgres.mjs";
 import { getOperationalQueueHealth } from "@/lib/jobs/postgres.mjs";
 import { getMediaStorageHealth } from "@/lib/media/postgres.mjs";
 import { getMessagingGatewayHealth } from "@/lib/messaging/postgres.mjs";
@@ -31,6 +32,7 @@ export default async function ItAnalysisPage() {
     mediaHealth,
     communicationsHealth,
     messagingHealth,
+    consentHealth,
     verificationHealth,
     voiceHealth,
   ] = await Promise.all([
@@ -38,6 +40,7 @@ export default async function ItAnalysisPage() {
     getMediaStorageHealth(),
     getCommunicationsHealth(),
     getMessagingGatewayHealth(),
+    getMessagingConsentHealth(),
     getChannelVerificationHealth(),
     getVoiceGatewayHealth(),
   ]);
@@ -226,6 +229,54 @@ export default async function ItAnalysisPage() {
                 {messagingHealth.attachments.pendingScan} pending scan
               </strong>
               <span>Photos remain gated by secure-media validation</span>
+            </article>
+          </div>
+        </section>
+
+        <section
+          className="content-panel"
+          aria-labelledby="messaging-consent-health-heading"
+        >
+          <SectionHeading
+            eyebrow="SMS / MMS compliance"
+            title="Consent & preference ledger health"
+            id="messaging-consent-health-heading"
+            helpTopic="it.analysis"
+            trailing={<span className="build-chip">{consentHealth.status}</span>}
+          />
+          <div className="health-grid">
+            <article className="health-card">
+              <span className="health-card__label">Provider suppression</span>
+              <strong>
+                {consentHealth.endpoints.providerSuppressed} suppressed
+              </strong>
+              <span>{consentHealth.endpoints.tracked} tracked endpoint(s)</span>
+            </article>
+            <article className="health-card">
+              <span className="health-card__label">STOP / START / HELP</span>
+              <strong>
+                {consentHealth.keywords24h.stop} /{" "}
+                {consentHealth.keywords24h.start} /{" "}
+                {consentHealth.keywords24h.help}
+              </strong>
+              <span>Normalized events in the last 24 hours</span>
+            </article>
+            <article className="health-card">
+              <span className="health-card__label">Marketing evidence</span>
+              <strong>{consentHealth.marketing.granted} granted</strong>
+              <span>{consentHealth.marketing.withdrawn} withdrawn</span>
+            </article>
+            <article className="health-card">
+              <span className="health-card__label">Compliance rules</span>
+              <strong>{consentHealth.complianceRules.active} configured</strong>
+              <span>
+                Safe fallback: {consentHealth.complianceRules.safeFallbackJurisdiction}
+              </span>
+            </article>
+            <article className="health-card">
+              <span className="health-card__label">Privacy</span>
+              <strong>Bodies and endpoint values excluded</strong>
+              <span>Only aggregate consent/preference health is displayed</span>
             </article>
           </div>
         </section>

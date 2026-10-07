@@ -685,3 +685,14 @@ Web/PWA, IVR/DTMF and SMS may enqueue the same canonical job types, but queueing
 - Fraud/abuse evidence is categorical and must not contain raw PINs, codes, phone numbers, message bodies or guest identifiers.
 - Verified identity never bypasses campground authorization or Build 006 privileged-action controls.
 - I.T. diagnostics expose aggregate verification health only.
+
+
+## Build 014 messaging consent and provider suppression
+
+- STOP/START/HELP are interpreted as exact control keywords before ordinary SMS command parsing.
+- STOP establishes provider-level suppression so purpose misclassification cannot leak an ordinary outbound SMS/MMS.
+- START clears transport suppression but does not restore Canadian marketing consent by default.
+- Promotional SMS/MMS requires a current purpose/channel consent record when the active compliance rule requires it.
+- Provider control events are idempotent and append-only.
+- Preference evidence never copies raw message bodies, phone numbers or endpoint values.
+- I.T. diagnostics expose counts only.
