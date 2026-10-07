@@ -1,9 +1,5 @@
 export type MessagingCommandSource =
-  | "numbered"
-  | "keyword"
-  | "structured"
-  | "natural_language"
-  | "none";
+  "numbered" | "keyword" | "structured" | "natural_language" | "none";
 
 export interface MessagingCommand {
   kind: string;
@@ -23,10 +19,7 @@ export function parseMessagingCommand(value: string): MessagingCommand;
 export function validateMessagingCommand(command: MessagingCommand): {
   accepted: boolean;
   state:
-    | "navigation"
-    | "verification_required"
-    | "validation_required"
-    | "rejected";
+    "navigation" | "verification_required" | "validation_required" | "rejected";
   action: string;
 };
 
