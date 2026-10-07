@@ -374,7 +374,7 @@ try {
     `select
        provider_event_id,
        event_status,
-       metadata::text as metadata_text
+       metadata
      from icamp_private.communication_provider_events
      where provider_event_id like 'build011-%'
      order by provider_event_id`,
@@ -386,8 +386,16 @@ try {
   for (const raw of ["042", "7654321", "90017", "2468"]) {
     assert.doesNotMatch(providerText, new RegExp(raw, "u"));
   }
-  assert.match(providerText, /"rawDigitsExcluded": true/u);
-  assert.match(providerText, /"sensitive": true/u);
+  assert.equal(
+    providerEvidence.rows.some(
+      (row) => row.metadata?.rawDigitsExcluded === true,
+    ),
+    true,
+  );
+  assert.equal(
+    providerEvidence.rows.some((row) => row.metadata?.sensitive === true),
+    true,
+  );
 
   const ivrEvidence = await setupPool.query(
     `select event_type, from_state, to_state, action_key
