@@ -53,14 +53,16 @@ export function issueStaffVerificationChallenge(input: {
   purpose?: "staff_access" | "staff_privileged";
   maxAttempts?: number;
   codeFactory?: () => string;
-  deliverCode?: ((input: {
-    challengeId: string;
-    organizationId: string;
-    campgroundId: string;
-    remoteEndpointId: string;
-    channel: "voice" | "sms";
-    code: string;
-  }) => Promise<void> | void) | null;
+  deliverCode?:
+    | ((input: {
+        challengeId: string;
+        organizationId: string;
+        campgroundId: string;
+        remoteEndpointId: string;
+        channel: "voice" | "sms";
+        code: string;
+      }) => Promise<void> | void)
+    | null;
 }): Promise<VerificationChallenge>;
 
 export function verifyGuestVerificationChallenge(input: {
