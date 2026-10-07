@@ -1,10 +1,5 @@
 export type DtmfInputKind =
-  | "menu"
-  | "site"
-  | "reservation"
-  | "pass"
-  | "pin"
-  | "verification";
+  "menu" | "site" | "reservation" | "pass" | "pin" | "verification";
 
 export interface NormalizedDtmfInput {
   inputKind: DtmfInputKind;
