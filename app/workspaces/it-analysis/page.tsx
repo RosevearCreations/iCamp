@@ -196,9 +196,19 @@ export default async function ItAnalysisPage() {
               <span>{voiceHealth.ivr.expired} expired sessions</span>
             </article>
             <article className="health-card">
+              <span className="health-card__label">DTMF keypad</span>
+              <strong>{voiceHealth.dtmf.inputs24h} inputs in 24h</strong>
+              <span>
+                {voiceHealth.dtmf.invalid24h} invalid ·{" "}
+                {voiceHealth.dtmf.timeouts24h} timeouts; digits never shown
+              </span>
+            </article>
+            <article className="health-card">
               <span className="health-card__label">Transfer fallback</span>
               <strong>{voiceHealth.calls.transferFallbacks}</strong>
-              <span>Phone numbers, audio and transcripts remain private</span>
+              <span>
+                Phone numbers, keypad digits, audio and transcripts remain private
+              </span>
             </article>
           </div>
         </section>
