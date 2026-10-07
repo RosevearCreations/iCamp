@@ -673,3 +673,15 @@ Web/PWA, IVR/DTMF and SMS may enqueue the same canonical job types, but queueing
 - Invalid input and timeout retries are bounded; retry exhaustion transfers to staff.
 - Duplicate provider events are idempotent and cannot replay the keypad transition.
 - Raw payment-card data remains prohibited from the custom iCamp keypad flow.
+
+
+## Build 013 telephone/SMS identity verification
+
+- Caller ID, SMS sender address and phone possession remain routing hints only, never authentication.
+- Guest site/reservation/pass references and one-time codes are persisted only as salted scrypt verifiers.
+- Staff channel PINs are persisted only as salted scrypt verifiers.
+- Privileged staff channel actions require PIN plus a one-time code or a recent approved authenticated-session re-authentication.
+- Verification challenges expire, rate-limit issuance, bound attempts and lock after repeated failures.
+- Fraud/abuse evidence is categorical and must not contain raw PINs, codes, phone numbers, message bodies or guest identifiers.
+- Verified identity never bypasses campground authorization or Build 006 privileged-action controls.
+- I.T. diagnostics expose aggregate verification health only.
