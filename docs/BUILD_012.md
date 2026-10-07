@@ -1,6 +1,6 @@
 # Build 012 — SMS/MMS Conversation & Command Gateway
 
-Status: **IMPLEMENTED — PROMOTION PENDING**
+Status: **FULLY PROMOTED — `main` GREEN.**
 
 ## Roadmap scope
 
@@ -128,6 +128,25 @@ Coverage includes:
 No real telephone number, SMS registration, provider billing account or production credential is required to verify Build 012.
 
 A real provider remains replaceable behind the messaging adapter.
+
+## Production promotion evidence
+
+- implementation PR #38 promoted the exact tested feature tree to `dev`;
+- advisor-hardening PR #39 added migration `0016_messaging_fk_indexes.sql` and promoted the exact tested tree to `dev`;
+- production PR #40 promoted hardened `dev` to `main`;
+- production merge commit: `83b4af308175019ab3c1ba4d4ddc1824e7e9ce07`;
+- production merge tree exactly matched the hardened `dev` tree;
+- independent `main` CI run `37626316626`: Verify and Database migrations/lifecycle GREEN;
+- independent `main` CodeQL run `37626316629`: GREEN;
+- independent `main` Secret Scan run `37626316656`: GREEN;
+- hosted iCamp Supabase migration `20261007130009 / 0015_sms_mms_conversation_gateway`: applied;
+- hosted iCamp Supabase migration `20261007130727 / 0016_messaging_fk_indexes`: applied;
+- hosted rollback/privacy proof retained zero synthetic test rows;
+- hosted Supabase Security Advisor: zero findings;
+- all four Build 012 composite foreign-key covering indexes verified;
+- Supabase unindexed-foreign-key findings introduced by Build 012: closed.
+
+The connected Vercel account currently exposes no team/project linked to iCamp, so Build 012 does not claim a Vercel deployment target. The current production gate is the repository `main` branch plus hosted iCamp Supabase verification.
 
 ## Manual action
 
