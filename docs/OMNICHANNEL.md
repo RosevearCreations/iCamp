@@ -297,3 +297,17 @@ Build 012 adds the provider-neutral text gateway:
 - aggregate private diagnostics.
 
 Sender address is a routing hint, not identity. Structured identifiers remain verification-gated and natural-language proposals remain validation-gated. Build 013 adds telephone/SMS identity and re-authentication.
+
+
+## Build 013 identity-verification implementation
+
+Build 013 makes telephone/SMS identity proof channel-neutral:
+
+- voice and SMS use the same short-lived challenge model;
+- caller ID and sender address remain routing hints only;
+- guest lookup intent requires guest-reference plus one-time-code verification;
+- staff access requires a salted channel PIN;
+- privileged staff commands require channel PIN plus OTP or recent approved-session re-authentication;
+- authorization is checked after identity verification, not replaced by it;
+- DTMF site/reservation/pass entries and structured SMS lookup commands return `verify.identity` before protected business lookup;
+- raw PINs, OTPs, phone numbers and guest references are excluded from verification/audit/health evidence.
