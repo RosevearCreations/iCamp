@@ -62,7 +62,6 @@ test("Build 010 unknown semantic IVR events fail safe to repeat", () => {
   assert.equal(result.sessionState, "active");
 });
 
-
 test("Build 011 entry-state semantic timeout remains bounded", () => {
   const first = transitionIvrState({
     stateKey: "site_entry",
