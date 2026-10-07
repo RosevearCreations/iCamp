@@ -104,3 +104,19 @@ test("Build 012 exposes sanitized messaging health and source-of-truth documenta
   );
   assert.match(build, /IMPLEMENTED — PROMOTION PENDING/u);
 });
+
+test("Build 012 closes advisor findings for composite messaging foreign keys", async () => {
+  const indexes = await readFile(
+    "database/migrations/0016_messaging_fk_indexes.sql",
+    "utf8",
+  );
+
+  for (const indexName of [
+    "messaging_lines_endpoint_scope_idx",
+    "messaging_conversations_line_scope_idx",
+    "messaging_conversations_remote_endpoint_scope_idx",
+    "messaging_messages_conversation_scope_idx",
+  ]) {
+    assert.match(indexes, new RegExp("create index " + indexName));
+  }
+});
