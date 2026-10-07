@@ -83,3 +83,15 @@ test("Build 012 lifecycle proof is part of the database CI gate", async () => {
   assert.match(lifecycle, /validation_required/u);
   assert.match(lifecycle, /verification_required/u);
 });
+
+test("Build 012 exposes sanitized messaging health and source-of-truth documentation", async () => {
+  const itPage = await readFile("app/workspaces/it-analysis/page.tsx", "utf8");
+  const source = await readFile("docs/SMS_MMS.md", "utf8");
+  const build = await readFile("docs/BUILD_012.md", "utf8");
+
+  assert.match(itPage, /getMessagingGatewayHealth/u);
+  assert.match(itPage, /Message bodies and phone numbers remain private/u);
+  assert.match(source, /Phone-number possession, caller ID and SMS sender address are never treated as authentication/u);
+  assert.match(source, /Build 013 — Telephone\/SMS Identity, Verification & Staff Re-Authentication/u);
+  assert.match(build, /IMPLEMENTED — PROMOTION PENDING/u);
+});
