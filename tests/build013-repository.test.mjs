@@ -26,7 +26,10 @@ test("Build 013 defines private channel verification persistence without raw sec
     migration,
     /^\s*(pin|raw_pin|verification_code|raw_code|subject_reference|phone_number|caller_id|message_body)\s+/imu,
   );
-  assert.match(migration, /revoke all on icamp_private\.channel_verification_challenges from public/u);
+  assert.match(
+    migration,
+    /revoke all on icamp_private\.channel_verification_challenges from public/u,
+  );
 });
 
 test("Build 013 uses salted verifiers for guest references, OTPs and staff PINs", async () => {
