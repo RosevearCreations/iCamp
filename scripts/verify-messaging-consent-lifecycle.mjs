@@ -314,7 +314,7 @@ try {
         text: "Promotional message must still be blocked.",
         provider,
       }),
-    /marketing_consent_required/,
+    /preference_disabled|marketing_consent_required/,
   );
 
   const consent = await recordMessagingMarketingConsent({

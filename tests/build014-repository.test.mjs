@@ -61,7 +61,10 @@ test("Build 014 lifecycle proof is part of the database CI gate", async () => {
   assert.match(workflow, /npm run consent:verify/u);
   assert.match(packageJson, /"consent:verify"/u);
   assert.match(lifecycle, /provider_suppressed/u);
-  assert.match(lifecycle, /marketing_consent_required/u);
+  assert.match(
+    lifecycle,
+    /preference_disabled\|marketing_consent_required/u,
+  );
   assert.match(lifecycle, /recordMessagingMarketingConsent/u);
 });
 

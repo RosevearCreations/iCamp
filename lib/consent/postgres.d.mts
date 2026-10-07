@@ -15,7 +15,12 @@ export function configureMessagingComplianceRule(input: {
 }): Promise<MessagingComplianceRule & { id?: string }>;
 
 export function applyMessagingPreferenceKeywordInTransaction(
-  client: { query: (...args: any[]) => Promise<any> },
+  client: {
+    query: (
+      text: string,
+      values?: readonly unknown[],
+    ) => Promise<{ rowCount: number | null; rows: Record<string, unknown>[] }>;
+  },
   input: {
     organizationId: string;
     campgroundId: string;
