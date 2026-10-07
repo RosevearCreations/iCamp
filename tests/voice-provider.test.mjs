@@ -119,3 +119,44 @@ test("Build 010 voice config defaults to sandbox and bounds webhook tolerance", 
     /between 30 and 900 seconds/,
   );
 });
+
+
+test("Build 011 normalizes DTMF input and timeout without copying digits into status", () => {
+  const input = normalizeMockVoiceWebhook(
+    JSON.stringify({
+      eventId: "evt-dtmf-1",
+      eventType: "dtmf.input",
+      eventStatus: "digits=2468",
+      callReference: "call-dtmf-1",
+      numberReference: "mock-number-1001",
+      direction: "inbound",
+      occurredAt: "2026-10-06T20:00:00.000Z",
+      inputKind: "pin",
+      digits: "2468#",
+    }),
+  );
+
+  assert.equal(input.eventStatus, "dtmf.input");
+  assert.deepEqual(input.dtmf, {
+    inputKind: "pin",
+    digits: "2468#",
+    digitCount: 4,
+    sensitive: true,
+  });
+  assert.doesNotMatch(input.eventStatus, /2468/u);
+
+  const timeout = normalizeMockVoiceWebhook(
+    JSON.stringify({
+      eventId: "evt-dtmf-2",
+      eventType: "dtmf.timeout",
+      callReference: "call-dtmf-1",
+      numberReference: "mock-number-1001",
+      direction: "inbound",
+      occurredAt: "2026-10-06T20:00:05.000Z",
+      inputKind: "reservation",
+    }),
+  );
+
+  assert.equal(timeout.dtmf?.digits, null);
+  assert.equal(timeout.dtmf?.inputKind, "reservation");
+});
