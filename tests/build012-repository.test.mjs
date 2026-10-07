@@ -130,6 +130,6 @@ test("Build 012 queue closeout advances to Build 013", async () => {
   );
   assert.match(
     queue,
-    /Next active build[\s\S]*Build 013 — Telephone\/SMS Identity, Verification & Staff Re-Authentication[\s\S]*QUEUED — NOT STARTED/u,
+    /Next active build[\s\S]*Build 013 — Telephone\/SMS Identity, Verification & Staff Re-Authentication[\s\S]*IMPLEMENTED — PROMOTION PENDING/u,
   );
 });

@@ -1021,7 +1021,9 @@ test("Build 011 signed webhook routes DTMF idempotently and never echoes entered
   assert.match(webhook, /verifyVoiceWebhookSignature/);
   assert.match(webhook, /ingestVoiceProviderEvent\(event, provider\)/);
   assert.match(webhook, /result\.dtmf\?\.action/);
-  assert.doesNotMatch(webhook, /transientEntry/);
+  assert.match(webhook, /result\.dtmf\?\.transientEntry/);
+  assert.match(webhook, /verify\.identity/);
+  assert.doesNotMatch(webhook, /transientEntry\?\.value/);
   assert.match(
     runtime,
     /on conflict \(provider_key, provider_event_id\) do nothing/,
