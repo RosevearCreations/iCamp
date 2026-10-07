@@ -973,7 +973,6 @@ test("Build 010 CI proves voice lifecycle and advances toward DTMF", async () =>
   assert.match(build, /Build 011 — Numeric Keypad\/DTMF Interaction Engine/);
 });
 
-
 test("Build 011 implements short numeric keypad menus and bounded DTMF entry", async () => {
   const dtmf = await readFile("lib/voice/dtmf.mjs", "utf8");
 
@@ -1020,16 +1019,19 @@ test("Build 011 signed webhook routes DTMF idempotently and never echoes entered
   assert.match(webhook, /ingestVoiceProviderEvent\(event, provider\)/);
   assert.match(webhook, /result\.dtmf\?\.action/);
   assert.doesNotMatch(webhook, /transientEntry/);
-  assert.match(runtime, /on conflict \(provider_key, provider_event_id\) do nothing/);
-  assert.match(runtime, /transition\.sensitive \? null : transition\.transientEntry/);
+  assert.match(
+    runtime,
+    /on conflict \(provider_key, provider_event_id\) do nothing/,
+  );
+  assert.match(
+    runtime,
+    /transition\.sensitive \? null : transition\.transientEntry/,
+  );
 });
 
 test("Build 011 CI proves DTMF flows, privacy and safe aggregate health", async () => {
   const workflow = await readFile(".github/workflows/ci.yml", "utf8");
-  const lifecycle = await readFile(
-    "scripts/verify-dtmf-lifecycle.mjs",
-    "utf8",
-  );
+  const lifecycle = await readFile("scripts/verify-dtmf-lifecycle.mjs", "utf8");
   const itPage = await readFile("app/workspaces/it-analysis/page.tsx", "utf8");
   const build = await readFile("docs/BUILD_011.md", "utf8");
 
@@ -1042,8 +1044,5 @@ test("Build 011 CI proves DTMF flows, privacy and safe aggregate health", async 
   assert.match(lifecycle, /timeoutTwo\.transfer\.transferred, true/);
   assert.match(itPage, /voiceHealth\.dtmf\.inputs24h/);
   assert.match(itPage, /digits never shown/);
-  assert.match(
-    build,
-    /Build 012 — SMS\/MMS Conversation & Command Gateway/,
-  );
+  assert.match(build, /Build 012 — SMS\/MMS Conversation & Command Gateway/);
 });
