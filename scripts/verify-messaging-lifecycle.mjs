@@ -239,9 +239,7 @@ try {
     }),
   );
 
-  const proposed = await ingestMessagingProviderEvent(
-    naturalLanguageInbound,
-  );
+  const proposed = await ingestMessagingProviderEvent(naturalLanguageInbound);
   assert.equal(proposed.command.source, "natural_language");
   assert.equal(proposed.command.validation.accepted, false);
   assert.equal(proposed.command.validation.state, "validation_required");
