@@ -972,3 +972,78 @@ test("Build 010 CI proves voice lifecycle and advances toward DTMF", async () =>
   assert.match(itPage, /Phone numbers, audio and transcripts remain private/);
   assert.match(build, /Build 011 — Numeric Keypad\/DTMF Interaction Engine/);
 });
+
+
+test("Build 011 implements short numeric keypad menus and bounded DTMF entry", async () => {
+  const dtmf = await readFile("lib/voice/dtmf.mjs", "utf8");
+
+  assert.match(dtmf, /"1": \{/);
+  assert.match(dtmf, /"2": \{/);
+  assert.match(dtmf, /"3": \{/);
+  assert.match(dtmf, /"8": \{/);
+  assert.match(dtmf, /"9": \{/);
+  assert.match(dtmf, /"0": \{/);
+  assert.match(dtmf, /raw === "\*"/);
+  assert.match(dtmf, /DTMF_ENTRY_MAX_DIGITS = 12/);
+  assert.match(dtmf, /lookup\.site/);
+  assert.match(dtmf, /lookup\.reservation/);
+  assert.match(dtmf, /lookup\.pass/);
+  assert.match(dtmf, /nextRetry >= maxRetries/);
+});
+
+test("Build 011 keeps raw keypad digits out of durable provider and IVR evidence", async () => {
+  const runtime = await readFile("lib/voice/postgres.mjs", "utf8");
+  const provider = await readFile("lib/voice/provider.mjs", "utf8");
+  const source = await readFile("docs/DTMF.md", "utf8");
+
+  assert.match(runtime, /rawDigitsExcluded: true/);
+  assert.match(runtime, /digitCount: summary\.digitCount/);
+  assert.match(runtime, /sensitive: summary\.sensitive/);
+  assert.doesNotMatch(
+    runtime,
+    /metadata:[\s\S]{0,300}digits: event\.dtmf\.digits/,
+  );
+  assert.match(provider, /eventType\.startsWith\("dtmf\."\)/);
+  assert.match(provider, /eventStatus: eventType\.startsWith\("dtmf\."\)/);
+  assert.match(source, /Raw sensitive digits/i);
+  assert.match(source, /never written to provider-event metadata/i);
+});
+
+test("Build 011 signed webhook routes DTMF idempotently and never echoes entered identifiers", async () => {
+  const webhook = await readFile(
+    "app/api/communications/voice/webhook/route.ts",
+    "utf8",
+  );
+  const runtime = await readFile("lib/voice/postgres.mjs", "utf8");
+
+  assert.match(webhook, /verifyVoiceWebhookSignature/);
+  assert.match(webhook, /ingestVoiceProviderEvent\(event, provider\)/);
+  assert.match(webhook, /result\.dtmf\?\.action/);
+  assert.doesNotMatch(webhook, /transientEntry/);
+  assert.match(runtime, /on conflict \(provider_key, provider_event_id\) do nothing/);
+  assert.match(runtime, /transition\.sensitive \? null : transition\.transientEntry/);
+});
+
+test("Build 011 CI proves DTMF flows, privacy and safe aggregate health", async () => {
+  const workflow = await readFile(".github/workflows/ci.yml", "utf8");
+  const lifecycle = await readFile(
+    "scripts/verify-dtmf-lifecycle.mjs",
+    "utf8",
+  );
+  const itPage = await readFile("app/workspaces/it-analysis/page.tsx", "utf8");
+  const build = await readFile("docs/BUILD_011.md", "utf8");
+
+  assert.match(workflow, /Verify numeric keypad and DTMF lifecycle/);
+  assert.match(workflow, /npm run dtmf:verify/);
+  assert.match(lifecycle, /siteDuplicate\.duplicate, true/);
+  assert.match(lifecycle, /7654321/);
+  assert.match(lifecycle, /assert\.doesNotMatch\(providerText/);
+  assert.match(lifecycle, /assert\.doesNotMatch\(ivrText/);
+  assert.match(lifecycle, /timeoutTwo\.transfer\.transferred, true/);
+  assert.match(itPage, /voiceHealth\.dtmf\.inputs24h/);
+  assert.match(itPage, /digits never shown/);
+  assert.match(
+    build,
+    /Build 012 — SMS\/MMS Conversation & Command Gateway/,
+  );
+});
