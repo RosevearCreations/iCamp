@@ -184,7 +184,9 @@ export default async function ItAnalysisPage() {
             title="Messaging gateway health"
             id="messaging-health-heading"
             helpTopic="it.analysis"
-            trailing={<span className="build-chip">{messagingHealth.status}</span>}
+            trailing={
+              <span className="build-chip">{messagingHealth.status}</span>
+            }
           />
           <div className="health-grid">
             <article className="health-card">
@@ -194,15 +196,21 @@ export default async function ItAnalysisPage() {
             </article>
             <article className="health-card">
               <span className="health-card__label">Traffic</span>
-              <strong>{messagingHealth.messages.inbound24h} inbound in 24h</strong>
-              <span>{messagingHealth.messages.outbound24h} outbound in 24h</span>
+              <strong>
+                {messagingHealth.messages.inbound24h} inbound in 24h
+              </strong>
+              <span>
+                {messagingHealth.messages.outbound24h} outbound in 24h
+              </span>
             </article>
             <article className="health-card">
               <span className="health-card__label">Command safety</span>
               <strong>
                 {messagingHealth.messages.gatedCommands24h} gated in 24h
               </strong>
-              <span>Identifier and natural-language commands stay validation-gated</span>
+              <span>
+                Identifier and natural-language commands stay validation-gated
+              </span>
             </article>
             <article className="health-card">
               <span className="health-card__label">Delivery failures</span>
@@ -211,7 +219,9 @@ export default async function ItAnalysisPage() {
             </article>
             <article className="health-card">
               <span className="health-card__label">MMS intake</span>
-              <strong>{messagingHealth.attachments.pendingScan} pending scan</strong>
+              <strong>
+                {messagingHealth.attachments.pendingScan} pending scan
+              </strong>
               <span>Photos remain gated by secure-media validation</span>
             </article>
           </div>
