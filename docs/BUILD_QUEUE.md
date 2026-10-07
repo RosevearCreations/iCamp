@@ -170,10 +170,27 @@ Delivered:
 - automated unit, repository and PostgreSQL lifecycle proof;
 - hosted Supabase rollback verification with zero retained synthetic rows and zero security-advisor lints.
 
-## Next active build
-**Build 012 — SMS/MMS Conversation & Command Gateway**
+### Build 012 — SMS/MMS Conversation & Command Gateway
+Status: **FULLY PROMOTED — `main` GREEN.**
 
-Status: **IMPLEMENTED — PROMOTION PENDING**
+Delivered:
+- provider-neutral inbound/outbound SMS/MMS gateway;
+- signed replay-bounded inbound webhook verification;
+- guided numbered menus and keyword navigation;
+- structured site/reservation/pass command parsing with identity verification gating;
+- natural-language intent proposals with mandatory server validation;
+- outbound MMS through validated secure-media assets and inbound MMS pending-scan metadata;
+- campground authorization, dispatch/provider-event idempotency and delivery/read history;
+- privacy-safe persistence with no raw durable message-body column;
+- sanitized SMS/MMS health in I.T. & Analysis;
+- hosted Supabase migrations 0015/0016 with zero security-advisor findings;
+- advisor-driven composite foreign-key index closure and rollback/privacy verification;
+- exact-tree `dev` and `main` production promotion with all GitHub gates GREEN.
+
+## Next active build
+**Build 013 — Telephone/SMS Identity, Verification & Staff Re-Authentication**
+
+Status: **QUEUED — NOT STARTED**
 
 ## Operating rule
 - Work primarily on `dev`.

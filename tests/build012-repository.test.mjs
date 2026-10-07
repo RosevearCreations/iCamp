@@ -102,7 +102,7 @@ test("Build 012 exposes sanitized messaging health and source-of-truth documenta
     source,
     /Build 013 — Telephone\/SMS Identity, Verification & Staff Re-Authentication/u,
   );
-  assert.match(build, /IMPLEMENTED — PROMOTION PENDING/u);
+  assert.match(build, /FULLY PROMOTED — `main` GREEN/u);
 });
 
 test("Build 012 closes advisor findings for composite messaging foreign keys", async () => {
@@ -119,4 +119,17 @@ test("Build 012 closes advisor findings for composite messaging foreign keys", a
   ]) {
     assert.match(indexes, new RegExp("create index " + indexName));
   }
+});
+
+test("Build 012 queue closeout advances to Build 013", async () => {
+  const queue = await readFile("docs/BUILD_QUEUE.md", "utf8");
+
+  assert.match(
+    queue,
+    /Build 012 — SMS\/MMS Conversation & Command Gateway[\s\S]*FULLY PROMOTED — `main` GREEN/u,
+  );
+  assert.match(
+    queue,
+    /Next active build[\s\S]*Build 013 — Telephone\/SMS Identity, Verification & Staff Re-Authentication[\s\S]*QUEUED — NOT STARTED/u,
+  );
 });
