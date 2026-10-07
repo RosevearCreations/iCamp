@@ -76,19 +76,12 @@ test("Build 014 keeps consent evidence purpose-specific and privacy-safe", async
   assert.doesNotMatch(runtime, /select\s+endpoint_value/iu);
 });
 
-
 test("Build 014 closes compliance-rule foreign-key index advisories", async () => {
   const migration = await readFile(
     "database/migrations/0019_communication_compliance_fk_indexes.sql",
     "utf8",
   );
 
-  assert.match(
-    migration,
-    /communication_compliance_rules_scope_idx/u,
-  );
-  assert.match(
-    migration,
-    /organization_id,[\s\S]*campground_id/u,
-  );
+  assert.match(migration, /communication_compliance_rules_scope_idx/u);
+  assert.match(migration, /organization_id,[\s\S]*campground_id/u);
 });
