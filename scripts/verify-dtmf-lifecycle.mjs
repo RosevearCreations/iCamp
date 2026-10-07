@@ -256,10 +256,7 @@ try {
     }),
     provider,
   );
-  assert.equal(
-    reservationEntry.dtmf.transientEntry?.value,
-    "7654321",
-  );
+  assert.equal(reservationEntry.dtmf.transientEntry?.value, "7654321");
 
   const passMenu = await ingestVoiceProviderEvent(
     dtmfEvent({
