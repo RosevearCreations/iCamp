@@ -94,7 +94,7 @@ Never store in event metadata:
 - unrestricted message bodies;
 - call recordings or transcripts by default.
 
-Build 010 adds signed voice-provider webhook verification. Build 012 adds SMS/MMS provider event processing. Both reuse this normalized event ledger.
+Build 010 adds signed voice-provider webhook verification. Build 011 adds DTMF provider events using digit-free normalized metadata. Build 012 adds SMS/MMS provider event processing. All reuse this normalized event ledger.
 
 ## Provider abstraction
 
@@ -202,3 +202,19 @@ A voice line may point to a same-campground private phone endpoint for staff tra
 The transfer destination is fetched only inside trusted server code and never returned through the caller-facing API response or I.T. diagnostics.
 
 If no active staff target exists, the call enters a safe fallback state rather than exposing or guessing a destination.
+
+
+## Build 011 numeric keypad / DTMF
+
+DTMF input uses the Build 010 signed voice webhook and the Build 009 provider-event idempotency boundary.
+
+The normalized in-memory event may contain keypad input while routing, but durable provider-event metadata contains only:
+
+- input kind;
+- digit count;
+- sensitivity flag;
+- `rawDigitsExcluded: true`.
+
+IVR evidence stores semantic transitions only. Site/reservation/pass values are transient lookup inputs, while PIN/verification values are treated as sensitive and never surfaced in ordinary diagnostics.
+
+No new communications table or paid provider is introduced by Build 011.

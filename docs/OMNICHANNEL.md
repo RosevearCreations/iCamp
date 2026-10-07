@@ -263,4 +263,20 @@ Build 010 promotes voice from foundation-only to a provider-neutral sandbox gate
 - staff transfer/fallback;
 - provider event idempotency and replay controls.
 
-DTMF digit collection remains queued for Build 011. SMS/MMS remains queued for Build 012. Voice callers therefore receive the gateway/state-machine foundation without creating a parallel business-logic path.
+Build 011 now supplies numeric keypad collection on top of the same IVR state machine. SMS/MMS remains queued for Build 012. Voice and keypad therefore share one provider-neutral communications/business-logic path.
+
+
+## Build 011 DTMF implementation
+
+Build 011 adds a bounded numeric keypad interaction layer:
+
+- short 1/2/3 site/reservation/pass menu;
+- 8 repeat, 9 staff, 0 main and * back conventions;
+- transient multi-digit site/reservation/pass entry;
+- bounded invalid/timeout retries;
+- provider-event idempotency;
+- digit-free semantic evidence;
+- sensitive PIN/verification redaction;
+- aggregate keypad health only.
+
+Keypad possession never substitutes for identity proof. Build 013 adds the risk-based caller verification layer.

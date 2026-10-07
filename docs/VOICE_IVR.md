@@ -59,7 +59,7 @@ Build 010 introduces semantic IVR transitions:
 
 The database stores only semantic state/evidence.
 
-Build 011 maps numeric DTMF input to semantic events and adds digit collection, masking, retry and menu conventions. Build 010 intentionally does not persist keypad input.
+Build 011 now maps numeric DTMF input to semantic events and adds digit collection, masking, retry and short-menu conventions. Raw keypad strings remain transient and are not written to ordinary provider-event or IVR evidence.
 
 Default IVR sessions:
 
@@ -115,7 +115,7 @@ Caller ID is routing information only and is not authentication.
 | Web/PWA | Authenticated outbound voice API and voice health |
 | Voice | Full sandbox inbound/outbound gateway foundation |
 | IVR | Semantic state machine and staff transfer |
-| DTMF | Foundation only; digit engine arrives Build 011 |
+| DTMF | Full Build 011 numeric keypad routing foundation |
 | Speech | Provider-neutral route foundation only |
 | SMS/MMS | Unchanged Build 009 foundation; gateway arrives Build 012 |
 | Staff-assisted | Same-campground transfer/fallback supported |

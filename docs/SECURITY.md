@@ -658,3 +658,18 @@ Web/PWA, IVR/DTMF and SMS may enqueue the same canonical job types, but queueing
 - IVR transition evidence stores semantic events only. DTMF digits, PINs, MFA codes, payment-card data, audio and transcripts are forbidden from ordinary IVR event metadata.
 - Staff-transfer destinations are resolved only inside trusted server code.
 - Build 010 defaults to a mock sandbox. External provider credentials and provider-specific signature adapters are not required until an external provider is intentionally connected.
+
+
+## Build 011 — Numeric keypad / DTMF security
+
+- DTMF values are untrusted provider input and are parsed only after the signed Build 010 webhook boundary succeeds.
+- Raw keypad strings are transient and must not be written to provider-event metadata, IVR events, audit snapshots, error summaries, analytics or I.T. health.
+- Provider-event metadata records only input kind, digit count, sensitivity classification and a `rawDigitsExcluded` marker.
+- IVR evidence records only semantic transitions/actions.
+- PIN and verification input is classified as sensitive and is never returned as a transient site/reservation/pass lookup value.
+- DTMF provider event status is normalized to the semantic event type so a provider-supplied status cannot copy digits into durable evidence.
+- Caller ID, keypad possession and knowledge of an identifier are not authentication or authorization.
+- Site/reservation/pass values are available only transiently to trusted server code for later domain lookup.
+- Invalid input and timeout retries are bounded; retry exhaustion transfers to staff.
+- Duplicate provider events are idempotent and cannot replay the keypad transition.
+- Raw payment-card data remains prohibited from the custom iCamp keypad flow.

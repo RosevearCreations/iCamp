@@ -23,7 +23,8 @@
     "jobs:verify": "node scripts/verify-background-jobs-lifecycle.mjs",
     "media:verify": "node scripts/verify-media-lifecycle.mjs",
     "communications:verify": "node scripts/verify-communications-lifecycle.mjs",
-    "voice:verify": "node scripts/verify-voice-lifecycle.mjs"
+    "voice:verify": "node scripts/verify-voice-lifecycle.mjs",
+    "dtmf:verify": "node scripts/verify-dtmf-lifecycle.mjs"
   },
   "dependencies": {
     "next": "16.3.8",

@@ -56,7 +56,7 @@ export async function POST(request: Request) {
   }
 
   try {
-    const result = await ingestVoiceProviderEvent(event);
+    const result = await ingestVoiceProviderEvent(event, provider);
 
     return NextResponse.json({
       accepted: true,
@@ -64,10 +64,11 @@ export async function POST(request: Request) {
       callId: result.call?.id ?? null,
       sessionId: result.sessionId,
       nextAction:
-        result.call?.direction === "inbound" &&
+        result.dtmf?.action ??
+        (result.call?.direction === "inbound" &&
         !["completed", "failed"].includes(result.call.callState)
           ? "prompt.main"
-          : "acknowledge",
+          : "acknowledge"),
     });
   } catch {
     return NextResponse.json(
