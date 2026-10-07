@@ -10,6 +10,7 @@ import { getOperationalQueueHealth } from "@/lib/jobs/postgres.mjs";
 import { getMediaStorageHealth } from "@/lib/media/postgres.mjs";
 import { getMessagingGatewayHealth } from "@/lib/messaging/postgres.mjs";
 import { getSafeItSnapshot } from "@/lib/observability/health";
+import { getChannelVerificationHealth } from "@/lib/verification/postgres.mjs";
 import { getVoiceGatewayHealth } from "@/lib/voice/postgres.mjs";
 
 export const metadata: Metadata = {
@@ -30,12 +31,14 @@ export default async function ItAnalysisPage() {
     mediaHealth,
     communicationsHealth,
     messagingHealth,
+    verificationHealth,
     voiceHealth,
   ] = await Promise.all([
     getOperationalQueueHealth(),
     getMediaStorageHealth(),
     getCommunicationsHealth(),
     getMessagingGatewayHealth(),
+    getChannelVerificationHealth(),
     getVoiceGatewayHealth(),
   ]);
   const renderedAt = new Date().toISOString();
@@ -223,6 +226,53 @@ export default async function ItAnalysisPage() {
                 {messagingHealth.attachments.pendingScan} pending scan
               </strong>
               <span>Photos remain gated by secure-media validation</span>
+            </article>
+          </div>
+        </section>
+
+        <section
+          className="content-panel"
+          aria-labelledby="identity-health-heading"
+        >
+          <SectionHeading
+            eyebrow="Telephone / SMS identity"
+            title="Verification & re-authentication health"
+            id="identity-health-heading"
+            helpTopic="it.analysis"
+            trailing={
+              <span className="build-chip">{verificationHealth.status}</span>
+            }
+          />
+          <div className="health-grid">
+            <article className="health-card">
+              <span className="health-card__label">Challenges</span>
+              <strong>{verificationHealth.challenges.pending} pending</strong>
+              <span>
+                {verificationHealth.challenges.satisfied24h} satisfied in 24h
+              </span>
+            </article>
+            <article className="health-card">
+              <span className="health-card__label">Abuse controls</span>
+              <strong>
+                {verificationHealth.challenges.locked24h} locked in 24h
+              </strong>
+              <span>
+                {verificationHealth.challenges.flagged24h} flagged ·{" "}
+                {verificationHealth.attempts.rejected24h} rejected
+              </span>
+            </article>
+            <article className="health-card">
+              <span className="health-card__label">Staff PIN lockout</span>
+              <strong>{verificationHealth.staffPins.locked} active</strong>
+              <span>PINs and verification codes are never displayed</span>
+            </article>
+            <article className="health-card">
+              <span className="health-card__label">Identity boundary</span>
+              <strong>Caller ID is not authentication</strong>
+              <span>
+                Only aggregate verification state is shown; phone numbers,
+                guest references and secrets remain private
+              </span>
             </article>
           </div>
         </section>
