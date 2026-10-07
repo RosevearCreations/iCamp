@@ -65,7 +65,10 @@ test("Build 012 persists only safe provider metadata and gated MMS intake", asyn
   assert.match(runtime, /'pending_scan'/u);
   assert.match(runtime, /communications\.send/u);
   assert.match(runtime, /communications\.manage/u);
-  assert.match(runtime, /on conflict \(provider_key, provider_event_id\) do nothing/u);
+  assert.match(
+    runtime,
+    /on conflict \(provider_key, provider_event_id\) do nothing/u,
+  );
 });
 
 test("Build 012 lifecycle proof is part of the database CI gate", async () => {
@@ -91,7 +94,13 @@ test("Build 012 exposes sanitized messaging health and source-of-truth documenta
 
   assert.match(itPage, /getMessagingGatewayHealth/u);
   assert.match(itPage, /Message bodies and phone numbers remain private/u);
-  assert.match(source, /Phone-number possession, caller ID and SMS sender address are never treated as authentication/u);
-  assert.match(source, /Build 013 — Telephone\/SMS Identity, Verification & Staff Re-Authentication/u);
+  assert.match(
+    source,
+    /Phone-number possession, caller ID and SMS sender address are never treated as authentication/u,
+  );
+  assert.match(
+    source,
+    /Build 013 — Telephone\/SMS Identity, Verification & Staff Re-Authentication/u,
+  );
   assert.match(build, /IMPLEMENTED — PROMOTION PENDING/u);
 });
