@@ -137,6 +137,9 @@ jobs:
       - name: Verify inbound/outbound voice and IVR lifecycle
         run: npm run voice:verify
 
+      - name: Verify numeric keypad and DTMF lifecycle
+        run: npm run dtmf:verify
+
       - name: Re-run migrations to prove idempotent history handling
         run: node scripts/apply-database-migrations.mjs
 
