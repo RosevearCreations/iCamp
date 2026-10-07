@@ -37,7 +37,11 @@ create table icamp_private.channel_verification_challenges (
     check (purpose in ('guest_lookup', 'staff_access', 'staff_privileged')),
   subject_kind text not null
     check (subject_kind in ('site', 'reservation', 'pass', 'staff')),
-  subject_reference_hash bytea,
+  subject_reference_hash text
+    check (
+      subject_reference_hash is null
+      or char_length(subject_reference_hash) between 40 and 1024
+    ),
   code_hash text not null
     check (char_length(code_hash) between 40 and 1024),
   status text not null default 'pending'
