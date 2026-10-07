@@ -56,7 +56,6 @@ Build 010 adds private campground voice-line bindings, provider-neutral call met
 
 The schema enforces campground-scoped line, dispatch, remote-endpoint and staff-transfer relationships. Raw audio, transcripts, keypad digits, webhook bodies and provider secrets are not stored in ordinary voice tables.
 
-
 ## Numeric keypad and DTMF engine
 
 Build 011 intentionally reuses the Build 009 provider-event ledger and Build 010 IVR session/event tables rather than creating a second keypad data store.
