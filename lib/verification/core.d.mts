@@ -10,16 +10,12 @@ export const VERIFICATION_ISSUE_LIMIT: number;
 export type VerificationChannel = "voice" | "sms";
 export type VerificationActorKind = "guest" | "staff";
 export type VerificationPurpose =
-  | "guest_lookup"
-  | "staff_access"
-  | "staff_privileged";
-export type VerificationSubjectKind =
-  | "site"
-  | "reservation"
-  | "pass"
-  | "staff";
+  "guest_lookup" | "staff_access" | "staff_privileged";
+export type VerificationSubjectKind = "site" | "reservation" | "pass" | "staff";
 
-export function normalizeVerificationChannel(value: unknown): VerificationChannel;
+export function normalizeVerificationChannel(
+  value: unknown,
+): VerificationChannel;
 export function normalizeVerificationActorKind(
   value: unknown,
 ): VerificationActorKind;
@@ -65,10 +61,7 @@ export function evaluateVerificationAvailability(input: {
   maxAttempts?: number;
   now?: Date | string;
 }): { usable: boolean; reason: string | null };
-export function mergeFraudSignals(
-  existing: unknown,
-  signal: unknown,
-): string[];
+export function mergeFraudSignals(existing: unknown, signal: unknown): string[];
 export function sanitizeVerificationChallenge(
   row: Record<string, any> | null,
 ): Record<string, any> | null;
