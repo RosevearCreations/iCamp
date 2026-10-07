@@ -63,5 +63,5 @@ export function evaluateVerificationAvailability(input: {
 }): { usable: boolean; reason: string | null };
 export function mergeFraudSignals(existing: unknown, signal: unknown): string[];
 export function sanitizeVerificationChallenge(
-  row: Record<string, any> | null,
-): Record<string, any> | null;
+  row: Record<string, unknown> | null,
+): Record<string, unknown> | null;
