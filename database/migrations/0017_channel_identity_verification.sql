@@ -42,8 +42,11 @@ create table icamp_private.channel_verification_challenges (
       subject_reference_hash is null
       or char_length(subject_reference_hash) between 40 and 1024
     ),
-  code_hash text not null
-    check (char_length(code_hash) between 40 and 1024),
+  code_hash text
+    check (
+      code_hash is null
+      or char_length(code_hash) between 40 and 1024
+    ),
   status text not null default 'pending'
     check (status in ('pending', 'satisfied', 'locked', 'expired', 'cancelled')),
   attempt_count integer not null default 0
@@ -80,6 +83,7 @@ create table icamp_private.channel_verification_challenges (
         and staff_user_id is null
         and subject_kind in ('site', 'reservation', 'pass')
         and subject_reference_hash is not null
+        and code_hash is not null
       )
       or (
         actor_kind = 'staff'
@@ -87,6 +91,7 @@ create table icamp_private.channel_verification_challenges (
         and staff_user_id is not null
         and subject_kind = 'staff'
         and subject_reference_hash is null
+        and (purpose = 'staff_access' or code_hash is not null)
       )
     ),
   constraint channel_verification_expiry_check
