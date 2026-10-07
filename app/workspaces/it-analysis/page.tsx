@@ -207,7 +207,8 @@ export default async function ItAnalysisPage() {
               <span className="health-card__label">Transfer fallback</span>
               <strong>{voiceHealth.calls.transferFallbacks}</strong>
               <span>
-                Phone numbers, keypad digits, audio and transcripts remain private
+                Phone numbers, keypad digits, audio and transcripts remain
+                private
               </span>
             </article>
           </div>
