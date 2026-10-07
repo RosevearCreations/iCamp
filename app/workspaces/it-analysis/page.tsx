@@ -270,8 +270,8 @@ export default async function ItAnalysisPage() {
               <span className="health-card__label">Identity boundary</span>
               <strong>Caller ID is not authentication</strong>
               <span>
-                Only aggregate verification state is shown; phone numbers,
-                guest references and secrets remain private
+                Only aggregate verification state is shown; phone numbers, guest
+                references and secrets remain private
               </span>
             </article>
           </div>
