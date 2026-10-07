@@ -8,6 +8,7 @@ import { requireAnyCampgroundPermission } from "@/lib/authz/current-user";
 import { getCommunicationsHealth } from "@/lib/communications/postgres.mjs";
 import { getOperationalQueueHealth } from "@/lib/jobs/postgres.mjs";
 import { getMediaStorageHealth } from "@/lib/media/postgres.mjs";
+import { getMessagingGatewayHealth } from "@/lib/messaging/postgres.mjs";
 import { getSafeItSnapshot } from "@/lib/observability/health";
 import { getVoiceGatewayHealth } from "@/lib/voice/postgres.mjs";
 
@@ -24,13 +25,19 @@ export default async function ItAnalysisPage() {
     "/workspaces/it-analysis",
   );
   const snapshot = getSafeItSnapshot();
-  const [queueHealth, mediaHealth, communicationsHealth, voiceHealth] =
-    await Promise.all([
-      getOperationalQueueHealth(),
-      getMediaStorageHealth(),
-      getCommunicationsHealth(),
-      getVoiceGatewayHealth(),
-    ]);
+  const [
+    queueHealth,
+    mediaHealth,
+    communicationsHealth,
+    messagingHealth,
+    voiceHealth,
+  ] = await Promise.all([
+    getOperationalQueueHealth(),
+    getMediaStorageHealth(),
+    getCommunicationsHealth(),
+    getMessagingGatewayHealth(),
+    getVoiceGatewayHealth(),
+  ]);
   const renderedAt = new Date().toISOString();
 
   return (
@@ -164,6 +171,58 @@ export default async function ItAnalysisPage() {
               <span>
                 Endpoints, bodies and provider payloads remain private
               </span>
+            </article>
+          </div>
+        </section>
+
+        <section
+          className="content-panel"
+          aria-labelledby="messaging-health-heading"
+        >
+          <SectionHeading
+            eyebrow="SMS / MMS"
+            title="Messaging gateway health"
+            id="messaging-health-heading"
+            helpTopic="it.analysis"
+            trailing={
+              <span className="build-chip">{messagingHealth.status}</span>
+            }
+          />
+          <div className="health-grid">
+            <article className="health-card">
+              <span className="health-card__label">Lines</span>
+              <strong>{messagingHealth.lines.active} active</strong>
+              <span>{messagingHealth.lines.sandbox} sandbox</span>
+            </article>
+            <article className="health-card">
+              <span className="health-card__label">Traffic</span>
+              <strong>
+                {messagingHealth.messages.inbound24h} inbound in 24h
+              </strong>
+              <span>
+                {messagingHealth.messages.outbound24h} outbound in 24h
+              </span>
+            </article>
+            <article className="health-card">
+              <span className="health-card__label">Command safety</span>
+              <strong>
+                {messagingHealth.messages.gatedCommands24h} gated in 24h
+              </strong>
+              <span>
+                Identifier and natural-language commands stay validation-gated
+              </span>
+            </article>
+            <article className="health-card">
+              <span className="health-card__label">Delivery failures</span>
+              <strong>{messagingHealth.messages.failed24h} in 24h</strong>
+              <span>Message bodies and phone numbers remain private</span>
+            </article>
+            <article className="health-card">
+              <span className="health-card__label">MMS intake</span>
+              <strong>
+                {messagingHealth.attachments.pendingScan} pending scan
+              </strong>
+              <span>Photos remain gated by secure-media validation</span>
             </article>
           </div>
         </section>
