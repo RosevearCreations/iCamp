@@ -969,7 +969,10 @@ test("Build 010 CI proves voice lifecycle and advances toward DTMF", async () =>
   assert.match(lifecycle, /transfer\.transfer\.transferred, true/);
   assert.match(lifecycle, /append-only/);
   assert.match(itPage, /getVoiceGatewayHealth/);
-  assert.match(itPage, /Phone numbers, audio and transcripts remain private/);
+  assert.match(
+    itPage,
+    /Phone numbers, keypad digits, audio and transcripts remain/,
+  );
   assert.match(build, /Build 011 — Numeric Keypad\/DTMF Interaction Engine/);
 });
 
