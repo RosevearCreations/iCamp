@@ -1225,3 +1225,30 @@ A line may define a same-campground staff transfer endpoint. The provider adapte
 ### 30.6 Sandbox portability
 
 The mock sandbox implements the same place-call, transfer and webhook-normalization contract required by a future external provider adapter. No campground workflow depends on provider-specific markup.
+
+
+## 31. Numeric Keypad / DTMF Interaction Engine
+
+### 31.1 Transient digit boundary
+
+Provider-normalized keypad values exist only long enough for trusted server routing. Raw DTMF strings are not canonical business data and are not persisted in ordinary communications or IVR records.
+
+### 31.2 Semantic routing
+
+The DTMF engine converts keypad input into provider-neutral actions such as `prompt.site`, `prompt.reservation`, `prompt.pass`, `lookup.site`, `lookup.reservation`, `lookup.pass`, `prompt.main` and `transfer.staff`.
+
+### 31.3 Short-menu conventions
+
+The main menu is intentionally bounded: 1/2/3 select site/reservation/pass entry, 8 repeats, 9 transfers to staff, 0 returns to main, and * backs out of entry flows.
+
+### 31.4 Retry and timeout boundary
+
+Invalid input and DTMF timeout increment the existing IVR retry counter. Valid selections reset retries. Retry exhaustion routes to the existing same-campground staff transfer path.
+
+### 31.5 Sensitive input
+
+PIN and verification inputs are classified as sensitive. Durable evidence stores input kind, digit count and sensitivity only. Authentication decisions remain outside the DTMF parser; Build 013 owns identity verification.
+
+### 31.6 Existing persistence
+
+Build 011 reuses Build 009 provider-event idempotency plus Build 010 IVR sessions/events. No parallel keypad table or provider-specific menu schema is introduced.
