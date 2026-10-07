@@ -65,11 +65,11 @@ export async function POST(request: Request) {
       sessionId: result.sessionId,
       nextAction: result.dtmf?.transientEntry
         ? "verify.identity"
-        : result.dtmf?.action ??
+        : (result.dtmf?.action ??
           (result.call?.direction === "inbound" &&
           !["completed", "failed"].includes(result.call.callState)
             ? "prompt.main"
-            : "acknowledge"),
+            : "acknowledge")),
       verificationRequired: Boolean(result.dtmf?.transientEntry),
     });
   } catch {
