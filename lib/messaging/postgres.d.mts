@@ -1,4 +1,7 @@
-import type { MessagingProviderAdapter, NormalizedMessagingWebhook } from "./provider.d.mts";
+import type {
+  MessagingProviderAdapter,
+  NormalizedMessagingWebhook,
+} from "./provider.d.mts";
 
 export interface MessagingLine {
   id: string;
@@ -18,20 +21,11 @@ export interface MessagingMessage {
   channel: "sms" | "mms";
   purpose: "transactional" | "operational" | "marketing";
   deliveryState:
-    | "received"
-    | "queued"
-    | "submitted"
-    | "delivered"
-    | "read"
-    | "failed";
+    "received" | "queued" | "submitted" | "delivered" | "read" | "failed";
   bodyLength: number;
   commandKind: string | null;
   commandSource:
-    | "numbered"
-    | "keyword"
-    | "structured"
-    | "natural_language"
-    | "none";
+    "numbered" | "keyword" | "structured" | "natural_language" | "none";
   commandState:
     | "not_applicable"
     | "navigation"
