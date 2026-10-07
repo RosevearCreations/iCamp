@@ -63,12 +63,14 @@ export async function POST(request: Request) {
       duplicate: result.duplicate,
       callId: result.call?.id ?? null,
       sessionId: result.sessionId,
-      nextAction:
-        result.dtmf?.action ??
-        (result.call?.direction === "inbound" &&
-        !["completed", "failed"].includes(result.call.callState)
-          ? "prompt.main"
-          : "acknowledge"),
+      nextAction: result.dtmf?.transientEntry
+        ? "verify.identity"
+        : result.dtmf?.action ??
+          (result.call?.direction === "inbound" &&
+          !["completed", "failed"].includes(result.call.callState)
+            ? "prompt.main"
+            : "acknowledge"),
+      verificationRequired: Boolean(result.dtmf?.transientEntry),
     });
   } catch {
     return NextResponse.json(
