@@ -113,7 +113,8 @@ Build 014 adds:
 - schema/privacy verification;
 - repository integration tests;
 - a PostgreSQL lifecycle proof covering STOP, suppressed dispatch rejection, HELP response allowance, START, marketing still blocked after START, explicit marketing consent, provider-event idempotency and privacy-safe ledger evidence;
-- a dedicated database CI gate.
+- a dedicated database CI gate;
+- advisor-driven covering index closure for compliance-rule foreign keys.
 
 ## Manual action
 
