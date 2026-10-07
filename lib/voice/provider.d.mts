@@ -1,11 +1,11 @@
+import type { DtmfInputKind } from "./dtmf.d.mts";
+
 export interface VoiceProviderConfig {
   provider: string;
   mode: "sandbox" | "external";
   webhookSecret: string | null;
   webhookToleranceSeconds: number;
 }
-
-import type { DtmfInputKind } from "./dtmf.d.mts";
 
 export interface NormalizedVoiceWebhook {
   providerKey: string;
