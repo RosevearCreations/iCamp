@@ -137,7 +137,7 @@ It does not show phone numbers, emails, push tokens, message bodies, call transc
 | Web/PWA | Full canonical communications domain and health foundation |
 | IVR/DTMF | Foundation only; real gateway/state machine arrives in Builds 010–011 |
 | Speech | Foundation only; provider capability arrives with voice integration |
-| SMS/MMS | Foundation only; conversation gateway arrives in Build 012 |
+| SMS/MMS | Build 012 provider-neutral conversation/command gateway; identity verification remains Build 013 |
 | Email | Provider-neutral endpoint/dispatch foundation |
 | Push | Provider-neutral endpoint/dispatch foundation |
 | Staff-assisted | Uses the same endpoint/purpose/dispatch records |
@@ -218,3 +218,20 @@ The normalized in-memory event may contain keypad input while routing, but durab
 IVR evidence stores semantic transitions only. Site/reservation/pass values are transient lookup inputs, while PIN/verification values are treated as sensitive and never surfaced in ordinary diagnostics.
 
 No new communications table or paid provider is introduced by Build 011.
+
+## Build 012 SMS/MMS conversation and command gateway
+
+Build 012 promotes SMS/MMS from foundation-only to an operational sandbox gateway:
+
+- campground messaging-line/provider bindings;
+- signed inbound webhook verification with replay-window enforcement;
+- authenticated outbound SMS/MMS dispatch;
+- provider-event and outbound idempotency;
+- guided numbered menus and keywords;
+- structured site/reservation/pass commands that remain verification-gated;
+- natural-language command proposals that remain validation-gated;
+- MMS metadata intake in pending-scan state;
+- submitted/delivered/read/failed message evidence;
+- aggregate messaging health without message bodies or phone numbers.
+
+Raw message text is transient routing input and is not an ordinary durable telemetry field. Phone possession does not establish identity; Build 013 supplies the risk-based telephone/SMS verification layer.

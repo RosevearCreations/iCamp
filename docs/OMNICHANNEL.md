@@ -263,7 +263,7 @@ Build 010 promotes voice from foundation-only to a provider-neutral sandbox gate
 - staff transfer/fallback;
 - provider event idempotency and replay controls.
 
-Build 011 now supplies numeric keypad collection on top of the same IVR state machine. SMS/MMS remains queued for Build 012. Voice and keypad therefore share one provider-neutral communications/business-logic path.
+Build 011 supplies numeric keypad collection on top of the same IVR state machine, and Build 012 now supplies the SMS/MMS conversation and command gateway. Voice, keypad and text therefore share one provider-neutral communications/business-logic path.
 
 
 ## Build 011 DTMF implementation
@@ -280,3 +280,20 @@ Build 011 adds a bounded numeric keypad interaction layer:
 - aggregate keypad health only.
 
 Keypad possession never substitutes for identity proof. Build 013 adds the risk-based caller verification layer.
+
+## Build 012 SMS/MMS implementation
+
+Build 012 adds the provider-neutral text gateway:
+
+- inbound/outbound SMS;
+- outbound MMS over validated secure-media assets;
+- inbound MMS/photo metadata quarantined as pending scan;
+- short numbered menus and keywords;
+- structured site/reservation/pass command parsing;
+- natural-language intent proposals with mandatory server validation;
+- signed webhook/replay protection;
+- provider-event idempotency;
+- delivery/read history when supported;
+- aggregate private diagnostics.
+
+Sender address is a routing hint, not identity. Structured identifiers remain verification-gated and natural-language proposals remain validation-gated. Build 013 adds telephone/SMS identity and re-authentication.

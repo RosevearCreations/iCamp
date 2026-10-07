@@ -173,7 +173,7 @@ Delivered:
 ## Next active build
 **Build 012 — SMS/MMS Conversation & Command Gateway**
 
-Status: **QUEUED — NOT STARTED**
+Status: **IMPLEMENTED — PROMOTION PENDING**
 
 ## Operating rule
 - Work primarily on `dev`.
