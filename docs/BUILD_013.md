@@ -73,6 +73,7 @@ Build 013 adds:
 - PostgreSQL schema verification;
 - PostgreSQL lifecycle verification for guest reference+OTP, staff PIN+OTP, staff PIN+recent-session re-authentication, permission re-checking, lockout and secret exclusion;
 - CI database lifecycle execution;
+- hosted iCamp Supabase rollback-only migration proof with zero retained Build 013 tables;
 - aggregate verification health in I.T. & Analysis.
 
 ## Manual action
