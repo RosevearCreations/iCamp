@@ -979,12 +979,12 @@ test("Build 010 CI proves voice lifecycle and advances toward DTMF", async () =>
 test("Build 011 implements short numeric keypad menus and bounded DTMF entry", async () => {
   const dtmf = await readFile("lib/voice/dtmf.mjs", "utf8");
 
-  assert.match(dtmf, /1: \\{/);
-  assert.match(dtmf, /2: \\{/);
-  assert.match(dtmf, /3: \\{/);
-  assert.match(dtmf, /8: \\{/);
-  assert.match(dtmf, /9: \\{/);
-  assert.match(dtmf, /0: \\{/);
+  assert.match(dtmf, /eventType: "dtmf\.menu\.site"/);
+  assert.match(dtmf, /eventType: "dtmf\.menu\.reservation"/);
+  assert.match(dtmf, /eventType: "dtmf\.menu\.pass"/);
+  assert.match(dtmf, /eventType: "dtmf\.repeat"/);
+  assert.match(dtmf, /eventType: "dtmf\.staff_transfer"/);
+  assert.match(dtmf, /eventType: "dtmf\.main"/);
   assert.match(dtmf, /raw === "\*"/);
   assert.match(dtmf, /DTMF_ENTRY_MAX_DIGITS = 12/);
   assert.match(dtmf, /lookup\.site/);
