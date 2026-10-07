@@ -71,10 +71,7 @@ test("Build 013 applies risk-based guest and staff factors", () => {
       purpose: "staff_privileged",
       riskLevel: "high",
     }),
-    [
-      "staff_pin",
-      "one_time_code_or_recent_session_reauthentication",
-    ],
+    ["staff_pin", "one_time_code_or_recent_session_reauthentication"],
   );
 });
 
