@@ -242,7 +242,9 @@ export default async function ItAnalysisPage() {
             title="Consent & preference ledger health"
             id="messaging-consent-health-heading"
             helpTopic="it.analysis"
-            trailing={<span className="build-chip">{consentHealth.status}</span>}
+            trailing={
+              <span className="build-chip">{consentHealth.status}</span>
+            }
           />
           <div className="health-grid">
             <article className="health-card">
@@ -270,7 +272,8 @@ export default async function ItAnalysisPage() {
               <span className="health-card__label">Compliance rules</span>
               <strong>{consentHealth.complianceRules.active} configured</strong>
               <span>
-                Safe fallback: {consentHealth.complianceRules.safeFallbackJurisdiction}
+                Safe fallback:{" "}
+                {consentHealth.complianceRules.safeFallbackJurisdiction}
               </span>
             </article>
             <article className="health-card">

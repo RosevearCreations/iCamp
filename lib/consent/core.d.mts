@@ -15,9 +15,7 @@ export const MESSAGING_COMPLIANCE_MESSAGE_KINDS: readonly [
 
 export const DEFAULT_MESSAGING_COMPLIANCE_RULE: Readonly<MessagingComplianceRule>;
 
-export function classifyMessagingConsentKeyword(
-  value: string,
-): null | {
+export function classifyMessagingConsentKeyword(value: string): null | {
   action: "stop" | "start" | "help";
   normalizedKeyword: string;
 };
