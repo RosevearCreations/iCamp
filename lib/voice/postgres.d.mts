@@ -67,11 +67,28 @@ export function startOutboundVoiceCall(input: {
 
 export function ingestVoiceProviderEvent(
   event: NormalizedVoiceWebhook,
+  provider?: VoiceProviderAdapter | null,
 ): Promise<{
   inserted: boolean;
   duplicate: boolean;
   call: VoiceCall | null;
   sessionId: string | null;
+  dtmf?: {
+    action: string;
+    eventType: string;
+    inputKind: string;
+    digitCount: number;
+    sensitive: boolean;
+    transientEntry: null | {
+      kind: "site" | "reservation" | "pass";
+      value: string;
+    };
+  };
+  transfer?: null | {
+    transferred: boolean;
+    fallback: boolean;
+    reason: string;
+  };
 }>;
 
 export function advanceVoiceIvr(input: {
@@ -112,6 +129,11 @@ export function getVoiceGatewayHealth(): Promise<{
   ivr: {
     active: number;
     expired: number;
+  };
+  dtmf: {
+    inputs24h: number;
+    invalid24h: number;
+    timeouts24h: number;
   };
 }>;
 
