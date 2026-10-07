@@ -190,7 +190,7 @@ Delivered:
 ## Next active build
 **Build 013 — Telephone/SMS Identity, Verification & Staff Re-Authentication**
 
-Status: **QUEUED — NOT STARTED**
+Status: **IMPLEMENTED — PROMOTION PENDING**
 
 ## Operating rule
 - Work primarily on `dev`.
