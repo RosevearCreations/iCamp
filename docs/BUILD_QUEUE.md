@@ -187,10 +187,27 @@ Delivered:
 - advisor-driven composite foreign-key index closure and rollback/privacy verification;
 - exact-tree `dev` and `main` production promotion with all GitHub gates GREEN.
 
-## Next active build
-**Build 013 — Telephone/SMS Identity, Verification & Staff Re-Authentication**
+### Build 013 — Telephone/SMS Identity, Verification & Staff Re-Authentication
+Status: **FULLY PROMOTED — `main` GREEN.**
 
-Status: **IMPLEMENTED — PROMOTION PENDING**
+Delivered:
+- caller ID/SMS sender treated only as routing hints, never authentication;
+- private short-lived guest/staff channel verification challenges;
+- salted scrypt verifiers for guest references, one-time codes and staff channel PINs;
+- guest site/reservation/pass reference plus OTP verification;
+- staff PIN verification and privileged PIN + OTP/recent-session re-authentication;
+- bounded issuance, attempts, expiry, lockout and categorical fraud signals;
+- canonical campground permission re-checking after identity verification;
+- Build 006 privileged-action/audit integration with no secret echo;
+- voice DTMF and structured SMS lookup intents gated behind `verify.identity`;
+- sanitized aggregate verification health in I.T. & Analysis;
+- hosted Supabase migration 0017 with zero Security Advisor findings;
+- exact-tree `dev` and `main` promotion with independent GREEN GitHub gates.
+
+## Next active build
+**Build 014 — Messaging Consent, STOP/START/HELP & Preference Ledger**
+
+Status: **QUEUED — NOT STARTED**
 
 ## Operating rule
 - Work primarily on `dev`.
