@@ -146,6 +146,9 @@ jobs:
       - name: Verify telephone/SMS identity and staff re-authentication lifecycle
         run: npm run identity:verify
 
+      - name: Verify messaging consent, STOP/START/HELP and preference ledger lifecycle
+        run: npm run consent:verify
+
       - name: Re-run migrations to prove idempotent history handling
         run: node scripts/apply-database-migrations.mjs
 
