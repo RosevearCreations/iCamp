@@ -1,6 +1,6 @@
 # Build 011 — Numeric Keypad/DTMF Interaction Engine
 
-Status: **IMPLEMENTED — PROMOTION PENDING**
+Status: **FULLY PROMOTED — `main` PRODUCTION GREEN**
 
 ## Roadmap scope
 
@@ -118,3 +118,33 @@ No external account, phone number, billing setup, regulatory registration or pro
 ## Next build
 
 **Build 012 — SMS/MMS Conversation & Command Gateway**
+
+
+## Production promotion evidence
+
+- exact tested feature head: `9aa1fc61ffb45d272a877e2c498b47366d4e799b`;
+- exact tested implementation tree: `bc3a02442bd4f23b84c217f06af1d1ddfd78955e`;
+- feature PR #35 promoted the exact tested tree to `dev`;
+- `dev` merge SHA: `615e9ee85dc11de6729040ccd53cce1937c8dc70`;
+- independent `dev` push: Verify GREEN, Database GREEN, Secret Scan GREEN, CodeQL GREEN;
+- production PR #36 promoted the exact `dev` tree to `main`;
+- production implementation SHA: `3c310c269c068b11f61306e7954d286133bd8672`;
+- production implementation tree: `bc3a02442bd4f23b84c217f06af1d1ddfd78955e`;
+- independent `main` push: Verify GREEN, Database GREEN, Secret Scan GREEN, CodeQL GREEN.
+
+## Hosted provider verification
+
+Build 011 introduces no new database table or hosted migration.
+
+Hosted iCamp Supabase verification confirmed:
+
+- migrations 0011/0012 and 0013/0014 remain the canonical communications/voice persistence foundation;
+- private communications/IVR tables remain unavailable to `anon` and `authenticated`;
+- provider and IVR evidence remain append-only;
+- raw DTMF test digits are absent from durable provider metadata;
+- Security Advisor reports zero lints;
+- rollback-only verification retained zero synthetic organizations, campgrounds, provider events, calls or IVR events.
+
+## Final manual action
+
+**None.**
