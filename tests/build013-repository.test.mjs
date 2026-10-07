@@ -15,7 +15,7 @@ test("Build 013 defines private channel verification persistence without raw sec
   ]) {
     assert.match(
       migration,
-      new RegExp("create table icamp_private\\\\." + table),
+      new RegExp("create table icamp_private\\." + table),
     );
   }
 
