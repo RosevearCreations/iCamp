@@ -170,3 +170,14 @@ Build 010 adds aggregate voice gateway signals:
 - staff-transfer fallback counts.
 
 The view never exposes phone numbers, provider call references, webhook bodies/signatures, audio, transcripts or DTMF values.
+
+
+## Build 011 DTMF health
+
+The Voice / IVR health panel now adds aggregate keypad activity:
+
+- semantic DTMF inputs in the last 24 hours;
+- invalid DTMF inputs in the last 24 hours;
+- DTMF timeouts in the last 24 hours.
+
+The panel never displays keypad strings, PINs, verification codes, site/reservation/pass entries, provider payloads or webhook bodies.

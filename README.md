@@ -31,6 +31,7 @@ iCamp is a complete campground operations platform covering live campsite/cottag
 - [Secure Media & Document Storage](docs/MEDIA_STORAGE.md)
 - [Omnichannel Communications Foundation](docs/COMMUNICATIONS.md)
 - [Voice & IVR Gateway](docs/VOICE_IVR.md)
+- [Numeric Keypad / DTMF Engine](docs/DTMF.md)
 
 The completed repository/CI foundation is now an **unnumbered pre-implementation baseline**.
 

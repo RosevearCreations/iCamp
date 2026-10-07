@@ -1,3 +1,5 @@
+import type { DtmfInputKind } from "./dtmf.d.mts";
+
 export interface VoiceProviderConfig {
   provider: string;
   mode: "sandbox" | "external";
@@ -15,11 +17,19 @@ export interface NormalizedVoiceWebhook {
     | "call.ringing"
     | "call.answered"
     | "call.completed"
-    | "call.failed";
+    | "call.failed"
+    | "dtmf.input"
+    | "dtmf.timeout";
   eventStatus: string;
   direction: "inbound" | "outbound";
   occurredAt: string;
   sandbox: boolean;
+  dtmf: null | {
+    inputKind: DtmfInputKind;
+    digits: string | null;
+    digitCount: number;
+    sensitive: boolean;
+  };
 }
 
 export function getVoiceProviderConfig(
