@@ -54,6 +54,9 @@ jobs:
       - name: Test
         run: npm test
 
+      - name: Verify telephone/SMS workflow parity harness
+        run: npm run parity:verify
+
       - name: Build
         run: npm run build
 
