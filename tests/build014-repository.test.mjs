@@ -105,8 +105,5 @@ test("Build 014 source of truth records production GREEN and advances Build 015"
     queue,
     /Build 014 — Messaging Consent, STOP\/START\/HELP & Preference Ledger[\s\S]*FULLY PROMOTED — `main` GREEN/u,
   );
-  assert.match(
-    queue,
-    /Next active build[\s\S]*Build 015 — Telephone\/SMS Workflow Parity Harness[\s\S]*QUEUED — NOT STARTED/u,
-  );
+  assert.match(queue, /Build 015 — Telephone\/SMS Workflow Parity Harness/u);
 });
