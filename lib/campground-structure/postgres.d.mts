@@ -39,7 +39,14 @@ export interface CampgroundStructure {
   }>;
 }
 
-export function normalizeSectionSettings(value?: Partial<SectionSettings>): SectionSettings;
+export interface SectionSettingsInput {
+  operatingMode?: string;
+  quietHoursStart?: string | null;
+  quietHoursEnd?: string | null;
+  staffNote?: string;
+}
+
+export function normalizeSectionSettings(value?: SectionSettingsInput): SectionSettings;
 export function listCampgroundStructure(
   userId: string,
   campgroundId: string,
@@ -51,7 +58,7 @@ export function updateCampgroundConfiguration(input: {
   expectedRowVersion: number;
   name: string;
   timezone: string;
-  lifecycleState: LifecycleState;
+  lifecycleState: string;
 }): Promise<{ rowVersion: number }>;
 export function createSection(input: {
   actorUserId: string;
@@ -60,8 +67,8 @@ export function createSection(input: {
   name: string;
   code: string;
   sortOrder: number;
-  lifecycleState?: LifecycleState;
-  settings?: Partial<SectionSettings>;
+  lifecycleState?: string;
+  settings?: SectionSettingsInput;
 }): Promise<unknown>;
 export function updateSection(input: {
   actorUserId: string;
@@ -72,8 +79,8 @@ export function updateSection(input: {
   name: string;
   code: string;
   sortOrder: number;
-  lifecycleState: LifecycleState;
-  settings?: Partial<SectionSettings>;
+  lifecycleState: string;
+  settings?: SectionSettingsInput;
 }): Promise<unknown>;
 export function createSubsection(input: {
   actorUserId: string;
@@ -83,7 +90,7 @@ export function createSubsection(input: {
   name: string;
   code: string;
   sortOrder: number;
-  lifecycleState?: LifecycleState;
+  lifecycleState?: string;
 }): Promise<unknown>;
 export function updateSubsection(input: {
   actorUserId: string;
@@ -94,6 +101,6 @@ export function updateSubsection(input: {
   name: string;
   code: string;
   sortOrder: number;
-  lifecycleState: LifecycleState;
+  lifecycleState: string;
 }): Promise<unknown>;
 export function closeCampgroundStructurePoolForTests(): Promise<void>;
