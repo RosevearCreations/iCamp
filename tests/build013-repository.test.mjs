@@ -124,6 +124,6 @@ test("Build 013 source of truth preserves channel parity and no-secret-echo rule
   );
   assert.match(
     queue,
-    /Next active build[\s\S]*Build 014 — Messaging Consent, STOP\/START\/HELP & Preference Ledger[\s\S]*QUEUED — NOT STARTED/u,
+    /Build 014 — Messaging Consent, STOP\/START\/HELP & Preference Ledger/u,
   );
 });

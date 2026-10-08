@@ -58,6 +58,7 @@ export function startOutboundMessage(input: {
   idempotencyKey: string;
   text: string;
   mediaAssetIds?: string[];
+  messageKind?: "normal" | "help_response" | "consent_confirmation";
   provider: MessagingProviderAdapter;
 }): Promise<{
   message: MessagingMessage;
