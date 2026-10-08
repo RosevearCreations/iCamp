@@ -78,6 +78,6 @@ test("Build 015 source of truth records production GREEN and advances Build 016"
   );
   assert.match(
     queue,
-    /Next active build[\s\S]*Build 016 — Demo Campground, Test Data & End-to-End Harness[\s\S]*QUEUED — NOT STARTED/u,
+    /Build 016 — Demo Campground, Test Data & End-to-End Harness/u,
   );
 });

@@ -28,7 +28,10 @@
     "messaging:verify": "node scripts/verify-messaging-lifecycle.mjs",
     "identity:verify": "node scripts/verify-channel-verification-lifecycle.mjs",
     "consent:verify": "node scripts/verify-messaging-consent-lifecycle.mjs",
-    "parity:verify": "node scripts/verify-workflow-parity.mjs"
+    "parity:verify": "node scripts/verify-workflow-parity.mjs",
+    "demo:seed": "node scripts/seed-demo-campground.mjs",
+    "demo:verify": "node scripts/verify-demo-campground.mjs",
+    "e2e:test": "npm run build && playwright test"
   },
   "dependencies": {
     "next": "16.3.8",
@@ -43,6 +46,7 @@
     "eslint": "^9.0.0",
     "eslint-config-next": "16.3.8",
     "prettier": "^3.0.0",
-    "typescript": "^5.9.0"
+    "typescript": "^5.9.0",
+    "@playwright/test": "1.64.0"
   }
 }
