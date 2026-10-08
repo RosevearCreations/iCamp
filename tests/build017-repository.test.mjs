@@ -98,6 +98,6 @@ test("Build 017 production closeout is recorded and queue advances", async () =>
   assert.match(queue, /Build 018 — Overhead Image Library & Versioning/u);
   assert.match(
     queue,
-    /Build 018 — Overhead Image Library & Versioning[\\s\\S]*QUEUED — NOT STARTED/u,
+    /Build 018 — Overhead Image Library & Versioning[\s\S]*QUEUED — NOT STARTED/u,
   );
 });
