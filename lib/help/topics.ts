@@ -142,6 +142,20 @@ export const helpTopics = {
     ],
     audience: "public",
   },
+  "campground.structure": {
+    id: "campground.structure",
+    slug: "campground-sections-and-subsections",
+    title: "Campground sections and subsections",
+    summary:
+      "Authorized managers can organize a campground into ordered sections and subsections while keeping every change inside the selected property boundary.",
+    details: [
+      "Use sort order to control the stable administrative sequence instead of relying on names.",
+      "Inactive records remain available for history but are clearly separated from active operating structure.",
+      "Section operating settings are bounded administrative metadata and do not replace later booking, access-control or map rules.",
+      "If another manager changes the same record first, refresh before saving again so their newer change is not overwritten.",
+    ],
+    audience: "privileged",
+  },
   "customer.input": {
     id: "customer.input",
     slug: "customer-input-guidance",
