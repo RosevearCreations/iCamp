@@ -27,7 +27,8 @@
     "dtmf:verify": "node scripts/verify-dtmf-lifecycle.mjs",
     "messaging:verify": "node scripts/verify-messaging-lifecycle.mjs",
     "identity:verify": "node scripts/verify-channel-verification-lifecycle.mjs",
-    "consent:verify": "node scripts/verify-messaging-consent-lifecycle.mjs"
+    "consent:verify": "node scripts/verify-messaging-consent-lifecycle.mjs",
+    "parity:verify": "node scripts/verify-workflow-parity.mjs"
   },
   "dependencies": {
     "next": "16.3.8",
