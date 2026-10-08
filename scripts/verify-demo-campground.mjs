@@ -47,7 +47,9 @@ try {
     row.slug !== demoCampgroundCatalogue.campground.slug ||
     row.timezone !== demoCampgroundCatalogue.campground.timezone
   ) {
-    throw new Error("Synthetic demo campground identity does not match fixtures.");
+    throw new Error(
+      "Synthetic demo campground identity does not match fixtures.",
+    );
   }
 
   const sectionCount = await client.query(
