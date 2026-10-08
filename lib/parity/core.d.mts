@@ -1,10 +1,6 @@
 export type WorkflowParityChannel = "ivr" | "sms";
 export type WorkflowSupportLevel =
-  | "full"
-  | "guided"
-  | "secure-link"
-  | "staff-transfer"
-  | "not-applicable";
+  "full" | "guided" | "secure-link" | "staff-transfer" | "not-applicable";
 export type WorkflowAudience = "guest" | "staff" | "management";
 
 export interface WorkflowDefinition {
