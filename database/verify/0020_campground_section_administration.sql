@@ -110,42 +110,43 @@ set sort_order = 5,
     lifecycle_state = 'inactive'
 where id = :'b17_section_id';
 
-do $$
+select set_config('icamp.test.section_id', :'b17_section_id', true);
+
+do $
 declare
-  section_mode text;
-  section_order integer;
-  section_state text;
-  version bigint;
+  row_data record;
 begin
   select
-    settings ->> 'operatingMode',
+    settings ->> 'operatingMode' as section_mode,
     sort_order,
     lifecycle_state,
     row_version
-  into section_mode, section_order, section_state, version
+  into row_data
   from public.campground_sections
-  where id = :'b17_section_id';
+  where id = current_setting('icamp.test.section_id')::uuid;
 
-  if section_mode <> 'quiet' then
-    raise exception 'Expected quiet operating mode, found %', section_mode;
+  if row_data.section_mode <> 'quiet' then
+    raise exception 'Expected quiet operating mode, found %', row_data.section_mode;
   end if;
-  if section_order <> 5 then
-    raise exception 'Expected section sort order 5, found %', section_order;
+  if row_data.sort_order <> 5 then
+    raise exception 'Expected section sort order 5, found %', row_data.sort_order;
   end if;
-  if section_state <> 'inactive' then
-    raise exception 'Expected inactive lifecycle state, found %', section_state;
+  if row_data.lifecycle_state <> 'inactive' then
+    raise exception 'Expected inactive lifecycle state, found %', row_data.lifecycle_state;
   end if;
-  if version < 2 then
-    raise exception 'Expected row-version increment, found %', version;
+  if row_data.row_version < 2 then
+    raise exception 'Expected row-version increment, found %', row_data.row_version;
   end if;
 end
-$$;
+$;
 
 reset role;
 set local role icamp_app;
 select set_config('icamp.user_id', :'b17_front_id', true);
+select set_config('icamp.test.org_id', :'b17_org_id', true);
+select set_config('icamp.test.camp_id', :'b17_camp_id', true);
 
-do $$
+do $
 begin
   begin
     insert into public.campground_sections (
@@ -156,8 +157,8 @@ begin
       sort_order
     )
     values (
-      :'b17_org_id',
-      :'b17_camp_id',
+      current_setting('icamp.test.org_id')::uuid,
+      current_setting('icamp.test.camp_id')::uuid,
       'Denied',
       'DENIED',
       99
@@ -168,7 +169,7 @@ begin
       null;
   end;
 end
-$$;
+$;
 
 reset role;
 rollback;
