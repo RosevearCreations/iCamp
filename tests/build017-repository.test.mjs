@@ -84,7 +84,6 @@ test("Build 017 documents visual-channel fallback and later-build boundaries", a
   assert.match(build, /Web\/PWA/u);
 });
 
-
 test("Build 017 production closeout is recorded and queue advances", async () => {
   const build = await readFile("docs/BUILD_017.md", "utf8");
   const queue = await readFile("docs/BUILD_QUEUE.md", "utf8");
