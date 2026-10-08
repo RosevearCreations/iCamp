@@ -235,19 +235,23 @@ Delivered:
 - no database migration or paid communications provider required;
 - exact-tree `dev` and `main` promotion with independent GREEN GitHub gates.
 
-## Current active build
-**Build 016 — Demo Campground, Test Data & End-to-End Harness**
+### Build 016 — Demo Campground, Test Data & End-to-End Harness
+Status: **FULLY PROMOTED — `main` GREEN.**
 
-Status: **IMPLEMENTED — promotion verification pending.**
-
-Delivered in the implementation branch:
+Delivered:
 - deterministic synthetic organization/campground/section/subsection seed;
 - prototype-only demo sites, cottages and operational assets;
 - production-failing seed guard with explicit non-production opt-in;
 - non-production-only demo catalogue surface;
 - Playwright Chromium browser end-to-end framework;
 - CI database seed verification and browser smoke gates;
-- no production personal data in fixtures.
+- no production personal data in fixtures;
+- exact-tree `dev` and protected `main` promotion with independent GREEN GitHub gates.
+
+## Next active build
+**Build 017 — Campground, Section & Subsection Administration**
+
+Status: **QUEUED — NOT STARTED**
 
 ## Operating rule
 - Work primarily on `dev`.
