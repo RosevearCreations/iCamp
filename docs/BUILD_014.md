@@ -1,6 +1,6 @@
 # Build 014 — Messaging Consent, STOP/START/HELP & Preference Ledger
 
-Status: **IMPLEMENTED — PROMOTION GATES PENDING.**
+Status: **FULLY PROMOTED — `main` GREEN.**
 
 ## Roadmap scope
 
@@ -118,13 +118,44 @@ Build 014 adds:
 
 ## Manual action
 
-**None expected.**
+**None.**
 
 No paid SMS provider, production number or provider-specific compliance service is required for this build.
 
-## Promotion
+## Promotion evidence
 
-Promotion evidence is recorded here only after the exact tested tree has passed `dev`, `main`, hosted Supabase verification and final closeout gates.
+- implementation PR: #47;
+- exact feature head: `e75c24008c77b780f6a931646c5016a541d60002`;
+- feature-head CI `37702001171`: GREEN;
+- feature-head CodeQL `37702001138`: GREEN;
+- feature-head Secret Scan `37702001077`: GREEN;
+- first dev merge: `202b99028a68e34a310a7bf82adbde6677b630f0`, with zero file differences from the tested feature tree;
+- first independent dev CI `37703423375`: GREEN;
+- first independent dev CodeQL `37703423355`: GREEN;
+- first independent dev Secret Scan `37703423347`: GREEN;
+- advisor-index closure PR: #48;
+- exact advisor-fix head: `76a51162fc9b233ee75dfcdd55df564a28fe85d6`;
+- advisor-head CI `37703934487`: GREEN;
+- advisor-head CodeQL `37703934585`: GREEN;
+- advisor-head Secret Scan `37703934588`: GREEN;
+- final dev merge: `6ea0eadfba10c92d3863d5792b273e12728d878e`, with zero file differences from the tested advisor-fix tree;
+- final independent dev CI `37704864177`: GREEN;
+- final independent dev CodeQL `37704864207`: GREEN;
+- final independent dev Secret Scan `37704864175`: GREEN;
+- production promotion PR: #49;
+- production PR CI `37706012432`: GREEN;
+- production PR CodeQL `37706012505`: GREEN;
+- production PR Secret Scan `37706012438`: GREEN;
+- runtime production merge: `328c5939d506953a19d248a9b2a042b9ad621bef`, with zero file differences from the final GREEN dev tree;
+- independent runtime-main CI `37706200147`: GREEN;
+- independent runtime-main CodeQL `37706200138`: GREEN;
+- independent runtime-main Secret Scan `37706200151`: GREEN;
+- hosted Supabase migration `20261007234014 / 0018_messaging_consent_preference_ledger`: applied;
+- hosted Supabase migration `20261007234624 / 0019_communication_compliance_fk_indexes`: applied;
+- hosted Supabase Security Advisor: zero findings;
+- Build 014 foreign-key performance findings: closed; remaining advisor notices are expected low-traffic unused-index INFO only.
+
+The final source-of-truth closeout is promoted through the same protected `dev` → `main` path before Build 014 is reported complete.
 
 ## Next build
 
