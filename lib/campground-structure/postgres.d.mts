@@ -46,7 +46,9 @@ export interface SectionSettingsInput {
   staffNote?: string;
 }
 
-export function normalizeSectionSettings(value?: SectionSettingsInput): SectionSettings;
+export function normalizeSectionSettings(
+  value?: SectionSettingsInput,
+): SectionSettings;
 export function listCampgroundStructure(
   userId: string,
   campgroundId: string,
