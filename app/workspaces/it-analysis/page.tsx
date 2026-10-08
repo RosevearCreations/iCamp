@@ -301,7 +301,9 @@ export default async function ItAnalysisPage() {
             <article className="health-card">
               <span className="health-card__label">Registry</span>
               <strong>{parityHealth.workflows} workflows</strong>
-              <span>{parityHealth.graphicalOnly} explicitly graphical-only</span>
+              <span>
+                {parityHealth.graphicalOnly} explicitly graphical-only
+              </span>
             </article>
             <article className="health-card">
               <span className="health-card__label">Canonical commands</span>
@@ -311,17 +313,23 @@ export default async function ItAnalysisPage() {
             <article className="health-card">
               <span className="health-card__label">IVR / DTMF</span>
               <strong>{parityHealth.byChannel.ivr.guided} guided</strong>
-              <span>{parityHealth.byChannel.ivr["staff-transfer"]} staff-transfer</span>
+              <span>
+                {parityHealth.byChannel.ivr["staff-transfer"]} staff-transfer
+              </span>
             </article>
             <article className="health-card">
               <span className="health-card__label">SMS / MMS</span>
               <strong>{parityHealth.byChannel.sms.guided} guided</strong>
-              <span>{parityHealth.byChannel.sms["secure-link"]} secure-link</span>
+              <span>
+                {parityHealth.byChannel.sms["secure-link"]} secure-link
+              </span>
             </article>
             <article className="health-card">
               <span className="health-card__label">Identity boundary</span>
               <strong>Caller/sender is still only a routing hint</strong>
-              <span>Counts only; no bodies, digits, identities or link tokens</span>
+              <span>
+                Counts only; no bodies, digits, identities or link tokens
+              </span>
             </article>
           </div>
         </section>
