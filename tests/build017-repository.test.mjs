@@ -37,7 +37,10 @@ test("Build 017 migration adds settings and RLS insert policies", async () => {
   );
   assert.match(migration, /add column settings jsonb/u);
   assert.match(migration, /pg_column_size\(settings\) <= 8192/u);
-  assert.match(migration, /grant insert on public\.campground_sections to icamp_app/u);
+  assert.match(
+    migration,
+    /grant insert on public\.campground_sections to icamp_app/u,
+  );
   assert.match(migration, /campground_sections_configuration_insert/u);
   assert.match(migration, /campground_subsections_configuration_insert/u);
   assert.match(migration, /campground\.configuration/u);
@@ -73,10 +76,7 @@ test("Build 017 mutations use permission checks, RLS and audit evidence", async 
 });
 
 test("Build 017 documents visual-channel fallback and later-build boundaries", async () => {
-  const source = await readFile(
-    "docs/CAMPGROUND_STRUCTURE_ADMIN.md",
-    "utf8",
-  );
+  const source = await readFile("docs/CAMPGROUND_STRUCTURE_ADMIN.md", "utf8");
   const build = await readFile("docs/BUILD_017.md", "utf8");
   assert.match(source, /secure-link/u);
   assert.match(source, /Builds 018–031/u);
