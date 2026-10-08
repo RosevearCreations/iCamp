@@ -62,3 +62,22 @@ test("Build 015 source of truth documents graphical exceptions and fallback rule
   assert.match(omnichannel, /Build 015 workflow parity implementation/u);
   assert.match(queue, /Build 015 — Telephone\/SMS Workflow Parity Harness/u);
 });
+
+test("Build 015 source of truth records production GREEN and advances Build 016", async () => {
+  const build = await readFile("docs/BUILD_015.md", "utf8");
+  const queue = await readFile("docs/BUILD_QUEUE.md", "utf8");
+
+  assert.match(build, /FULLY PROMOTED — `main` GREEN/u);
+  assert.match(build, /ef46ada0ec9f8e86b19f13e1a100ea2dbd67c5b8/u);
+  assert.match(build, /37720186468/u);
+  assert.match(build, /37720186454/u);
+  assert.match(build, /37720186440/u);
+  assert.match(
+    queue,
+    /Build 015 — Telephone\/SMS Workflow Parity Harness[\s\S]*FULLY PROMOTED — `main` GREEN/u,
+  );
+  assert.match(
+    queue,
+    /Next active build[\s\S]*Build 016 — Demo Campground, Test Data & End-to-End Harness[\s\S]*QUEUED — NOT STARTED/u,
+  );
+});
