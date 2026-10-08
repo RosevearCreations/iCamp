@@ -12,7 +12,8 @@ import {
 
 export const metadata: Metadata = {
   title: "Demo Campground · iCamp",
-  description: "Synthetic non-production campground fixtures for iCamp testing.",
+  description:
+    "Synthetic non-production campground fixtures for iCamp testing.",
 };
 
 export default function DemoCampgroundPage() {
@@ -38,7 +39,10 @@ export default function DemoCampgroundPage() {
           </div>
         </section>
 
-        <section className="content-panel" aria-labelledby="demo-summary-heading">
+        <section
+          className="content-panel"
+          aria-labelledby="demo-summary-heading"
+        >
           <SectionHeading
             eyebrow="Deterministic fixture set"
             title="A stable campground for repeatable tests"
@@ -70,7 +74,10 @@ export default function DemoCampgroundPage() {
           </div>
         </section>
 
-        <section className="content-panel" aria-labelledby="demo-sections-heading">
+        <section
+          className="content-panel"
+          aria-labelledby="demo-sections-heading"
+        >
           <SectionHeading
             eyebrow="Current canonical seed"
             title="Campground sections and subsections"
@@ -99,7 +106,10 @@ export default function DemoCampgroundPage() {
           </div>
         </section>
 
-        <section className="content-panel" aria-labelledby="demo-safety-heading">
+        <section
+          className="content-panel"
+          aria-labelledby="demo-safety-heading"
+        >
           <SectionHeading
             eyebrow="Safety boundary"
             title="Prototype inventory is intentionally not production schema"
