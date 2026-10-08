@@ -14,3 +14,5 @@ Thumbs.db
 *.key
 *.p12
 *.pfx
+playwright-report/
+test-results/

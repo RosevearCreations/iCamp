@@ -75,6 +75,44 @@ jobs:
           path: npm-audit-full.json
           retention-days: 3
 
+  e2e:
+    name: Browser end-to-end
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      NEXT_PUBLIC_APP_ENV: test
+      ICAMP_APP_ENV: test
+      ICAMP_APP_NAME: iCamp
+      ICAMP_APP_VERSION: 0.1.0
+      ICAMP_BUILD_SHA: ci-build-016
+      ICAMP_RELEASE_ID: ci-build-016
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Use Node.js 24
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24
+
+      - name: Install dependencies
+        run: npm install --ignore-scripts
+
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Run browser end-to-end harness
+        run: npm run e2e:test
+
+      - name: Upload browser failure artifacts
+        if: failure()
+        uses: actions/upload-artifact@v6
+        with:
+          name: playwright-failure
+          path: test-results
+          if-no-files-found: ignore
+          retention-days: 3
+
   database:
     name: Database migrations
     runs-on: ubuntu-latest
@@ -154,6 +192,15 @@ jobs:
 
       - name: Re-run migrations to prove idempotent history handling
         run: node scripts/apply-database-migrations.mjs
+
+      - name: Seed synthetic demo campground
+        run: npm run demo:seed
+        env:
+          ICAMP_APP_ENV: test
+          ICAMP_ALLOW_DEMO_SEED: "true"
+
+      - name: Verify synthetic demo campground
+        run: npm run demo:verify
 
       - name: Show migration history
         run: >-
