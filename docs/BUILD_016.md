@@ -1,6 +1,6 @@
 # Build 016 — Demo Campground, Test Data & End-to-End Harness
 
-Status: **IMPLEMENTED — promotion verification pending.**
+Status: **FULLY PROMOTED — `main` GREEN.**
 
 ## Roadmap scope
 
@@ -87,11 +87,30 @@ Playwright is open source and requires no paid provider.
 
 ## Manual action
 
-**None expected.**
+**None.**
 
 ## Promotion evidence
 
-Pending feature/dev/main GREEN verification.
+- implementation PR: #56;
+- exact tested feature head: `b9244eeadb1416b7617328bcf212ce3c5e45af92`;
+- feature-head CI `37779307817`: GREEN;
+- feature-head CodeQL `37779307972`: GREEN;
+- feature-head Secret Scan `37779307861`: GREEN;
+- dev merge: `723420eb16d5af4f17c09988c348fd14089216f7`, with zero file differences from the tested feature tree;
+- independent dev CI `37779578107`: GREEN;
+- independent dev CodeQL `37779577964`: GREEN;
+- independent dev Secret Scan `37779577920`: GREEN;
+- production promotion PR: #57;
+- production PR CI `37779830099`: GREEN;
+- production PR CodeQL `37779830187`: GREEN;
+- production PR Secret Scan `37779830129`: GREEN;
+- runtime production merge: `a5f54d23cd994fe18a53e07ecbe8868bf8d9c4eb`, with zero file differences from the final GREEN dev tree;
+- independent runtime-main CI `37780078238`: GREEN;
+- independent runtime-main CodeQL `37780078160`: GREEN;
+- independent runtime-main Secret Scan `37780078145`: GREEN.
+
+The final source-of-truth closeout is promoted through the same protected
+`dev` → `main` path before Build 016 is reported complete.
 
 ## Next build
 
