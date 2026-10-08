@@ -55,9 +55,7 @@ export declare function validateDemoCampgroundCatalogue(
   assets: number;
 }>;
 
-export declare function assertDemoSeedAllowed(
-  env?: NodeJS.ProcessEnv,
-): string;
+export declare function assertDemoSeedAllowed(env?: NodeJS.ProcessEnv): string;
 
 export declare const demoCampgroundSummary: Readonly<{
   fixtureVersion: number;
