@@ -96,3 +96,22 @@ test("Build 016 source of truth records test-data privacy and roadmap boundary",
     /Build 016 — Demo Campground, Test Data & End-to-End Harness/u,
   );
 });
+
+test("Build 016 source of truth records production GREEN and advances Build 017", async () => {
+  const build = await readFile("docs/BUILD_016.md", "utf8");
+  const queue = await readFile("docs/BUILD_QUEUE.md", "utf8");
+
+  assert.match(build, /FULLY PROMOTED — `main` GREEN/u);
+  assert.match(build, /a5f54d23cd994fe18a53e07ecbe8868bf8d9c4eb/u);
+  assert.match(build, /37780078238/u);
+  assert.match(build, /37780078160/u);
+  assert.match(build, /37780078145/u);
+  assert.match(
+    queue,
+    /Build 016 — Demo Campground, Test Data & End-to-End Harness[\s\S]*FULLY PROMOTED — `main` GREEN/u,
+  );
+  assert.match(
+    queue,
+    /Next active build[\s\S]*Build 017 — Campground, Section & Subsection Administration[\s\S]*QUEUED — NOT STARTED/u,
+  );
+});
