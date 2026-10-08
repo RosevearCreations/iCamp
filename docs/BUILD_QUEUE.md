@@ -220,8 +220,23 @@ Delivered:
 - advisor-driven compliance-rule foreign-key index closure;
 - exact-tree `dev` and `main` promotion with independent GREEN GitHub gates.
 
+### Build 015 — Telephone/SMS Workflow Parity Harness
+Status: **FULLY PROMOTED — `main` GREEN.**
+
+Delivered:
+- executable Web/PWA, IVR/DTMF and SMS/MMS workflow parity registry;
+- reusable IVR and SMS adapters over canonical domain commands;
+- protected secure-link handoff for unavoidable visual steps;
+- explicit staff-assisted telephone fallback;
+- graphical-only workflow declarations instead of fake keypad equivalents;
+- payment safety boundary that excludes raw card collection from custom IVR/SMS;
+- aggregate workflow-parity health in I.T. & Analysis;
+- automated guest/staff parity and dynamic visual-handoff proof;
+- no database migration or paid communications provider required;
+- exact-tree `dev` and `main` promotion with independent GREEN GitHub gates.
+
 ## Next active build
-**Build 015 — Telephone/SMS Workflow Parity Harness**
+**Build 016 — Demo Campground, Test Data & End-to-End Harness**
 
 Status: **QUEUED — NOT STARTED**
 
