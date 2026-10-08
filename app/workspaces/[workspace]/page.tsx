@@ -101,6 +101,32 @@ export default async function WorkspacePage({
           </section>
         ) : null}
 
+        {workspace.slug === "management" ? (
+          <section
+            className="content-panel"
+            aria-labelledby="campground-structure-heading"
+          >
+            <SectionHeading
+              eyebrow="Campground administration"
+              title="Sections, subsections and property settings"
+              id="campground-structure-heading"
+              helpTopic="campground.structure"
+              trailing={<span className="build-chip">Build 017</span>}
+            />
+            <p>
+              Manage ordered campground sections and subsections, active state,
+              and section-specific operating settings through the protected
+              configuration workflow.
+            </p>
+            <Link
+              className="primary-link primary-link--dark"
+              href="/workspaces/management/campgrounds"
+            >
+              Open campground structure
+            </Link>
+          </section>
+        ) : null}
+
         <section className="content-panel" aria-labelledby="future-heading">
           <SectionHeading
             eyebrow="Purpose of this workspace"
