@@ -30,7 +30,9 @@ test.describe("Build 016 browser end-to-end harness", () => {
     await expect(page.getByText("6 demo assets")).toBeVisible();
   });
 
-  test("public system status remains healthy and client-safe", async ({ page }) => {
+  test("public system status remains healthy and client-safe", async ({
+    page,
+  }) => {
     const response = await page.goto("/status");
 
     expect(response?.ok()).toBe(true);
