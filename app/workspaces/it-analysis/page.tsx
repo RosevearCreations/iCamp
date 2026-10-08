@@ -10,6 +10,7 @@ import { getMessagingConsentHealth } from "@/lib/consent/postgres.mjs";
 import { getOperationalQueueHealth } from "@/lib/jobs/postgres.mjs";
 import { getMediaStorageHealth } from "@/lib/media/postgres.mjs";
 import { getMessagingGatewayHealth } from "@/lib/messaging/postgres.mjs";
+import { getWorkflowParityHealth } from "@/lib/parity/core.mjs";
 import { getSafeItSnapshot } from "@/lib/observability/health";
 import { getChannelVerificationHealth } from "@/lib/verification/postgres.mjs";
 import { getVoiceGatewayHealth } from "@/lib/voice/postgres.mjs";
@@ -27,6 +28,7 @@ export default async function ItAnalysisPage() {
     "/workspaces/it-analysis",
   );
   const snapshot = getSafeItSnapshot();
+  const parityHealth = getWorkflowParityHealth();
   const [
     queueHealth,
     mediaHealth,
@@ -280,6 +282,54 @@ export default async function ItAnalysisPage() {
               <span className="health-card__label">Privacy</span>
               <strong>Bodies and endpoint values excluded</strong>
               <span>Only aggregate consent/preference health is displayed</span>
+            </article>
+          </div>
+        </section>
+
+        <section
+          className="content-panel"
+          aria-labelledby="workflow-parity-health-heading"
+        >
+          <SectionHeading
+            eyebrow="Telephone / SMS parity"
+            title="Workflow parity harness"
+            id="workflow-parity-health-heading"
+            helpTopic="it.analysis"
+            trailing={<span className="build-chip">{parityHealth.status}</span>}
+          />
+          <div className="health-grid">
+            <article className="health-card">
+              <span className="health-card__label">Registry</span>
+              <strong>{parityHealth.workflows} workflows</strong>
+              <span>
+                {parityHealth.graphicalOnly} explicitly graphical-only
+              </span>
+            </article>
+            <article className="health-card">
+              <span className="health-card__label">Canonical commands</span>
+              <strong>{parityHealth.canonicalCommands}</strong>
+              <span>Channel adapters do not duplicate domain rules</span>
+            </article>
+            <article className="health-card">
+              <span className="health-card__label">IVR / DTMF</span>
+              <strong>{parityHealth.byChannel.ivr.guided} guided</strong>
+              <span>
+                {parityHealth.byChannel.ivr["staff-transfer"]} staff-transfer
+              </span>
+            </article>
+            <article className="health-card">
+              <span className="health-card__label">SMS / MMS</span>
+              <strong>{parityHealth.byChannel.sms.guided} guided</strong>
+              <span>
+                {parityHealth.byChannel.sms["secure-link"]} secure-link
+              </span>
+            </article>
+            <article className="health-card">
+              <span className="health-card__label">Identity boundary</span>
+              <strong>Caller/sender is still only a routing hint</strong>
+              <span>
+                Counts only; no bodies, digits, identities or link tokens
+              </span>
             </article>
           </div>
         </section>
