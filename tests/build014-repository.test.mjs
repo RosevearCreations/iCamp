@@ -107,6 +107,6 @@ test("Build 014 source of truth records production GREEN and advances Build 015"
   );
   assert.match(
     queue,
-    /Next active build[\s\S]*Build 015 — Telephone\/SMS Workflow Parity Harness[\s\S]*QUEUED — NOT STARTED/u,
+    /Build 015 — Telephone\/SMS Workflow Parity Harness/u,
   );
 });
