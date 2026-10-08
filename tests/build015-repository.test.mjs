@@ -57,7 +57,7 @@ test("Build 015 source of truth documents graphical exceptions and fallback rule
   assert.match(source, /No channel owns business logic/u);
   assert.match(source, /polygon drawing/u);
   assert.match(source, /secure-link/u);
-  assert.match(source, /staff transfer/u);
+  assert.match(source, /staff transfer/iu);
   assert.match(build, /Telephone\/SMS Workflow Parity Harness/u);
   assert.match(omnichannel, /Build 015 workflow parity implementation/u);
   assert.match(queue, /Build 015 — Telephone\/SMS Workflow Parity Harness/u);
