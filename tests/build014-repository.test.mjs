@@ -85,3 +85,23 @@ test("Build 014 closes compliance-rule foreign-key index advisories", async () =
   assert.match(migration, /communication_compliance_rules_scope_idx/u);
   assert.match(migration, /organization_id,[\s\S]*campground_id/u);
 });
+
+
+test("Build 014 source of truth records production GREEN and advances Build 015", async () => {
+  const build = await readFile("docs/BUILD_014.md", "utf8");
+  const queue = await readFile("docs/BUILD_QUEUE.md", "utf8");
+
+  assert.match(build, /FULLY PROMOTED — `main` GREEN/u);
+  assert.match(build, /328c5939d506953a19d248a9b2a042b9ad621bef/u);
+  assert.match(build, /37706200147/u);
+  assert.match(build, /20261007234014 \/ 0018_messaging_consent_preference_ledger/u);
+  assert.match(build, /20261007234624 \/ 0019_communication_compliance_fk_indexes/u);
+  assert.match(
+    queue,
+    /Build 014 — Messaging Consent, STOP\/START\/HELP & Preference Ledger[\s\S]*FULLY PROMOTED — `main` GREEN/u,
+  );
+  assert.match(
+    queue,
+    /Next active build[\s\S]*Build 015 — Telephone\/SMS Workflow Parity Harness[\s\S]*QUEUED — NOT STARTED/u,
+  );
+});
