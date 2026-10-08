@@ -25,7 +25,8 @@ export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Campground structure · iCamp",
-  description: "Manage campground sections, subsections, ordering and settings.",
+  description:
+    "Manage campground sections, subsections, ordering and settings.",
 };
 
 function LifecycleSelect({
@@ -102,7 +103,9 @@ export default async function CampgroundAdministrationPage({
           </p>
         </section>
 
-        {params.saved ? <div className={styles.notice}>{params.saved}</div> : null}
+        {params.saved ? (
+          <div className={styles.notice}>{params.saved}</div>
+        ) : null}
 
         <section className="content-panel" aria-labelledby="property-heading">
           <SectionHeading
