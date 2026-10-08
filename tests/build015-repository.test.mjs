@@ -30,10 +30,7 @@ test("Build 015 automated parity proof is wired into CI", async () => {
   const packageJson = await readFile("package.json", "utf8");
   const proof = await readFile("scripts/verify-workflow-parity.mjs", "utf8");
 
-  assert.match(
-    workflow,
-    /Verify telephone\/SMS workflow parity harness/u,
-  );
+  assert.match(workflow, /Verify telephone\/SMS workflow parity harness/u);
   assert.match(workflow, /npm run parity:verify/u);
   assert.match(packageJson, /"parity:verify"/u);
   assert.match(proof, /reservation\.search/u);
