@@ -97,7 +97,7 @@ test("Build 016 source of truth records test-data privacy and roadmap boundary",
   );
 });
 
-test("Build 016 source of truth records production GREEN and advances Build 017", async () => {
+test("Build 016 source of truth remains completed after later queue advances", async () => {
   const build = await readFile("docs/BUILD_016.md", "utf8");
   const queue = await readFile("docs/BUILD_QUEUE.md", "utf8");
 
@@ -112,6 +112,10 @@ test("Build 016 source of truth records production GREEN and advances Build 017"
   );
   assert.match(
     queue,
-    /Next active build[\s\S]*Build 017 — Campground, Section & Subsection Administration[\s\S]*QUEUED — NOT STARTED/u,
+    /Build 017 — Campground, Section & Subsection Administration[\s\S]*FULLY PROMOTED — `main` GREEN/u,
+  );
+  assert.match(
+    queue,
+    /Next active build[\s\S]*Build 018 — Overhead Image Library & Versioning[\s\S]*QUEUED — NOT STARTED/u,
   );
 });

@@ -248,8 +248,22 @@ Delivered:
 - no production personal data in fixtures;
 - exact-tree `dev` and protected `main` promotion with independent GREEN GitHub gates.
 
+### Build 017 — Campground, Section & Subsection Administration
+Status: **FULLY PROMOTED — `main` GREEN.**
+
+Delivered:
+- protected campground, section and subsection administration;
+- multiple ordered sections and subsections with active/inactive lifecycle;
+- bounded section-specific operating settings;
+- optimistic row-version conflict protection;
+- campground-scoped permission checks and PostgreSQL RLS create/update boundaries;
+- append-oriented audit evidence;
+- management workspace integration with contextual help and freshness controls;
+- Web/PWA visual editor with secure-link/staff-assisted IVR/SMS fallback;
+- exact-tree `dev` and protected `main` promotion with independent GREEN GitHub gates.
+
 ## Next active build
-**Build 017 — Campground, Section & Subsection Administration**
+**Build 018 — Overhead Image Library & Versioning**
 
 Status: **QUEUED — NOT STARTED**
 
