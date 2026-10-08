@@ -3,6 +3,7 @@ import Link from "next/link";
 import { AppShell } from "@/components/app-shell";
 import { ChannelSupportSummary } from "@/components/channel-support";
 import { SectionHeading } from "@/components/section-heading";
+import { publicConfig } from "@/lib/config/public";
 import { shellChannelSupport } from "@/lib/channels";
 import { workspaces } from "@/lib/workspaces";
 
@@ -25,6 +26,11 @@ export default function HomePage() {
             <a className="secondary-link" href="#workspaces">
               View all workspaces
             </a>
+            {publicConfig.environment !== "production" ? (
+              <Link className="secondary-link" href="/demo">
+                Open demo campground
+              </Link>
+            ) : null}
           </div>
         </section>
 
