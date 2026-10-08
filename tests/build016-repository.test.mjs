@@ -91,5 +91,8 @@ test("Build 016 source of truth records test-data privacy and roadmap boundary",
   assert.match(build, /no production personal data/iu);
   assert.match(source, /Builds 024–030/u);
   assert.match(source, /ICAMP_ALLOW_DEMO_SEED=true/u);
-  assert.match(queue, /Build 016 — Demo Campground, Test Data & End-to-End Harness/u);
+  assert.match(
+    queue,
+    /Build 016 — Demo Campground, Test Data & End-to-End Harness/u,
+  );
 });
