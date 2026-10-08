@@ -88,7 +88,7 @@ test("Build 017 production closeout is recorded and queue advances", async () =>
   const build = await readFile("docs/BUILD_017.md", "utf8");
   const queue = await readFile("docs/BUILD_QUEUE.md", "utf8");
 
-  assert.match(build, /FULLY PROMOTED — \`main\` GREEN/u);
+  assert.match(build, /FULLY PROMOTED — `main` GREEN/u);
   assert.match(build, /1f4d619d40929dca6bce25f53bce1ca92b1bbe98/u);
   assert.match(build, /37822500643/u);
   assert.match(
