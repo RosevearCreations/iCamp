@@ -327,3 +327,18 @@ Build 014 makes the Build 009 purpose/consent model enforceable for SMS/MMS:
 - the append-only preference ledger excludes raw message bodies and endpoint values.
 
 This provides technical CASL readiness without treating application configuration as legal certification.
+
+
+## Build 015 workflow parity implementation
+
+Build 015 makes the channel-parity contract executable rather than advisory:
+
+- a validated workflow registry declares Web/PWA, IVR/DTMF and SMS/MMS support for guest, staff, management and graphical workflow families;
+- IVR and SMS adapters call a supplied canonical domain command rather than duplicating business rules;
+- protected or unavoidable visual steps use a provider-neutral secure-link handoff;
+- unsafe or unsuitable telephone automation uses a provider-neutral staff-transfer fallback;
+- graphical-only tasks such as polygon drawing are explicitly marked instead of being represented as fake keypad equivalents;
+- raw payment-card collection remains outside the custom iCamp IVR/SMS conversation;
+- automated proof compares key guest and staff workflows across IVR and SMS and fails if the registry becomes accidentally Web-only.
+
+Future product builds must extend the parity matrix whenever they add a user-visible operational workflow.
