@@ -112,7 +112,7 @@ where id = :'b17_section_id';
 
 select set_config('icamp.test.section_id', :'b17_section_id', true);
 
-do $
+do $build017$
 declare
   row_data record;
 begin
@@ -138,7 +138,7 @@ begin
     raise exception 'Expected row-version increment, found %', row_data.row_version;
   end if;
 end
-$;
+$build017$;
 
 reset role;
 set local role icamp_app;
@@ -146,7 +146,7 @@ select set_config('icamp.user_id', :'b17_front_id', true);
 select set_config('icamp.test.org_id', :'b17_org_id', true);
 select set_config('icamp.test.camp_id', :'b17_camp_id', true);
 
-do $
+do $build017_denied$
 begin
   begin
     insert into public.campground_sections (
@@ -169,7 +169,7 @@ begin
       null;
   end;
 end
-$;
+$build017_denied$;
 
 reset role;
 rollback;
