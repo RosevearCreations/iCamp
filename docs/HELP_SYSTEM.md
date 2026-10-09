@@ -61,3 +61,5 @@ Every applicable future UI build must:
 - update help when the workflow changes.
 
 A section without contextual help is considered incomplete unless explicitly documented as not requiring user guidance.
+
+The circular ⓘ control is a standing acceptance requirement across the entire campground platform, including map, booking, maintenance, safety, employee, equipment, finance, reporting and platform-administration screens.
