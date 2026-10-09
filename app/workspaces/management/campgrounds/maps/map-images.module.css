@@ -1,0 +1,146 @@
+.selector,
+.uploadGrid,
+.actionGrid {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.selector {
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+}
+
+.uploadGrid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.actionGrid {
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+}
+
+.field {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.field span {
+  color: var(--muted);
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.field input,
+.field select,
+.field textarea {
+  width: 100%;
+  min-height: 2.75rem;
+  padding: 0.65rem 0.75rem;
+  border: 1px solid var(--line);
+  border-radius: 0.7rem;
+  background: #fff;
+  color: var(--ink);
+  font: inherit;
+}
+
+.field textarea {
+  min-height: 5.5rem;
+  resize: vertical;
+}
+
+.full {
+  grid-column: 1 / -1;
+}
+
+.notice,
+.storageStatus {
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--line);
+  border-radius: 0.8rem;
+  background: var(--surface-soft);
+}
+
+.notice {
+  color: var(--brand);
+  font-weight: 700;
+}
+
+.versionGrid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.versionCard {
+  display: grid;
+  gap: 1rem;
+  padding: 1rem;
+  border: 1px solid var(--line);
+  border-radius: 0.9rem;
+  background: var(--surface-soft);
+}
+
+.versionHeader {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+  align-items: flex-start;
+}
+
+.versionHeader h3 {
+  margin: 0;
+  color: var(--brand);
+}
+
+.badges {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.badge {
+  padding: 0.25rem 0.55rem;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: #fff;
+  color: var(--brand);
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+
+.meta {
+  display: grid;
+  gap: 0.35rem;
+  margin: 0;
+  grid-template-columns: auto 1fr;
+}
+
+.meta dt {
+  color: var(--muted);
+  font-weight: 800;
+}
+
+.meta dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.actions {
+  display: grid;
+  gap: 0.75rem;
+}
+
+@media (max-width: 64rem) {
+  .versionGrid,
+  .uploadGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 42rem) {
+  .selector,
+  .actionGrid {
+    grid-template-columns: 1fr;
+  }
+}

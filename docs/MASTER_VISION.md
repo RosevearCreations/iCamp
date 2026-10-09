@@ -4,6 +4,8 @@
 
 iCamp is a complete campground operating platform for phones, tablets, laptops and desktop computers. It is designed to run the public camper experience and the internal campground business from one authoritative system.
 
+The commercial model is a **hosted multi-tenant campground SaaS platform**: the iCamp platform owner administers the service, while each subscribing campground receives an isolated operational tenant/property. A campground can use the system as its complete day-to-day application without seeing another campground's data. Monthly plan/billing entitlements and scale tiers are provider-neutral so capacity can move from free/development tiers to paid infrastructure without redesigning campground data.
+
 iCamp is not only a reservation application. It combines:
 - live campsite and cottage booking;
 - a virtually realistic overhead campground map;
@@ -11,7 +13,7 @@ iCamp is not only a reservation application. It combines:
 - front desk and guest services;
 - visitor and vehicle registration;
 - gate/access security;
-- maintenance, inspections and recurring upkeep;
+- maintenance, inspections, recurring upkeep and equipment/fleet service history;
 - seasonal/yearly site administration;
 - permanent-unit/cottage-style ownership transfers;
 - events, tickets and passes;
@@ -19,9 +21,9 @@ iCamp is not only a reservation application. It combines:
 - waterfront, dock, boat and launch operations;
 - rentals;
 - campground store, POS, pickup and delivery;
-- staff, scheduling and timekeeping;
+- staff, employment administration, scheduling, timekeeping, qualifications and occupational safety tracking;
 - vendors, contracts and recurring services;
-- accounting, costs, profits/losses and management reporting;
+- advanced accounting, job/service costing, tax worksheets, costs, profits/losses and management reporting;
 - safety rules, incidents, acknowledgements and enforcement.
 
 The public experience should remain simple even though the management system behind it is comprehensive.

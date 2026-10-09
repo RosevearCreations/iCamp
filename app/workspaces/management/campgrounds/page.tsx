@@ -475,6 +475,28 @@ export default async function CampgroundAdministrationPage({
           </form>
         </section>
 
+        <section className="content-panel" aria-labelledby="map-images-heading">
+          <SectionHeading
+            eyebrow="Campground map"
+            title="Overhead image library"
+            id="map-images-heading"
+            helpTopic="campground.map.images"
+            trailing={<span className="build-chip">Build 018</span>}
+          />
+          <p>
+            Upload and version overhead, drone or site-plan imagery before
+            plotting the campground map.
+          </p>
+          <Link
+            className="primary-link primary-link--dark"
+            href={`/workspaces/management/campgrounds/maps?campground=${encodeURIComponent(
+              structure.campground.id,
+            )}`}
+          >
+            Open overhead image library
+          </Link>
+        </section>
+
         <section className="content-panel" aria-labelledby="freshness-heading">
           <SectionHeading
             eyebrow="Administrative tracking"

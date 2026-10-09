@@ -142,6 +142,20 @@ export const helpTopics = {
     ],
     audience: "public",
   },
+  "campground.map.images": {
+    id: "campground.map.images",
+    slug: "campground-overhead-image-library",
+    title: "Campground overhead image library",
+    summary:
+      "Authorized managers can upload sanitized overhead/drone/site-plan images, keep a version history, select the active editing image and deliberately publish a chosen version.",
+    details: [
+      "Use JPEG, PNG or WebP source images; animated imagery is intentionally rejected.",
+      "Common EXIF/XMP/text metadata is removed before storage, while original pixel dimensions and a checksum are recorded for map-coordinate stability.",
+      "Making a version active changes the image used for map editing; publishing is a separate audited privileged action.",
+      "Build 018 stores image versions only. Polygon geometry, layers and public interactive map behavior arrive in later map builds.",
+    ],
+    audience: "privileged",
+  },
   "campground.structure": {
     id: "campground.structure",
     slug: "campground-sections-and-subsections",

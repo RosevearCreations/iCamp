@@ -23,6 +23,7 @@ export interface SupabaseStorageAdapter {
   provider: "supabase";
   getPublicUrl(input: StorageObjectInput): string;
   uploadValidatedObject(input: ValidatedUploadInput): Promise<unknown>;
+  deleteObject(input: StorageObjectInput): Promise<unknown>;
   createSignedReadUrl(input: SignedReadInput): Promise<{
     url: string;
     expiresIn: number;
