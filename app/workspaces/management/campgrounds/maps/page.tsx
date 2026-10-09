@@ -196,7 +196,10 @@ export default async function CampgroundMapImageLibraryPage({
           </form>
         </section>
 
-        <section className="content-panel" aria-labelledby="coordinates-heading">
+        <section
+          className="content-panel"
+          aria-labelledby="coordinates-heading"
+        >
           <SectionHeading
             eyebrow="Map workspace"
             title="Zoom/Pan Coordinate Engine"
