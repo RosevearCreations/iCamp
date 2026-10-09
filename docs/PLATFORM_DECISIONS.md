@@ -6,11 +6,11 @@ iCamp remains provider-portable. Business rules live in the application and cano
 ## Locked now
 
 ### Application hosting
-**Decision: Next.js on Vercel for the current hosted application.**
+**Decision: keep GitHub `main` as the production/release source now; use Next.js on Vercel as the preferred first hosted runtime when an iCamp web deployment is intentionally provisioned.**
 
-Reason: the repository is already Next.js, Vercel provides the lowest-friction preview/production path, and no iCamp domain logic depends on Vercel-only storage or data primitives.
+Build 020 does not create another Vercel project. This avoids consuming shared Hobby deployment storage during rough-sketch development while preserving the lowest-friction Next.js deployment path when we want a continuously hosted interface.
 
-Scale path: move Node hosting to another compatible platform or containers without redesigning campground data.
+Scale path: keep the hosting adapter replaceable so the Node application can move to another compatible platform or containers without redesigning campground data.
 
 ### Database
 **Decision: PostgreSQL is canonical; Supabase is the current hosted PostgreSQL development/early-production provider.**

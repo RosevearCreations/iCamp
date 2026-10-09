@@ -59,13 +59,13 @@ test("Build 020 records free-first portable platform decisions", async () => {
   assert.match(decisions, /multi-tenant iCamp application/u);
 });
 
-test("Build 020 remains unpromoted until independent gates pass", async () => {
+test("Build 020 is fully promoted and advances the queue", async () => {
   const build = await readFile("docs/BUILD_020.md", "utf8");
   const queue = await readFile("docs/BUILD_QUEUE.md", "utf8");
 
-  assert.match(build, /IN DEVELOPMENT/u);
+  assert.match(build, /FULLY PROMOTED — `main` GREEN/u);
   assert.match(
     queue,
-    /Next active build[\s\S]*Build 020 — Polygon Plotter Core[\s\S]*QUEUED — NOT STARTED/u,
+    /Build 020 — Polygon Plotter Core[\s\S]*FULLY PROMOTED — `main` GREEN[\s\S]*Next active build[\s\S]*Build 021 — Advanced Polygon Editing[\s\S]*QUEUED — NOT STARTED/u,
   );
 });
