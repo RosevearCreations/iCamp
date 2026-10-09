@@ -78,6 +78,7 @@ export default async function CampgroundMapImageLibraryPage({
   const storage = getMediaStorageConfig();
   const uploadReady = Boolean(storage.projectUrl && storage.secretKey);
   const canPublish = selected.permissions.includes("campground.map.publish");
+  const activeVersion = versions.find((version) => version.isActive) ?? null;
 
   return (
     <AppShell>
@@ -193,6 +194,39 @@ export default async function CampgroundMapImageLibraryPage({
               </button>
             </div>
           </form>
+        </section>
+
+        <section className="content-panel" aria-labelledby="coordinates-heading">
+          <SectionHeading
+            eyebrow="Map workspace"
+            title="Zoom/Pan Coordinate Engine"
+            id="coordinates-heading"
+            helpTopic="campground.map.coordinates"
+            trailing={<span className="build-chip">Build 019</span>}
+          />
+          {activeVersion ? (
+            <>
+              <p>
+                Inspect version {activeVersion.versionNumber} through the
+                canonical source-image and normalized coordinate transform
+                before polygon plotting begins.
+              </p>
+              <Link
+                className="primary-link primary-link--dark"
+                href={
+                  "/workspaces/management/campgrounds/maps/coordinate-engine?campground=" +
+                  encodeURIComponent(selected.campgroundId)
+                }
+              >
+                Open coordinate engine
+              </Link>
+            </>
+          ) : (
+            <p>
+              Activate an overhead image version before opening the coordinate
+              engine.
+            </p>
+          )}
         </section>
 
         <section className="content-panel" aria-labelledby="versions-heading">
