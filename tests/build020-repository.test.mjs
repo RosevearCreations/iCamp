@@ -11,7 +11,10 @@ test("Build 020 persists polygons against an exact map image version", async () 
 
   assert.match(migration, /campground_map_polygons/u);
   assert.match(migration, /map_image_version_id/u);
-  assert.match(migration, /jsonb_array_length\(geometry -> 'vertices'\) between 3 and 256/u);
+  assert.match(
+    migration,
+    /jsonb_array_length\(geometry -> 'vertices'\) between 3 and 256/u,
+  );
   assert.match(postgres, /validateStoredMapPolygon/u);
   assert.match(postgres, /has_campground_permission/u);
   assert.match(postgres, /row_version/u);
