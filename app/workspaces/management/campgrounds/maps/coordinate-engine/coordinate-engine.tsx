@@ -19,9 +19,19 @@ import {
   viewportPointToImage,
   viewportPointToNormalized,
   zoomMapAtViewportPoint,
+  type MapPoint,
   type MapViewState,
 } from "@/lib/map-coordinates/transform.mjs";
+import {
+  addPolygonVertex,
+  createStoredMapPolygon,
+  deletePolygonVertex,
+  movePolygonVertex,
+  validateMapPolygonVertices,
+  type StoredMapPolygon,
+} from "@/lib/map-polygons/geometry.mjs";
 
+import { saveMapPolygonAction } from "./actions";
 import styles from "./coordinate-engine.module.css";
 
 interface PointerReadout {
@@ -39,29 +49,52 @@ interface DragState {
   panY: number;
 }
 
-const INITIAL_VIEW: MapViewState = {
-  zoom: 1,
-  panX: 0,
-  panY: 0,
-};
+interface VertexDragState {
+  pointerId: number;
+  index: number;
+}
+
+export interface MapPolygonRecord {
+  id: string;
+  label: string;
+  geometry: StoredMapPolygon;
+  rowVersion: number;
+}
+
+const INITIAL_VIEW: MapViewState = { zoom: 1, panX: 0, panY: 0 };
 
 function formatCoordinate(value: number, digits = 2) {
   return value.toFixed(digits);
 }
 
+function sourcePoints(polygon: MapPolygonRecord) {
+  return polygon.geometry.vertices.map((vertex) => vertex.image);
+}
+
+function pointsAttribute(points: readonly MapPoint[]) {
+  return points.map((point) => point.x + "," + point.y).join(" ");
+}
+
 export function CoordinateEngine({
+  campgroundId,
+  mapImageVersionId,
   mediaAssetId,
   label,
   sourceWidth,
   sourceHeight,
+  initialPolygons,
 }: Readonly<{
+  campgroundId: string;
+  mapImageVersionId: string;
   mediaAssetId: string;
   label: string;
   sourceWidth: number;
   sourceHeight: number;
+  initialPolygons: MapPolygonRecord[];
 }>) {
   const viewportRef = useRef<HTMLDivElement | null>(null);
   const dragRef = useRef<DragState | null>(null);
+  const vertexDragRef = useRef<VertexDragState | null>(null);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [imageFailed, setImageFailed] = useState(false);
   const [view, setView] = useState<MapViewState>(INITIAL_VIEW);
@@ -69,34 +102,40 @@ export function CoordinateEngine({
   const [devicePixelRatio, setDevicePixelRatio] = useState(1);
   const [pointer, setPointer] = useState<PointerReadout | null>(null);
   const [dragging, setDragging] = useState(false);
+  const [mode, setMode] = useState<"pan" | "draw" | "edit">("pan");
+  const [selectedId, setSelectedId] = useState<string | null>(
+    initialPolygons[0]?.id ?? null,
+  );
+  const selectedPolygon =
+    initialPolygons.find((polygon) => polygon.id === selectedId) ?? null;
+  const [draft, setDraft] = useState<MapPoint[]>(
+    selectedPolygon ? sourcePoints(selectedPolygon) : [],
+  );
+  const [closed, setClosed] = useState(Boolean(selectedPolygon));
+  const [polygonLabel, setPolygonLabel] = useState(
+    selectedPolygon?.label ?? "New polygon",
+  );
+  const [selectedVertex, setSelectedVertex] = useState<number | null>(null);
 
   useEffect(() => {
     let active = true;
-
     async function load() {
       try {
         const response = await fetch(
           "/api/media/" + encodeURIComponent(mediaAssetId) + "/access",
           { cache: "no-store" },
         );
-        if (!response.ok) {
-          throw new Error("Map image access failed.");
-        }
+        if (!response.ok) throw new Error("Map image access failed.");
         const payload = (await response.json()) as { url?: string };
-        if (!payload.url) {
-          throw new Error("Map image URL is unavailable.");
-        }
+        if (!payload.url) throw new Error("Map image URL is unavailable.");
         if (active) {
           setImageUrl(payload.url);
           setImageFailed(false);
         }
       } catch {
-        if (active) {
-          setImageFailed(true);
-        }
+        if (active) setImageFailed(true);
       }
     }
-
     void load();
     return () => {
       active = false;
@@ -105,10 +144,7 @@ export function CoordinateEngine({
 
   useEffect(() => {
     const element = viewportRef.current;
-    if (!element) {
-      return;
-    }
-
+    if (!element) return;
     const measure = () => {
       const rect = element.getBoundingClientRect();
       setViewport({
@@ -117,12 +153,10 @@ export function CoordinateEngine({
       });
       setDevicePixelRatio(Math.max(0.5, window.devicePixelRatio || 1));
     };
-
     measure();
     const observer = new ResizeObserver(measure);
     observer.observe(element);
     window.addEventListener("resize", measure);
-
     return () => {
       observer.disconnect();
       window.removeEventListener("resize", measure);
@@ -137,29 +171,16 @@ export function CoordinateEngine({
       viewportHeight: viewport.height,
       devicePixelRatio,
     }),
-    [
-      sourceHeight,
-      sourceWidth,
-      viewport.height,
-      viewport.width,
-      devicePixelRatio,
-    ],
+    [sourceHeight, sourceWidth, viewport.height, viewport.width, devicePixelRatio],
   );
-
   const constrainedView = useMemo(
     () => constrainMapPan(view, dimensions),
     [dimensions, view],
   );
-
   const transform = useMemo(
-    () =>
-      createMapViewportTransform({
-        ...dimensions,
-        ...constrainedView,
-      }),
+    () => createMapViewportTransform({ ...dimensions, ...constrainedView }),
     [constrainedView, dimensions],
   );
-
   const centerMarker = useMemo(
     () =>
       imagePointToViewport(
@@ -168,16 +189,25 @@ export function CoordinateEngine({
       ),
     [sourceHeight, sourceWidth, transform],
   );
+  const validation = useMemo(
+    () => validateMapPolygonVertices(draft, sourceWidth, sourceHeight),
+    [draft, sourceHeight, sourceWidth],
+  );
+  const storedGeometry = useMemo(() => {
+    if (!closed || !validation.valid) return null;
+    return createStoredMapPolygon(draft, sourceWidth, sourceHeight);
+  }, [closed, draft, sourceHeight, sourceWidth, validation.valid]);
 
   function viewportPoint(clientX: number, clientY: number) {
     const rect = viewportRef.current?.getBoundingClientRect();
-    if (!rect) {
-      return { x: 0, y: 0 };
-    }
-    return {
-      x: clientX - rect.left,
-      y: clientY - rect.top,
-    };
+    if (!rect) return { x: 0, y: 0 };
+    return { x: clientX - rect.left, y: clientY - rect.top };
+  }
+
+  function imagePoint(clientX: number, clientY: number) {
+    return viewportPointToImage(viewportPoint(clientX, clientY), transform, {
+      clampToImage: true,
+    });
   }
 
   function updatePointer(clientX: number, clientY: number) {
@@ -210,10 +240,7 @@ export function CoordinateEngine({
   }
 
   function zoomAtCenter(factor: number) {
-    const anchor = {
-      x: viewport.width / 2,
-      y: viewport.height / 2,
-    };
+    const anchor = { x: viewport.width / 2, y: viewport.height / 2 };
     setView((current) => {
       const bounded = constrainMapPan(current, dimensions);
       return zoomMapAtViewportPoint(
@@ -246,7 +273,19 @@ export function CoordinateEngine({
   }
 
   function handlePointerDown(event: ReactPointerEvent<HTMLDivElement>) {
-    if (event.button !== 0) {
+    if (event.button !== 0) return;
+    if (mode === "draw") {
+      const normalized = viewportPointToNormalized(
+        viewportPoint(event.clientX, event.clientY),
+        transform,
+      );
+      if (normalized) {
+        setDraft((current) => [
+          ...current,
+          imagePoint(event.clientX, event.clientY),
+        ]);
+        setClosed(false);
+      }
       return;
     }
     event.currentTarget.setPointerCapture(event.pointerId);
@@ -262,11 +301,19 @@ export function CoordinateEngine({
 
   function handlePointerMove(event: ReactPointerEvent<HTMLDivElement>) {
     updatePointer(event.clientX, event.clientY);
-    const drag = dragRef.current;
-    if (!drag || drag.pointerId !== event.pointerId) {
+    const vertexDrag = vertexDragRef.current;
+    if (vertexDrag?.pointerId === event.pointerId) {
+      setDraft((current) =>
+        movePolygonVertex(
+          current,
+          vertexDrag.index,
+          imagePoint(event.clientX, event.clientY),
+        ),
+      );
       return;
     }
-
+    const drag = dragRef.current;
+    if (!drag || drag.pointerId !== event.pointerId) return;
     setView((current) =>
       constrainMapPan(
         {
@@ -280,6 +327,9 @@ export function CoordinateEngine({
   }
 
   function endDrag(event: ReactPointerEvent<HTMLDivElement>) {
+    if (vertexDragRef.current?.pointerId === event.pointerId) {
+      vertexDragRef.current = null;
+    }
     if (dragRef.current?.pointerId === event.pointerId) {
       dragRef.current = null;
       setDragging(false);
@@ -287,6 +337,18 @@ export function CoordinateEngine({
         event.currentTarget.releasePointerCapture(event.pointerId);
       }
     }
+  }
+
+  function startVertexDrag(
+    event: ReactPointerEvent<SVGCircleElement>,
+    index: number,
+  ) {
+    if (mode !== "edit") return;
+    event.preventDefault();
+    event.stopPropagation();
+    event.currentTarget.setPointerCapture(event.pointerId);
+    vertexDragRef.current = { pointerId: event.pointerId, index };
+    setSelectedVertex(index);
   }
 
   function handleKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
@@ -327,13 +389,92 @@ export function CoordinateEngine({
     }
   }
 
+  function choosePolygon(polygon: MapPolygonRecord) {
+    setSelectedId(polygon.id);
+    setDraft(sourcePoints(polygon));
+    setPolygonLabel(polygon.label);
+    setClosed(true);
+    setSelectedVertex(null);
+    setMode("edit");
+  }
+
+  function newPolygon() {
+    setSelectedId(null);
+    setDraft([]);
+    setPolygonLabel("New polygon");
+    setClosed(false);
+    setSelectedVertex(null);
+    setMode("draw");
+  }
+
+  function closeShape() {
+    if (validation.valid) {
+      setClosed(true);
+      setMode("edit");
+      setSelectedVertex(0);
+    }
+  }
+
+  function addVertexAfterSelected() {
+    if (!closed || draft.length < 2) return;
+    const index = selectedVertex ?? 0;
+    const next = draft[(index + 1) % draft.length];
+    const current = draft[index];
+    const midpoint = {
+      x: (current.x + next.x) / 2,
+      y: (current.y + next.y) / 2,
+    };
+    setDraft((points) => addPolygonVertex(points, index, midpoint));
+    setSelectedVertex(index + 1);
+  }
+
+  function deleteSelectedVertex() {
+    if (selectedVertex === null || draft.length <= 3) return;
+    setDraft((points) => deletePolygonVertex(points, selectedVertex));
+    setSelectedVertex((current) =>
+      current === null ? null : Math.min(current, draft.length - 2),
+    );
+  }
+
   const svgTransform = affineMatrixToSvg(transform.cssMatrix);
   const cssTransform = affineMatrixToCss(transform.cssMatrix);
   const sourceFrameStroke = Math.max(1, 2 / transform.scale);
+  const vertexRadius = Math.max(5, 8 / transform.scale);
+  const activeRowVersion = selectedPolygon?.rowVersion ?? 0;
 
   return (
     <div className={styles.engine}>
-      <div className={styles.toolbar} aria-label="Map coordinate controls">
+      <div className={styles.toolbar} aria-label="Map polygon controls">
+        <button className="primary-button" type="button" onClick={() => setMode("pan")}>
+          Pan
+        </button>
+        <button className="primary-button" type="button" onClick={newPolygon}>
+          New polygon
+        </button>
+        <button
+          className="primary-button"
+          type="button"
+          onClick={closeShape}
+          disabled={closed || !validation.valid}
+        >
+          Close shape
+        </button>
+        <button
+          className="primary-button"
+          type="button"
+          onClick={addVertexAfterSelected}
+          disabled={!closed}
+        >
+          Add vertex
+        </button>
+        <button
+          className="primary-button"
+          type="button"
+          onClick={deleteSelectedVertex}
+          disabled={!closed || selectedVertex === null || draft.length <= 3}
+        >
+          Delete vertex
+        </button>
         <button
           className="primary-button"
           type="button"
@@ -350,156 +491,221 @@ export function CoordinateEngine({
         >
           Zoom out
         </button>
-        <button
-          className="primary-button"
-          type="button"
-          onClick={() => setView(INITIAL_VIEW)}
-        >
+        <button className="primary-button" type="button" onClick={() => setView(INITIAL_VIEW)}>
           Fit image
         </button>
-        <span className={styles.zoomReadout}>
-          {Math.round(transform.zoom * 100)}%
-        </span>
+        <span className={styles.zoomReadout}>{Math.round(transform.zoom * 100)}%</span>
+        <span className={styles.modeReadout}>Mode: {mode}</span>
       </div>
 
-      <div
-        ref={viewportRef}
-        className={styles.viewport + (dragging ? " " + styles.dragging : "")}
-        role="application"
-        aria-label={"Coordinate engine for " + label}
-        tabIndex={0}
-        onWheel={handleWheel}
-        onPointerDown={handlePointerDown}
-        onPointerMove={handlePointerMove}
-        onPointerUp={endDrag}
-        onPointerCancel={endDrag}
-        onPointerLeave={(event) => {
-          if (!dragRef.current) {
-            setPointer(null);
-          }
-          if (event.buttons === 0) {
-            endDrag(event);
-          }
-        }}
-        onKeyDown={handleKeyDown}
-      >
-        {imageUrl ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            className={styles.mapImage}
-            src={imageUrl}
-            alt=""
-            draggable={false}
-            style={{
-              width: sourceWidth,
-              height: sourceHeight,
-              transform: cssTransform,
+      <div className={styles.plotterGrid}>
+        <div>
+          <div
+            ref={viewportRef}
+            className={
+              styles.viewport +
+              (dragging ? " " + styles.dragging : "") +
+              (mode === "draw" ? " " + styles.drawing : "")
+            }
+            role="application"
+            aria-label={"Polygon plotter for " + label}
+            tabIndex={0}
+            onWheel={handleWheel}
+            onPointerDown={handlePointerDown}
+            onPointerMove={handlePointerMove}
+            onPointerUp={endDrag}
+            onPointerCancel={endDrag}
+            onPointerLeave={(event) => {
+              if (!dragRef.current && !vertexDragRef.current) setPointer(null);
+              if (event.buttons === 0) endDrag(event);
             }}
-          />
-        ) : (
-          <div className={styles.loading}>
-            {imageFailed
-              ? "Map image unavailable."
-              : "Loading active map image…"}
+            onKeyDown={handleKeyDown}
+          >
+            {imageUrl ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                className={styles.mapImage}
+                src={imageUrl}
+                alt=""
+                draggable={false}
+                style={{
+                  width: sourceWidth,
+                  height: sourceHeight,
+                  transform: cssTransform,
+                }}
+              />
+            ) : (
+              <div className={styles.loading}>
+                {imageFailed ? "Map image unavailable." : "Loading active map image…"}
+              </div>
+            )}
+
+            <svg
+              className={styles.overlay}
+              viewBox={"0 0 " + viewport.width + " " + viewport.height}
+              aria-hidden="true"
+            >
+              <g transform={svgTransform}>
+                <rect
+                  x="0"
+                  y="0"
+                  width={sourceWidth}
+                  height={sourceHeight}
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth={sourceFrameStroke}
+                />
+                {initialPolygons
+                  .filter((polygon) => polygon.id !== selectedId)
+                  .map((polygon) => (
+                    <polygon
+                      key={polygon.id}
+                      points={pointsAttribute(sourcePoints(polygon))}
+                      className={styles.savedPolygon}
+                      strokeWidth={sourceFrameStroke}
+                    />
+                  ))}
+                {draft.length > 0 ? (
+                  closed ? (
+                    <polygon
+                      points={pointsAttribute(draft)}
+                      className={
+                        validation.valid
+                          ? styles.activePolygon
+                          : styles.invalidPolygon
+                      }
+                      strokeWidth={sourceFrameStroke}
+                    />
+                  ) : (
+                    <polyline
+                      points={pointsAttribute(draft)}
+                      className={styles.activePolygon}
+                      strokeWidth={sourceFrameStroke}
+                    />
+                  )
+                ) : null}
+                {draft.map((point, index) => (
+                  <circle
+                    key={index}
+                    cx={point.x}
+                    cy={point.y}
+                    r={vertexRadius}
+                    className={
+                      index === selectedVertex
+                        ? styles.selectedVertex
+                        : styles.vertex
+                    }
+                    style={{ pointerEvents: mode === "edit" ? "all" : "none" }}
+                    onPointerDown={(event) => startVertexDrag(event, index)}
+                  />
+                ))}
+              </g>
+            </svg>
+
+            <div
+              className={styles.centerLabel}
+              style={{ left: centerMarker.x, top: centerMarker.y }}
+              aria-hidden="true"
+            >
+              image centre
+            </div>
           </div>
-        )}
 
-        <svg
-          className={styles.overlay}
-          viewBox={"0 0 " + viewport.width + " " + viewport.height}
-          aria-hidden="true"
-        >
-          <g transform={svgTransform}>
-            <rect
-              x="0"
-              y="0"
-              width={sourceWidth}
-              height={sourceHeight}
-              fill="none"
-              stroke="currentColor"
-              strokeWidth={sourceFrameStroke}
-            />
-            <line
-              x1={sourceWidth / 2 - 24 / transform.scale}
-              y1={sourceHeight / 2}
-              x2={sourceWidth / 2 + 24 / transform.scale}
-              y2={sourceHeight / 2}
-              stroke="currentColor"
-              strokeWidth={sourceFrameStroke}
-            />
-            <line
-              x1={sourceWidth / 2}
-              y1={sourceHeight / 2 - 24 / transform.scale}
-              x2={sourceWidth / 2}
-              y2={sourceHeight / 2 + 24 / transform.scale}
-              stroke="currentColor"
-              strokeWidth={sourceFrameStroke}
-            />
-          </g>
-        </svg>
-
-        <div
-          className={styles.centerLabel}
-          style={{
-            left: centerMarker.x,
-            top: centerMarker.y,
-          }}
-          aria-hidden="true"
-        >
-          image centre
+          <div className={styles.readouts} aria-live="polite">
+            <dl>
+              <div>
+                <dt>Source space</dt>
+                <dd>{sourceWidth} × {sourceHeight} px</dd>
+              </div>
+              <div>
+                <dt>CSS scale</dt>
+                <dd>{formatCoordinate(transform.scale, 5)}</dd>
+              </div>
+              <div>
+                <dt>Pointer image</dt>
+                <dd>
+                  {pointer
+                    ? formatCoordinate(pointer.imageX) + ", " + formatCoordinate(pointer.imageY) + " px"
+                    : "Outside image"}
+                </dd>
+              </div>
+              <div>
+                <dt>Vertices</dt>
+                <dd>{draft.length}</dd>
+              </div>
+              <div>
+                <dt>Validation</dt>
+                <dd>{closed && validation.valid ? "Valid closed polygon" : validation.errors[0] ?? "Drawing"}</dd>
+              </div>
+            </dl>
+          </div>
         </div>
-      </div>
 
-      <div className={styles.readouts} aria-live="polite">
-        <dl>
-          <div>
-            <dt>Source space</dt>
-            <dd>
-              {sourceWidth} × {sourceHeight} px
-            </dd>
-          </div>
-          <div>
-            <dt>CSS scale</dt>
-            <dd>{formatCoordinate(transform.scale, 5)}</dd>
-          </div>
-          <div>
-            <dt>Device scale</dt>
-            <dd>
-              {formatCoordinate(
-                transform.scale * transform.devicePixelRatio,
-                5,
-              )}{" "}
-              @ {formatCoordinate(transform.devicePixelRatio, 2)}× DPR
-            </dd>
-          </div>
-          <div>
-            <dt>Pointer image</dt>
-            <dd>
-              {pointer
-                ? formatCoordinate(pointer.imageX) +
-                  ", " +
-                  formatCoordinate(pointer.imageY) +
-                  " px"
-                : "Outside image"}
-            </dd>
-          </div>
-          <div>
-            <dt>Pointer normalized</dt>
-            <dd>
-              {pointer
-                ? formatCoordinate(pointer.normalizedX, 6) +
-                  ", " +
-                  formatCoordinate(pointer.normalizedY, 6)
-                : "Outside image"}
-            </dd>
-          </div>
-        </dl>
+        <aside className={styles.editorPanel} aria-label="Polygon editor">
+          <h3>Polygon editor</h3>
+          <label className={styles.editorField}>
+            <span>Label</span>
+            <input
+              value={polygonLabel}
+              maxLength={160}
+              onChange={(event) => setPolygonLabel(event.target.value)}
+            />
+          </label>
+          <p>
+            {mode === "draw"
+              ? "Click the image to add vertices, then close the shape."
+              : "Select a vertex and drag it to move. Add inserts a midpoint after the selected vertex."}
+          </p>
+          {!validation.valid && draft.length >= 3 ? (
+            <div className={styles.validationError}>{validation.errors.join(" ")}</div>
+          ) : null}
+          <form action={saveMapPolygonAction} className={styles.saveForm}>
+            <input type="hidden" name="campgroundId" value={campgroundId} />
+            <input type="hidden" name="mapImageVersionId" value={mapImageVersionId} />
+            <input type="hidden" name="polygonId" value={selectedId ?? ""} />
+            <input type="hidden" name="rowVersion" value={activeRowVersion} />
+            <input type="hidden" name="label" value={polygonLabel} />
+            <input
+              type="hidden"
+              name="geometry"
+              value={storedGeometry ? JSON.stringify(storedGeometry) : ""}
+            />
+            <button
+              className="primary-button"
+              type="submit"
+              disabled={!storedGeometry || !polygonLabel.trim()}
+            >
+              Save polygon
+            </button>
+          </form>
+
+          <h4>Saved polygons</h4>
+          {initialPolygons.length === 0 ? (
+            <p>No polygons saved for this image version yet.</p>
+          ) : (
+            <div className={styles.polygonList}>
+              {initialPolygons.map((polygon) => (
+                <button
+                  type="button"
+                  key={polygon.id}
+                  className={polygon.id === selectedId ? styles.polygonSelected : ""}
+                  onClick={() => choosePolygon(polygon)}
+                >
+                  <strong>{polygon.label}</strong>
+                  <span>{polygon.geometry.vertices.length} vertices</span>
+                </button>
+              ))}
+            </div>
+          )}
+        </aside>
       </div>
 
       <p className={styles.instructions}>
-        Drag to pan. Use the mouse wheel or buttons to zoom. Keyboard: arrow
-        keys pan, +/− zoom, and 0 returns to fit. The source frame, centre
-        marker and pointer hit-test all use the same canonical transform.
+        Draw mode: click the active overhead image to create an irregular polygon.
+        Close the shape only after validation passes. Edit mode: drag vertices,
+        add a midpoint vertex, or delete a selected vertex. Pan/zoom continues to
+        use the Build 019 canonical transform, so geometry stays in source-image
+        coordinates without zoom drift.
       </p>
     </div>
   );
