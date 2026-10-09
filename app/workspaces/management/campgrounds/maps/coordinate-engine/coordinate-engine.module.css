@@ -189,3 +189,161 @@
     grid-template-columns: 1fr;
   }
 }
+
+.drawing {
+  cursor: crosshair;
+}
+
+.modeReadout {
+  padding: 0.7rem 0.8rem;
+  border: 1px solid var(--line);
+  border-radius: 0.72rem;
+  background: #fff;
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.plotterGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(16rem, 20rem);
+  gap: 1rem;
+  align-items: start;
+}
+
+.editorPanel {
+  display: grid;
+  gap: 0.8rem;
+  padding: 1rem;
+  border: 1px solid var(--line);
+  border-radius: 0.9rem;
+  background: var(--surface-soft);
+}
+
+.editorPanel h3,
+.editorPanel h4,
+.editorPanel p {
+  margin: 0;
+}
+
+.editorPanel p {
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.editorField {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.editorField span {
+  color: var(--muted);
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.editorField input {
+  min-height: 2.65rem;
+  padding: 0.6rem 0.7rem;
+  border: 1px solid var(--line);
+  border-radius: 0.7rem;
+  background: #fff;
+  color: var(--ink);
+  font: inherit;
+}
+
+.savedPolygon,
+.activePolygon,
+.invalidPolygon {
+  vector-effect: non-scaling-stroke;
+}
+
+.savedPolygon {
+  fill: rgb(23 63 53 / 10%);
+  stroke: rgb(23 63 53 / 55%);
+}
+
+.activePolygon {
+  fill: rgb(23 63 53 / 18%);
+  stroke: var(--accent);
+}
+
+.invalidPolygon {
+  fill: rgb(146 34 34 / 12%);
+  stroke: #922222;
+}
+
+.vertex,
+.selectedVertex {
+  vector-effect: non-scaling-stroke;
+  stroke-width: 2;
+}
+
+.vertex {
+  fill: #fff;
+  stroke: var(--accent);
+}
+
+.selectedVertex {
+  fill: var(--accent);
+  stroke: #fff;
+}
+
+.validationError {
+  padding: 0.7rem;
+  border: 1px solid #c98a8a;
+  border-radius: 0.65rem;
+  background: #fff6f6;
+  color: #7b1f1f;
+  font-size: 0.86rem;
+  line-height: 1.45;
+}
+
+.saveForm {
+  display: grid;
+}
+
+.polygonList {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.polygonList button {
+  display: grid;
+  gap: 0.18rem;
+  width: 100%;
+  padding: 0.65rem 0.7rem;
+  border: 1px solid var(--line);
+  border-radius: 0.65rem;
+  background: #fff;
+  color: var(--ink);
+  text-align: left;
+  cursor: pointer;
+}
+
+.polygonList button span {
+  color: var(--muted);
+  font-size: 0.75rem;
+}
+
+.polygonSelected {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+.savedNotice {
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--line);
+  border-radius: 0.8rem;
+  background: var(--surface-soft);
+  color: var(--brand);
+  font-weight: 800;
+}
+
+@media (max-width: 62rem) {
+  .plotterGrid {
+    grid-template-columns: 1fr;
+  }
+}

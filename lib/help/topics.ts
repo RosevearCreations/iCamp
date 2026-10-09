@@ -153,7 +153,22 @@ export const helpTopics = {
       "Zooming is anchored to the cursor or viewport centre, so the same source point stays under the chosen focal point.",
       "The same affine matrix is used for the image and overlay layers; hit-testing uses its inverse instead of separate scaling formulas.",
       "High-DPI rendering uses a device-pixel matrix derived from the CSS transform without changing source coordinates.",
-      "Polygon creation is intentionally reserved for Build 020; this build establishes the coordinate contract and inspection surface.",
+      "Build 020 consumes this coordinate contract for polygon plotting; later map objects continue to use the same transform.",
+    ],
+    audience: "privileged",
+  },
+  "campground.map.polygons": {
+    id: "campground.map.polygons",
+    slug: "campground-map-polygon-plotter",
+    title: "Campground map polygon plotter",
+    summary:
+      "Authorized managers can draw, validate, edit and save irregular polygons against the exact active overhead image version.",
+    details: [
+      "Choose New polygon, then click the image to add vertices in order around the shape.",
+      "Close shape becomes available only when at least three vertices form a valid non-self-intersecting polygon.",
+      "In edit mode, select and drag a vertex to move it; Add vertex inserts a midpoint after the selected vertex and Delete vertex removes it while preserving at least three vertices.",
+      "Every saved vertex stores source-image pixels plus normalized 0–1 coordinates, and the polygon remains bound to the exact image version used for editing.",
+      "Drawing is graphical-only. Telephone and SMS workflows use a secure visual handoff or staff-assisted fallback rather than pretending keypad geometry entry is equivalent.",
     ],
     audience: "privileged",
   },
