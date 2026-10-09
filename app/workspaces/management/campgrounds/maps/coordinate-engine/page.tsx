@@ -168,7 +168,7 @@ export default async function MapCoordinateEnginePage({
             eyebrow="Geometry contract"
             title="Version-bound, drift-resistant polygons"
             id="contract-heading"
-            helpTopic="campground.map.polygons"
+            helpTopic="campground.map.coordinates"
           />
           <p>
             Every saved vertex retains original-image pixels plus normalized 0–1
