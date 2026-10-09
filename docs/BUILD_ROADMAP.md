@@ -227,8 +227,10 @@ No active product build should begin until this roadmap reset is accepted as the
 - thumbnails/optimized variants.
 - internal maintenance media remains separate.
 
-## Build 029 — Operational Asset Model
+## Build 029 — Operational Asset & Equipment/Fleet Model
 - Pools, water parks, washrooms, fields, playgrounds, halls, beaches, docks, launches, roads, garbage/septic areas and similar assets.
+- Tractors, mowers, maintenance vehicles, carts, trailers, power equipment and other campground operating equipment.
+- Make/model/serial/ownership, meter/usage and operating status hooks.
 - map linkage and operating status.
 
 ## Build 030 — Accommodation & Asset Status Engine
@@ -821,11 +823,11 @@ No active product build should begin until this roadmap reset is accepted as the
 
 # Phase 10 — Workforce, Vendors and External Services
 
-## Build 127 — Staff Directory & Department Model
-- Staff profiles.
-- department.
+## Build 127 — Staff Directory, Employment & Department Model
+- Staff profiles, employment status and department.
 - campground assignments.
-- restricted personal data.
+- restricted compensation/pay-rate history, emergency/contact and employment administration fields.
+- privacy-separated payroll identifiers and other restricted personal data.
 
 ## Build 128 — Employee Scheduling
 - Shift/department coverage.
@@ -838,10 +840,11 @@ No active product build should begin until this roadmap reset is accepted as the
 - overtime flags.
 - job/department allocation.
 
-## Build 130 — Training, Qualification & Expiry Tracking
+## Build 130 — Training, Qualification & Occupational Safety Compliance Tracking
 - Lifeguard/maintenance/security/etc. qualification records as configured.
-- expiry reminders.
-- role-readiness checks.
+- jurisdiction-configurable OSHA-style / Canadian OHS training, hazard, PPE, incident/injury/near-miss and corrective-action records.
+- safety inspections, acknowledgement evidence, expiry reminders and role-readiness checks.
+- audit-friendly regulatory log/export hooks without hard-coding one jurisdiction as universal law.
 
 ## Build 131 — Vendor Directory & Contract Management
 - Garbage/septic/ISP/propane/firewood/trades/etc.
@@ -862,13 +865,16 @@ No active product build should begin until this roadmap reset is accepted as the
 
 # Phase 11 — Finance and Management
 
-## Build 134 — Revenue & Expense Classification
+## Build 134 — Revenue, Expense & Cost Classification
 - Accommodation/store/rental/event/pass/service revenue.
 - payroll/utilities/garbage/septic/internet/insurance/tax/fuel/etc. expenses.
+- labour, equipment, material, vendor and overhead cost attribution for operational/job costing.
 
-## Build 135 — Internal Financial Ledger
-- Charges/payments/refunds/deposits/taxes/expenses.
-- traceability to source.
+## Build 135 — Advanced Internal Financial Ledger
+- Chart-of-accounts-ready double-entry journal foundation.
+- charges/payments/refunds/deposits/taxes/expenses and controlled adjustments.
+- period/date traceability, source-document linkage and append-oriented audit history.
+- campground, department and cost-centre dimensions for reporting and reconciliation.
 
 ## Build 136 — Profit & Loss Reporting
 - Daily/weekly/monthly/annual.
@@ -899,15 +905,17 @@ No active product build should begin until this roadmap reset is accepted as the
 - campground/department cost allocation.
 - variance.
 
-## Build 141 — Accommodation, Cottage, Store & Service Profitability
+## Build 141 — Accommodation, Cottage, Store, Service & Job Costing
 - Revenue/cost attribution.
-- cottage profitability.
-- store/rental/service margins.
+- cottage/accommodation profitability.
+- maintenance/service/work-order labour, equipment, material and vendor job costing.
+- store/rental/service margins and contribution analysis.
 
-## Build 142 — Tax, Fee & Financial Configuration Review
+## Build 142 — Tax, Fee, Worksheet & Financial Configuration Review
 - Configurable taxes/fees.
-- financial permission review.
-- no hard-coded jurisdictional tax assumptions.
+- tax-period worksheets, taxable/non-taxable summaries, remittance-support schedules and exportable source detail.
+- financial permission review and period controls.
+- no hard-coded jurisdictional tax assumptions; real filing remains subject to the campground's accountant/tax authority requirements.
 
 ---
 
@@ -965,10 +973,12 @@ No active product build should begin until this roadmap reset is accepted as the
 - Guest/visitor/vehicle/staff/incident/financing retention.
 - export/correction/deletion/anonymization where applicable.
 
-## Build 152 — Multi-Campground Isolation & Owner Dashboard
-- Property switching.
-- cross-property ownership.
-- strict tenant-isolation tests.
+## Build 152 — Multi-Campground SaaS Isolation, Platform Admin & Subscription Entitlements
+- One hosted iCamp platform administered by the platform owner, with each subscribing campground isolated as its own tenant/property.
+- property switching and cross-property ownership where explicitly authorized.
+- platform-owner tenant onboarding, lifecycle, plan/entitlement and usage/quota visibility.
+- monthly subscription status/entitlement model with provider-neutral billing adapter hooks; tenant suspension must not silently delete campground data.
+- strict tenant-isolation and platform-admin boundary tests.
 
 ## Build 153 — Full Production & I.T. Operations Readiness Gate
 - End-to-end campsite/cottage booking.
@@ -1002,11 +1012,11 @@ No active product build should begin until this roadmap reset is accepted as the
 - real device/browser checks.
 - close pilot defects before public release.
 
-## Build 156 — Public Launch & Omnichannel Gate
+## Build 156 — Public Launch, Tenant Billing & Omnichannel Gate
 - Production domain.
-- legal/privacy/terms.
-- production payment/notification/telephony/SMS/access integrations.
-- backups/monitoring/support.
+- legal/privacy/terms and campground subscriber terms/onboarding.
+- production tenant subscription-billing adapter activation plus campground payment/notification/telephony/SMS/access integrations.
+- backups/monitoring/support, capacity/usage thresholds and paid-scale migration runbook.
 - final GREEN verification.
 
 ---
