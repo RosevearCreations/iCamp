@@ -25,7 +25,7 @@ Map images and other media are referenced through iCamp metadata and authorizati
 ### Campground map rendering
 **Decision: use iCamp-owned overhead imagery with SVG/DOM overlays and the canonical coordinate engine.**
 
-Builds 018–023 do not require Google Maps, Mapbox or another paid mapping API. If true geographic/GIS mapping becomes necessary later, prefer an open MapLibre-compatible adapter.
+Builds 018–023 require no paid mapping API; Google Maps, Mapbox or similar services are unnecessary for the current overhead-image editor. If true geographic/GIS mapping becomes necessary later, prefer an open MapLibre-compatible adapter.
 
 ### Background work
 **Decision: PostgreSQL-backed durable jobs/schedules remain the default.**
