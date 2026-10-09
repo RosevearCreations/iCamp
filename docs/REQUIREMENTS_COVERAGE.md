@@ -38,6 +38,7 @@ This matrix cross-checks the complete iCamp vision against the restarted active 
 | Cottage same live reservation engine as campsites | 024, 034-044 |
 | Up to 10 public images for each campsite/cottage | 028, 038 |
 | Pools, water parks, washrooms, ball fields as operational assets | 029, 070-073 |
+| Campground equipment/fleet registry and service history | 029, 076 |
 | Green/grey/yellow/red status | 030, 037 |
 | Management closures/blocks/map publication | 031 |
 | Booking calendar/date rules | 032 |
@@ -105,12 +106,16 @@ This matrix cross-checks the complete iCamp vision against the restarted active 
 | Firewood/ice/propane/passes/service items | 123 |
 | Campsite account charges | 126 |
 | Staff directory/roles/departments | 127 |
+| Employee employment/compensation administration | 127, 129, 134 |
 | Employee scheduling/timekeeping | 128-129 |
 | Training/qualifications | 130 |
+| Occupational safety / OSHA-style and Canadian OHS-configurable tracking | 069, 086, 130, 146 |
 | Vendors/contracts | 131 |
 | Garbage/septic/ISP recurring contractors | 132 |
 | Accounts payable | 133 |
 | Revenue/expense accounting | 134-142 |
+| Advanced ledger, cost centres and job/service costing | 135, 140-141 |
+| Tax worksheets/remittance-support schedules | 142, 146 |
 | Profit/loss and profitability | 136, 141 |
 | Management operations dashboard | 138 |
 | Global search | 143 |
@@ -123,6 +128,7 @@ This matrix cross-checks the complete iCamp vision against the restarted active 
 | Backup/restore/disaster recovery | 150 |
 | Privacy/retention/export/deletion | 151 |
 | Multi-campground isolation | 152 |
+| Platform-owner SaaS tenant administration and monthly subscription entitlements | 152, 156 |
 | Full production readiness including omnichannel | 153 |
 | Real campground pilot | 154-155 |
 | Public/telephone/SMS launch | 156 |
