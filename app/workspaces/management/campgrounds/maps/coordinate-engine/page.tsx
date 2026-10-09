@@ -20,7 +20,8 @@ export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Polygon plotter · iCamp",
-  description: "Plot and edit campground polygons on the active overhead image.",
+  description:
+    "Plot and edit campground polygons on the active overhead image.",
 };
 
 export default async function MapCoordinateEnginePage({
@@ -170,8 +171,8 @@ export default async function MapCoordinateEnginePage({
             helpTopic="campground.map.polygons"
           />
           <p>
-            Every saved vertex retains original-image pixels plus normalized
-            0–1 coordinates from Build 019. The polygon is bound to the exact
+            Every saved vertex retains original-image pixels plus normalized 0–1
+            coordinates from Build 019. The polygon is bound to the exact
             overhead image version used for editing, so later image changes do
             not silently move clickable areas.
           </p>
