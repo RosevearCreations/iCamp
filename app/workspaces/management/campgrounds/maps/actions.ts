@@ -75,7 +75,9 @@ export async function uploadOverheadImageAction(formData: FormData) {
     );
   }
 
-  if (!["image/jpeg", "image/png", "image/webp"].includes(validated.contentType)) {
+  if (
+    !["image/jpeg", "image/png", "image/webp"].includes(validated.contentType)
+  ) {
     throw new Error("Overhead maps support JPEG, PNG and WebP images only.");
   }
 
