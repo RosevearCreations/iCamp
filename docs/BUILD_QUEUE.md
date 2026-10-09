@@ -276,8 +276,24 @@ Delivered:
 - full-platform roadmap clarification for equipment/fleet, employee administration, occupational safety, advanced finance/job costing/tax worksheets, and hosted campground SaaS subscription entitlements;
 - exact-tree `dev` and protected `main` promotion with independent GREEN GitHub gates.
 
+### Build 019 — Zoom/Pan Coordinate Engine
+Status: **FULLY PROMOTED — `main` GREEN.**
+
+Delivered:
+- canonical original-image and normalized 0–1 coordinate contract;
+- invertible shared affine transform for raster imagery, overlays, future labels/polygons and pointer hit-testing;
+- fit-to-viewport scaling, bounded pan and 25%–1600% zoom;
+- focal-point-preserving wheel/button zoom;
+- high-DPI device-pixel transform derived from the CSS transform;
+- interactive management coordinate inspector using the active Build 018 image;
+- mouse/pointer/touch and keyboard navigation with live source/normalized coordinate readouts;
+- automated round-trip, high-DPI, zoom-anchor, repeated no-drift and pan-bound tests;
+- contextual circular ⓘ help and freshness controls;
+- explicit Build 020 boundary for polygon creation/persistence;
+- exact-tree `dev` and protected `main` promotion with independent GREEN GitHub gates.
+
 ## Next active build
-**Build 019 — Zoom/Pan Coordinate Engine**
+**Build 020 — Polygon Plotter Core**
 
 Status: **QUEUED — NOT STARTED**
 

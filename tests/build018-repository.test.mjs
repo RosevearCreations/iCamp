@@ -122,6 +122,14 @@ test("Build 018 source of truth records production promotion and queue advance",
   assert.match(build, /No manual action was required to promote Build 018/u);
   assert.match(
     queue,
-    /Build 018 — Overhead Image Library & Versioning[\s\S]*FULLY PROMOTED — `main` GREEN[\s\S]*Next active build[\s\S]*Build 019 — Zoom\/Pan Coordinate Engine[\s\S]*QUEUED — NOT STARTED/u,
+    /Build 018 — Overhead Image Library & Versioning[\s\S]*FULLY PROMOTED — `main` GREEN/u,
+  );
+  assert.match(
+    queue,
+    /Build 019 — Zoom\/Pan Coordinate Engine[\s\S]*FULLY PROMOTED — `main` GREEN/u,
+  );
+  assert.match(
+    queue,
+    /Next active build[\s\S]*Build 020 — Polygon Plotter Core[\s\S]*QUEUED — NOT STARTED/u,
   );
 });

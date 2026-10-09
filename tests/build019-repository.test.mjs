@@ -59,14 +59,16 @@ test("Build 019 preserves polygon creation for Build 020", async () => {
   );
 });
 
-test("Build 019 source of truth remains queued until production promotion", async () => {
+test("Build 019 source of truth records production promotion and queue advance", async () => {
   const build = await readFile("docs/BUILD_019.md", "utf8");
   const queue = await readFile("docs/BUILD_QUEUE.md", "utf8");
 
-  assert.match(build, /IN DEVELOPMENT/u);
-  assert.match(build, /No manual action is required to promote this build/u);
+  assert.match(build, /FULLY PROMOTED — `main` GREEN/u);
+  assert.match(build, /28492a56fc6846e55db8117910096a2029e78205/u);
+  assert.match(build, /37998058186/u);
+  assert.match(build, /No manual action was required to promote Build 019/u);
   assert.match(
     queue,
-    /Next active build[\s\S]*Build 019 — Zoom\/Pan Coordinate Engine[\s\S]*QUEUED — NOT STARTED/u,
+    /Build 019 — Zoom\/Pan Coordinate Engine[\s\S]*FULLY PROMOTED — `main` GREEN[\s\S]*Next active build[\s\S]*Build 020 — Polygon Plotter Core[\s\S]*QUEUED — NOT STARTED/u,
   );
 });
