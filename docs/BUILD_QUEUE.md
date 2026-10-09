@@ -262,8 +262,22 @@ Delivered:
 - Web/PWA visual editor with secure-link/staff-assisted IVR/SMS fallback;
 - exact-tree `dev` and protected `main` promotion with independent GREEN GitHub gates.
 
+### Build 018 — Overhead Image Library & Versioning
+Status: **FULLY PROMOTED — `main` GREEN.**
+
+Delivered:
+- protected campground overhead/drone/site-plan image library;
+- JPEG/PNG/WebP safe preflight, image-dimension checks and metadata sanitization;
+- secure-media storage with checksum evidence and rollback cleanup;
+- monotonically increasing map-image versions with one active and one published version per campground;
+- permission-checked activation and privileged audited publication;
+- authenticated previews, freshness tracking and circular contextual help;
+- repaired secure-media filename validation for ordinary real-world image filenames;
+- full-platform roadmap clarification for equipment/fleet, employee administration, occupational safety, advanced finance/job costing/tax worksheets, and hosted campground SaaS subscription entitlements;
+- exact-tree `dev` and protected `main` promotion with independent GREEN GitHub gates.
+
 ## Next active build
-**Build 018 — Overhead Image Library & Versioning**
+**Build 019 — Zoom/Pan Coordinate Engine**
 
 Status: **QUEUED — NOT STARTED**
 
