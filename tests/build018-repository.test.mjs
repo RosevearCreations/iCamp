@@ -52,6 +52,8 @@ test("Build 018 migration enforces one active and one published map image", asyn
   assert.match(migration, /one_published_idx/u);
   assert.match(migration, /media_asset_id uuid not null/u);
   assert.match(migration, /touch_row/u);
+  assert.match(migration, /\[\[:cntrl:\]\]/u);
+  assert.match(migration, /strpos\(original_filename, chr\(92\)\)/u);
 });
 
 test("Build 018 map service is permission checked, audited and concurrency guarded", async () => {
@@ -104,7 +106,10 @@ test("Build 018 preserves the full campground SaaS roadmap", async () => {
   assert.match(roadmap, /Occupational Safety Compliance Tracking/u);
   assert.match(roadmap, /OSHA-style \/ Canadian OHS/u);
   assert.match(roadmap, /Advanced Internal Financial Ledger/u);
-  assert.match(roadmap, /job\/service\/work-order[\s\S]*costing/u);
+  assert.match(
+    roadmap,
+    /maintenance\/service\/work-order[\s\S]*job costing/u,
+  );
   assert.match(roadmap, /tax-period worksheets/u);
   assert.match(roadmap, /monthly subscription status\/entitlement model/u);
   assert.match(coverage, /Platform-owner SaaS tenant administration/u);
