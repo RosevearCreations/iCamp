@@ -46,5 +46,8 @@ test("Build 020 supports vertex add move and delete", () => {
   assert.deepEqual(moved[1], { x: 320, y: 120 });
   const deleted = deletePolygonVertex(moved, 1);
   assert.equal(deleted.length, 4);
-  assert.throws(() => deletePolygonVertex(square.slice(0, 3), 1), /at least 3 vertices/u);
+  assert.throws(
+    () => deletePolygonVertex(square.slice(0, 3), 1),
+    /at least 3 vertices/u,
+  );
 });
