@@ -171,7 +171,13 @@ export function CoordinateEngine({
       viewportHeight: viewport.height,
       devicePixelRatio,
     }),
-    [sourceHeight, sourceWidth, viewport.height, viewport.width, devicePixelRatio],
+    [
+      sourceHeight,
+      sourceWidth,
+      viewport.height,
+      viewport.width,
+      devicePixelRatio,
+    ],
   );
   const constrainedView = useMemo(
     () => constrainMapPan(view, dimensions),
@@ -445,7 +451,11 @@ export function CoordinateEngine({
   return (
     <div className={styles.engine}>
       <div className={styles.toolbar} aria-label="Map polygon controls">
-        <button className="primary-button" type="button" onClick={() => setMode("pan")}>
+        <button
+          className="primary-button"
+          type="button"
+          onClick={() => setMode("pan")}
+        >
           Pan
         </button>
         <button className="primary-button" type="button" onClick={newPolygon}>
@@ -491,10 +501,16 @@ export function CoordinateEngine({
         >
           Zoom out
         </button>
-        <button className="primary-button" type="button" onClick={() => setView(INITIAL_VIEW)}>
+        <button
+          className="primary-button"
+          type="button"
+          onClick={() => setView(INITIAL_VIEW)}
+        >
           Fit image
         </button>
-        <span className={styles.zoomReadout}>{Math.round(transform.zoom * 100)}%</span>
+        <span className={styles.zoomReadout}>
+          {Math.round(transform.zoom * 100)}%
+        </span>
         <span className={styles.modeReadout}>Mode: {mode}</span>
       </div>
 
@@ -536,7 +552,9 @@ export function CoordinateEngine({
               />
             ) : (
               <div className={styles.loading}>
-                {imageFailed ? "Map image unavailable." : "Loading active map image…"}
+                {imageFailed
+                  ? "Map image unavailable."
+                  : "Loading active map image…"}
               </div>
             )}
 
@@ -615,7 +633,9 @@ export function CoordinateEngine({
             <dl>
               <div>
                 <dt>Source space</dt>
-                <dd>{sourceWidth} × {sourceHeight} px</dd>
+                <dd>
+                  {sourceWidth} × {sourceHeight} px
+                </dd>
               </div>
               <div>
                 <dt>CSS scale</dt>
@@ -625,7 +645,10 @@ export function CoordinateEngine({
                 <dt>Pointer image</dt>
                 <dd>
                   {pointer
-                    ? formatCoordinate(pointer.imageX) + ", " + formatCoordinate(pointer.imageY) + " px"
+                    ? formatCoordinate(pointer.imageX) +
+                      ", " +
+                      formatCoordinate(pointer.imageY) +
+                      " px"
                     : "Outside image"}
                 </dd>
               </div>
@@ -635,7 +658,11 @@ export function CoordinateEngine({
               </div>
               <div>
                 <dt>Validation</dt>
-                <dd>{closed && validation.valid ? "Valid closed polygon" : validation.errors[0] ?? "Drawing"}</dd>
+                <dd>
+                  {closed && validation.valid
+                    ? "Valid closed polygon"
+                    : (validation.errors[0] ?? "Drawing")}
+                </dd>
               </div>
             </dl>
           </div>
@@ -657,11 +684,17 @@ export function CoordinateEngine({
               : "Select a vertex and drag it to move. Add inserts a midpoint after the selected vertex."}
           </p>
           {!validation.valid && draft.length >= 3 ? (
-            <div className={styles.validationError}>{validation.errors.join(" ")}</div>
+            <div className={styles.validationError}>
+              {validation.errors.join(" ")}
+            </div>
           ) : null}
           <form action={saveMapPolygonAction} className={styles.saveForm}>
             <input type="hidden" name="campgroundId" value={campgroundId} />
-            <input type="hidden" name="mapImageVersionId" value={mapImageVersionId} />
+            <input
+              type="hidden"
+              name="mapImageVersionId"
+              value={mapImageVersionId}
+            />
             <input type="hidden" name="polygonId" value={selectedId ?? ""} />
             <input type="hidden" name="rowVersion" value={activeRowVersion} />
             <input type="hidden" name="label" value={polygonLabel} />
@@ -688,7 +721,9 @@ export function CoordinateEngine({
                 <button
                   type="button"
                   key={polygon.id}
-                  className={polygon.id === selectedId ? styles.polygonSelected : ""}
+                  className={
+                    polygon.id === selectedId ? styles.polygonSelected : ""
+                  }
                   onClick={() => choosePolygon(polygon)}
                 >
                   <strong>{polygon.label}</strong>
@@ -701,11 +736,11 @@ export function CoordinateEngine({
       </div>
 
       <p className={styles.instructions}>
-        Draw mode: click the active overhead image to create an irregular polygon.
-        Close the shape only after validation passes. Edit mode: drag vertices,
-        add a midpoint vertex, or delete a selected vertex. Pan/zoom continues to
-        use the Build 019 canonical transform, so geometry stays in source-image
-        coordinates without zoom drift.
+        Draw mode: click the active overhead image to create an irregular
+        polygon. Close the shape only after validation passes. Edit mode: drag
+        vertices, add a midpoint vertex, or delete a selected vertex. Pan/zoom
+        continues to use the Build 019 canonical transform, so geometry stays in
+        source-image coordinates without zoom drift.
       </p>
     </div>
   );
