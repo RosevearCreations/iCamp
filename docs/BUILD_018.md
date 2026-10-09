@@ -2,7 +2,7 @@
 
 ## Status
 
-**IN DEVELOPMENT — feature branch verification pending.**
+**FULLY PROMOTED — `main` GREEN.**
 
 ## Roadmap scope
 
@@ -62,9 +62,21 @@ These are roadmap clarifications, not prematurely implemented Build 018 domains.
 
 No new paid provider is required. Build 018 reuses the existing provider-neutral media model and current Supabase Storage development adapter.
 
+## Promotion evidence
+
+- Feature PR: #64 — final feature SHA `b0cde310ad07958116756d2c5a3fabe5e24da32d`.
+- Feature gates: CI `37869866561`, CodeQL `37869866557`, Secret Scan `37869866551` — all GREEN.
+- `dev` merge: `ab6de031579f7790cc1dc7f3223621d558ca6450`.
+- Independent `dev` gates: CI `37870014265`, CodeQL `37870014229`, Secret Scan `37870014225` — all GREEN.
+- Production PR: #65 — exact GREEN `dev` tree promoted to protected `main`.
+- Production merge: `9110825f84d38b11f1cfaa91ba723682b2adcce9`.
+- Independent `main` gates: CI `37871367539`, CodeQL `37871367534`, Secret Scan `37871367561` — all GREEN.
+- Independent `main` CI jobs: Verify, Browser end-to-end and Database migrations — all GREEN.
+- File comparison between GREEN `dev` and production merge: zero file differences; merge topology only.
+
 ## Manual action
 
-No manual action is required to promote this build.
+No manual action was required to promote Build 018.
 
 Real image upload later requires:
 - the existing Build 008 storage variables/provider buckets to be configured;

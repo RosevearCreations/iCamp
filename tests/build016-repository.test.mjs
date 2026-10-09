@@ -116,6 +116,10 @@ test("Build 016 source of truth remains completed after later queue advances", a
   );
   assert.match(
     queue,
-    /Next active build[\s\S]*Build 018 — Overhead Image Library & Versioning[\s\S]*QUEUED — NOT STARTED/u,
+    /Build 018 — Overhead Image Library & Versioning[\s\S]*FULLY PROMOTED — `main` GREEN/u,
+  );
+  assert.match(
+    queue,
+    /Next active build[\s\S]*Build 019 — Zoom\/Pan Coordinate Engine[\s\S]*QUEUED — NOT STARTED/u,
   );
 });
