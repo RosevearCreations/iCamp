@@ -292,8 +292,26 @@ Delivered:
 - explicit Build 020 boundary for polygon creation/persistence;
 - exact-tree `dev` and protected `main` promotion with independent GREEN GitHub gates.
 
+### Build 020 — Polygon Plotter Core
+Status: **FULLY PROMOTED — `main` GREEN.**
+
+Delivered:
+- click-to-create irregular polygons over the active campground overhead image;
+- explicit validated close-shape workflow;
+- selectable draggable vertices with add/move/delete editing;
+- self-intersection, duplicate-adjacent-point, bounds and minimum-area validation;
+- canonical source-pixel plus normalized 0–1 geometry using the Build 019 transform;
+- PostgreSQL persistence bound to the exact Build 018 overhead image version;
+- optimistic row-version conflict protection and append-oriented audit evidence;
+- campground-scoped `campground.map` authorization and private-schema storage;
+- Web/PWA visual editor with honest secure-link/staff-assisted IVR/SMS fallback;
+- contextual circular ⓘ help and freshness controls;
+- hosted Supabase migrations 0020–0022 with zero Security Advisor findings;
+- provider-portable platform decision register with no paid mapping API required;
+- exact-tree feature and production promotion with CI, browser E2E, database, CodeQL and Secret Scan gates GREEN.
+
 ## Next active build
-**Build 020 — Polygon Plotter Core**
+**Build 021 — Advanced Polygon Editing**
 
 Status: **QUEUED — NOT STARTED**
 

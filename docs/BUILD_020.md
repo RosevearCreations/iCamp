@@ -1,7 +1,7 @@
 # Build 020 — Polygon Plotter Core
 
 ## Status
-**IN DEVELOPMENT — feature branch verification pending.**
+**FULLY PROMOTED — `main` GREEN.**
 
 ## Roadmap scope
 - click-to-create irregular polygons;
@@ -23,5 +23,13 @@ The canonical object represented by a polygon is deliberately not assigned yet; 
 ## Platform decision checkpoint
 See `docs/PLATFORM_DECISIONS.md`. This build does not add a paid map service or any new external provider.
 
+## Promotion evidence
+- feature PR #72 passed CI, CodeQL and Secret Scan on tested head `f9b26bd4ebd4a4e7073ad30e8e13da9082df378b`;
+- production PR #73 independently passed CI, CodeQL and Secret Scan from `dev` head `f7dbbb15111912e83054ae78b0d086ef45ff14ff`;
+- production feature merge: `13d3d32909318347e859a0480bae54c0e61507d9`;
+- hosted iCamp Supabase is current through migrations 0020, 0021 and 0022;
+- hosted database verification confirms both map tables exist, the Build 020 migration is recorded, and `anon`/`authenticated` cannot select the private polygon table;
+- Supabase Security Advisor reports zero findings after the hosted schema promotion.
+
 ## Manual action
-No manual action is required to implement or promote Build 020.
+No manual action was required to implement, verify, migrate or promote Build 020.
