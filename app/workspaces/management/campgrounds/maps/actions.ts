@@ -105,11 +105,17 @@ export async function uploadOverheadImageAction(formData: FormData) {
     secretKey: config.secretKey,
   });
 
+  const uploadBytes = new Uint8Array(sanitized.bytes.byteLength);
+  uploadBytes.set(sanitized.bytes);
+  const uploadBody = new Blob([uploadBytes.buffer], {
+    type: validated.contentType,
+  });
+
   await adapter.uploadValidatedObject({
     bucketKey: validated.bucketKey,
     objectKey,
     contentType: validated.contentType,
-    body: sanitized.bytes,
+    body: uploadBody,
   });
 
   try {
