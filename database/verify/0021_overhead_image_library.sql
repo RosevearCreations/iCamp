@@ -152,13 +152,16 @@ values (
 returning id as b18_version_v2
 \gset
 
+select set_config('icamp.test.b18_version_v1', :'b18_version_v1', true);
+select set_config('icamp.test.b18_version_v2', :'b18_version_v2', true);
+
 savepoint duplicate_active;
 do $build018_active$
 begin
   begin
     update icamp_private.campground_map_image_versions
     set is_active = true
-    where id = :'b18_version_v1';
+    where id = current_setting('icamp.test.b18_version_v1')::uuid;
     raise exception 'Expected one-active-version constraint';
   exception
     when unique_violation then
@@ -175,7 +178,7 @@ begin
     update icamp_private.campground_map_image_versions
     set is_published = true,
         published_at = statement_timestamp()
-    where id = :'b18_version_v1';
+    where id = current_setting('icamp.test.b18_version_v1')::uuid;
     raise exception 'Expected one-published-version constraint';
   exception
     when unique_violation then
@@ -202,7 +205,7 @@ begin
     row_version
   into row_data
   from icamp_private.campground_map_image_versions
-  where id = :'b18_version_v2';
+  where id = current_setting('icamp.test.b18_version_v2')::uuid;
 
   if row_data.version_number <> 2 then
     raise exception 'Expected version 2';
