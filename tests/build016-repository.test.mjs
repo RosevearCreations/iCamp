@@ -124,6 +124,6 @@ test("Build 016 source of truth remains completed after later queue advances", a
   );
   assert.match(
     queue,
-    /Next active build[\s\S]*Build 020 — Polygon Plotter Core[\s\S]*QUEUED — NOT STARTED/u,
+    /Next active build[\s\S]*Build 021 — Advanced Polygon Editing[\\s\\S]*QUEUED — NOT STARTED/u,
   );
 });
