@@ -135,7 +135,10 @@ export default async function MapCoordinateEnginePage({
                 Upload or activate an image version before using the coordinate
                 engine.
               </p>
-              <Link className="primary-link primary-link--dark" href={libraryHref}>
+              <Link
+                className="primary-link primary-link--dark"
+                href={libraryHref}
+              >
                 Open overhead image library
               </Link>
             </div>
