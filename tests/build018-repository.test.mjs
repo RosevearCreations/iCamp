@@ -112,14 +112,16 @@ test("Build 018 preserves the full campground SaaS roadmap", async () => {
   assert.match(coverage, /Platform-owner SaaS tenant administration/u);
 });
 
-test("Build 018 source of truth remains queued until production promotion", async () => {
+test("Build 018 source of truth records production promotion and queue advance", async () => {
   const build = await readFile("docs/BUILD_018.md", "utf8");
   const queue = await readFile("docs/BUILD_QUEUE.md", "utf8");
 
-  assert.match(build, /IN DEVELOPMENT/u);
-  assert.match(build, /No manual action is required to promote this build/u);
+  assert.match(build, /FULLY PROMOTED — `main` GREEN/u);
+  assert.match(build, /9110825f84d38b11f1cfaa91ba723682b2adcce9/u);
+  assert.match(build, /37871367539/u);
+  assert.match(build, /No manual action was required to promote Build 018/u);
   assert.match(
     queue,
-    /Next active build[\s\S]*Build 018 — Overhead Image Library & Versioning[\s\S]*QUEUED — NOT STARTED/u,
+    /Build 018 — Overhead Image Library & Versioning[\s\S]*FULLY PROMOTED — `main` GREEN[\s\S]*Next active build[\s\S]*Build 019 — Zoom\/Pan Coordinate Engine[\s\S]*QUEUED — NOT STARTED/u,
   );
 });
