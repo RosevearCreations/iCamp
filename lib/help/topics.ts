@@ -142,6 +142,21 @@ export const helpTopics = {
     ],
     audience: "public",
   },
+  "campground.map.coordinates": {
+    id: "campground.map.coordinates",
+    slug: "campground-map-coordinate-engine",
+    title: "Campground map coordinate engine",
+    summary:
+      "The coordinate engine keeps map pixels, normalized coordinates, zoom, pan, overlays and pointer hit-testing aligned through one shared transform.",
+    details: [
+      "Future geometry stores original-image pixels plus normalized 0–1 coordinates so editing stays precise and drift can be detected.",
+      "Zooming is anchored to the cursor or viewport centre, so the same source point stays under the chosen focal point.",
+      "The same affine matrix is used for the image and overlay layers; hit-testing uses its inverse instead of separate scaling formulas.",
+      "High-DPI rendering uses a device-pixel matrix derived from the CSS transform without changing source coordinates.",
+      "Polygon creation is intentionally reserved for Build 020; this build establishes the coordinate contract and inspection surface.",
+    ],
+    audience: "privileged",
+  },
   "campground.map.images": {
     id: "campground.map.images",
     slug: "campground-overhead-image-library",
