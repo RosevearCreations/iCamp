@@ -402,7 +402,9 @@ export function CoordinateEngine({
           />
         ) : (
           <div className={styles.loading}>
-            {imageFailed ? "Map image unavailable." : "Loading active map image…"}
+            {imageFailed
+              ? "Map image unavailable."
+              : "Loading active map image…"}
           </div>
         )}
 
