@@ -1,3 +1,17 @@
+-- Repair Build 008's over-escaped filename control-character check before
+-- overhead-map uploads begin relying on ordinary camera/drone filenames.
+alter table icamp_private.media_assets
+  drop constraint if exists media_assets_original_filename_check;
+
+alter table icamp_private.media_assets
+  add constraint media_assets_original_filename_check
+  check (
+    char_length(original_filename) between 1 and 240
+    and original_filename !~ '[[:cntrl:]]'
+    and strpos(original_filename, '/') = 0
+    and strpos(original_filename, chr(92)) = 0
+  );
+
 -- iCamp Build 018
 -- Overhead image library and version metadata.
 
