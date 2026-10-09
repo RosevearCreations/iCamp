@@ -141,15 +141,21 @@ export default async function CampgroundMapImageLibraryPage({
             helpTopic="campground.map.images"
           />
           <p className={styles.storageStatus}>
-            Storage status: <strong>{uploadReady ? "configured" : "not configured"}</strong>.
+            Storage status:{" "}
+            <strong>{uploadReady ? "configured" : "not configured"}</strong>.
             Uploads are server-authorized, limited to JPEG/PNG/WebP, capped by
-            byte/pixel limits, and sanitized to remove common EXIF/XMP/text metadata.
+            byte/pixel limits, and sanitized to remove common EXIF/XMP/text
+            metadata.
           </p>
           <form
             action={uploadOverheadImageAction}
             className={styles.uploadGrid}
           >
-            <input type="hidden" name="campgroundId" value={selected.campgroundId} />
+            <input
+              type="hidden"
+              name="campgroundId"
+              value={selected.campgroundId}
+            />
             <label className={styles.field}>
               <span>Image</span>
               <input
@@ -178,7 +184,11 @@ export default async function CampgroundMapImageLibraryPage({
               />
             </label>
             <div className={styles.full}>
-              <button className="primary-button" type="submit" disabled={!uploadReady}>
+              <button
+                className="primary-button"
+                type="submit"
+                disabled={!uploadReady}
+              >
                 Upload new version
               </button>
             </div>
@@ -191,10 +201,14 @@ export default async function CampgroundMapImageLibraryPage({
             title="Map image versions"
             id="versions-heading"
             helpTopic="campground.map.images"
-            trailing={<span className="build-chip">{versions.length} versions</span>}
+            trailing={
+              <span className="build-chip">{versions.length} versions</span>
+            }
           />
           {versions.length === 0 ? (
-            <p>No overhead image versions have been uploaded for this campground.</p>
+            <p>
+              No overhead image versions have been uploaded for this campground.
+            </p>
           ) : (
             <div className={styles.versionGrid}>
               {versions.map((version) => (
@@ -250,7 +264,11 @@ export default async function CampgroundMapImageLibraryPage({
                           name="campgroundId"
                           value={selected.campgroundId}
                         />
-                        <input type="hidden" name="mapVersionId" value={version.id} />
+                        <input
+                          type="hidden"
+                          name="mapVersionId"
+                          value={version.id}
+                        />
                         <input
                           type="hidden"
                           name="rowVersion"
@@ -272,7 +290,11 @@ export default async function CampgroundMapImageLibraryPage({
                           name="campgroundId"
                           value={selected.campgroundId}
                         />
-                        <input type="hidden" name="mapVersionId" value={version.id} />
+                        <input
+                          type="hidden"
+                          name="mapVersionId"
+                          value={version.id}
+                        />
                         <input
                           type="hidden"
                           name="rowVersion"
