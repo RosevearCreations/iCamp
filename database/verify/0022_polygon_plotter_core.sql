@@ -51,6 +51,11 @@ update icamp_private.campground_map_polygons
 set label = 'Pool deck verified'
 where id = :'b20_polygon_id';
 
+select set_config('icamp.test.b20_polygon_id', :'b20_polygon_id', true);
+select set_config('icamp.test.b20_org_id', :'b20_org_id', true);
+select set_config('icamp.test.b20_camp_id', :'b20_camp_id', true);
+select set_config('icamp.test.b20_map_version_id', :'b20_map_version_id', true);
+
 do $build020_verify$
 declare
   row_data record;
@@ -58,7 +63,7 @@ begin
   select label, jsonb_array_length(geometry -> 'vertices') as vertex_count, row_version
   into row_data
   from icamp_private.campground_map_polygons
-  where id = :'b20_polygon_id';
+  where id = current_setting('icamp.test.b20_polygon_id')::uuid;
 
   if row_data.label <> 'Pool deck verified' then
     raise exception 'Polygon update was not persisted';
@@ -80,7 +85,10 @@ begin
       organization_id, campground_id, map_image_version_id, label, geometry
     )
     values (
-      :'b20_org_id', :'b20_camp_id', :'b20_map_version_id', 'Invalid',
+      current_setting('icamp.test.b20_org_id')::uuid,
+      current_setting('icamp.test.b20_camp_id')::uuid,
+      current_setting('icamp.test.b20_map_version_id')::uuid,
+      'Invalid',
       '{"schemaVersion":1,"closed":true,"vertices":[]}'::jsonb
     );
     raise exception 'Expected geometry constraint';
