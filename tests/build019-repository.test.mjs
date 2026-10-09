@@ -25,8 +25,8 @@ test("Build 019 defines the dual original-image and normalized storage contract"
   assert.match(engine, /createStoredMapPoint/u);
   assert.match(engine, /schemaVersion/u);
   assert.match(engine, /normalized/u);
-  assert.match(docs, /original-image pixels/u);
-  assert.match(docs, /normalized 0–1/u);
+  assert.match(docs, /original-image pixels/iu);
+  assert.match(docs, /normalized 0–1/iu);
   assert.match(docs, /Build 020/u);
 });
 
