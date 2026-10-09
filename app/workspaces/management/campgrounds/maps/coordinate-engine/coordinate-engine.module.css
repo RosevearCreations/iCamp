@@ -1,0 +1,191 @@
+.engine {
+  display: grid;
+  gap: 1rem;
+}
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.zoomReadout {
+  min-width: 4.5rem;
+  padding: 0.7rem 0.8rem;
+  border: 1px solid var(--line);
+  border-radius: 0.72rem;
+  background: var(--surface-soft);
+  color: var(--brand);
+  font-weight: 850;
+  text-align: center;
+}
+
+.viewport {
+  position: relative;
+  width: 100%;
+  min-height: 32rem;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 0.9rem;
+  background:
+    linear-gradient(45deg, rgb(23 63 53 / 4%) 25%, transparent 25%),
+    linear-gradient(-45deg, rgb(23 63 53 / 4%) 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, rgb(23 63 53 / 4%) 75%),
+    linear-gradient(-45deg, transparent 75%, rgb(23 63 53 / 4%) 75%), #f7faf7;
+  background-position:
+    0 0,
+    0 0,
+    1rem 1rem,
+    1rem 1rem;
+  background-size: 2rem 2rem;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+}
+
+.dragging {
+  cursor: grabbing;
+}
+
+.mapImage {
+  position: absolute;
+  top: 0;
+  left: 0;
+  max-width: none;
+  transform-origin: 0 0;
+  pointer-events: none;
+  user-select: none;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  color: var(--accent);
+  pointer-events: none;
+}
+
+.centerLabel {
+  position: absolute;
+  padding: 0.25rem 0.45rem;
+  border-radius: 0.4rem;
+  background: rgb(12 45 38 / 86%);
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 800;
+  transform: translate(0.65rem, 0.65rem);
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+.loading {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  color: var(--muted);
+  font-weight: 750;
+  text-align: center;
+}
+
+.readouts {
+  padding: 0.9rem;
+  border: 1px solid var(--line);
+  border-radius: 0.85rem;
+  background: var(--surface-soft);
+}
+
+.readouts dl {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin: 0;
+}
+
+.readouts div {
+  min-width: 0;
+}
+
+.readouts dt {
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.readouts dd {
+  margin: 0.3rem 0 0;
+  color: var(--brand);
+  font-weight: 750;
+  overflow-wrap: anywhere;
+}
+
+.instructions {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.propertySelector {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.85rem;
+  align-items: end;
+}
+
+.propertySelector label {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.propertySelector label span {
+  color: var(--muted);
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.propertySelector select {
+  min-height: 2.75rem;
+  padding: 0.65rem 0.75rem;
+  border: 1px solid var(--line);
+  border-radius: 0.7rem;
+  background: #fff;
+  color: var(--ink);
+  font: inherit;
+}
+
+.emptyState {
+  display: grid;
+  gap: 0.8rem;
+  padding: 1rem;
+  border: 1px solid var(--line);
+  border-radius: 0.9rem;
+  background: var(--surface-soft);
+}
+
+.emptyState p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+@media (max-width: 70rem) {
+  .readouts dl {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 46rem) {
+  .viewport {
+    min-height: 24rem;
+  }
+
+  .readouts dl,
+  .propertySelector {
+    grid-template-columns: 1fr;
+  }
+}
