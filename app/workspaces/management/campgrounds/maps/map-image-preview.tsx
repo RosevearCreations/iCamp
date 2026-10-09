@@ -42,11 +42,15 @@ export function MapImagePreview({
   }, [mediaAssetId]);
 
   if (failed) {
-    return <div className="map-preview map-preview--empty">Preview unavailable</div>;
+    return (
+      <div className="map-preview map-preview--empty">Preview unavailable</div>
+    );
   }
 
   if (!url) {
-    return <div className="map-preview map-preview--empty">Loading preview…</div>;
+    return (
+      <div className="map-preview map-preview--empty">Loading preview…</div>
+    );
   }
 
   return (
