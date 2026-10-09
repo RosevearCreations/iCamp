@@ -32,8 +32,7 @@
     linear-gradient(45deg, rgb(23 63 53 / 4%) 25%, transparent 25%),
     linear-gradient(-45deg, rgb(23 63 53 / 4%) 25%, transparent 25%),
     linear-gradient(45deg, transparent 75%, rgb(23 63 53 / 4%) 75%),
-    linear-gradient(-45deg, transparent 75%, rgb(23 63 53 / 4%) 75%),
-    #f7faf7;
+    linear-gradient(-45deg, transparent 75%, rgb(23 63 53 / 4%) 75%), #f7faf7;
   background-position:
     0 0,
     0 0,
