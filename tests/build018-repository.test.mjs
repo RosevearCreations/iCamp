@@ -104,7 +104,7 @@ test("Build 018 preserves the full campground SaaS roadmap", async () => {
   assert.match(roadmap, /Occupational Safety Compliance Tracking/u);
   assert.match(roadmap, /OSHA-style \/ Canadian OHS/u);
   assert.match(roadmap, /Advanced Internal Financial Ledger/u);
-  assert.match(roadmap, /job\/service costing/u);
+  assert.match(roadmap, /job\/service\/work-order[\s\S]*costing/u);
   assert.match(roadmap, /tax-period worksheets/u);
   assert.match(roadmap, /monthly subscription status\/entitlement model/u);
   assert.match(coverage, /Platform-owner SaaS tenant administration/u);
