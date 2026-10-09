@@ -14,7 +14,11 @@ function field(formData: FormData, key: string) {
 
 export async function saveMapPolygonAction(formData: FormData) {
   const campgroundId = field(formData, "campgroundId");
-  const session = await requireCampgroundPermission(campgroundId, "campground.map", path);
+  const session = await requireCampgroundPermission(
+    campgroundId,
+    "campground.map",
+    path,
+  );
   const rawGeometry = field(formData, "geometry");
   let geometry;
   try {
@@ -34,5 +38,7 @@ export async function saveMapPolygonAction(formData: FormData) {
   });
 
   revalidatePath(path);
-  redirect(`${path}?campground=${encodeURIComponent(campgroundId)}&saved=${encodeURIComponent("Polygon saved.")}`);
+  redirect(
+    `${path}?campground=${encodeURIComponent(campgroundId)}&saved=${encodeURIComponent("Polygon saved.")}`,
+  );
 }
