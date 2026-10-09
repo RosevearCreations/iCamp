@@ -146,24 +146,18 @@ export function CoordinateEngine({
     ],
   );
 
-  useEffect(() => {
-    setView((current) =>
-      constrainMapPan(current, {
-        sourceWidth,
-        sourceHeight,
-        viewportWidth: viewport.width,
-        viewportHeight: viewport.height,
-      }),
-    );
-  }, [sourceHeight, sourceWidth, viewport.height, viewport.width]);
+  const constrainedView = useMemo(
+    () => constrainMapPan(view, dimensions),
+    [dimensions, view],
+  );
 
   const transform = useMemo(
     () =>
       createMapViewportTransform({
         ...dimensions,
-        ...view,
+        ...constrainedView,
       }),
-    [dimensions, view],
+    [constrainedView, dimensions],
   );
 
   const centerMarker = useMemo(
@@ -204,14 +198,15 @@ export function CoordinateEngine({
 
   function zoomAt(clientX: number, clientY: number, factor: number) {
     const anchor = viewportPoint(clientX, clientY);
-    setView((current) =>
-      zoomMapAtViewportPoint(
-        current,
+    setView((current) => {
+      const bounded = constrainMapPan(current, dimensions);
+      return zoomMapAtViewportPoint(
+        bounded,
         anchor,
         dimensions,
-        current.zoom * factor,
-      ),
-    );
+        bounded.zoom * factor,
+      );
+    });
   }
 
   function zoomAtCenter(factor: number) {
@@ -219,14 +214,15 @@ export function CoordinateEngine({
       x: viewport.width / 2,
       y: viewport.height / 2,
     };
-    setView((current) =>
-      zoomMapAtViewportPoint(
-        current,
+    setView((current) => {
+      const bounded = constrainMapPan(current, dimensions);
+      return zoomMapAtViewportPoint(
+        bounded,
         anchor,
         dimensions,
-        current.zoom * factor,
-      ),
-    );
+        bounded.zoom * factor,
+      );
+    });
   }
 
   function panBy(deltaX: number, deltaY: number) {
@@ -258,8 +254,8 @@ export function CoordinateEngine({
       pointerId: event.pointerId,
       startX: event.clientX,
       startY: event.clientY,
-      panX: view.panX,
-      panY: view.panY,
+      panX: transform.panX,
+      panY: transform.panY,
     };
     setDragging(true);
   }
@@ -342,7 +338,7 @@ export function CoordinateEngine({
           className="primary-button"
           type="button"
           onClick={() => zoomAtCenter(1.2)}
-          disabled={view.zoom >= mapCoordinateLimits.maxZoom}
+          disabled={transform.zoom >= mapCoordinateLimits.maxZoom}
         >
           Zoom in
         </button>
@@ -350,7 +346,7 @@ export function CoordinateEngine({
           className="primary-button"
           type="button"
           onClick={() => zoomAtCenter(1 / 1.2)}
-          disabled={view.zoom <= mapCoordinateLimits.minZoom}
+          disabled={transform.zoom <= mapCoordinateLimits.minZoom}
         >
           Zoom out
         </button>
