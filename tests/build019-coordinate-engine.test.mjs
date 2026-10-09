@@ -32,10 +32,7 @@ test("Build 019 pixel and normalized coordinates round-trip without drift", () =
 
   const stored = createStoredMapPoint(image, 4096, 3072);
   assert.equal(stored.schemaVersion, 1);
-  assert.deepEqual(
-    validateStoredMapPoint(stored, 4096, 3072),
-    stored,
-  );
+  assert.deepEqual(validateStoredMapPoint(stored, 4096, 3072), stored);
 });
 
 test("Build 019 rejects stored coordinate pairs that have drifted", () => {
@@ -63,10 +60,10 @@ test("Build 019 fit transform centres the source image", () => {
   });
 
   assert.equal(transform.fitScale, 0.25);
-  assert.deepEqual(
-    imagePointToViewport({ x: 2000, y: 1000 }, transform),
-    { x: 500, y: 250 },
-  );
+  assert.deepEqual(imagePointToViewport({ x: 2000, y: 1000 }, transform), {
+    x: 500,
+    y: 250,
+  });
 });
 
 test("Build 019 image and viewport transforms are exact inverses", () => {
@@ -156,18 +153,8 @@ test("Build 019 repeated zoom cycles do not move the hit-tested source point", (
   const initialSource = viewportPointToImage(anchor, initialTransform);
 
   for (let index = 0; index < 20; index += 1) {
-    view = zoomMapAtViewportPoint(
-      view,
-      anchor,
-      dimensions,
-      view.zoom * 1.08,
-    );
-    view = zoomMapAtViewportPoint(
-      view,
-      anchor,
-      dimensions,
-      view.zoom / 1.08,
-    );
+    view = zoomMapAtViewportPoint(view, anchor, dimensions, view.zoom * 1.08);
+    view = zoomMapAtViewportPoint(view, anchor, dimensions, view.zoom / 1.08);
   }
 
   const finalTransform = createMapViewportTransform({
