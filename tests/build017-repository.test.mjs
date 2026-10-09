@@ -101,6 +101,10 @@ test("Build 017 production closeout is recorded and queue advances", async () =>
   );
   assert.match(
     queue,
-    /Next active build[\s\S]*Build 019 — Zoom\/Pan Coordinate Engine[\s\S]*QUEUED — NOT STARTED/u,
+    /Build 019 — Zoom\/Pan Coordinate Engine[\s\S]*FULLY PROMOTED — `main` GREEN/u,
+  );
+  assert.match(
+    queue,
+    /Next active build[\s\S]*Build 020 — Polygon Plotter Core[\s\S]*QUEUED — NOT STARTED/u,
   );
 });
