@@ -7,8 +7,14 @@ test("Build 021 adds persistent polygon lifecycle and duplicate provenance", asy
     "database/migrations/0023_advanced_polygon_editing.sql",
     "utf8",
   );
-  assert.match(migration, /add column is_locked boolean not null default false/u);
-  assert.match(migration, /add column is_hidden boolean not null default false/u);
+  assert.match(
+    migration,
+    /add column is_locked boolean not null default false/u,
+  );
+  assert.match(
+    migration,
+    /add column is_hidden boolean not null default false/u,
+  );
   assert.match(migration, /archived_at timestamptz/u);
   assert.match(migration, /duplicated_from_polygon_id/u);
   assert.match(migration, /campground_map_polygons_active_visibility_idx/u);
