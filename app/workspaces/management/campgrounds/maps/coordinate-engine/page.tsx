@@ -12,6 +12,7 @@ import {
 } from "@/lib/authz/postgres.mjs";
 import { listMapImageVersions } from "@/lib/map-images/postgres.mjs";
 import { listMapLayers } from "@/lib/map-layers/postgres.mjs";
+import { listMapObjects } from "@/lib/map-objects/postgres.mjs";
 import { listMapPolygons } from "@/lib/map-polygons/postgres.mjs";
 
 import { CoordinateEngine } from "./coordinate-engine";
@@ -20,9 +21,9 @@ import styles from "./coordinate-engine.module.css";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Map layers, labels & icons · iCamp",
+  title: "Canonical map object binding · iCamp",
   description:
-    "Compose permission-aware campground map layers with ordered labels and icons.",
+    "Bind campground polygons and points to canonical sites, cottages and facility objects.",
 };
 
 export default async function MapCoordinateEnginePage({
@@ -76,6 +77,13 @@ export default async function MapCoordinateEnginePage({
         activeVersion.id,
       )
     : [];
+  const mapObjects = activeVersion
+    ? await listMapObjects(
+        session.user.id,
+        selected.campgroundId,
+        activeVersion.id,
+      )
+    : [];
   const libraryHref =
     "/workspaces/management/campgrounds/maps?campground=" +
     encodeURIComponent(selected.campgroundId);
@@ -92,16 +100,16 @@ export default async function MapCoordinateEnginePage({
           <span aria-hidden="true">/</span>
           <Link href={libraryHref}>Overhead images</Link>
           <span aria-hidden="true">/</span>
-          <span>Polygon plotter</span>
+          <span>Canonical objects</span>
         </nav>
 
         <section className="hero-panel">
-          <p className="eyebrow">Build 022</p>
-          <h1>Map Layers, Labels & Icons</h1>
+          <p className="eyebrow">Build 023</p>
+          <h1>Canonical Map Object Binding</h1>
           <p className="hero-panel__lead">
-            Organize campground geometry into booking, maintenance, security,
-            utilities, amenities and management layers with server-enforced
-            visibility permissions, persistent order, labels and icons.
+            Bind polygons and precise map points to stable canonical identities
+            for sites, cottages, pools, washrooms, gates, docks, roads,
+            buildings and operational assets.
           </p>
         </section>
 
@@ -133,7 +141,7 @@ export default async function MapCoordinateEnginePage({
               </select>
             </label>
             <button className="primary-button" type="submit">
-              Open polygon plotter
+              Open canonical map editor
             </button>
           </form>
         </section>
@@ -141,10 +149,10 @@ export default async function MapCoordinateEnginePage({
         <section className="content-panel" aria-labelledby="engine-heading">
           <SectionHeading
             eyebrow="Visual map editor"
-            title="Layer-aware active-image map editor"
+            title="Canonical object map editor"
             id="engine-heading"
-            helpTopic="campground.map.layers"
-            trailing={<span className="build-chip">Build 022</span>}
+            helpTopic="campground.map.objects"
+            trailing={<span className="build-chip">Build 023</span>}
           />
           {activeVersion ? (
             <CoordinateEngine
@@ -156,6 +164,7 @@ export default async function MapCoordinateEnginePage({
               sourceHeight={activeVersion.sourceHeight}
               initialPolygons={polygons}
               initialLayers={layers}
+              initialMapObjects={mapObjects}
               canConfigureLayers={canConfigureLayers}
             />
           ) : (
@@ -177,15 +186,15 @@ export default async function MapCoordinateEnginePage({
         <section className="content-panel" aria-labelledby="contract-heading">
           <SectionHeading
             eyebrow="Geometry contract"
-            title="Version-bound, drift-resistant polygons"
+            title="Version-bound, drift-resistant object geometry"
             id="contract-heading"
             helpTopic="campground.map.coordinates"
           />
           <p>
-            Every saved vertex retains original-image pixels plus normalized 0–1
-            coordinates from Build 019. The polygon is bound to the exact
-            overhead image version used for editing, so later image changes do
-            not silently move clickable areas.
+            Polygon and point bindings use the Build 019 original-image plus
+            normalized 0–1 coordinate contract and remain tied to the exact map
+            image version. Canonical object identity remains stable even when
+            later domain builds add booking, facility or asset details.
           </p>
         </section>
 
@@ -197,22 +206,22 @@ export default async function MapCoordinateEnginePage({
             helpTopic="campground.map.polygons"
           />
           <p>
-            Build 022 remains on iCamp-owned imagery, SVG overlays, PostgreSQL
-            and the existing Supabase backend. No paid map, icon, GIS, Vercel or
-            Cloudflare resource is required for layer composition.
+            Build 023 keeps canonical map identities and geometry in the
+            existing PostgreSQL/Supabase boundary. No paid map, GIS, Vercel or
+            Cloudflare resource is required for object binding.
           </p>
         </section>
 
         <section className="content-panel" aria-labelledby="freshness-heading">
           <SectionHeading
             eyebrow="Administrative tracking"
-            title="Layer-editor freshness"
+            title="Object-binding freshness"
             id="freshness-heading"
             helpTopic="admin.refresh"
           />
           <AdminRefreshControl
             renderedAt={new Date().toISOString()}
-            sectionKey="management.campground-map-layers-labels-icons"
+            sectionKey="management.campground-map-object-binding"
           />
         </section>
       </div>
