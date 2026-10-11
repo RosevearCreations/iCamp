@@ -178,7 +178,6 @@ export async function moveMapLayerAction(formData: FormData) {
   finish(campgroundId, "Map layer order updated.");
 }
 
-
 export async function createMapObjectAction(formData: FormData) {
   const campgroundId = field(formData, "campgroundId");
   const session = await requireCampgroundPermission(

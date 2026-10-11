@@ -12,8 +12,14 @@ test("Build 023 database prevents orphan and duplicate object bindings", async (
   assert.match(migration, /map_object_id uuid not null/u);
   assert.match(migration, /unique \(map_object_id\)/u);
   assert.match(migration, /unique \(polygon_id\)/u);
-  assert.match(migration, /foreign key \(organization_id, campground_id, map_object_id\)/u);
-  assert.match(migration, /foreign key \(organization_id, campground_id, polygon_id\)/u);
+  assert.match(
+    migration,
+    /foreign key \(organization_id, campground_id, map_object_id\)/u,
+  );
+  assert.match(
+    migration,
+    /foreign key \(organization_id, campground_id, polygon_id\)/u,
+  );
   assert.match(migration, /geometry_kind in \('polygon', 'point'\)/u);
   assert.match(migration, /canonicalize_map_object_binding/u);
 });

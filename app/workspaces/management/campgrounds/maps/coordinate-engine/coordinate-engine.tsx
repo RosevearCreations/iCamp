@@ -305,9 +305,7 @@ export function CoordinateEngine({
     initialLayers.find((layer) => layer.isEnabled) ??
     initialLayers[0] ??
     null;
-  const [pointLayerId, setPointLayerId] = useState(
-    initialPointLayer?.id ?? "",
-  );
+  const [pointLayerId, setPointLayerId] = useState(initialPointLayer?.id ?? "");
   const [selectedVertex, setSelectedVertex] = useState<number | null>(null);
   const [past, setPast] = useState<MapPoint[][]>([]);
   const [future, setFuture] = useState<MapPoint[][]>([]);
@@ -1114,7 +1112,9 @@ export function CoordinateEngine({
                     const point = binding.pointGeometry!.image;
                     const layer = layerById.get(binding.layerId);
                     const iconKey =
-                      object.defaultIconKey || binding.layerIconKey || layer?.iconKey;
+                      object.defaultIconKey ||
+                      binding.layerIconKey ||
+                      layer?.iconKey;
                     return (
                       <g
                         key={object.id}
@@ -1364,7 +1364,9 @@ export function CoordinateEngine({
             <div className={styles.objectInspectorHeader}>
               <div>
                 <h4>Object inspector</h4>
-                <p>One canonical object can have one polygon or point binding.</p>
+                <p>
+                  One canonical object can have one polygon or point binding.
+                </p>
               </div>
               <span>{initialMapObjects.length} visible</span>
             </div>
@@ -1441,11 +1443,13 @@ export function CoordinateEngine({
                               <dt>Point</dt>
                               <dd>
                                 {formatCoordinate(
-                                  selectedMapObject.binding.pointGeometry.image.x,
+                                  selectedMapObject.binding.pointGeometry.image
+                                    .x,
                                 )}
                                 ,{" "}
                                 {formatCoordinate(
-                                  selectedMapObject.binding.pointGeometry.image.y,
+                                  selectedMapObject.binding.pointGeometry.image
+                                    .y,
                                 )}{" "}
                                 px
                               </dd>
@@ -2089,8 +2093,9 @@ export function CoordinateEngine({
       <p className={styles.instructions}>
         Build 023 binds saved polygons or precise Build 019 points to one
         canonical campground identity. The object inspector shows the current
-        binding and prevents duplicate identities from silently sharing geometry.
-        Advanced polygon editing and Build 022 layer visibility remain unchanged.
+        binding and prevents duplicate identities from silently sharing
+        geometry. Advanced polygon editing and Build 022 layer visibility remain
+        unchanged.
       </p>
     </div>
   );
