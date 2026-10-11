@@ -91,9 +91,7 @@ insert into icamp_private.campground_map_layers (
 )
 values
   (:'b23_org_id', :'b23_camp_id', 'booking', 'Booking', 'calendar', 10, 'reservation.read'),
-  (:'b23_org_id', :'b23_camp_id', 'amenities', 'Amenities', 'star', 50, 'accommodation.read')
-returning id
-\gset
+  (:'b23_org_id', :'b23_camp_id', 'amenities', 'Amenities', 'star', 50, 'accommodation.read');
 
 select id as b23_booking_layer_id
 from icamp_private.campground_map_layers
