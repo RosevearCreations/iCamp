@@ -38,12 +38,20 @@ test("Build 023 service binds polygon and point geometry through one canonical i
   assert.match(domain, /appendAuditEvent/u);
 });
 
-test("Build 023 starts in development while queue remains on Build 023", async () => {
+test("Build 023 is fully promoted and advances the queue", async () => {
   const build = await readFile("docs/BUILD_023.md", "utf8");
   const queue = await readFile("docs/BUILD_QUEUE.md", "utf8");
-  assert.match(build, /IN DEVELOPMENT/u);
+
+  assert.match(build, /FULLY PROMOTED — `main` GREEN/u);
   assert.match(
     queue,
-    /Next active build[\s\S]*Build 023 — Canonical Map Object Binding[\s\S]*QUEUED — NOT STARTED/u,
+    /Build 023 — Canonical Map Object Binding[\s\S]*FULLY PROMOTED — `main` GREEN[\s\S]*Next active build[\s\S]*Build 024 — Unified Accommodation Model[\s\S]*QUEUED — NOT STARTED/u,
   );
+  assert.match(build, /ec7d01f5b41750b25a4f47b88f5259f34826014b/u);
+  assert.match(build, /38157759806/u);
+  assert.match(build, /38157759804/u);
+  assert.match(build, /38157759805/u);
+  assert.match(build, /20261011163857/u);
+  assert.match(build, /20261011165829/u);
+  assert.match(build, /No manual user action was required/u);
 });
