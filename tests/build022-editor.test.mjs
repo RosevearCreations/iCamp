@@ -47,5 +47,8 @@ test("Build 022 page and contextual help expose layer semantics", async () => {
 test("Build 022 keeps external hosting and mapping dependencies out", async () => {
   const build = await readFile("docs/BUILD_022.md", "utf8");
   assert.match(build, /no third-party icon or map service is required/u);
-  assert.match(build, /requires no new Vercel, Cloudflare, mapping, icon or GIS provider/u);
+  assert.match(
+    build,
+    /requires no new Vercel, Cloudflare, mapping, icon or GIS provider/u,
+  );
 });

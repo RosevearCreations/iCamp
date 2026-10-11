@@ -50,8 +50,6 @@ import {
 } from "./actions";
 import styles from "./coordinate-engine.module.css";
 
-
-
 interface PointerReadout {
   imageX: number;
   imageY: number;
@@ -233,9 +231,7 @@ export function CoordinateEngine({
   const [mapLabel, setMapLabel] = useState(
     firstPolygon?.mapLabel ?? firstPolygon?.label ?? "New polygon",
   );
-  const [mapIconKey, setMapIconKey] = useState(
-    firstPolygon?.mapIconKey ?? "",
-  );
+  const [mapIconKey, setMapIconKey] = useState(firstPolygon?.mapIconKey ?? "");
   const [mapLabelVisible, setMapLabelVisible] = useState(
     firstPolygon?.mapLabelVisible ?? true,
   );
@@ -1102,27 +1098,28 @@ export function CoordinateEngine({
                 ) : null}
                 {selectedLayerVisible
                   ? draft.map((point, index) => (
-                  <circle
-                    key={index}
-                    cx={point.x}
-                    cy={point.y}
-                    r={vertexRadius}
-                    className={
-                      index === selectedVertex
-                        ? styles.selectedVertex
-                        : selectedPolygon?.isLocked ||
-                            selectedPolygon?.archivedAt
-                          ? styles.lockedVertex
-                          : styles.vertex
-                    }
-                    style={{
-                      pointerEvents:
-                        mode === "edit" && editable ? "all" : "none",
-                    }}
-                    onPointerDown={(event) => startVertexDrag(event, index)}
-                  />
-                ))
-                  : null}            </g>
+                      <circle
+                        key={index}
+                        cx={point.x}
+                        cy={point.y}
+                        r={vertexRadius}
+                        className={
+                          index === selectedVertex
+                            ? styles.selectedVertex
+                            : selectedPolygon?.isLocked ||
+                                selectedPolygon?.archivedAt
+                              ? styles.lockedVertex
+                              : styles.vertex
+                        }
+                        style={{
+                          pointerEvents:
+                            mode === "edit" && editable ? "all" : "none",
+                        }}
+                        onPointerDown={(event) => startVertexDrag(event, index)}
+                      />
+                    ))
+                  : null}{" "}
+              </g>
             </svg>
 
             <div
@@ -1306,9 +1303,7 @@ export function CoordinateEngine({
                   <label className={styles.layerToggle}>
                     <input
                       type="checkbox"
-                      checked={
-                        layer.isEnabled && visibleLayerSet.has(layer.id)
-                      }
+                      checked={layer.isEnabled && visibleLayerSet.has(layer.id)}
                       disabled={!layer.isEnabled}
                       onChange={() => toggleLayerVisibility(layer.id)}
                     />
@@ -1637,7 +1632,8 @@ export function CoordinateEngine({
                   <strong>{polygon.label}</strong>
                   <span>
                     {polygon.layerDisplayName ?? polygon.layerKey} ·{" "}
-                    {polygon.mapLabel} · {polygon.geometry.vertices.length} vertices
+                    {polygon.mapLabel} · {polygon.geometry.vertices.length}{" "}
+                    vertices
                     {polygon.isLocked ? " · locked" : ""}
                     {polygon.isHidden ? " · hidden" : ""}
                   </span>
@@ -1674,9 +1670,9 @@ export function CoordinateEngine({
       <p className={styles.instructions}>
         Build 022 adds permission-gated operational layers, persistent layer
         order, map-facing labels and inherited or polygon-specific icons while
-        retaining Build 021 advanced geometry editing. In edit mode,
-        arrow keys nudge the selected vertex or whole polygon by the chosen
-        precision step; Shift multiplies that movement by 10. Ctrl/Cmd+Z undoes,
+        retaining Build 021 advanced geometry editing. In edit mode, arrow keys
+        nudge the selected vertex or whole polygon by the chosen precision step;
+        Shift multiplies that movement by 10. Ctrl/Cmd+Z undoes,
         Ctrl/Cmd+Shift+Z or Ctrl/Cmd+Y redoes, Delete removes a selected vertex
         when at least three remain, and Escape returns selection to the whole
         polygon.

@@ -4,10 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 import { requireCampgroundPermission } from "@/lib/authz/current-user";
-import {
-  moveMapLayer,
-  updateMapLayer,
-} from "@/lib/map-layers/postgres.mjs";
+import { moveMapLayer, updateMapLayer } from "@/lib/map-layers/postgres.mjs";
 import {
   duplicateMapPolygon,
   saveMapPolygon,

@@ -198,8 +198,8 @@ export default async function MapCoordinateEnginePage({
           />
           <p>
             Build 022 remains on iCamp-owned imagery, SVG overlays, PostgreSQL
-            and the existing Supabase backend. No paid map, icon, GIS, Vercel
-            or Cloudflare resource is required for layer composition.
+            and the existing Supabase backend. No paid map, icon, GIS, Vercel or
+            Cloudflare resource is required for layer composition.
           </p>
         </section>
 
