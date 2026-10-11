@@ -174,6 +174,22 @@ export const helpTopics = {
     ],
     audience: "privileged",
   },
+  "campground.map.layers": {
+    id: "campground.map.layers",
+    slug: "campground-map-layers-labels-icons",
+    title: "Campground map layers, labels and icons",
+    summary:
+      "Authorized staff see only map layers permitted by their campground role, while managers can configure persistent layer order, names, icons and visibility requirements.",
+    details: [
+      "Build 022 provides Booking, Maintenance, Security, Utilities, Amenities and Management layer families without prematurely binding polygons to canonical objects; that binding arrives in Build 023.",
+      "Layer visibility is enforced on the server before layer or polygon data reaches the browser. The checkbox beside a visible layer only controls the current visual composition and cannot bypass authorization.",
+      "A polygon has an administrative label plus a separate map-facing label. Its optional icon can override the layer icon, or it can inherit the layer icon.",
+      "Layer order is persisted and controls overlay composition. Users with campground.configuration can move layers up or down and change the curated permission required to see a layer.",
+      "Disabling a layer turns it off by default without deleting geometry or history.",
+      "Layer composition is graphical-only. Telephone and SMS workflows use secure visual handoff or staff-assisted fallback instead of pretending keypad or text interaction is equivalent.",
+    ],
+    audience: "privileged",
+  },
   "campground.map.images": {
     id: "campground.map.images",
     slug: "campground-overhead-image-library",

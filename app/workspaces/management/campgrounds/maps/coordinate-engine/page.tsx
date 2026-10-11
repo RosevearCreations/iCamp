@@ -20,9 +20,9 @@ import styles from "./coordinate-engine.module.css";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Advanced polygon editor · iCamp",
+  title: "Map layers, labels & icons · iCamp",
   description:
-    "Move, duplicate, lock, hide, archive and precisely edit campground polygons.",
+    "Compose permission-aware campground map layers with ordered labels and icons.",
 };
 
 export default async function MapCoordinateEnginePage({
@@ -96,12 +96,12 @@ export default async function MapCoordinateEnginePage({
         </nav>
 
         <section className="hero-panel">
-          <p className="eyebrow">Build 021</p>
-          <h1>Advanced Polygon Editing</h1>
+          <p className="eyebrow">Build 022</p>
+          <h1>Map Layers, Labels & Icons</h1>
           <p className="hero-panel__lead">
-            Refine campground polygons with undo/redo, whole-shape movement,
-            duplicate, lifecycle controls and pixel-level selection aids while
-            preserving Build 020 geometry integrity.
+            Organize campground geometry into booking, maintenance, security,
+            utilities, amenities and management layers with server-enforced
+            visibility permissions, persistent order, labels and icons.
           </p>
         </section>
 
@@ -141,10 +141,10 @@ export default async function MapCoordinateEnginePage({
         <section className="content-panel" aria-labelledby="engine-heading">
           <SectionHeading
             eyebrow="Visual map editor"
-            title="Advanced active-image polygon editor"
+            title="Layer-aware active-image map editor"
             id="engine-heading"
-            helpTopic="campground.map.polygons"
-            trailing={<span className="build-chip">Build 021</span>}
+            helpTopic="campground.map.layers"
+            trailing={<span className="build-chip">Build 022</span>}
           />
           {activeVersion ? (
             <CoordinateEngine
@@ -197,23 +197,22 @@ export default async function MapCoordinateEnginePage({
             helpTopic="campground.map.polygons"
           />
           <p>
-            The campground map editor still uses iCamp-owned imagery and SVG
-            overlays, so no paid mapping API is required. Supabase remains the
-            current hosted PostgreSQL and media backend; Build 021 creates no
-            new Vercel or Cloudflare project.
+            Build 022 remains on iCamp-owned imagery, SVG overlays, PostgreSQL
+            and the existing Supabase backend. No paid map, icon, GIS, Vercel
+            or Cloudflare resource is required for layer composition.
           </p>
         </section>
 
         <section className="content-panel" aria-labelledby="freshness-heading">
           <SectionHeading
             eyebrow="Administrative tracking"
-            title="Advanced-editor freshness"
+            title="Layer-editor freshness"
             id="freshness-heading"
             helpTopic="admin.refresh"
           />
           <AdminRefreshControl
             renderedAt={new Date().toISOString()}
-            sectionKey="management.campground-map-advanced-polygon-editor"
+            sectionKey="management.campground-map-layers-labels-icons"
           />
         </section>
       </div>
