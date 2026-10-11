@@ -45,13 +45,17 @@ test("Build 021 geometry supports whole-polygon movement and precision snapping"
   assert.match(geometry, /snapMapPoint/u);
 });
 
-test("Build 021 remains unpromoted until its independent gates pass", async () => {
+test("Build 021 is fully promoted and advances the queue", async () => {
   const build = await readFile("docs/BUILD_021.md", "utf8");
   const queue = await readFile("docs/BUILD_QUEUE.md", "utf8");
 
-  assert.match(build, /IN DEVELOPMENT/u);
+  assert.match(build, /FULLY PROMOTED — `main` GREEN/u);
   assert.match(
     queue,
-    /Next active build[\s\S]*Build 021 — Advanced Polygon Editing[\s\S]*QUEUED — NOT STARTED/u,
+    /Build 021 — Advanced Polygon Editing[\s\S]*FULLY PROMOTED — `main` GREEN[\s\S]*Next active build[\s\S]*Build 022 — Map Layers, Labels & Icons[\s\S]*QUEUED — NOT STARTED/u,
   );
+  assert.match(build, /3f20834949c676c0167b8cb7dd3cb14fec179292/u);
+  assert.match(build, /38099351148/u);
+  assert.match(build, /20261011004005/u);
+  assert.match(build, /No manual user action was required/u);
 });

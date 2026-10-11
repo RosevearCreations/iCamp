@@ -1,7 +1,7 @@
 # Build 021 — Advanced Polygon Editing
 
 ## Status
-**IN DEVELOPMENT — feature branch verification pending.**
+**FULLY PROMOTED — `main` GREEN.**
 
 ## Roadmap scope
 - move/duplicate;
@@ -43,5 +43,15 @@ All state changes remain campground scoped behind `campground.map`, use optimist
 ## Platform checkpoint
 Supabase project `cxgszmpbeswdikzofvjv` remains the current hosted PostgreSQL/media backend. Build 021 creates no additional Vercel or Cloudflare project. See `docs/PLATFORM_DECISIONS.md`.
 
+## Promotion evidence
+- feature PR #76 tested head `d163ca4fe29702e19f52e764cddc524868a21c54`: CI `38097940493`, CodeQL `38097940490`, Secret Scan `38097940489` — GREEN;
+- independently verified `dev` merge `dff5c853a8c1c87071f02ebafe867cfeabc189ed`: CI `38098046365`, CodeQL `38098046362`, Secret Scan `38098046355` — GREEN;
+- production PR #77 on exact `dev` tree: CI `38099246732`, CodeQL `38099246678`, Secret Scan `38099246677` — GREEN;
+- first production merge `3f20834949c676c0167b8cb7dd3cb14fec179292`: CI `38099351148`, CodeQL `38099350854`, Secret Scan `38099350862` — GREEN;
+- hosted Supabase migration `20261011004005 / 0023_advanced_polygon_editing` applied successfully;
+- hosted schema confirms `is_locked`, `is_hidden`, `archived_at`, `archived_by_user_id` and `duplicated_from_polygon_id`, plus all four Build 021 indexes;
+- `anon` and `authenticated` retain no direct SELECT privilege on the private polygon table;
+- Supabase Security Advisor reports zero findings after migration 0023.
+
 ## Manual action
-No manual user action is required to implement or promote Build 021 unless the connected Supabase project rejects the migration for an external account/configuration reason.
+No manual user action was required to implement, migrate, verify or promote Build 021.
