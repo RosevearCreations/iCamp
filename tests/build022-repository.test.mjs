@@ -29,12 +29,16 @@ test("Build 022 layer service enforces visibility and configuration permissions"
   assert.match(domain, /row_version/u);
 });
 
-test("Build 022 starts in development while queue remains on Build 022", async () => {
+test("Build 022 is fully promoted and advances the queue", async () => {
   const build = await readFile("docs/BUILD_022.md", "utf8");
   const queue = await readFile("docs/BUILD_QUEUE.md", "utf8");
-  assert.match(build, /IN DEVELOPMENT/u);
+  assert.match(build, /FULLY PROMOTED — `main` GREEN/u);
   assert.match(
     queue,
-    /Next active build[\s\S]*Build 022 — Map Layers, Labels & Icons[\s\S]*QUEUED — NOT STARTED/u,
+    /Build 022 — Map Layers, Labels & Icons[\s\S]*FULLY PROMOTED — `main` GREEN[\s\S]*Next active build[\s\S]*Build 023 — Canonical Map Object Binding[\s\S]*QUEUED — NOT STARTED/u,
   );
+  assert.match(build, /f92e07539625e5aa033161a902b72dc0ac0a070c/u);
+  assert.match(build, /38111598256/u);
+  assert.match(build, /20261011042352/u);
+  assert.match(build, /No manual user action was required/u);
 });
