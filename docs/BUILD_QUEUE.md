@@ -329,8 +329,26 @@ Delivered:
 - no new Vercel project, Cloudflare Pages project, Worker, D1 database or R2 bucket;
 - exact-tree feature, `dev` and production promotion with CI, browser E2E, database, CodeQL and Secret Scan gates GREEN.
 
+### Build 022 — Map Layers, Labels & Icons
+Status: **FULLY PROMOTED — `main` GREEN.**
+
+Delivered:
+- six canonical Booking, Maintenance, Security, Utilities, Amenities and Management layer families;
+- server-enforced campground permission filtering before layers or their polygons reach the browser;
+- persistent layer ordering, names, icons, enabled state and curated visibility permissions;
+- required polygon-to-layer binding with same-organization/campground database enforcement;
+- independent map-facing polygon labels plus optional whitelisted icon overrides and label visibility;
+- inherited layer icons using application-owned glyphs with no third-party icon or mapping dependency;
+- manager-only layer configuration and reorder actions protected by `campground.configuration`;
+- optimistic row-version conflict protection and append-oriented audit evidence for layer changes;
+- Web/PWA layer composition with honest secure-link/staff-assisted IVR/SMS fallback;
+- Build 020/021 database verification preserved under the new required layer contract;
+- hosted Supabase migration 0024 with verified schema/indexes/private privileges and zero Security Advisor findings;
+- no new Vercel, Cloudflare, paid mapping, icon or GIS resource;
+- exact-tree feature, `dev` and production promotion with CI, browser E2E, database, CodeQL and Secret Scan gates GREEN.
+
 ## Next active build
-**Build 022 — Map Layers, Labels & Icons**
+**Build 023 — Canonical Map Object Binding**
 
 Status: **QUEUED — NOT STARTED**
 
