@@ -164,11 +164,13 @@ export const helpTopics = {
     summary:
       "Authorized managers can draw, validate, edit and save irregular polygons against the exact active overhead image version.",
     details: [
-      "Choose New polygon, then click the image to add vertices in order around the shape.",
+      "Choose New polygon, then click the image to add vertices in order around the shape; Build 021 keeps up to 50 geometry steps available for undo/redo during the current edit session.",
       "Close shape becomes available only when at least three vertices form a valid non-self-intersecting polygon.",
-      "In edit mode, select and drag a vertex to move it; Add vertex inserts a midpoint after the selected vertex and Delete vertex removes it while preserving at least three vertices.",
+      "Select a vertex for precise movement or choose Whole polygon to move the entire shape. The precision step can be 0.25, 1, 5 or 10 source-image pixels and Snap aligns the current selection.",
+      "Lock prevents geometry and label edits until explicitly unlocked. Hide suppresses normal map rendering without deleting data. Archive is recoverable and keeps the polygon available to management history.",
+      "Duplicate creates a new active, visible and unlocked polygon while retaining provenance to the source polygon.",
       "Every saved vertex stores source-image pixels plus normalized 0–1 coordinates, and the polygon remains bound to the exact image version used for editing.",
-      "Drawing is graphical-only. Telephone and SMS workflows use a secure visual handoff or staff-assisted fallback rather than pretending keypad geometry entry is equivalent.",
+      "Drawing and precision geometry are graphical-only. Telephone and SMS workflows use a secure visual handoff or staff-assisted fallback rather than pretending keypad geometry entry is equivalent.",
     ],
     audience: "privileged",
   },

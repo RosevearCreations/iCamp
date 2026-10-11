@@ -5,22 +5,37 @@ iCamp remains provider-portable. Business rules live in the application and cano
 
 ## Locked now
 
-### Application hosting
-**Decision: keep GitHub `main` as the production/release source now; use Next.js on Vercel as the preferred first hosted runtime when an iCamp web deployment is intentionally provisioned.**
+### Release source and web runtime
+**Decision: GitHub `main` remains the production/release source during rough-sketch development. Do not create another Vercel or Cloudflare application project for iCamp yet.**
 
-Build 020 does not create another Vercel project. This avoids consuming shared Hobby deployment storage during rough-sketch development while preserving the lowest-friction Next.js deployment path when we want a continuously hosted interface.
+The current free accounts have enough *project-count* capacity, but project count is not the limiting factor:
 
-Scale path: keep the hosting adapter replaceable so the Node application can move to another compatible platform or containers without redesigning campground data.
+- Vercel Hobby currently permits up to 200 projects, but Hobby deployment storage is shared across the team and the Hobby plan is restricted to non-commercial personal use. iCamp is intended to become a commercial campground SaaS, so Hobby is not a suitable long-term production commitment.
+- Cloudflare Free currently permits up to 100 Pages projects and 100 Workers. The concern is shared request/CPU/build/storage quotas, not the fact that other Pages/Worker projects already exist.
+- Build 021 therefore creates no Vercel or Cloudflare project and consumes no additional deployment storage on either provider.
+
+**Runtime decision remains intentionally deferred until an external pilot needs a continuously hosted iCamp interface.** At that checkpoint we will compare a commercial-capable managed runtime against self-hosting/container deployment using measured iCamp workload rather than rewriting the application around a free-tier constraint.
+
+Next.js on Vercel remains technically compatible with the current application, but it is a deployment option rather than an architectural dependency.
+
+Current provider references reviewed 2026-10-10:
+- https://vercel.com/docs/limits
+- https://vercel.com/docs/plans/hobby
+- https://vercel.com/changelog/hobby-projects-now-retain-fewer-deployments-to-free-up-storage
+- https://developers.cloudflare.com/pages/platform/limits/
+- https://developers.cloudflare.com/workers/platform/limits/
 
 ### Database
-**Decision: PostgreSQL is canonical; Supabase is the current hosted PostgreSQL development/early-production provider.**
+**Decision: PostgreSQL is canonical; the user's iCamp Supabase project `cxgszmpbeswdikzofvjv` is the current hosted PostgreSQL development/early-production backend.**
+
+Project URL: `https://cxgszmpbeswdikzofvjv.supabase.co`
 
 iCamp owns migrations in GitHub. Supabase is a hosting target, not the schema source of truth. Authentication remains the existing iCamp server-managed model rather than switching domain identity to Supabase Auth.
 
 ### Object/media storage
 **Decision: keep the provider adapter; use Supabase Storage for the current free-first implementation.**
 
-Map images and other media are referenced through iCamp metadata and authorization. Storage can later move to S3, R2 or another object store.
+Map images and other media are referenced through iCamp metadata and authorization. Storage can later move to S3, R2 or another object store. Build 021 does not create or consume a new Cloudflare R2 bucket.
 
 ### Campground map rendering
 **Decision: use iCamp-owned overhead imagery with SVG/DOM overlays and the canonical coordinate engine.**
@@ -51,5 +66,5 @@ Use a provider adapter and keep raw card data outside iCamp. Select/activate the
 ### Dedicated observability
 GitHub Actions, application health endpoints and hosting logs are sufficient during rough-sketch development. Add paid error/trace tooling only when operating volume demonstrates the need.
 
-## Build 020 impact
-Polygon plotting and persistence use only iCamp code, PostgreSQL and the existing private map-image/media contracts. No mapping subscription, GIS API, paid provider or new secret is required.
+## Build 021 impact
+Advanced polygon editing uses only iCamp application code, PostgreSQL and the existing Supabase-backed media/database contracts. The only hosted backend change is PostgreSQL migration `0023_advanced_polygon_editing.sql`; no new paid provider, map API, Vercel project, Cloudflare Pages project, Worker, D1 database or R2 bucket is required.
