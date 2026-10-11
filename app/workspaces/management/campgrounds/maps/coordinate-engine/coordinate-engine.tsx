@@ -23,6 +23,11 @@ import {
   type MapViewState,
 } from "@/lib/map-coordinates/transform.mjs";
 import {
+  mapLayerIconKeys,
+  mapLayerVisibilityPermissionKeys,
+  mapPolygonIconKeys,
+} from "@/lib/map-layers/config.mjs";
+import {
   addPolygonVertex,
   createStoredMapPolygon,
   deletePolygonVertex,
@@ -36,12 +41,16 @@ import {
 
 import {
   duplicateMapPolygonAction,
+  moveMapLayerAction,
   saveMapPolygonAction,
   toggleMapPolygonArchivedAction,
   toggleMapPolygonHiddenAction,
   toggleMapPolygonLockAction,
+  updateMapLayerAction,
 } from "./actions";
 import styles from "./coordinate-engine.module.css";
+
+
 
 interface PointerReadout {
   imageX: number;
@@ -64,10 +73,36 @@ interface VertexDragState {
   original: MapPoint[];
 }
 
+export interface MapLayerRecord {
+  id: string;
+  key:
+    | "booking"
+    | "maintenance"
+    | "security"
+    | "utilities"
+    | "amenities"
+    | "management";
+  displayName: string;
+  iconKey: string;
+  sortOrder: number;
+  visibilityPermissionKey: string;
+  isEnabled: boolean;
+  rowVersion: number;
+}
+
 export interface MapPolygonRecord {
   id: string;
   label: string;
   geometry: StoredMapPolygon;
+  layerId: string;
+  layerKey: string | null;
+  layerDisplayName: string | null;
+  layerIconKey: string | null;
+  layerSortOrder: number | null;
+  layerVisibilityPermissionKey: string | null;
+  mapLabel: string;
+  mapIconKey: string | null;
+  mapLabelVisible: boolean;
   isLocked: boolean;
   isHidden: boolean;
   archivedAt: string | Date | null;
@@ -105,6 +140,31 @@ function clonePoints(points: readonly MapPoint[]) {
   return points.map((point) => ({ ...point }));
 }
 
+function iconGlyph(iconKey: string | null | undefined) {
+  const glyphs: Record<string, string> = {
+    calendar: "▦",
+    tools: "⚒",
+    shield: "◆",
+    bolt: "ϟ",
+    star: "★",
+    layers: "▤",
+    pin: "●",
+    tent: "△",
+    cottage: "⌂",
+    gate: "╫",
+    water: "≈",
+    washroom: "W",
+    field: "◇",
+    building: "▣",
+    dock: "═",
+    road: "↔",
+    warning: "!",
+    info: "i",
+    tree: "♣",
+  };
+  return glyphs[iconKey ?? ""] ?? "●";
+}
+
 export function CoordinateEngine({
   campgroundId,
   mapImageVersionId,
@@ -113,6 +173,8 @@ export function CoordinateEngine({
   sourceWidth,
   sourceHeight,
   initialPolygons,
+  initialLayers,
+  canConfigureLayers,
 }: Readonly<{
   campgroundId: string;
   mapImageVersionId: string;
@@ -121,6 +183,8 @@ export function CoordinateEngine({
   sourceWidth: number;
   sourceHeight: number;
   initialPolygons: MapPolygonRecord[];
+  initialLayers: MapLayerRecord[];
+  canConfigureLayers: boolean;
 }>) {
   const viewportRef = useRef<HTMLDivElement | null>(null);
   const dragRef = useRef<DragState | null>(null);
@@ -134,7 +198,15 @@ export function CoordinateEngine({
   const [dragging, setDragging] = useState(false);
   const [mode, setMode] = useState<"pan" | "draw" | "edit">("pan");
 
+  const initiallyVisibleLayerIds = initialLayers
+    .filter((layer) => layer.isEnabled)
+    .map((layer) => layer.id);
   const firstPolygon =
+    initialPolygons.find(
+      (polygon) =>
+        !polygon.archivedAt &&
+        initiallyVisibleLayerIds.includes(polygon.layerId),
+    ) ??
     initialPolygons.find((polygon) => !polygon.archivedAt) ??
     initialPolygons[0] ??
     null;
@@ -152,6 +224,24 @@ export function CoordinateEngine({
   const [polygonLabel, setPolygonLabel] = useState(
     firstPolygon?.label ?? "New polygon",
   );
+  const [polygonLayerId, setPolygonLayerId] = useState(
+    firstPolygon?.layerId ??
+      initialLayers.find((layer) => layer.isEnabled)?.id ??
+      initialLayers[0]?.id ??
+      "",
+  );
+  const [mapLabel, setMapLabel] = useState(
+    firstPolygon?.mapLabel ?? firstPolygon?.label ?? "New polygon",
+  );
+  const [mapIconKey, setMapIconKey] = useState(
+    firstPolygon?.mapIconKey ?? "",
+  );
+  const [mapLabelVisible, setMapLabelVisible] = useState(
+    firstPolygon?.mapLabelVisible ?? true,
+  );
+  const [visibleLayerIds, setVisibleLayerIds] = useState<string[]>(
+    initiallyVisibleLayerIds,
+  );
   const [selectedVertex, setSelectedVertex] = useState<number | null>(null);
   const [past, setPast] = useState<MapPoint[][]>([]);
   const [future, setFuture] = useState<MapPoint[][]>([]);
@@ -163,6 +253,14 @@ export function CoordinateEngine({
     (selectedPolygon !== null &&
       !selectedPolygon.isLocked &&
       !selectedPolygon.archivedAt);
+  const layerById = useMemo(
+    () => new Map(initialLayers.map((layer) => [layer.id, layer])),
+    [initialLayers],
+  );
+  const visibleLayerSet = useMemo(
+    () => new Set(visibleLayerIds),
+    [visibleLayerIds],
+  );
   const activePolygons = initialPolygons.filter(
     (polygon) => !polygon.archivedAt,
   );
@@ -661,6 +759,10 @@ export function CoordinateEngine({
     setSelectedId(polygon.id);
     setDraft(sourcePoints(polygon));
     setPolygonLabel(polygon.label);
+    setPolygonLayerId(polygon.layerId);
+    setMapLabel(polygon.mapLabel);
+    setMapIconKey(polygon.mapIconKey ?? "");
+    setMapLabelVisible(polygon.mapLabelVisible);
     setClosed(true);
     setSelectedVertex(null);
     setMode(polygon.isLocked || polygon.archivedAt ? "pan" : "edit");
@@ -668,9 +770,20 @@ export function CoordinateEngine({
   }
 
   function newPolygon() {
+    const defaultLayer =
+      initialLayers.find(
+        (layer) => layer.isEnabled && visibleLayerSet.has(layer.id),
+      ) ??
+      initialLayers.find((layer) => layer.isEnabled) ??
+      initialLayers[0] ??
+      null;
     setSelectedId(null);
     setDraft([]);
     setPolygonLabel("New polygon");
+    setPolygonLayerId(defaultLayer?.id ?? "");
+    setMapLabel("New polygon");
+    setMapIconKey("");
+    setMapLabelVisible(true);
     setClosed(false);
     setSelectedVertex(null);
     setMode("draw");
@@ -718,8 +831,30 @@ export function CoordinateEngine({
   const sourceFrameStroke = Math.max(1, 2 / transform.scale);
   const vertexRadius = Math.max(5, 8 / transform.scale);
   const activeRowVersion = selectedPolygon?.rowVersion ?? 0;
+  const selectedLayer = layerById.get(polygonLayerId) ?? null;
+  const selectedLayerVisible =
+    selectedLayer?.isEnabled === true && visibleLayerSet.has(polygonLayerId);
+  const markerFontSize = Math.max(12, 15 / transform.scale);
   const selectedPoint =
     selectedVertex === null ? null : (draft[selectedVertex] ?? null);
+
+  function toggleLayerVisibility(layerId: string) {
+    setVisibleLayerIds((current) =>
+      current.includes(layerId)
+        ? current.filter((candidate) => candidate !== layerId)
+        : [...current, layerId],
+    );
+  }
+
+  function layerInputs(layer: MapLayerRecord) {
+    return (
+      <>
+        <input type="hidden" name="campgroundId" value={campgroundId} />
+        <input type="hidden" name="layerId" value={layer.id} />
+        <input type="hidden" name="rowVersion" value={layer.rowVersion} />
+      </>
+    );
+  }
 
   function lifecycleInputs(polygon: MapPolygonRecord) {
     return (
@@ -880,30 +1015,53 @@ export function CoordinateEngine({
                   strokeWidth={sourceFrameStroke}
                 />
                 {initialPolygons
-                  .filter(
-                    (polygon) =>
+                  .filter((polygon) => {
+                    const layer = layerById.get(polygon.layerId);
+                    return (
                       polygon.id !== selectedId &&
                       !polygon.archivedAt &&
-                      !polygon.isHidden,
-                  )
-                  .map((polygon) => (
-                    <polygon
-                      key={polygon.id}
-                      points={pointsAttribute(sourcePoints(polygon))}
-                      className={
-                        styles.savedPolygon +
-                        (polygon.isLocked ? " " + styles.lockedPolygon : "")
-                      }
-                      strokeWidth={sourceFrameStroke}
-                      style={{ pointerEvents: "all" }}
-                      onPointerDown={(event) => {
-                        event.preventDefault();
-                        event.stopPropagation();
-                        choosePolygon(polygon);
-                      }}
-                    />
-                  ))}
-                {draft.length > 0 ? (
+                      !polygon.isHidden &&
+                      layer?.isEnabled === true &&
+                      visibleLayerSet.has(polygon.layerId)
+                    );
+                  })
+                  .map((polygon) => {
+                    const layer = layerById.get(polygon.layerId);
+                    const marker = polygonBounds(sourcePoints(polygon));
+                    const iconKey = polygon.mapIconKey || layer?.iconKey;
+                    return (
+                      <g key={polygon.id}>
+                        <polygon
+                          points={pointsAttribute(sourcePoints(polygon))}
+                          className={
+                            styles.savedPolygon +
+                            (polygon.isLocked ? " " + styles.lockedPolygon : "")
+                          }
+                          strokeWidth={sourceFrameStroke}
+                          style={{ pointerEvents: "all" }}
+                          onPointerDown={(event) => {
+                            event.preventDefault();
+                            event.stopPropagation();
+                            choosePolygon(polygon);
+                          }}
+                        />
+                        <text
+                          x={marker.centerX}
+                          y={marker.centerY}
+                          className={styles.mapMarker}
+                          fontSize={markerFontSize}
+                          textAnchor="middle"
+                          dominantBaseline="middle"
+                        >
+                          {iconGlyph(iconKey)}
+                          {polygon.mapLabelVisible
+                            ? " " + polygon.mapLabel
+                            : ""}
+                        </text>
+                      </g>
+                    );
+                  })}
+                {draft.length > 0 && selectedLayerVisible ? (
                   closed ? (
                     <polygon
                       points={pointsAttribute(draft)}
@@ -926,7 +1084,24 @@ export function CoordinateEngine({
                     />
                   )
                 ) : null}
-                {draft.map((point, index) => (
+                {closed &&
+                draft.length > 0 &&
+                selectedLayerVisible &&
+                bounds ? (
+                  <text
+                    x={bounds.centerX}
+                    y={bounds.centerY}
+                    className={styles.mapMarker + " " + styles.activeMapMarker}
+                    fontSize={markerFontSize}
+                    textAnchor="middle"
+                    dominantBaseline="middle"
+                  >
+                    {iconGlyph(mapIconKey || selectedLayer?.iconKey)}
+                    {mapLabelVisible ? " " + mapLabel : ""}
+                  </text>
+                ) : null}
+                {selectedLayerVisible
+                  ? draft.map((point, index) => (
                   <circle
                     key={index}
                     cx={point.x}
@@ -946,8 +1121,8 @@ export function CoordinateEngine({
                     }}
                     onPointerDown={(event) => startVertexDrag(event, index)}
                   />
-                ))}
-              </g>
+                ))
+                  : null}            </g>
             </svg>
 
             <div
@@ -1046,6 +1221,57 @@ export function CoordinateEngine({
             />
           </label>
 
+          <section className={styles.mapPresentationPanel}>
+            <h4>Map presentation</h4>
+            <label className={styles.editorField}>
+              <span>Layer</span>
+              <select
+                value={polygonLayerId}
+                disabled={!editable}
+                onChange={(event) => setPolygonLayerId(event.target.value)}
+              >
+                {initialLayers.map((layer) => (
+                  <option key={layer.id} value={layer.id}>
+                    {layer.displayName}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label className={styles.editorField}>
+              <span>Map label</span>
+              <input
+                value={mapLabel}
+                maxLength={160}
+                disabled={!editable}
+                onChange={(event) => setMapLabel(event.target.value)}
+              />
+            </label>
+            <label className={styles.editorField}>
+              <span>Polygon icon</span>
+              <select
+                value={mapIconKey}
+                disabled={!editable}
+                onChange={(event) => setMapIconKey(event.target.value)}
+              >
+                <option value="">Inherit layer icon</option>
+                {mapPolygonIconKeys.map((iconKey) => (
+                  <option key={iconKey} value={iconKey}>
+                    {iconGlyph(iconKey)} {iconKey}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label className={styles.checkField}>
+              <input
+                type="checkbox"
+                checked={mapLabelVisible}
+                disabled={!editable}
+                onChange={(event) => setMapLabelVisible(event.target.checked)}
+              />
+              <span>Show map label</span>
+            </label>
+          </section>
+
           {selectedPolygon?.isLocked ? (
             <div className={styles.stateNotice}>
               This polygon is locked. Unlock it before changing its geometry or
@@ -1065,6 +1291,127 @@ export function CoordinateEngine({
               {validation.errors.join(" ")}
             </div>
           ) : null}
+
+          <section className={styles.layerPanel} aria-label="Map layers">
+            <div className={styles.layerPanelHeader}>
+              <div>
+                <h4>Map layers</h4>
+                <p>Visibility is permission-gated on the server.</p>
+              </div>
+              <span>{initialLayers.length} available</span>
+            </div>
+            <div className={styles.layerList}>
+              {initialLayers.map((layer, index) => (
+                <div className={styles.layerCard} key={layer.id}>
+                  <label className={styles.layerToggle}>
+                    <input
+                      type="checkbox"
+                      checked={
+                        layer.isEnabled && visibleLayerSet.has(layer.id)
+                      }
+                      disabled={!layer.isEnabled}
+                      onChange={() => toggleLayerVisibility(layer.id)}
+                    />
+                    <span className={styles.layerIcon}>
+                      {iconGlyph(layer.iconKey)}
+                    </span>
+                    <span>
+                      <strong>{layer.displayName}</strong>
+                      <small>{layer.visibilityPermissionKey}</small>
+                    </span>
+                  </label>
+                  {canConfigureLayers ? (
+                    <details className={styles.layerSettings}>
+                      <summary>Settings</summary>
+                      <form
+                        action={updateMapLayerAction}
+                        className={styles.layerSettingsForm}
+                      >
+                        {layerInputs(layer)}
+                        <label>
+                          <span>Name</span>
+                          <input
+                            name="displayName"
+                            defaultValue={layer.displayName}
+                            maxLength={80}
+                          />
+                        </label>
+                        <label>
+                          <span>Layer icon</span>
+                          <select name="iconKey" defaultValue={layer.iconKey}>
+                            {mapLayerIconKeys.map((iconKey) => (
+                              <option key={iconKey} value={iconKey}>
+                                {iconGlyph(iconKey)} {iconKey}
+                              </option>
+                            ))}
+                          </select>
+                        </label>
+                        <label>
+                          <span>Visibility permission</span>
+                          <select
+                            name="visibilityPermissionKey"
+                            defaultValue={layer.visibilityPermissionKey}
+                          >
+                            {mapLayerVisibilityPermissionKeys.map(
+                              (permission) => (
+                                <option key={permission} value={permission}>
+                                  {permission}
+                                </option>
+                              ),
+                            )}
+                          </select>
+                        </label>
+                        <label className={styles.checkField}>
+                          <input
+                            type="checkbox"
+                            name="isEnabledCheckbox"
+                            defaultChecked={layer.isEnabled}
+                            onChange={(event) => {
+                              const form = event.currentTarget.form;
+                              const hidden = form?.elements.namedItem(
+                                "isEnabled",
+                              ) as HTMLInputElement | null;
+                              if (hidden) {
+                                hidden.value = event.currentTarget.checked
+                                  ? "true"
+                                  : "false";
+                              }
+                            }}
+                          />
+                          <input
+                            type="hidden"
+                            name="isEnabled"
+                            defaultValue={layer.isEnabled ? "true" : "false"}
+                          />
+                          <span>Enabled by default</span>
+                        </label>
+                        <button type="submit">Save layer</button>
+                      </form>
+                      <div className={styles.layerOrderActions}>
+                        <form action={moveMapLayerAction}>
+                          {layerInputs(layer)}
+                          <input type="hidden" name="direction" value="up" />
+                          <button type="submit" disabled={index === 0}>
+                            Move up
+                          </button>
+                        </form>
+                        <form action={moveMapLayerAction}>
+                          {layerInputs(layer)}
+                          <input type="hidden" name="direction" value="down" />
+                          <button
+                            type="submit"
+                            disabled={index === initialLayers.length - 1}
+                          >
+                            Move down
+                          </button>
+                        </form>
+                      </div>
+                    </details>
+                  ) : null}
+                </div>
+              ))}
+            </div>
+          </section>
 
           <section
             className={styles.precisionPanel}
@@ -1194,6 +1541,14 @@ export function CoordinateEngine({
             <input type="hidden" name="polygonId" value={selectedId ?? ""} />
             <input type="hidden" name="rowVersion" value={activeRowVersion} />
             <input type="hidden" name="label" value={polygonLabel} />
+            <input type="hidden" name="layerId" value={polygonLayerId} />
+            <input type="hidden" name="mapLabel" value={mapLabel} />
+            <input type="hidden" name="mapIconKey" value={mapIconKey} />
+            <input
+              type="hidden"
+              name="mapLabelVisible"
+              value={mapLabelVisible ? "true" : "false"}
+            />
             <input
               type="hidden"
               name="geometry"
@@ -1202,7 +1557,13 @@ export function CoordinateEngine({
             <button
               className="primary-button"
               type="submit"
-              disabled={!storedGeometry || !polygonLabel.trim() || !editable}
+              disabled={
+                !storedGeometry ||
+                !polygonLabel.trim() ||
+                !mapLabel.trim() ||
+                !polygonLayerId ||
+                !editable
+              }
             >
               Save polygon
             </button>
@@ -1275,7 +1636,8 @@ export function CoordinateEngine({
                 >
                   <strong>{polygon.label}</strong>
                   <span>
-                    {polygon.geometry.vertices.length} vertices
+                    {polygon.layerDisplayName ?? polygon.layerKey} ·{" "}
+                    {polygon.mapLabel} · {polygon.geometry.vertices.length} vertices
                     {polygon.isLocked ? " · locked" : ""}
                     {polygon.isHidden ? " · hidden" : ""}
                   </span>
@@ -1310,8 +1672,9 @@ export function CoordinateEngine({
       </div>
 
       <p className={styles.instructions}>
-        Build 021 adds whole-polygon movement, duplicate, undo/redo,
-        lock/unlock, hide/archive and precision selection aids. In edit mode,
+        Build 022 adds permission-gated operational layers, persistent layer
+        order, map-facing labels and inherited or polygon-specific icons while
+        retaining Build 021 advanced geometry editing. In edit mode,
         arrow keys nudge the selected vertex or whole polygon by the chosen
         precision step; Shift multiplies that movement by 10. Ctrl/Cmd+Z undoes,
         Ctrl/Cmd+Shift+Z or Ctrl/Cmd+Y redoes, Delete removes a selected vertex
