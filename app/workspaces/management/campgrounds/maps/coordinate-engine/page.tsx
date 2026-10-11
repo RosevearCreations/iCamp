@@ -100,7 +100,7 @@ export default async function MapCoordinateEnginePage({
           <span aria-hidden="true">/</span>
           <Link href={libraryHref}>Overhead images</Link>
           <span aria-hidden="true">/</span>
-          <span>Polygon plotter</span>
+          <span>Canonical objects</span>
         </nav>
 
         <section className="hero-panel">
@@ -141,7 +141,7 @@ export default async function MapCoordinateEnginePage({
               </select>
             </label>
             <button className="primary-button" type="submit">
-              Open polygon plotter
+              Open canonical map editor
             </button>
           </form>
         </section>
@@ -186,15 +186,15 @@ export default async function MapCoordinateEnginePage({
         <section className="content-panel" aria-labelledby="contract-heading">
           <SectionHeading
             eyebrow="Geometry contract"
-            title="Version-bound, drift-resistant polygons"
+            title="Version-bound, drift-resistant object geometry"
             id="contract-heading"
             helpTopic="campground.map.coordinates"
           />
           <p>
-            Every saved vertex retains original-image pixels plus normalized 0–1
-            coordinates from Build 019. The polygon is bound to the exact
-            overhead image version used for editing, so later image changes do
-            not silently move clickable areas.
+            Polygon and point bindings use the Build 019 original-image plus
+            normalized 0–1 coordinate contract and remain tied to the exact map
+            image version. Canonical object identity remains stable even when
+            later domain builds add booking, facility or asset details.
           </p>
         </section>
 

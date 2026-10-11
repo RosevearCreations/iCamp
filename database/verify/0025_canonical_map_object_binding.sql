@@ -186,6 +186,12 @@ values (
   :'b23_polygon_id'
 );
 
+select set_config('icamp.test.b23_org_id', :'b23_org_id', true);
+select set_config('icamp.test.b23_camp_id', :'b23_camp_id', true);
+select set_config('icamp.test.b23_version_id', :'b23_version_id', true);
+select set_config('icamp.test.b23_booking_layer_id', :'b23_booking_layer_id', true);
+select set_config('icamp.test.b23_site_object_id', :'b23_site_object_id', true);
+
 insert into icamp_private.campground_map_object_bindings (
   organization_id,
   campground_id,
