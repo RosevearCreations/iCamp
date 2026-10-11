@@ -50,7 +50,7 @@ The protected map editor receives a permission-filtered object inspector that sh
 - pointer-based point placement using the same Build 019 coordinate contract.
 
 ## Platform impact
-Build 023 remains on the existing Next.js/PostgreSQL/Supabase stack and existing overhead imagery. It introduces migration `0025_canonical_map_object_binding.sql` and requires no new Vercel, Cloudflare, paid map, icon or GIS resource.
+Build 023 remains on the existing Next.js/PostgreSQL/Supabase stack and existing overhead imagery. It introduces migration `0025_canonical_map_object_binding.sql` plus advisor-driven composite foreign-key index closure in `0026_map_object_fk_indexes.sql`, and requires no new Vercel, Cloudflare, paid map, icon or GIS resource.
 
 ## Channel support
 - Web/PWA: full visual object inspector, polygon binding and point placement.
