@@ -2095,7 +2095,8 @@ export function CoordinateEngine({
         canonical campground identity. The object inspector shows the current
         binding and prevents duplicate identities from silently sharing
         geometry. Advanced polygon editing and Build 022 layer visibility remain
-        unchanged.
+        unchanged; Ctrl/Cmd+Z and the existing redo shortcuts still control
+        geometry history.
       </p>
     </div>
   );
