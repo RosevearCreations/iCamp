@@ -347,8 +347,27 @@ Delivered:
 - no new Vercel, Cloudflare, paid mapping, icon or GIS resource;
 - exact-tree feature, `dev` and production promotion with CI, browser E2E, database, CodeQL and Secret Scan gates GREEN.
 
+### Build 023 — Canonical Map Object Binding
+Status: **FULLY PROMOTED — `main` GREEN.**
+
+Delivered:
+- canonical map identity anchors for sites, cottages, pools, washrooms, gates, docks, roads, buildings and generic assets;
+- exactly one current polygon-or-point geometry binding per canonical object;
+- unique polygon ownership so one saved polygon cannot silently represent multiple canonical objects;
+- same-organization/campground foreign-key enforcement across canonical objects, map image versions, layers and polygons;
+- database canonicalization of polygon image-version/layer metadata at the binding boundary;
+- Build 019 source-pixel plus normalized 0–1 contract for exact point bindings;
+- permission-filtered object inspector with canonical code/type/name, binding details, polygon attachment, point placement and unbind controls;
+- server re-checks for `campground.map`, `campground.configuration` and bound-layer visibility permissions;
+- append-oriented audit evidence for object creation, polygon/point binding and unbinding;
+- circular contextual help plus honest visual-handoff/staff-assisted IVR/SMS fallback;
+- hosted Supabase migrations 0025/0026 with private-table privilege verification and zero Security Advisor findings;
+- advisor-driven composite foreign-key index closure with no remaining unindexed-FK advisory;
+- no new Vercel, Cloudflare, paid mapping, GIS or icon resource;
+- exact-tree feature, `dev` and production promotion with CI, browser E2E, database, CodeQL and Secret Scan gates GREEN.
+
 ## Next active build
-**Build 023 — Canonical Map Object Binding**
+**Build 024 — Unified Accommodation Model**
 
 Status: **QUEUED — NOT STARTED**
 

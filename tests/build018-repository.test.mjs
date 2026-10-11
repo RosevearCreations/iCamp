@@ -130,6 +130,6 @@ test("Build 018 source of truth records production promotion and queue advance",
   );
   assert.match(
     queue,
-    /Next active build[\s\S]*Build 023 — Canonical Map Object Binding[\s\S]*QUEUED — NOT STARTED/u,
+    /Next active build[\s\S]*Build 024 — Unified Accommodation Model[\s\S]*QUEUED — NOT STARTED/u,
   );
 });
