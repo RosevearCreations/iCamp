@@ -45,15 +45,24 @@ test("Build 021 page and help identify advanced polygon editing", async () => {
   assert.match(page, /Advanced Polygon Editing/u);
   assert.match(help, /50 geometry steps/u);
   assert.match(help, /Lock prevents geometry and label edits/u);
-  assert.match(help, /Duplicate creates a new active, visible and unlocked polygon/u);
+  assert.match(
+    help,
+    /Duplicate creates a new active, visible and unlocked polygon/u,
+  );
 });
 
 test("Build 021 platform decision consumes no new Vercel or Cloudflare project", async () => {
   const decisions = await readFile("docs/PLATFORM_DECISIONS.md", "utf8");
   const build = await readFile("docs/BUILD_021.md", "utf8");
-  assert.match(decisions, /Do not create another Vercel or Cloudflare application project/u);
+  assert.match(
+    decisions,
+    /Do not create another Vercel or Cloudflare application project/u,
+  );
   assert.match(decisions, /cxgszmpbeswdikzofvjv/u);
   assert.match(decisions, /Vercel Hobby currently permits up to 200 projects/u);
-  assert.match(decisions, /Cloudflare Free currently permits up to 100 Pages projects and 100 Workers/u);
+  assert.match(
+    decisions,
+    /Cloudflare Free currently permits up to 100 Pages projects and 100 Workers/u,
+  );
   assert.match(build, /creates no additional Vercel or Cloudflare project/u);
 });
