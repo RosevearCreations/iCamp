@@ -131,7 +131,6 @@ export async function toggleMapPolygonArchivedAction(formData: FormData) {
   );
 }
 
-
 export async function updateMapLayerAction(formData: FormData) {
   const campgroundId = field(formData, "campgroundId");
   const session = await requireCampgroundPermission(
