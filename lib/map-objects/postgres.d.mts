@@ -30,7 +30,7 @@ export interface MapObjectRecord {
   id: string;
   organizationId: string;
   campgroundId: string;
-  kind: string;
+  kind: MapObjectKind;
   code: string;
   displayName: string;
   sectionId: string | null;
@@ -54,7 +54,7 @@ export function listMapObjects(
 export function createMapObject(input: {
   actorUserId: string;
   campgroundId: string;
-  kind: MapObjectKind;
+  kind: string;
   code: string;
   displayName: string;
   sectionId?: string | null;
