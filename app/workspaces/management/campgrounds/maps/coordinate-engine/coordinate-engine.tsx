@@ -14,6 +14,7 @@ import {
   affineMatrixToSvg,
   constrainMapPan,
   createMapViewportTransform,
+  createStoredMapPoint,
   imagePointToViewport,
   mapCoordinateLimits,
   viewportPointToImage,
@@ -22,6 +23,7 @@ import {
   type MapPoint,
   type MapViewState,
 } from "@/lib/map-coordinates/transform.mjs";
+import { mapObjectKinds } from "@/lib/map-objects/config.mjs";
 import {
   mapLayerIconKeys,
   mapLayerVisibilityPermissionKeys,
@@ -40,12 +42,16 @@ import {
 } from "@/lib/map-polygons/geometry.mjs";
 
 import {
+  bindMapObjectPointAction,
+  bindMapObjectPolygonAction,
+  createMapObjectAction,
   duplicateMapPolygonAction,
   moveMapLayerAction,
   saveMapPolygonAction,
   toggleMapPolygonArchivedAction,
   toggleMapPolygonHiddenAction,
   toggleMapPolygonLockAction,
+  unbindMapObjectAction,
   updateMapLayerAction,
 } from "./actions";
 import styles from "./coordinate-engine.module.css";
@@ -88,6 +94,45 @@ export interface MapLayerRecord {
   rowVersion: number;
 }
 
+export interface MapObjectRecord {
+  id: string;
+  kind:
+    | "site"
+    | "cottage"
+    | "pool"
+    | "washroom"
+    | "gate"
+    | "dock"
+    | "road"
+    | "building"
+    | "asset";
+  code: string;
+  displayName: string;
+  sectionId: string | null;
+  sectionName: string | null;
+  lifecycleState: string;
+  defaultIconKey: string;
+  defaultLayerKey: string;
+  rowVersion: number;
+  binding: null | {
+    id: string;
+    geometryKind: "polygon" | "point";
+    mapImageVersionId: string;
+    layerId: string;
+    layerKey: string | null;
+    layerDisplayName: string | null;
+    layerIconKey: string | null;
+    polygonId: string | null;
+    polygonLabel: string | null;
+    pointGeometry: null | {
+      schemaVersion: 1;
+      image: MapPoint;
+      normalized: MapPoint;
+    };
+    rowVersion: number;
+  };
+}
+
 export interface MapPolygonRecord {
   id: string;
   label: string;
@@ -106,6 +151,11 @@ export interface MapPolygonRecord {
   archivedAt: string | Date | null;
   archivedByUserId: string | null;
   duplicatedFromPolygonId: string | null;
+  mapObjectId: string | null;
+  mapObjectKind: string | null;
+  mapObjectCode: string | null;
+  mapObjectName: string | null;
+  mapObjectBindingId: string | null;
   rowVersion: number;
 }
 
@@ -172,6 +222,7 @@ export function CoordinateEngine({
   sourceHeight,
   initialPolygons,
   initialLayers,
+  initialMapObjects,
   canConfigureLayers,
 }: Readonly<{
   campgroundId: string;
@@ -182,6 +233,7 @@ export function CoordinateEngine({
   sourceHeight: number;
   initialPolygons: MapPolygonRecord[];
   initialLayers: MapLayerRecord[];
+  initialMapObjects: MapObjectRecord[];
   canConfigureLayers: boolean;
 }>) {
   const viewportRef = useRef<HTMLDivElement | null>(null);
@@ -211,8 +263,13 @@ export function CoordinateEngine({
   const [selectedId, setSelectedId] = useState<string | null>(
     firstPolygon?.id ?? null,
   );
+  const [selectedObjectId, setSelectedObjectId] = useState<string | null>(
+    firstPolygon?.mapObjectId ?? initialMapObjects[0]?.id ?? null,
+  );
   const selectedPolygon =
     initialPolygons.find((polygon) => polygon.id === selectedId) ?? null;
+  const selectedMapObject =
+    initialMapObjects.find((object) => object.id === selectedObjectId) ?? null;
   const [draft, setDraft] = useState<MapPoint[]>(
     firstPolygon ? sourcePoints(firstPolygon) : [],
   );
@@ -237,6 +294,19 @@ export function CoordinateEngine({
   );
   const [visibleLayerIds, setVisibleLayerIds] = useState<string[]>(
     initiallyVisibleLayerIds,
+  );
+  const initialPointLayer =
+    initialLayers.find(
+      (layer) =>
+        layer.key ===
+        (initialMapObjects.find((object) => object.id === selectedObjectId)
+          ?.defaultLayerKey ?? "management"),
+    ) ??
+    initialLayers.find((layer) => layer.isEnabled) ??
+    initialLayers[0] ??
+    null;
+  const [pointLayerId, setPointLayerId] = useState(
+    initialPointLayer?.id ?? "",
   );
   const [selectedVertex, setSelectedVertex] = useState<number | null>(null);
   const [past, setPast] = useState<MapPoint[][]>([]);
@@ -353,6 +423,17 @@ export function CoordinateEngine({
   const bounds = useMemo(
     () => (draft.length > 0 ? polygonBounds(draft) : null),
     [draft],
+  );
+  const pointerStoredPoint = useMemo(
+    () =>
+      pointer
+        ? createStoredMapPoint(
+            { x: pointer.imageX, y: pointer.imageY },
+            sourceWidth,
+            sourceHeight,
+          )
+        : null,
+    [pointer, sourceHeight, sourceWidth],
   );
 
   function viewportPoint(clientX: number, clientY: number) {
@@ -753,6 +834,7 @@ export function CoordinateEngine({
 
   function choosePolygon(polygon: MapPolygonRecord) {
     setSelectedId(polygon.id);
+    if (polygon.mapObjectId) setSelectedObjectId(polygon.mapObjectId);
     setDraft(sourcePoints(polygon));
     setPolygonLabel(polygon.label);
     setPolygonLayerId(polygon.layerId);
@@ -1010,6 +1092,63 @@ export function CoordinateEngine({
                   stroke="currentColor"
                   strokeWidth={sourceFrameStroke}
                 />
+                {initialMapObjects
+                  .filter((object) => {
+                    const binding = object.binding;
+                    if (
+                      !binding ||
+                      binding.geometryKind !== "point" ||
+                      binding.mapImageVersionId !== mapImageVersionId ||
+                      !binding.pointGeometry
+                    ) {
+                      return false;
+                    }
+                    const layer = layerById.get(binding.layerId);
+                    return (
+                      layer?.isEnabled === true &&
+                      visibleLayerSet.has(binding.layerId)
+                    );
+                  })
+                  .map((object) => {
+                    const binding = object.binding!;
+                    const point = binding.pointGeometry!.image;
+                    const layer = layerById.get(binding.layerId);
+                    const iconKey =
+                      object.defaultIconKey || binding.layerIconKey || layer?.iconKey;
+                    return (
+                      <g
+                        key={object.id}
+                        className={styles.objectPointGroup}
+                        style={{ pointerEvents: "all" }}
+                        onPointerDown={(event) => {
+                          event.preventDefault();
+                          event.stopPropagation();
+                          setSelectedObjectId(object.id);
+                        }}
+                      >
+                        <circle
+                          cx={point.x}
+                          cy={point.y}
+                          r={Math.max(7, 10 / transform.scale)}
+                          className={
+                            object.id === selectedObjectId
+                              ? styles.selectedObjectPoint
+                              : styles.objectPoint
+                          }
+                        />
+                        <text
+                          x={point.x}
+                          y={point.y}
+                          dy={-Math.max(12, 16 / transform.scale)}
+                          className={styles.mapMarker}
+                          fontSize={markerFontSize}
+                          textAnchor="middle"
+                        >
+                          {iconGlyph(iconKey)} {object.code}
+                        </text>
+                      </g>
+                    );
+                  })}
                 {initialPolygons
                   .filter((polygon) => {
                     const layer = layerById.get(polygon.layerId);
@@ -1217,6 +1356,283 @@ export function CoordinateEngine({
               onChange={(event) => setPolygonLabel(event.target.value)}
             />
           </label>
+
+          <section
+            className={styles.objectInspector}
+            aria-label="Canonical map object inspector"
+          >
+            <div className={styles.objectInspectorHeader}>
+              <div>
+                <h4>Object inspector</h4>
+                <p>One canonical object can have one polygon or point binding.</p>
+              </div>
+              <span>{initialMapObjects.length} visible</span>
+            </div>
+
+            {initialMapObjects.length > 0 ? (
+              <>
+                <label className={styles.editorField}>
+                  <span>Canonical object</span>
+                  <select
+                    value={selectedObjectId ?? ""}
+                    onChange={(event) => {
+                      const nextId = event.target.value || null;
+                      setSelectedObjectId(nextId);
+                      const nextObject = initialMapObjects.find(
+                        (object) => object.id === nextId,
+                      );
+                      const defaultLayer = initialLayers.find(
+                        (layer) => layer.key === nextObject?.defaultLayerKey,
+                      );
+                      if (defaultLayer) setPointLayerId(defaultLayer.id);
+                    }}
+                  >
+                    {initialMapObjects.map((object) => (
+                      <option key={object.id} value={object.id}>
+                        {object.code} · {object.displayName}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+
+                {selectedMapObject ? (
+                  <div className={styles.objectInspectorCard}>
+                    <div className={styles.objectIdentityRow}>
+                      <span className={styles.layerIcon}>
+                        {iconGlyph(selectedMapObject.defaultIconKey)}
+                      </span>
+                      <div>
+                        <strong>{selectedMapObject.displayName}</strong>
+                        <small>
+                          {selectedMapObject.kind} · {selectedMapObject.code}
+                          {selectedMapObject.sectionName
+                            ? " · " + selectedMapObject.sectionName
+                            : ""}
+                        </small>
+                      </div>
+                    </div>
+
+                    {selectedMapObject.binding ? (
+                      <>
+                        <dl className={styles.objectBindingDetails}>
+                          <div>
+                            <dt>Binding</dt>
+                            <dd>{selectedMapObject.binding.geometryKind}</dd>
+                          </div>
+                          <div>
+                            <dt>Layer</dt>
+                            <dd>
+                              {selectedMapObject.binding.layerDisplayName ??
+                                selectedMapObject.binding.layerKey ??
+                                "Layer"}
+                            </dd>
+                          </div>
+                          {selectedMapObject.binding.geometryKind ===
+                          "polygon" ? (
+                            <div>
+                              <dt>Polygon</dt>
+                              <dd>
+                                {selectedMapObject.binding.polygonLabel ??
+                                  selectedMapObject.binding.polygonId}
+                              </dd>
+                            </div>
+                          ) : selectedMapObject.binding.pointGeometry ? (
+                            <div>
+                              <dt>Point</dt>
+                              <dd>
+                                {formatCoordinate(
+                                  selectedMapObject.binding.pointGeometry.image.x,
+                                )}
+                                ,{" "}
+                                {formatCoordinate(
+                                  selectedMapObject.binding.pointGeometry.image.y,
+                                )}{" "}
+                                px
+                              </dd>
+                            </div>
+                          ) : null}
+                        </dl>
+                        <form
+                          action={unbindMapObjectAction}
+                          className={styles.objectActionForm}
+                        >
+                          <input
+                            type="hidden"
+                            name="campgroundId"
+                            value={campgroundId}
+                          />
+                          <input
+                            type="hidden"
+                            name="mapObjectId"
+                            value={selectedMapObject.id}
+                          />
+                          <input
+                            type="hidden"
+                            name="rowVersion"
+                            value={selectedMapObject.binding.rowVersion}
+                          />
+                          <button type="submit">Unbind object</button>
+                        </form>
+                      </>
+                    ) : (
+                      <div className={styles.objectBindingActions}>
+                        {selectedPolygon && !selectedPolygon.mapObjectId ? (
+                          <form
+                            action={bindMapObjectPolygonAction}
+                            className={styles.objectActionForm}
+                          >
+                            <input
+                              type="hidden"
+                              name="campgroundId"
+                              value={campgroundId}
+                            />
+                            <input
+                              type="hidden"
+                              name="mapImageVersionId"
+                              value={mapImageVersionId}
+                            />
+                            <input
+                              type="hidden"
+                              name="mapObjectId"
+                              value={selectedMapObject.id}
+                            />
+                            <input
+                              type="hidden"
+                              name="polygonId"
+                              value={selectedPolygon.id}
+                            />
+                            <button type="submit">
+                              Bind to selected polygon
+                            </button>
+                          </form>
+                        ) : selectedPolygon?.mapObjectId ? (
+                          <p className={styles.objectHint}>
+                            The selected polygon is already bound to{" "}
+                            {selectedPolygon.mapObjectCode ?? "another object"}.
+                          </p>
+                        ) : (
+                          <p className={styles.objectHint}>
+                            Select a saved unbound polygon to attach this object
+                            as polygon geometry.
+                          </p>
+                        )}
+
+                        <form
+                          action={bindMapObjectPointAction}
+                          className={styles.pointBindingForm}
+                        >
+                          <input
+                            type="hidden"
+                            name="campgroundId"
+                            value={campgroundId}
+                          />
+                          <input
+                            type="hidden"
+                            name="mapImageVersionId"
+                            value={mapImageVersionId}
+                          />
+                          <input
+                            type="hidden"
+                            name="mapObjectId"
+                            value={selectedMapObject.id}
+                          />
+                          <input
+                            type="hidden"
+                            name="pointGeometry"
+                            value={
+                              pointerStoredPoint
+                                ? JSON.stringify(pointerStoredPoint)
+                                : ""
+                            }
+                          />
+                          <label>
+                            <span>Point layer</span>
+                            <select
+                              name="layerId"
+                              value={pointLayerId}
+                              onChange={(event) =>
+                                setPointLayerId(event.target.value)
+                              }
+                            >
+                              {initialLayers.map((layer) => (
+                                <option key={layer.id} value={layer.id}>
+                                  {layer.displayName}
+                                </option>
+                              ))}
+                            </select>
+                          </label>
+                          <button
+                            type="submit"
+                            disabled={!pointerStoredPoint || !pointLayerId}
+                          >
+                            Bind point at pointer
+                          </button>
+                          <small>
+                            {pointerStoredPoint
+                              ? formatCoordinate(pointerStoredPoint.image.x) +
+                                ", " +
+                                formatCoordinate(pointerStoredPoint.image.y) +
+                                " px"
+                              : "Move the pointer over the image to choose a point."}
+                          </small>
+                        </form>
+                      </div>
+                    )}
+                  </div>
+                ) : null}
+              </>
+            ) : (
+              <p className={styles.objectHint}>
+                No canonical map objects are visible for this campground yet.
+              </p>
+            )}
+
+            {canConfigureLayers ? (
+              <details className={styles.objectCreatePanel}>
+                <summary>Create canonical map identity</summary>
+                <form
+                  action={createMapObjectAction}
+                  className={styles.objectCreateForm}
+                >
+                  <input
+                    type="hidden"
+                    name="campgroundId"
+                    value={campgroundId}
+                  />
+                  <label>
+                    <span>Type</span>
+                    <select name="kind" defaultValue="site">
+                      {mapObjectKinds.map((kind) => (
+                        <option key={kind.key} value={kind.key}>
+                          {kind.displayName}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                  <label>
+                    <span>Code</span>
+                    <input
+                      name="code"
+                      required
+                      maxLength={64}
+                      placeholder="A-01"
+                    />
+                  </label>
+                  <label>
+                    <span>Name</span>
+                    <input
+                      name="displayName"
+                      required
+                      maxLength={160}
+                      placeholder="Site A1"
+                    />
+                  </label>
+                  <input type="hidden" name="sectionId" value="" />
+                  <button type="submit">Create object</button>
+                </form>
+              </details>
+            ) : null}
+          </section>
 
           <section className={styles.mapPresentationPanel}>
             <h4>Map presentation</h4>
@@ -1634,6 +2050,9 @@ export function CoordinateEngine({
                     {polygon.layerDisplayName ?? polygon.layerKey} ·{" "}
                     {polygon.mapLabel} · {polygon.geometry.vertices.length}{" "}
                     vertices
+                    {polygon.mapObjectCode
+                      ? " · " + polygon.mapObjectCode
+                      : " · unbound"}
                     {polygon.isLocked ? " · locked" : ""}
                     {polygon.isHidden ? " · hidden" : ""}
                   </span>
@@ -1668,14 +2087,10 @@ export function CoordinateEngine({
       </div>
 
       <p className={styles.instructions}>
-        Build 022 adds permission-gated operational layers, persistent layer
-        order, map-facing labels and inherited or polygon-specific icons while
-        retaining Build 021 advanced geometry editing. In edit mode, arrow keys
-        nudge the selected vertex or whole polygon by the chosen precision step;
-        Shift multiplies that movement by 10. Ctrl/Cmd+Z undoes,
-        Ctrl/Cmd+Shift+Z or Ctrl/Cmd+Y redoes, Delete removes a selected vertex
-        when at least three remain, and Escape returns selection to the whole
-        polygon.
+        Build 023 binds saved polygons or precise Build 019 points to one
+        canonical campground identity. The object inspector shows the current
+        binding and prevents duplicate identities from silently sharing geometry.
+        Advanced polygon editing and Build 022 layer visibility remain unchanged.
       </p>
     </div>
   );

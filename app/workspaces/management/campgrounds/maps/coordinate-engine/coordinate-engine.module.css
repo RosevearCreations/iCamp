@@ -748,3 +748,189 @@
     flex-direction: column;
   }
 }
+
+
+.objectInspector {
+  display: grid;
+  gap: 0.75rem;
+  padding: 0.8rem;
+  border: 1px solid var(--line);
+  border-radius: 0.75rem;
+  background: #fff;
+}
+
+.objectInspectorHeader {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.objectInspectorHeader h4,
+.objectInspectorHeader p {
+  margin: 0;
+}
+
+.objectInspectorHeader p,
+.objectHint,
+.pointBindingForm small,
+.objectIdentityRow small {
+  color: var(--muted);
+  font-size: 0.72rem;
+}
+
+.objectInspectorHeader > span {
+  white-space: nowrap;
+  color: var(--muted);
+  font-size: 0.7rem;
+  font-weight: 800;
+}
+
+.objectInspectorCard {
+  display: grid;
+  gap: 0.7rem;
+  padding: 0.65rem;
+  border: 1px solid var(--line);
+  border-radius: 0.65rem;
+  background: var(--surface-soft);
+}
+
+.objectIdentityRow {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0.55rem;
+  align-items: center;
+}
+
+.objectIdentityRow > div {
+  display: grid;
+  gap: 0.1rem;
+}
+
+.objectBindingDetails {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.45rem;
+  margin: 0;
+}
+
+.objectBindingDetails div {
+  display: grid;
+  gap: 0.1rem;
+  padding: 0.45rem;
+  border: 1px solid var(--line);
+  border-radius: 0.55rem;
+  background: #fff;
+}
+
+.objectBindingDetails dt {
+  color: var(--muted);
+  font-size: 0.63rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.objectBindingDetails dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+  font-size: 0.76rem;
+  font-weight: 750;
+}
+
+.objectBindingActions,
+.objectCreateForm,
+.pointBindingForm {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.objectActionForm button,
+.objectCreateForm button,
+.pointBindingForm button {
+  min-height: 2.3rem;
+  padding: 0.45rem 0.65rem;
+  border: 1px solid var(--line);
+  border-radius: 0.55rem;
+  background: #fff;
+  color: var(--ink);
+  font: inherit;
+  font-size: 0.75rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.objectActionForm button:disabled,
+.pointBindingForm button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.pointBindingForm label,
+.objectCreateForm label {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.pointBindingForm label > span,
+.objectCreateForm label > span {
+  color: var(--muted);
+  font-size: 0.66rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.pointBindingForm select,
+.objectCreateForm select,
+.objectCreateForm input {
+  min-height: 2.4rem;
+  padding: 0.5rem 0.6rem;
+  border: 1px solid var(--line);
+  border-radius: 0.55rem;
+  background: #fff;
+  color: var(--ink);
+  font: inherit;
+}
+
+.objectCreatePanel {
+  border-top: 1px solid var(--line);
+  padding-top: 0.5rem;
+}
+
+.objectCreatePanel summary {
+  cursor: pointer;
+  color: var(--brand);
+  font-size: 0.75rem;
+  font-weight: 850;
+}
+
+.objectCreateForm {
+  margin-top: 0.6rem;
+}
+
+.objectPointGroup {
+  cursor: pointer;
+}
+
+.objectPoint {
+  fill: #fff;
+  stroke: currentColor;
+  stroke-width: 3px;
+  vector-effect: non-scaling-stroke;
+}
+
+.selectedObjectPoint {
+  fill: currentColor;
+  stroke: #fff;
+  stroke-width: 3px;
+  vector-effect: non-scaling-stroke;
+}
+
+@media (max-width: 46rem) {
+  .objectInspectorHeader {
+    flex-direction: column;
+  }
+
+  .objectBindingDetails {
+    grid-template-columns: 1fr;
+  }
+}
