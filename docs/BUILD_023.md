@@ -1,7 +1,7 @@
 # Build 023 — Canonical Map Object Binding
 
 ## Status
-**IN DEVELOPMENT — feature branch verification pending.**
+**FULLY PROMOTED — `main` GREEN.**
 
 ## Roadmap scope
 - bind polygons/points to canonical sites, cottages, pools, washrooms, gates, docks, roads, buildings and assets;
@@ -57,5 +57,19 @@ Build 023 remains on the existing Next.js/PostgreSQL/Supabase stack and existing
 - IVR/DTMF: map geometry remains graphical-only; staff can identify canonical objects by code and use secure visual handoff for placement.
 - SMS/MMS: canonical object codes can be referenced non-visually, but geometry creation/placement uses secure visual handoff or staff assistance.
 
+## Promotion evidence
+- Final feature head: `502eea8b09fb62fba662fc791f297dc46a80a73b`.
+- Feature PR #84 passed CI `38156035627`, CodeQL `38156035631` and Secret Scan `38156035623`; Verify, Browser end-to-end and Database migrations all succeeded.
+- Feature merge into `dev`: `af6d419b64c17d2239f045a9f527e2f3291931d7`.
+- Advisor-driven index hardening PR #85 passed CI `38156441334`, CodeQL `38156441328` and Secret Scan `38156441353`.
+- Hardened `dev` merge: `8491116614d74544b37aa871ecaf5cf58097cf40`, independently GREEN on CI `38157546211`, CodeQL `38157546207` and Secret Scan `38157546278`.
+- First production merge on `main`: `ec7d01f5b41750b25a4f47b88f5259f34826014b`.
+- Production proof: CI `38157759806`, CodeQL `38157759804` and Secret Scan `38157759805` all completed successfully; CI Verify, Browser end-to-end and Database migrations were GREEN.
+- Hosted Supabase migration `0025_canonical_map_object_binding`: version `20261011163857`.
+- Hosted Supabase migration `0026_map_object_fk_indexes`: version `20261011165829`.
+- Supabase Security Advisor returned zero findings after both migrations.
+- Supabase Performance Advisor no longer reported the Build 023/Build 022 unindexed composite foreign-key findings after migration 0026.
+- Direct `anon` and `authenticated` SELECT privileges remain false for both canonical map-object private tables.
+
 ## Manual action
-No manual user action is expected unless the connected Supabase project rejects migration 0025 for an external configuration reason.
+No manual user action was required to promote Build 023.
