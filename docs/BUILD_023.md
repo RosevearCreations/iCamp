@@ -63,8 +63,9 @@ Build 023 remains on the existing Next.js/PostgreSQL/Supabase stack and existing
 - Feature merge into `dev`: `af6d419b64c17d2239f045a9f527e2f3291931d7`.
 - Advisor-driven index hardening PR #85 passed CI `38156441334`, CodeQL `38156441328` and Secret Scan `38156441353`.
 - Hardened `dev` merge: `8491116614d74544b37aa871ecaf5cf58097cf40`, independently GREEN on CI `38157546211`, CodeQL `38157546207` and Secret Scan `38157546278`.
+- Production PR #86 also completed delayed PR gates GREEN: CI `38157859667`, CodeQL `38157859664` and Secret Scan `38157859651`.
 - First production merge on `main`: `ec7d01f5b41750b25a4f47b88f5259f34826014b`.
-- Production proof: CI `38157759806`, CodeQL `38157759804` and Secret Scan `38157759805` all completed successfully; CI Verify, Browser end-to-end and Database migrations were GREEN.
+- Production push proof: CI `38157759806`, CodeQL `38157759804` and Secret Scan `38157759805` all completed successfully; CI Verify, Browser end-to-end and Database migrations were GREEN.
 - Hosted Supabase migration `0025_canonical_map_object_binding`: version `20261011163857`.
 - Hosted Supabase migration `0026_map_object_fk_indexes`: version `20261011165829`.
 - Supabase Security Advisor returned zero findings after both migrations.
