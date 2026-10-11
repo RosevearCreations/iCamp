@@ -77,7 +77,9 @@ begin
     raise exception 'Expected required polygon map label';
   end if;
 
-  if has_table_privilege(
+  if exists (
+    select 1 from pg_roles where rolname = 'anon'
+  ) and has_table_privilege(
     'anon',
     'icamp_private.campground_map_layers',
     'select'
@@ -85,7 +87,9 @@ begin
     raise exception 'anon must not directly read private map layers';
   end if;
 
-  if has_table_privilege(
+  if exists (
+    select 1 from pg_roles where rolname = 'authenticated'
+  ) and has_table_privilege(
     'authenticated',
     'icamp_private.campground_map_layers',
     'select'
