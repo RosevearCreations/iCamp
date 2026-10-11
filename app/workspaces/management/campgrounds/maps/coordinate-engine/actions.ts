@@ -6,6 +6,12 @@ import { redirect } from "next/navigation";
 import { requireCampgroundPermission } from "@/lib/authz/current-user";
 import { moveMapLayer, updateMapLayer } from "@/lib/map-layers/postgres.mjs";
 import {
+  bindMapObjectToPoint,
+  bindMapObjectToPolygon,
+  createMapObject,
+  unbindMapObject,
+} from "@/lib/map-objects/postgres.mjs";
+import {
   duplicateMapPolygon,
   saveMapPolygon,
   setMapPolygonState,
@@ -170,4 +176,88 @@ export async function moveMapLayerAction(formData: FormData) {
   });
 
   finish(campgroundId, "Map layer order updated.");
+}
+
+
+export async function createMapObjectAction(formData: FormData) {
+  const campgroundId = field(formData, "campgroundId");
+  const session = await requireCampgroundPermission(
+    campgroundId,
+    "campground.configuration",
+    path,
+  );
+
+  await createMapObject({
+    actorUserId: session.user.id,
+    campgroundId,
+    kind: field(formData, "kind"),
+    code: field(formData, "code"),
+    displayName: field(formData, "displayName"),
+    sectionId: field(formData, "sectionId") || null,
+  });
+
+  finish(campgroundId, "Canonical map object created.");
+}
+
+export async function bindMapObjectPolygonAction(formData: FormData) {
+  const campgroundId = field(formData, "campgroundId");
+  const session = await requireCampgroundPermission(
+    campgroundId,
+    "campground.map",
+    path,
+  );
+
+  await bindMapObjectToPolygon({
+    actorUserId: session.user.id,
+    campgroundId,
+    mapImageVersionId: field(formData, "mapImageVersionId"),
+    mapObjectId: field(formData, "mapObjectId"),
+    polygonId: field(formData, "polygonId"),
+  });
+
+  finish(campgroundId, "Canonical object bound to polygon.");
+}
+
+export async function bindMapObjectPointAction(formData: FormData) {
+  const campgroundId = field(formData, "campgroundId");
+  const session = await requireCampgroundPermission(
+    campgroundId,
+    "campground.map",
+    path,
+  );
+  let pointGeometry;
+  try {
+    pointGeometry = JSON.parse(field(formData, "pointGeometry"));
+  } catch {
+    throw new Error("Point geometry is invalid.");
+  }
+
+  await bindMapObjectToPoint({
+    actorUserId: session.user.id,
+    campgroundId,
+    mapImageVersionId: field(formData, "mapImageVersionId"),
+    mapObjectId: field(formData, "mapObjectId"),
+    layerId: field(formData, "layerId"),
+    pointGeometry,
+  });
+
+  finish(campgroundId, "Canonical object bound to point.");
+}
+
+export async function unbindMapObjectAction(formData: FormData) {
+  const campgroundId = field(formData, "campgroundId");
+  const session = await requireCampgroundPermission(
+    campgroundId,
+    "campground.map",
+    path,
+  );
+
+  await unbindMapObject({
+    actorUserId: session.user.id,
+    campgroundId,
+    mapObjectId: field(formData, "mapObjectId"),
+    expectedRowVersion: Number(field(formData, "rowVersion")),
+  });
+
+  finish(campgroundId, "Canonical map object unbound.");
 }
