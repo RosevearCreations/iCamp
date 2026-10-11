@@ -7,6 +7,15 @@ export interface MapPolygonRecord {
   mapImageVersionId: string;
   label: string;
   geometry: StoredMapPolygon;
+  layerId: string;
+  layerKey: string | null;
+  layerDisplayName: string | null;
+  layerIconKey: string | null;
+  layerSortOrder: number | null;
+  layerVisibilityPermissionKey: string | null;
+  mapLabel: string;
+  mapIconKey: string | null;
+  mapLabelVisible: boolean;
   isLocked: boolean;
   isHidden: boolean;
   archivedAt: string | Date | null;
@@ -33,6 +42,10 @@ export function saveMapPolygon(input: {
   expectedRowVersion?: number;
   label: string;
   geometry: StoredMapPolygon;
+  layerId: string;
+  mapLabel: string;
+  mapIconKey?: string | null;
+  mapLabelVisible: boolean;
 }): Promise<MapPolygonRecord>;
 
 export function duplicateMapPolygon(input: {

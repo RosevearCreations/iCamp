@@ -11,6 +11,7 @@ import {
   listAssignedCampgrounds,
 } from "@/lib/authz/postgres.mjs";
 import { listMapImageVersions } from "@/lib/map-images/postgres.mjs";
+import { listMapLayers } from "@/lib/map-layers/postgres.mjs";
 import { listMapPolygons } from "@/lib/map-polygons/postgres.mjs";
 
 import { CoordinateEngine } from "./coordinate-engine";
@@ -55,6 +56,14 @@ export default async function MapCoordinateEnginePage({
   const selected =
     authorized.find((item) => item.campgroundId === params.campground) ??
     authorized[0];
+  const selectedAuthorization = await getCampgroundAuthorization(
+    session.user.id,
+    selected.campgroundId,
+  );
+  const canConfigureLayers =
+    selectedAuthorization?.permissions.includes("campground.configuration") ??
+    false;
+  const layers = await listMapLayers(session.user.id, selected.campgroundId);
   const versions = await listMapImageVersions(
     session.user.id,
     selected.campgroundId,
@@ -146,6 +155,8 @@ export default async function MapCoordinateEnginePage({
               sourceWidth={activeVersion.sourceWidth}
               sourceHeight={activeVersion.sourceHeight}
               initialPolygons={polygons}
+              initialLayers={layers}
+              canConfigureLayers={canConfigureLayers}
             />
           ) : (
             <div className={styles.emptyState}>

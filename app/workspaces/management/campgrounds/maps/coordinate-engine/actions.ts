@@ -5,6 +5,10 @@ import { redirect } from "next/navigation";
 
 import { requireCampgroundPermission } from "@/lib/authz/current-user";
 import {
+  moveMapLayer,
+  updateMapLayer,
+} from "@/lib/map-layers/postgres.mjs";
+import {
   duplicateMapPolygon,
   saveMapPolygon,
   setMapPolygonState,
@@ -46,6 +50,10 @@ export async function saveMapPolygonAction(formData: FormData) {
     expectedRowVersion: Number(field(formData, "rowVersion") || 0),
     label: field(formData, "label"),
     geometry,
+    layerId: field(formData, "layerId"),
+    mapLabel: field(formData, "mapLabel"),
+    mapIconKey: field(formData, "mapIconKey") || null,
+    mapLabelVisible: field(formData, "mapLabelVisible") === "true",
   });
 
   finish(campgroundId, "Polygon saved.");
@@ -124,4 +132,46 @@ export async function toggleMapPolygonArchivedAction(formData: FormData) {
     enabled,
     enabled ? "Polygon archived." : "Polygon restored.",
   );
+}
+
+
+export async function updateMapLayerAction(formData: FormData) {
+  const campgroundId = field(formData, "campgroundId");
+  const session = await requireCampgroundPermission(
+    campgroundId,
+    "campground.configuration",
+    path,
+  );
+
+  await updateMapLayer({
+    actorUserId: session.user.id,
+    campgroundId,
+    layerId: field(formData, "layerId"),
+    expectedRowVersion: Number(field(formData, "rowVersion")),
+    displayName: field(formData, "displayName"),
+    iconKey: field(formData, "iconKey"),
+    visibilityPermissionKey: field(formData, "visibilityPermissionKey"),
+    isEnabled: field(formData, "isEnabled") === "true",
+  });
+
+  finish(campgroundId, "Map layer updated.");
+}
+
+export async function moveMapLayerAction(formData: FormData) {
+  const campgroundId = field(formData, "campgroundId");
+  const session = await requireCampgroundPermission(
+    campgroundId,
+    "campground.configuration",
+    path,
+  );
+
+  await moveMapLayer({
+    actorUserId: session.user.id,
+    campgroundId,
+    layerId: field(formData, "layerId"),
+    expectedRowVersion: Number(field(formData, "rowVersion")),
+    direction: field(formData, "direction") === "up" ? "up" : "down",
+  });
+
+  finish(campgroundId, "Map layer order updated.");
 }
