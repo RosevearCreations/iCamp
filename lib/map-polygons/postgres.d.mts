@@ -21,6 +21,11 @@ export interface MapPolygonRecord {
   archivedAt: string | Date | null;
   archivedByUserId: string | null;
   duplicatedFromPolygonId: string | null;
+  mapObjectId: string | null;
+  mapObjectKind: string | null;
+  mapObjectCode: string | null;
+  mapObjectName: string | null;
+  mapObjectBindingId: string | null;
   createdAt: string | Date;
   updatedAt: string | Date;
   rowVersion: number;

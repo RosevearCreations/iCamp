@@ -36,9 +36,9 @@ test("Build 022 page and contextual help expose layer semantics", async () => {
     "utf8",
   );
   const help = await readFile("lib/help/topics.ts", "utf8");
-  assert.match(page, /Build 022/u);
-  assert.match(page, /Map Layers, Labels & Icons/u);
-  assert.match(page, /helpTopic="campground\.map\.layers"/u);
+  assert.match(page, /Build 023/u);
+  assert.match(page, /Canonical Map Object Binding/u);
+  assert.match(page, /helpTopic="campground\.map\.objects"/u);
   assert.match(help, /"campground\.map\.layers"/u);
   assert.match(help, /Layer visibility is enforced on the server/u);
   assert.match(help, /Build 023/u);
