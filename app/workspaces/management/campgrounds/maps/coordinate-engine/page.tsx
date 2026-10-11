@@ -19,9 +19,9 @@ import styles from "./coordinate-engine.module.css";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Polygon plotter · iCamp",
+  title: "Advanced polygon editor · iCamp",
   description:
-    "Plot and edit campground polygons on the active overhead image.",
+    "Move, duplicate, lock, hide, archive and precisely edit campground polygons.",
 };
 
 export default async function MapCoordinateEnginePage({
@@ -87,12 +87,12 @@ export default async function MapCoordinateEnginePage({
         </nav>
 
         <section className="hero-panel">
-          <p className="eyebrow">Build 020</p>
-          <h1>Polygon Plotter Core</h1>
+          <p className="eyebrow">Build 021</p>
+          <h1>Advanced Polygon Editing</h1>
           <p className="hero-panel__lead">
-            Draw irregular campground shapes directly on the active overhead
-            image, validate them, edit their vertices and persist them against
-            the exact image version used for plotting.
+            Refine campground polygons with undo/redo, whole-shape movement,
+            duplicate, lifecycle controls and pixel-level selection aids while
+            preserving Build 020 geometry integrity.
           </p>
         </section>
 
@@ -132,10 +132,10 @@ export default async function MapCoordinateEnginePage({
         <section className="content-panel" aria-labelledby="engine-heading">
           <SectionHeading
             eyebrow="Visual map editor"
-            title="Active-image polygon plotter"
+            title="Advanced active-image polygon editor"
             id="engine-heading"
             helpTopic="campground.map.polygons"
-            trailing={<span className="build-chip">Build 020</span>}
+            trailing={<span className="build-chip">Build 021</span>}
           />
           {activeVersion ? (
             <CoordinateEngine
@@ -186,23 +186,23 @@ export default async function MapCoordinateEnginePage({
             helpTopic="campground.map.polygons"
           />
           <p>
-            The campground map editor uses iCamp-owned imagery and SVG overlays;
-            no paid mapping API is required. Hosting, PostgreSQL, media storage
-            and provider decisions remain portable and are recorded in the
-            platform decision register.
+            The campground map editor still uses iCamp-owned imagery and SVG
+            overlays, so no paid mapping API is required. Supabase remains the
+            current hosted PostgreSQL and media backend; Build 021 creates no
+            new Vercel or Cloudflare project.
           </p>
         </section>
 
         <section className="content-panel" aria-labelledby="freshness-heading">
           <SectionHeading
             eyebrow="Administrative tracking"
-            title="Polygon-plotter freshness"
+            title="Advanced-editor freshness"
             id="freshness-heading"
             helpTopic="admin.refresh"
           />
           <AdminRefreshControl
             renderedAt={new Date().toISOString()}
-            sectionKey="management.campground-map-polygon-plotter"
+            sectionKey="management.campground-map-advanced-polygon-editor"
           />
         </section>
       </div>

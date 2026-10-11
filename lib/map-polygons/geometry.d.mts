@@ -13,6 +13,16 @@ export interface PolygonValidation {
   errors: string[];
   area: number;
 }
+export interface PolygonBounds {
+  minX: number;
+  minY: number;
+  maxX: number;
+  maxY: number;
+  width: number;
+  height: number;
+  centerX: number;
+  centerY: number;
+}
 export function polygonSignedArea(points: readonly MapPoint[]): number;
 export function validateMapPolygonVertices(
   points: readonly MapPoint[],
@@ -43,6 +53,20 @@ export function deletePolygonVertex(
   points: readonly MapPoint[],
   index: number,
 ): MapPoint[];
+export function polygonBounds(points: readonly MapPoint[]): PolygonBounds;
+export function translatePolygon(
+  points: readonly MapPoint[],
+  deltaX: number,
+  deltaY: number,
+  sourceWidth: number,
+  sourceHeight: number,
+): MapPoint[];
+export function snapMapPoint(
+  point: MapPoint,
+  increment: number,
+  sourceWidth: number,
+  sourceHeight: number,
+): MapPoint;
 export const mapPolygonLimits: Readonly<{
   schemaVersion: 1;
   minVertices: 3;

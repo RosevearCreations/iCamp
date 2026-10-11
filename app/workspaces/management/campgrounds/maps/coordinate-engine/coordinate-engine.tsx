@@ -27,11 +27,20 @@ import {
   createStoredMapPolygon,
   deletePolygonVertex,
   movePolygonVertex,
+  polygonBounds,
+  snapMapPoint,
+  translatePolygon,
   validateMapPolygonVertices,
   type StoredMapPolygon,
 } from "@/lib/map-polygons/geometry.mjs";
 
-import { saveMapPolygonAction } from "./actions";
+import {
+  duplicateMapPolygonAction,
+  saveMapPolygonAction,
+  toggleMapPolygonArchivedAction,
+  toggleMapPolygonHiddenAction,
+  toggleMapPolygonLockAction,
+} from "./actions";
 import styles from "./coordinate-engine.module.css";
 
 interface PointerReadout {
@@ -52,27 +61,48 @@ interface DragState {
 interface VertexDragState {
   pointerId: number;
   index: number;
+  original: MapPoint[];
 }
 
 export interface MapPolygonRecord {
   id: string;
   label: string;
   geometry: StoredMapPolygon;
+  isLocked: boolean;
+  isHidden: boolean;
+  archivedAt: string | Date | null;
+  archivedByUserId: string | null;
+  duplicatedFromPolygonId: string | null;
   rowVersion: number;
 }
 
 const INITIAL_VIEW: MapViewState = { zoom: 1, panX: 0, panY: 0 };
+const HISTORY_LIMIT = 50;
 
 function formatCoordinate(value: number, digits = 2) {
   return value.toFixed(digits);
 }
 
 function sourcePoints(polygon: MapPolygonRecord) {
-  return polygon.geometry.vertices.map((vertex) => vertex.image);
+  return polygon.geometry.vertices.map((vertex) => ({ ...vertex.image }));
 }
 
 function pointsAttribute(points: readonly MapPoint[]) {
   return points.map((point) => point.x + "," + point.y).join(" ");
+}
+
+function samePoints(left: readonly MapPoint[], right: readonly MapPoint[]) {
+  return (
+    left.length === right.length &&
+    left.every(
+      (point, index) =>
+        point.x === right[index]?.x && point.y === right[index]?.y,
+    )
+  );
+}
+
+function clonePoints(points: readonly MapPoint[]) {
+  return points.map((point) => ({ ...point }));
 }
 
 export function CoordinateEngine({
@@ -103,19 +133,42 @@ export function CoordinateEngine({
   const [pointer, setPointer] = useState<PointerReadout | null>(null);
   const [dragging, setDragging] = useState(false);
   const [mode, setMode] = useState<"pan" | "draw" | "edit">("pan");
+
+  const firstPolygon =
+    initialPolygons.find((polygon) => !polygon.archivedAt) ??
+    initialPolygons[0] ??
+    null;
   const [selectedId, setSelectedId] = useState<string | null>(
-    initialPolygons[0]?.id ?? null,
+    firstPolygon?.id ?? null,
   );
   const selectedPolygon =
     initialPolygons.find((polygon) => polygon.id === selectedId) ?? null;
   const [draft, setDraft] = useState<MapPoint[]>(
-    selectedPolygon ? sourcePoints(selectedPolygon) : [],
+    firstPolygon ? sourcePoints(firstPolygon) : [],
   );
-  const [closed, setClosed] = useState(Boolean(selectedPolygon));
+  const draftRef = useRef<MapPoint[]>(draft);
+  draftRef.current = draft;
+  const [closed, setClosed] = useState(Boolean(firstPolygon));
   const [polygonLabel, setPolygonLabel] = useState(
-    selectedPolygon?.label ?? "New polygon",
+    firstPolygon?.label ?? "New polygon",
   );
   const [selectedVertex, setSelectedVertex] = useState<number | null>(null);
+  const [past, setPast] = useState<MapPoint[][]>([]);
+  const [future, setFuture] = useState<MapPoint[][]>([]);
+  const [precisionStep, setPrecisionStep] = useState(1);
+  const [editorMessage, setEditorMessage] = useState<string | null>(null);
+
+  const editable =
+    selectedId === null ||
+    (selectedPolygon !== null &&
+      !selectedPolygon.isLocked &&
+      !selectedPolygon.archivedAt);
+  const activePolygons = initialPolygons.filter(
+    (polygon) => !polygon.archivedAt,
+  );
+  const archivedPolygons = initialPolygons.filter(
+    (polygon) => polygon.archivedAt,
+  );
 
   useEffect(() => {
     let active = true;
@@ -203,6 +256,10 @@ export function CoordinateEngine({
     if (!closed || !validation.valid) return null;
     return createStoredMapPolygon(draft, sourceWidth, sourceHeight);
   }, [closed, draft, sourceHeight, sourceWidth, validation.valid]);
+  const bounds = useMemo(
+    () => (draft.length > 0 ? polygonBounds(draft) : null),
+    [draft],
+  );
 
   function viewportPoint(clientX: number, clientY: number) {
     const rect = viewportRef.current?.getBoundingClientRect();
@@ -271,6 +328,56 @@ export function CoordinateEngine({
     );
   }
 
+  function recordHistory(previous: readonly MapPoint[]) {
+    setPast((current) => [
+      ...current.slice(-(HISTORY_LIMIT - 1)),
+      clonePoints(previous),
+    ]);
+    setFuture([]);
+  }
+
+  function commitDraft(next: MapPoint[]) {
+    if (samePoints(draft, next)) return;
+    recordHistory(draft);
+    setDraft(next);
+    if (next.length < 3) setClosed(false);
+    setEditorMessage(null);
+  }
+
+  function undo() {
+    const previous = past.at(-1);
+    if (!previous || !editable) return;
+    setPast((current) => current.slice(0, -1));
+    setFuture((current) => [
+      clonePoints(draft),
+      ...current.slice(0, HISTORY_LIMIT - 1),
+    ]);
+    setDraft(clonePoints(previous));
+    if (previous.length < 3) setClosed(false);
+    setSelectedVertex((current) =>
+      current === null ? null : Math.min(current, previous.length - 1),
+    );
+    setEditorMessage(null);
+  }
+
+  function redo() {
+    const next = future[0];
+    if (!next || !editable) return;
+    setFuture((current) => current.slice(1));
+    setPast((current) => [
+      ...current.slice(-(HISTORY_LIMIT - 1)),
+      clonePoints(draft),
+    ]);
+    setDraft(clonePoints(next));
+    setEditorMessage(null);
+  }
+
+  function resetHistory() {
+    setPast([]);
+    setFuture([]);
+    setEditorMessage(null);
+  }
+
   function handleWheel(event: ReactWheelEvent<HTMLDivElement>) {
     event.preventDefault();
     const factor = Math.exp(-event.deltaY * 0.0015);
@@ -280,20 +387,26 @@ export function CoordinateEngine({
 
   function handlePointerDown(event: ReactPointerEvent<HTMLDivElement>) {
     if (event.button !== 0) return;
-    if (mode === "draw") {
+    if (mode === "draw" && editable) {
       const normalized = viewportPointToNormalized(
         viewportPoint(event.clientX, event.clientY),
         transform,
       );
       if (normalized) {
-        setDraft((current) => [
-          ...current,
-          imagePoint(event.clientX, event.clientY),
+        commitDraft([
+          ...draft,
+          snapMapPoint(
+            imagePoint(event.clientX, event.clientY),
+            precisionStep,
+            sourceWidth,
+            sourceHeight,
+          ),
         ]);
         setClosed(false);
       }
       return;
     }
+
     event.currentTarget.setPointerCapture(event.pointerId);
     dragRef.current = {
       pointerId: event.pointerId,
@@ -308,16 +421,19 @@ export function CoordinateEngine({
   function handlePointerMove(event: ReactPointerEvent<HTMLDivElement>) {
     updatePointer(event.clientX, event.clientY);
     const vertexDrag = vertexDragRef.current;
-    if (vertexDrag?.pointerId === event.pointerId) {
+    if (vertexDrag?.pointerId === event.pointerId && editable) {
+      const snapped = snapMapPoint(
+        imagePoint(event.clientX, event.clientY),
+        precisionStep,
+        sourceWidth,
+        sourceHeight,
+      );
       setDraft((current) =>
-        movePolygonVertex(
-          current,
-          vertexDrag.index,
-          imagePoint(event.clientX, event.clientY),
-        ),
+        movePolygonVertex(current, vertexDrag.index, snapped),
       );
       return;
     }
+
     const drag = dragRef.current;
     if (!drag || drag.pointerId !== event.pointerId) return;
     setView((current) =>
@@ -333,9 +449,15 @@ export function CoordinateEngine({
   }
 
   function endDrag(event: ReactPointerEvent<HTMLDivElement>) {
-    if (vertexDragRef.current?.pointerId === event.pointerId) {
+    const vertexDrag = vertexDragRef.current;
+    if (vertexDrag?.pointerId === event.pointerId) {
+      const current = draftRef.current;
+      if (!samePoints(vertexDrag.original, current)) {
+        recordHistory(vertexDrag.original);
+      }
       vertexDragRef.current = null;
     }
+
     if (dragRef.current?.pointerId === event.pointerId) {
       dragRef.current = null;
       setDragging(false);
@@ -349,32 +471,172 @@ export function CoordinateEngine({
     event: ReactPointerEvent<SVGCircleElement>,
     index: number,
   ) {
-    if (mode !== "edit") return;
+    if (mode !== "edit" || !editable) return;
     event.preventDefault();
     event.stopPropagation();
     event.currentTarget.setPointerCapture(event.pointerId);
-    vertexDragRef.current = { pointerId: event.pointerId, index };
+    vertexDragRef.current = {
+      pointerId: event.pointerId,
+      index,
+      original: clonePoints(draft),
+    };
     setSelectedVertex(index);
   }
 
+  function nudgeSelection(deltaX: number, deltaY: number) {
+    if (!editable || draft.length === 0) return;
+    try {
+      if (selectedVertex === null) {
+        commitDraft(
+          translatePolygon(draft, deltaX, deltaY, sourceWidth, sourceHeight),
+        );
+      } else {
+        const current = draft[selectedVertex];
+        const nextPoint = snapMapPoint(
+          {
+            x: current.x + deltaX,
+            y: current.y + deltaY,
+          },
+          precisionStep,
+          sourceWidth,
+          sourceHeight,
+        );
+        commitDraft(movePolygonVertex(draft, selectedVertex, nextPoint));
+      }
+    } catch (error) {
+      setEditorMessage(
+        error instanceof Error ? error.message : "Unable to move selection.",
+      );
+    }
+  }
+
+  function snapSelection() {
+    if (!editable || draft.length === 0) return;
+    try {
+      if (selectedVertex !== null) {
+        const nextPoint = snapMapPoint(
+          draft[selectedVertex],
+          precisionStep,
+          sourceWidth,
+          sourceHeight,
+        );
+        commitDraft(movePolygonVertex(draft, selectedVertex, nextPoint));
+        return;
+      }
+
+      const currentBounds = polygonBounds(draft);
+      const snappedCenter = snapMapPoint(
+        {
+          x: currentBounds.centerX,
+          y: currentBounds.centerY,
+        },
+        precisionStep,
+        sourceWidth,
+        sourceHeight,
+      );
+      commitDraft(
+        translatePolygon(
+          draft,
+          snappedCenter.x - currentBounds.centerX,
+          snappedCenter.y - currentBounds.centerY,
+          sourceWidth,
+          sourceHeight,
+        ),
+      );
+    } catch (error) {
+      setEditorMessage(
+        error instanceof Error ? error.message : "Unable to snap selection.",
+      );
+    }
+  }
+
+  function selectPreviousVertex() {
+    if (draft.length === 0) return;
+    setSelectedVertex((current) =>
+      current === null
+        ? draft.length - 1
+        : (current - 1 + draft.length) % draft.length,
+    );
+  }
+
+  function selectNextVertex() {
+    if (draft.length === 0) return;
+    setSelectedVertex((current) =>
+      current === null ? 0 : (current + 1) % draft.length,
+    );
+  }
+
   function handleKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
-    const step = event.shiftKey ? 96 : 32;
+    const modifier = event.metaKey || event.ctrlKey;
+    const key = event.key.toLowerCase();
+
+    if (modifier && key === "z") {
+      event.preventDefault();
+      if (event.shiftKey) redo();
+      else undo();
+      return;
+    }
+    if (modifier && key === "y") {
+      event.preventDefault();
+      redo();
+      return;
+    }
+
+    if (mode === "edit" && editable && draft.length > 0) {
+      const amount = precisionStep * (event.shiftKey ? 10 : 1);
+      if (event.key === "ArrowLeft") {
+        event.preventDefault();
+        nudgeSelection(-amount, 0);
+        return;
+      }
+      if (event.key === "ArrowRight") {
+        event.preventDefault();
+        nudgeSelection(amount, 0);
+        return;
+      }
+      if (event.key === "ArrowUp") {
+        event.preventDefault();
+        nudgeSelection(0, -amount);
+        return;
+      }
+      if (event.key === "ArrowDown") {
+        event.preventDefault();
+        nudgeSelection(0, amount);
+        return;
+      }
+      if (
+        (event.key === "Delete" || event.key === "Backspace") &&
+        selectedVertex !== null &&
+        draft.length > 3
+      ) {
+        event.preventDefault();
+        deleteSelectedVertex();
+        return;
+      }
+      if (event.key === "Escape") {
+        event.preventDefault();
+        setSelectedVertex(null);
+        return;
+      }
+    }
+
+    const panStep = event.shiftKey ? 96 : 32;
     switch (event.key) {
       case "ArrowLeft":
         event.preventDefault();
-        panBy(step, 0);
+        panBy(panStep, 0);
         break;
       case "ArrowRight":
         event.preventDefault();
-        panBy(-step, 0);
+        panBy(-panStep, 0);
         break;
       case "ArrowUp":
         event.preventDefault();
-        panBy(0, step);
+        panBy(0, panStep);
         break;
       case "ArrowDown":
         event.preventDefault();
-        panBy(0, -step);
+        panBy(0, -panStep);
         break;
       case "+":
       case "=":
@@ -401,7 +663,8 @@ export function CoordinateEngine({
     setPolygonLabel(polygon.label);
     setClosed(true);
     setSelectedVertex(null);
-    setMode("edit");
+    setMode(polygon.isLocked || polygon.archivedAt ? "pan" : "edit");
+    resetHistory();
   }
 
   function newPolygon() {
@@ -411,10 +674,11 @@ export function CoordinateEngine({
     setClosed(false);
     setSelectedVertex(null);
     setMode("draw");
+    resetHistory();
   }
 
   function closeShape() {
-    if (validation.valid) {
+    if (validation.valid && editable) {
       setClosed(true);
       setMode("edit");
       setSelectedVertex(0);
@@ -422,21 +686,28 @@ export function CoordinateEngine({
   }
 
   function addVertexAfterSelected() {
-    if (!closed || draft.length < 2) return;
+    if (!closed || draft.length < 2 || !editable) return;
     const index = selectedVertex ?? 0;
     const next = draft[(index + 1) % draft.length];
     const current = draft[index];
-    const midpoint = {
-      x: (current.x + next.x) / 2,
-      y: (current.y + next.y) / 2,
-    };
-    setDraft((points) => addPolygonVertex(points, index, midpoint));
+    const midpoint = snapMapPoint(
+      {
+        x: (current.x + next.x) / 2,
+        y: (current.y + next.y) / 2,
+      },
+      precisionStep,
+      sourceWidth,
+      sourceHeight,
+    );
+    commitDraft(addPolygonVertex(draft, index, midpoint));
     setSelectedVertex(index + 1);
   }
 
   function deleteSelectedVertex() {
-    if (selectedVertex === null || draft.length <= 3) return;
-    setDraft((points) => deletePolygonVertex(points, selectedVertex));
+    if (selectedVertex === null || draft.length <= 3 || !editable) {
+      return;
+    }
+    commitDraft(deletePolygonVertex(draft, selectedVertex));
     setSelectedVertex((current) =>
       current === null ? null : Math.min(current, draft.length - 2),
     );
@@ -447,6 +718,23 @@ export function CoordinateEngine({
   const sourceFrameStroke = Math.max(1, 2 / transform.scale);
   const vertexRadius = Math.max(5, 8 / transform.scale);
   const activeRowVersion = selectedPolygon?.rowVersion ?? 0;
+  const selectedPoint =
+    selectedVertex === null ? null : (draft[selectedVertex] ?? null);
+
+  function lifecycleInputs(polygon: MapPolygonRecord) {
+    return (
+      <>
+        <input type="hidden" name="campgroundId" value={campgroundId} />
+        <input
+          type="hidden"
+          name="mapImageVersionId"
+          value={mapImageVersionId}
+        />
+        <input type="hidden" name="polygonId" value={polygon.id} />
+        <input type="hidden" name="rowVersion" value={polygon.rowVersion} />
+      </>
+    );
+  }
 
   return (
     <div className={styles.engine}>
@@ -465,7 +753,7 @@ export function CoordinateEngine({
           className="primary-button"
           type="button"
           onClick={closeShape}
-          disabled={closed || !validation.valid}
+          disabled={closed || !validation.valid || !editable}
         >
           Close shape
         </button>
@@ -473,7 +761,7 @@ export function CoordinateEngine({
           className="primary-button"
           type="button"
           onClick={addVertexAfterSelected}
-          disabled={!closed}
+          disabled={!closed || !editable}
         >
           Add vertex
         </button>
@@ -481,9 +769,27 @@ export function CoordinateEngine({
           className="primary-button"
           type="button"
           onClick={deleteSelectedVertex}
-          disabled={!closed || selectedVertex === null || draft.length <= 3}
+          disabled={
+            !closed || !editable || selectedVertex === null || draft.length <= 3
+          }
         >
           Delete vertex
+        </button>
+        <button
+          className="primary-button"
+          type="button"
+          onClick={undo}
+          disabled={!editable || past.length === 0}
+        >
+          Undo
+        </button>
+        <button
+          className="primary-button"
+          type="button"
+          onClick={redo}
+          disabled={!editable || future.length === 0}
+        >
+          Redo
         </button>
         <button
           className="primary-button"
@@ -524,7 +830,7 @@ export function CoordinateEngine({
               (mode === "draw" ? " " + styles.drawing : "")
             }
             role="application"
-            aria-label={"Polygon plotter for " + label}
+            aria-label={"Advanced polygon editor for " + label}
             tabIndex={0}
             onWheel={handleWheel}
             onPointerDown={handlePointerDown}
@@ -574,13 +880,27 @@ export function CoordinateEngine({
                   strokeWidth={sourceFrameStroke}
                 />
                 {initialPolygons
-                  .filter((polygon) => polygon.id !== selectedId)
+                  .filter(
+                    (polygon) =>
+                      polygon.id !== selectedId &&
+                      !polygon.archivedAt &&
+                      !polygon.isHidden,
+                  )
                   .map((polygon) => (
                     <polygon
                       key={polygon.id}
                       points={pointsAttribute(sourcePoints(polygon))}
-                      className={styles.savedPolygon}
+                      className={
+                        styles.savedPolygon +
+                        (polygon.isLocked ? " " + styles.lockedPolygon : "")
+                      }
                       strokeWidth={sourceFrameStroke}
+                      style={{ pointerEvents: "all" }}
+                      onPointerDown={(event) => {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        choosePolygon(polygon);
+                      }}
                     />
                   ))}
                 {draft.length > 0 ? (
@@ -588,9 +908,13 @@ export function CoordinateEngine({
                     <polygon
                       points={pointsAttribute(draft)}
                       className={
-                        validation.valid
-                          ? styles.activePolygon
-                          : styles.invalidPolygon
+                        selectedPolygon?.archivedAt
+                          ? styles.archivedPolygon
+                          : selectedPolygon?.isHidden
+                            ? styles.hiddenPolygon
+                            : validation.valid
+                              ? styles.activePolygon
+                              : styles.invalidPolygon
                       }
                       strokeWidth={sourceFrameStroke}
                     />
@@ -611,9 +935,15 @@ export function CoordinateEngine({
                     className={
                       index === selectedVertex
                         ? styles.selectedVertex
-                        : styles.vertex
+                        : selectedPolygon?.isLocked ||
+                            selectedPolygon?.archivedAt
+                          ? styles.lockedVertex
+                          : styles.vertex
                     }
-                    style={{ pointerEvents: mode === "edit" ? "all" : "none" }}
+                    style={{
+                      pointerEvents:
+                        mode === "edit" && editable ? "all" : "none",
+                    }}
                     onPointerDown={(event) => startVertexDrag(event, index)}
                   />
                 ))}
@@ -638,10 +968,6 @@ export function CoordinateEngine({
                 </dd>
               </div>
               <div>
-                <dt>CSS scale</dt>
-                <dd>{formatCoordinate(transform.scale, 5)}</dd>
-              </div>
-              <div>
                 <dt>Pointer image</dt>
                 <dd>
                   {pointer
@@ -657,6 +983,32 @@ export function CoordinateEngine({
                 <dd>{draft.length}</dd>
               </div>
               <div>
+                <dt>Selection</dt>
+                <dd>
+                  {selectedPoint
+                    ? "Vertex " +
+                      (selectedVertex! + 1) +
+                      " · " +
+                      formatCoordinate(selectedPoint.x) +
+                      ", " +
+                      formatCoordinate(selectedPoint.y)
+                    : draft.length > 0
+                      ? "Whole polygon"
+                      : "None"}
+                </dd>
+              </div>
+              <div>
+                <dt>Bounds</dt>
+                <dd>
+                  {bounds
+                    ? formatCoordinate(bounds.width) +
+                      " × " +
+                      formatCoordinate(bounds.height) +
+                      " px"
+                    : "—"}
+                </dd>
+              </div>
+              <div>
                 <dt>Validation</dt>
                 <dd>
                   {closed && validation.valid
@@ -669,25 +1021,169 @@ export function CoordinateEngine({
         </div>
 
         <aside className={styles.editorPanel} aria-label="Polygon editor">
-          <h3>Polygon editor</h3>
+          <div className={styles.editorTitleRow}>
+            <h3>Advanced polygon editor</h3>
+            {selectedPolygon ? (
+              <div className={styles.statusBadges}>
+                {selectedPolygon.isLocked ? <span>Locked</span> : null}
+                {selectedPolygon.isHidden ? <span>Hidden</span> : null}
+                {selectedPolygon.archivedAt ? <span>Archived</span> : null}
+              </div>
+            ) : (
+              <div className={styles.statusBadges}>
+                <span>Unsaved</span>
+              </div>
+            )}
+          </div>
+
           <label className={styles.editorField}>
             <span>Label</span>
             <input
               value={polygonLabel}
               maxLength={160}
+              disabled={!editable}
               onChange={(event) => setPolygonLabel(event.target.value)}
             />
           </label>
-          <p>
-            {mode === "draw"
-              ? "Click the image to add vertices, then close the shape."
-              : "Select a vertex and drag it to move. Add inserts a midpoint after the selected vertex."}
-          </p>
+
+          {selectedPolygon?.isLocked ? (
+            <div className={styles.stateNotice}>
+              This polygon is locked. Unlock it before changing its geometry or
+              label.
+            </div>
+          ) : null}
+          {selectedPolygon?.archivedAt ? (
+            <div className={styles.stateNotice}>
+              This polygon is archived. Restore it before editing.
+            </div>
+          ) : null}
+          {editorMessage ? (
+            <div className={styles.validationError}>{editorMessage}</div>
+          ) : null}
           {!validation.valid && draft.length >= 3 ? (
             <div className={styles.validationError}>
               {validation.errors.join(" ")}
             </div>
           ) : null}
+
+          <section
+            className={styles.precisionPanel}
+            aria-label="Precision tools"
+          >
+            <div className={styles.precisionHeader}>
+              <h4>Precision & selection</h4>
+              <label>
+                <span>Step</span>
+                <select
+                  value={precisionStep}
+                  onChange={(event) =>
+                    setPrecisionStep(Number(event.target.value))
+                  }
+                >
+                  <option value="0.25">0.25 px</option>
+                  <option value="1">1 px</option>
+                  <option value="5">5 px</option>
+                  <option value="10">10 px</option>
+                </select>
+              </label>
+            </div>
+
+            <div className={styles.selectionButtons}>
+              <button
+                type="button"
+                onClick={() => setSelectedVertex(null)}
+                disabled={draft.length === 0}
+              >
+                Whole polygon
+              </button>
+              <button
+                type="button"
+                onClick={selectPreviousVertex}
+                disabled={draft.length === 0}
+              >
+                Previous vertex
+              </button>
+              <button
+                type="button"
+                onClick={selectNextVertex}
+                disabled={draft.length === 0}
+              >
+                Next vertex
+              </button>
+            </div>
+
+            <div className={styles.nudgeGrid}>
+              <span />
+              <button
+                type="button"
+                aria-label="Nudge up"
+                disabled={!editable || draft.length === 0}
+                onClick={() => nudgeSelection(0, -precisionStep)}
+              >
+                ↑
+              </button>
+              <span />
+              <button
+                type="button"
+                aria-label="Nudge left"
+                disabled={!editable || draft.length === 0}
+                onClick={() => nudgeSelection(-precisionStep, 0)}
+              >
+                ←
+              </button>
+              <button
+                type="button"
+                disabled={!editable || draft.length === 0}
+                onClick={snapSelection}
+              >
+                Snap
+              </button>
+              <button
+                type="button"
+                aria-label="Nudge right"
+                disabled={!editable || draft.length === 0}
+                onClick={() => nudgeSelection(precisionStep, 0)}
+              >
+                →
+              </button>
+              <span />
+              <button
+                type="button"
+                aria-label="Nudge down"
+                disabled={!editable || draft.length === 0}
+                onClick={() => nudgeSelection(0, precisionStep)}
+              >
+                ↓
+              </button>
+              <span />
+            </div>
+
+            {draft.length > 0 ? (
+              <div className={styles.vertexSelector}>
+                {draft.map((point, index) => (
+                  <button
+                    type="button"
+                    key={index}
+                    className={
+                      selectedVertex === index ? styles.vertexSelected : ""
+                    }
+                    onClick={() => setSelectedVertex(index)}
+                  >
+                    V{index + 1}
+                    <span>
+                      {formatCoordinate(point.x, 1)},{" "}
+                      {formatCoordinate(point.y, 1)}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            ) : null}
+
+            <div className={styles.historyReadout}>
+              Undo {past.length} · Redo {future.length}
+            </div>
+          </section>
+
           <form action={saveMapPolygonAction} className={styles.saveForm}>
             <input type="hidden" name="campgroundId" value={campgroundId} />
             <input
@@ -706,18 +1202,69 @@ export function CoordinateEngine({
             <button
               className="primary-button"
               type="submit"
-              disabled={!storedGeometry || !polygonLabel.trim()}
+              disabled={!storedGeometry || !polygonLabel.trim() || !editable}
             >
               Save polygon
             </button>
           </form>
 
-          <h4>Saved polygons</h4>
-          {initialPolygons.length === 0 ? (
-            <p>No polygons saved for this image version yet.</p>
+          {selectedPolygon ? (
+            <section
+              className={styles.lifecyclePanel}
+              aria-label="Polygon lifecycle controls"
+            >
+              <h4>Lifecycle</h4>
+              <div className={styles.lifecycleActions}>
+                <form action={duplicateMapPolygonAction}>
+                  {lifecycleInputs(selectedPolygon)}
+                  <button type="submit">Duplicate</button>
+                </form>
+
+                <form action={toggleMapPolygonLockAction}>
+                  {lifecycleInputs(selectedPolygon)}
+                  <input
+                    type="hidden"
+                    name="enabled"
+                    value={selectedPolygon.isLocked ? "false" : "true"}
+                  />
+                  <button type="submit">
+                    {selectedPolygon.isLocked ? "Unlock" : "Lock"}
+                  </button>
+                </form>
+
+                <form action={toggleMapPolygonHiddenAction}>
+                  {lifecycleInputs(selectedPolygon)}
+                  <input
+                    type="hidden"
+                    name="enabled"
+                    value={selectedPolygon.isHidden ? "false" : "true"}
+                  />
+                  <button type="submit">
+                    {selectedPolygon.isHidden ? "Show" : "Hide"}
+                  </button>
+                </form>
+
+                <form action={toggleMapPolygonArchivedAction}>
+                  {lifecycleInputs(selectedPolygon)}
+                  <input
+                    type="hidden"
+                    name="enabled"
+                    value={selectedPolygon.archivedAt ? "false" : "true"}
+                  />
+                  <button type="submit">
+                    {selectedPolygon.archivedAt ? "Restore" : "Archive"}
+                  </button>
+                </form>
+              </div>
+            </section>
+          ) : null}
+
+          <h4>Active polygons</h4>
+          {activePolygons.length === 0 ? (
+            <p>No active polygons saved for this image version yet.</p>
           ) : (
             <div className={styles.polygonList}>
-              {initialPolygons.map((polygon) => (
+              {activePolygons.map((polygon) => (
                 <button
                   type="button"
                   key={polygon.id}
@@ -727,20 +1274,49 @@ export function CoordinateEngine({
                   onClick={() => choosePolygon(polygon)}
                 >
                   <strong>{polygon.label}</strong>
-                  <span>{polygon.geometry.vertices.length} vertices</span>
+                  <span>
+                    {polygon.geometry.vertices.length} vertices
+                    {polygon.isLocked ? " · locked" : ""}
+                    {polygon.isHidden ? " · hidden" : ""}
+                  </span>
                 </button>
               ))}
             </div>
           )}
+
+          {archivedPolygons.length > 0 ? (
+            <>
+              <h4>Archived polygons</h4>
+              <div className={styles.polygonList}>
+                {archivedPolygons.map((polygon) => (
+                  <button
+                    type="button"
+                    key={polygon.id}
+                    className={
+                      polygon.id === selectedId ? styles.polygonSelected : ""
+                    }
+                    onClick={() => choosePolygon(polygon)}
+                  >
+                    <strong>{polygon.label}</strong>
+                    <span>
+                      archived · {polygon.geometry.vertices.length} vertices
+                    </span>
+                  </button>
+                ))}
+              </div>
+            </>
+          ) : null}
         </aside>
       </div>
 
       <p className={styles.instructions}>
-        Draw mode: click the active overhead image to create an irregular
-        polygon. Close the shape only after validation passes. Edit mode: drag
-        vertices, add a midpoint vertex, or delete a selected vertex. Pan/zoom
-        continues to use the Build 019 canonical transform, so geometry stays in
-        source-image coordinates without zoom drift.
+        Build 021 adds whole-polygon movement, duplicate, undo/redo,
+        lock/unlock, hide/archive and precision selection aids. In edit mode,
+        arrow keys nudge the selected vertex or whole polygon by the chosen
+        precision step; Shift multiplies that movement by 10. Ctrl/Cmd+Z undoes,
+        Ctrl/Cmd+Shift+Z or Ctrl/Cmd+Y redoes, Delete removes a selected vertex
+        when at least three remain, and Escape returns selection to the whole
+        polygon.
       </p>
     </div>
   );
