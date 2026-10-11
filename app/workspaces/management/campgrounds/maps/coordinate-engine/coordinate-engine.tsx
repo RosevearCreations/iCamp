@@ -488,13 +488,7 @@ export function CoordinateEngine({
     try {
       if (selectedVertex === null) {
         commitDraft(
-          translatePolygon(
-            draft,
-            deltaX,
-            deltaY,
-            sourceWidth,
-            sourceHeight,
-          ),
+          translatePolygon(draft, deltaX, deltaY, sourceWidth, sourceHeight),
         );
       } else {
         const current = draft[selectedVertex];
@@ -559,7 +553,9 @@ export function CoordinateEngine({
   function selectPreviousVertex() {
     if (draft.length === 0) return;
     setSelectedVertex((current) =>
-      current === null ? draft.length - 1 : (current - 1 + draft.length) % draft.length,
+      current === null
+        ? draft.length - 1
+        : (current - 1 + draft.length) % draft.length,
     );
   }
 
@@ -708,11 +704,7 @@ export function CoordinateEngine({
   }
 
   function deleteSelectedVertex() {
-    if (
-      selectedVertex === null ||
-      draft.length <= 3 ||
-      !editable
-    ) {
+    if (selectedVertex === null || draft.length <= 3 || !editable) {
       return;
     }
     commitDraft(deletePolygonVertex(draft, selectedVertex));
@@ -727,7 +719,7 @@ export function CoordinateEngine({
   const vertexRadius = Math.max(5, 8 / transform.scale);
   const activeRowVersion = selectedPolygon?.rowVersion ?? 0;
   const selectedPoint =
-    selectedVertex === null ? null : draft[selectedVertex] ?? null;
+    selectedVertex === null ? null : (draft[selectedVertex] ?? null);
 
   function lifecycleInputs(polygon: MapPolygonRecord) {
     return (
@@ -778,10 +770,7 @@ export function CoordinateEngine({
           type="button"
           onClick={deleteSelectedVertex}
           disabled={
-            !closed ||
-            !editable ||
-            selectedVertex === null ||
-            draft.length <= 3
+            !closed || !editable || selectedVertex === null || draft.length <= 3
           }
         >
           Delete vertex
@@ -1077,7 +1066,10 @@ export function CoordinateEngine({
             </div>
           ) : null}
 
-          <section className={styles.precisionPanel} aria-label="Precision tools">
+          <section
+            className={styles.precisionPanel}
+            aria-label="Precision tools"
+          >
             <div className={styles.precisionHeader}>
               <h4>Precision & selection</h4>
               <label>
@@ -1210,9 +1202,7 @@ export function CoordinateEngine({
             <button
               className="primary-button"
               type="submit"
-              disabled={
-                !storedGeometry || !polygonLabel.trim() || !editable
-              }
+              disabled={!storedGeometry || !polygonLabel.trim() || !editable}
             >
               Save polygon
             </button>
@@ -1323,10 +1313,10 @@ export function CoordinateEngine({
         Build 021 adds whole-polygon movement, duplicate, undo/redo,
         lock/unlock, hide/archive and precision selection aids. In edit mode,
         arrow keys nudge the selected vertex or whole polygon by the chosen
-        precision step; Shift multiplies that movement by 10. Ctrl/Cmd+Z
-        undoes, Ctrl/Cmd+Shift+Z or Ctrl/Cmd+Y redoes, Delete removes a selected
-        vertex when at least three remain, and Escape returns selection to the
-        whole polygon.
+        precision step; Shift multiplies that movement by 10. Ctrl/Cmd+Z undoes,
+        Ctrl/Cmd+Shift+Z or Ctrl/Cmd+Y redoes, Delete removes a selected vertex
+        when at least three remain, and Escape returns selection to the whole
+        polygon.
       </p>
     </div>
   );
