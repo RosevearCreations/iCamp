@@ -66,6 +66,6 @@ test("Build 020 is fully promoted and advances the queue", async () => {
   assert.match(build, /FULLY PROMOTED — `main` GREEN/u);
   assert.match(
     queue,
-    /Build 020 — Polygon Plotter Core[\s\S]*FULLY PROMOTED — `main` GREEN[\s\S]*Next active build[\s\S]*Build 021 — Advanced Polygon Editing[\s\S]*QUEUED — NOT STARTED/u,
+    /Build 020 — Polygon Plotter Core[\s\S]*FULLY PROMOTED — `main` GREEN[\s\S]*Next active build[\s\S]*Build 022 — Map Layers, Labels & Icons[\s\S]*QUEUED — NOT STARTED/u,
   );
 });

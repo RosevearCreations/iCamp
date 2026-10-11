@@ -130,6 +130,6 @@ test("Build 018 source of truth records production promotion and queue advance",
   );
   assert.match(
     queue,
-    /Next active build[\s\S]*Build 021 — Advanced Polygon Editing[\s\S]*QUEUED — NOT STARTED/u,
+    /Next active build[\s\S]*Build 022 — Map Layers, Labels & Icons[\s\S]*QUEUED — NOT STARTED/u,
   );
 });

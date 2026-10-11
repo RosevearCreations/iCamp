@@ -310,8 +310,27 @@ Delivered:
 - provider-portable platform decision register with no paid mapping API required;
 - exact-tree feature and production promotion with CI, browser E2E, database, CodeQL and Secret Scan gates GREEN.
 
+### Build 021 — Advanced Polygon Editing
+Status: **FULLY PROMOTED — `main` GREEN.**
+
+Delivered:
+- whole-polygon movement using the Build 019/020 canonical source coordinate contract;
+- duplicate with source-polygon provenance and active/visible/unlocked reset;
+- 50-step session undo/redo for geometry edits;
+- persistent lock/unlock with server-side geometry/label protection;
+- hide/show without destructive removal;
+- recoverable archive/restore lifecycle with actor/timestamp evidence;
+- 0.25/1/5/10 px precision steps, snapping, bounds and centre calculations;
+- selected-vertex or whole-polygon keyboard/button nudge and direct vertex-selection aids;
+- optimistic row-version conflict protection and append-oriented audit evidence;
+- campground-scoped `campground.map` authorization and private-schema persistence;
+- Web/PWA full visual editing with honest secure-link/staff-assisted IVR/SMS fallback;
+- hosted Supabase migration 0023 with verified columns/indexes, private table permissions and zero Security Advisor findings;
+- no new Vercel project, Cloudflare Pages project, Worker, D1 database or R2 bucket;
+- exact-tree feature, `dev` and production promotion with CI, browser E2E, database, CodeQL and Secret Scan gates GREEN.
+
 ## Next active build
-**Build 021 — Advanced Polygon Editing**
+**Build 022 — Map Layers, Labels & Icons**
 
 Status: **QUEUED — NOT STARTED**
 
