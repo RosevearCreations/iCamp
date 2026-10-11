@@ -33,8 +33,29 @@ values (
 )
 returning id as b20_map_version_id \gset
 
+insert into icamp_private.campground_map_layers (
+  organization_id,
+  campground_id,
+  layer_key,
+  display_name,
+  icon_key,
+  sort_order,
+  visibility_permission_key
+)
+values (
+  :'b20_org_id',
+  :'b20_camp_id',
+  'management',
+  'Management',
+  'layers',
+  60,
+  'campground.configuration'
+)
+returning id as b20_layer_id \gset
+
 insert into icamp_private.campground_map_polygons (
-  organization_id, campground_id, map_image_version_id, label, geometry
+  organization_id, campground_id, map_image_version_id, label, geometry,
+  layer_id, map_label
 )
 values (
   :'b20_org_id', :'b20_camp_id', :'b20_map_version_id', 'Pool deck',
@@ -43,7 +64,9 @@ values (
     {"schemaVersion":1,"image":{"x":500,"y":100},"normalized":{"x":0.25,"y":0.1}},
     {"schemaVersion":1,"image":{"x":500,"y":400},"normalized":{"x":0.25,"y":0.4}},
     {"schemaVersion":1,"image":{"x":100,"y":400},"normalized":{"x":0.05,"y":0.4}}
-  ]}'::jsonb
+  ]}'::jsonb,
+  :'b20_layer_id',
+  'Pool deck'
 )
 returning id as b20_polygon_id \gset
 
@@ -55,6 +78,7 @@ select set_config('icamp.test.b20_polygon_id', :'b20_polygon_id', true);
 select set_config('icamp.test.b20_org_id', :'b20_org_id', true);
 select set_config('icamp.test.b20_camp_id', :'b20_camp_id', true);
 select set_config('icamp.test.b20_map_version_id', :'b20_map_version_id', true);
+select set_config('icamp.test.b20_layer_id', :'b20_layer_id', true);
 
 do $build020_verify$
 declare
@@ -82,14 +106,17 @@ do $build020_invalid$
 begin
   begin
     insert into icamp_private.campground_map_polygons (
-      organization_id, campground_id, map_image_version_id, label, geometry
+      organization_id, campground_id, map_image_version_id, label, geometry,
+      layer_id, map_label
     )
     values (
       current_setting('icamp.test.b20_org_id')::uuid,
       current_setting('icamp.test.b20_camp_id')::uuid,
       current_setting('icamp.test.b20_map_version_id')::uuid,
       'Invalid',
-      '{"schemaVersion":1,"closed":true,"vertices":[]}'::jsonb
+      '{"schemaVersion":1,"closed":true,"vertices":[]}'::jsonb,
+      current_setting('icamp.test.b20_layer_id')::uuid,
+      'Invalid'
     );
     raise exception 'Expected geometry constraint';
   exception

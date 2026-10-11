@@ -41,8 +41,8 @@ test("Build 021 page and help identify advanced polygon editing", async () => {
     "utf8",
   );
   const help = await readFile("lib/help/topics.ts", "utf8");
-  assert.match(page, /Build 021/u);
-  assert.match(page, /Advanced Polygon Editing/u);
+  assert.match(page, /Build 022/u);
+  assert.match(page, /Map Layers, Labels & Icons/u);
   assert.match(help, /50 geometry steps/u);
   assert.match(help, /Lock prevents geometry and label edits/u);
   assert.match(

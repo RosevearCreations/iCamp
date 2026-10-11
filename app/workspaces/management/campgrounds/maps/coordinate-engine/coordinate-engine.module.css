@@ -560,3 +560,191 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
+
+.mapPresentationPanel,
+.layerPanel {
+  display: grid;
+  gap: 0.75rem;
+  padding: 0.8rem;
+  border: 1px solid var(--line);
+  border-radius: 0.75rem;
+  background: #fff;
+}
+
+.mapPresentationPanel h4,
+.layerPanel h4 {
+  margin: 0;
+}
+
+.editorField select,
+.layerSettingsForm input,
+.layerSettingsForm select {
+  min-height: 2.55rem;
+  padding: 0.55rem 0.65rem;
+  border: 1px solid var(--line);
+  border-radius: 0.65rem;
+  background: #fff;
+  color: var(--ink);
+  font: inherit;
+}
+
+.checkField {
+  display: flex;
+  gap: 0.55rem;
+  align-items: center;
+  color: var(--ink);
+  font-size: 0.82rem;
+  font-weight: 750;
+}
+
+.checkField input {
+  width: 1rem;
+  height: 1rem;
+}
+
+.layerPanelHeader {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.layerPanelHeader p {
+  margin-top: 0.2rem;
+  font-size: 0.76rem;
+}
+
+.layerPanelHeader > span {
+  white-space: nowrap;
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+
+.layerList {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.layerCard {
+  display: grid;
+  gap: 0.45rem;
+  padding: 0.55rem;
+  border: 1px solid var(--line);
+  border-radius: 0.65rem;
+  background: var(--surface-soft);
+}
+
+.layerToggle {
+  display: grid;
+  grid-template-columns: auto auto minmax(0, 1fr);
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.layerToggle > span:last-child {
+  display: grid;
+  gap: 0.08rem;
+  min-width: 0;
+}
+
+.layerToggle strong,
+.layerToggle small {
+  overflow-wrap: anywhere;
+}
+
+.layerToggle small {
+  color: var(--muted);
+  font-size: 0.66rem;
+}
+
+.layerIcon {
+  display: grid;
+  width: 1.7rem;
+  height: 1.7rem;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 0.45rem;
+  background: #fff;
+  font-weight: 900;
+}
+
+.layerSettings {
+  border-top: 1px solid var(--line);
+  padding-top: 0.45rem;
+}
+
+.layerSettings summary {
+  cursor: pointer;
+  color: var(--brand);
+  font-size: 0.75rem;
+  font-weight: 850;
+}
+
+.layerSettingsForm {
+  display: grid;
+  gap: 0.55rem;
+  margin-top: 0.6rem;
+}
+
+.layerSettingsForm label {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.layerSettingsForm label > span {
+  color: var(--muted);
+  font-size: 0.68rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.layerSettingsForm button,
+.layerOrderActions button {
+  min-height: 2.25rem;
+  padding: 0.45rem 0.6rem;
+  border: 1px solid var(--line);
+  border-radius: 0.55rem;
+  background: #fff;
+  color: var(--ink);
+  font: inherit;
+  font-size: 0.75rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.layerOrderActions {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.layerOrderActions form {
+  display: inline-flex;
+}
+
+.layerOrderActions button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.mapMarker {
+  pointer-events: none;
+  fill: var(--brand);
+  font-weight: 850;
+  paint-order: stroke;
+  stroke: #fff;
+  stroke-width: 3px;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.activeMapMarker {
+  fill: var(--accent);
+}
+
+@media (max-width: 46rem) {
+  .layerPanelHeader {
+    flex-direction: column;
+  }
+}

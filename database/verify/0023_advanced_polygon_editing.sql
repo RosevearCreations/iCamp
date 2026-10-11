@@ -80,12 +80,35 @@ values (
 returning id as b21_map_version_id
 \gset
 
+insert into icamp_private.campground_map_layers (
+  organization_id,
+  campground_id,
+  layer_key,
+  display_name,
+  icon_key,
+  sort_order,
+  visibility_permission_key
+)
+values (
+  :'b21_org_id',
+  :'b21_camp_id',
+  'management',
+  'Management',
+  'layers',
+  60,
+  'campground.configuration'
+)
+returning id as b21_layer_id
+\gset
+
 insert into icamp_private.campground_map_polygons (
   organization_id,
   campground_id,
   map_image_version_id,
   label,
-  geometry
+  geometry,
+  layer_id,
+  map_label
 )
 values (
   :'b21_org_id',
@@ -97,7 +120,9 @@ values (
     {"schemaVersion":1,"image":{"x":500,"y":100},"normalized":{"x":0.25,"y":0.1}},
     {"schemaVersion":1,"image":{"x":500,"y":400},"normalized":{"x":0.25,"y":0.4}},
     {"schemaVersion":1,"image":{"x":100,"y":400},"normalized":{"x":0.05,"y":0.4}}
-  ]}'::jsonb
+  ]}'::jsonb,
+  :'b21_layer_id',
+  'Original polygon'
 )
 returning id as b21_polygon_id
 \gset
@@ -114,6 +139,10 @@ insert into icamp_private.campground_map_polygons (
   map_image_version_id,
   label,
   geometry,
+  layer_id,
+  map_label,
+  map_icon_key,
+  map_label_visible,
   duplicated_from_polygon_id
 )
 select
@@ -122,6 +151,10 @@ select
   map_image_version_id,
   'Original polygon copy',
   geometry,
+  layer_id,
+  map_label,
+  map_icon_key,
+  map_label_visible,
   id
 from icamp_private.campground_map_polygons
 where id = :'b21_polygon_id'
