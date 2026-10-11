@@ -105,6 +105,6 @@ test("Build 017 production closeout is recorded and queue advances", async () =>
   );
   assert.match(
     queue,
-    /Next active build[\s\S]*Build 022 — Map Layers, Labels & Icons[\s\S]*QUEUED — NOT STARTED/u,
+    /Next active build[\s\S]*Build 023 — Canonical Map Object Binding[\s\S]*QUEUED — NOT STARTED/u,
   );
 });
