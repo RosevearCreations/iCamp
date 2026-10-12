@@ -41,8 +41,7 @@ insert into public.campground_subsections (
   section_id,
   name,
   code,
-  sort_order,
-  settings
+  sort_order
 )
 values (
   :'b24_org_id',
@@ -50,11 +49,12 @@ values (
   :'b24_section_id',
   'North',
   'NORTH',
-  10,
-  '{}'::jsonb
+  10
 )
 returning id as b24_subsection_id
 \gset
+
+select set_config('icamp.test.b24_camp_id', :'b24_camp_id', true);
 
 insert into icamp_private.campground_map_objects (
   organization_id,
