@@ -484,11 +484,12 @@ export default async function CampgroundAdministrationPage({
             title="Unified campsites, cottages & permanent units"
             id="accommodations-heading"
             helpTopic="accommodation.inventory"
-            trailing={<span className="build-chip">Build 024</span>}
+            trailing={<span className="build-chip">Build 026</span>}
           />
           <p>
-            Manage shared accommodation identity, subtype linkage and the
-            availability/status integration hooks used by later booking builds.
+            Open the working accommodation assembly interface: shared identity,
+            campsite service/fit detail and rental cottage facilities in one
+            place, ready for later booking, turnover and gallery builds.
           </p>
           <Link
             className="primary-link primary-link--dark"
@@ -496,7 +497,7 @@ export default async function CampgroundAdministrationPage({
               structure.campground.id,
             )}`}
           >
-            Open accommodation inventory
+            Open accommodation assembly
           </Link>
         </section>
 
