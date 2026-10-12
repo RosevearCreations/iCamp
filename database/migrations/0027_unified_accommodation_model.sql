@@ -265,7 +265,13 @@ declare
   cottage_count integer;
   permanent_count integer;
 begin
-  target_id := case when tg_op = 'DELETE' then old.accommodation_id else coalesce(new.id, new.accommodation_id) end;
+  if tg_table_name = 'accommodations' then
+    target_id := new.id;
+  elsif tg_op = 'DELETE' then
+    target_id := old.accommodation_id;
+  else
+    target_id := new.accommodation_id;
+  end if;
 
   select accommodation_kind
   into parent_kind
