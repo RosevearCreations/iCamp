@@ -3,6 +3,7 @@ import type { StoredMapPoint } from "../map-coordinates/transform.mjs";
 export type MapObjectKind =
   | "site"
   | "cottage"
+  | "permanent_unit"
   | "pool"
   | "washroom"
   | "gate"

@@ -99,6 +99,7 @@ export interface MapObjectRecord {
   kind:
     | "site"
     | "cottage"
+    | "permanent_unit"
     | "pool"
     | "washroom"
     | "gate"

@@ -2,6 +2,7 @@ export interface MapObjectKindDefinition {
   readonly key:
     | "site"
     | "cottage"
+    | "permanent_unit"
     | "pool"
     | "washroom"
     | "gate"
