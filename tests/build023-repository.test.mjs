@@ -45,7 +45,7 @@ test("Build 023 is fully promoted and advances the queue", async () => {
   assert.match(build, /FULLY PROMOTED — `main` GREEN/u);
   assert.match(
     queue,
-    /Build 023 — Canonical Map Object Binding[\s\S]*FULLY PROMOTED — `main` GREEN[\s\S]*Next active build[\s\S]*Build 026 — Rental Cottage Model[\s\S]*QUEUED — NOT STARTED/u,
+    /Build 023 — Canonical Map Object Binding[\s\S]*FULLY PROMOTED — `main` GREEN[\s\S]*Next active build[\s\S]*Build 027 — Cottage Turnover & Housekeeping Model[\s\S]*QUEUED — NOT STARTED/u,
   );
   assert.match(build, /ec7d01f5b41750b25a4f47b88f5259f34826014b/u);
   assert.match(build, /38157759806/u);

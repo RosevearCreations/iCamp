@@ -399,8 +399,25 @@ Delivered:
 - no new paid or hosted platform resource;
 - exact-tree feature, `dev` and production promotion with CI, browser E2E, database, CodeQL and Secret Scan gates GREEN.
 
+### Build 026 — Rental Cottage Model
+Status: **FULLY PROMOTED — `main` GREEN.**
+
+Delivered:
+- rustic and serviced rental-cottage classification on the canonical Build 024 accommodation subtype;
+- bedroom, bed and physical sleeping-occupancy facts;
+- kitchen/kitchenette, private/shared washroom and shower configuration;
+- heating, cooling, refrigerator, cooktop, oven and microwave facts;
+- step-free access, accessible washroom and advertised view classification;
+- parent accommodation availability-revision propagation for cottage compatibility changes;
+- forced-RLS management path, optimistic cottage row-version concurrency and append-oriented audit evidence;
+- visible integrated Accommodation assembly combining Build 024 identity, Build 025 campsite detail and Build 026 cottage detail;
+- Web/PWA full cottage administration with contextual help and honest staff-assisted IVR/DTMF and SMS/MMS configuration fallback;
+- hosted Supabase migration 0029 with 19/19 fields verified, both triggers active, direct anon/authenticated reads denied and zero Security Advisor findings;
+- no new paid or hosted platform resource;
+- exact-tree feature, `dev` and production promotion with CI, browser E2E, database, CodeQL and Secret Scan gates GREEN.
+
 ## Next active build
-**Build 026 — Rental Cottage Model**
+**Build 027 — Cottage Turnover & Housekeeping Model**
 
 Status: **QUEUED — NOT STARTED**
 
