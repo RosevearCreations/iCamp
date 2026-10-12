@@ -113,7 +113,10 @@ export default async function AccommodationAdministrationPage({
           <div className={styles.assemblyStep}>
             <span>Build 024</span>
             <strong>Canonical identity</strong>
-            <small>One map-linked parent, lifecycle and shared hooks.</small>
+            <small>
+              Unified accommodation model: one map-linked parent, lifecycle and
+              shared hooks.
+            </small>
           </div>
           <div className={styles.assemblyStep}>
             <span>Build 025</span>
