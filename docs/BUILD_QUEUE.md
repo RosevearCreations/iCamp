@@ -385,8 +385,22 @@ Delivered:
 - no new Vercel, Cloudflare, paid mapping or external inventory resource;
 - exact-tree feature, `dev` and production promotion with CI, browser E2E, database, CodeQL and Secret Scan gates GREEN.
 
+### Build 025 — Campsite Types & Utility/Service Model
+Status: **FULLY PROMOTED — `main` GREEN.**
+
+Delivered:
+- campsite tent/RV/mixed classification with service and stay profiles;
+- independent electrical, water, wastewater and Wi-Fi service facts;
+- campsite/RV dimensions plus waterfront, pull-through, surface, shade, fire-ring and picnic-table characteristics;
+- parent accommodation availability-revision propagation for campsite fit/service changes;
+- forced-RLS management path, optimistic concurrency and append-oriented audit evidence;
+- Web/PWA campsite administration with contextual help and honest staff-assisted IVR/SMS configuration fallback;
+- hosted Supabase migration 0028 with verified schema/triggers/private access and zero Security Advisor findings;
+- no new paid or hosted platform resource;
+- exact-tree feature, `dev` and production promotion with CI, browser E2E, database, CodeQL and Secret Scan gates GREEN.
+
 ## Next active build
-**Build 025 — Campsite Types & Utility/Service Model**
+**Build 026 — Rental Cottage Model**
 
 Status: **QUEUED — NOT STARTED**
 

@@ -45,11 +45,23 @@ test("Build 025 exposes audited campsite detail administration", async () => {
   assert.match(help, /"campsite\.services"/u);
 });
 
-test("Build 025 documents the Build 026 handoff", async () => {
+test("Build 025 is fully promoted and hands off to Build 026", async () => {
   const build = await readFile("docs/BUILD_025.md", "utf8");
+  const queue = await readFile("docs/BUILD_QUEUE.md", "utf8");
+
   assert.match(build, /Build 025 — Campsite Types & Utility\/Service Model/u);
-  assert.match(build, /Build 026 — Rental Cottage Model/u);
+  assert.match(build, /FULLY PROMOTED — `main` GREEN/u);
+  assert.match(build, /d86b5d02a5d4def4f962981d371b137f4a1ae2d0/u);
+  assert.match(build, /38276344528/u);
+  assert.match(build, /38276344446/u);
+  assert.match(build, /38276344613/u);
+  assert.match(build, /20261012161432/u);
+  assert.match(build, /No manual user action was required/u);
   assert.match(build, /Web\/PWA/u);
   assert.match(build, /IVR\/DTMF/u);
   assert.match(build, /SMS\/MMS/u);
+  assert.match(
+    queue,
+    /Build 025 — Campsite Types & Utility\/Service Model[\s\S]*FULLY PROMOTED — `main` GREEN[\s\S]*Next active build[\s\S]*Build 026 — Rental Cottage Model[\s\S]*QUEUED — NOT STARTED/u,
+  );
 });
