@@ -197,7 +197,7 @@ export const helpTopics = {
     summary:
       "Build 023 gives each mapped site, cottage or facility one stable canonical identity and allows exactly one polygon or point binding.",
     details: [
-      "Create a canonical map identity with a short unique code and one of the supported kinds: site, cottage, pool, washroom, gate, dock, road, building or asset.",
+      "Create a canonical map identity with a short unique code and one of the supported kinds: site, cottage, permanent unit, pool, washroom, gate, dock, road, building or asset.",
       "Bind an unbound canonical object to one saved polygon, or move the pointer over the active overhead image and bind it as an exact point.",
       "A canonical object cannot be bound twice, and one polygon cannot represent two canonical objects. Database foreign keys also prevent bindings to missing or cross-campground records.",
       "Point geometry uses the Build 019 source-pixel plus normalized 0–1 coordinate contract. Polygon bindings inherit the polygon image version and layer at the database boundary.",

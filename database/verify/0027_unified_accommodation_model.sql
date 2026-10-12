@@ -221,6 +221,22 @@ begin
   if parent_count <> 3 or campsite_count <> 1 or cottage_count <> 1 or permanent_count <> 1 then
     raise exception 'Unified accommodation/subtype counts are invalid';
   end if;
+
+  if exists (
+    select 1 from pg_roles where rolname = 'anon'
+  ) and has_table_privilege('anon', 'public.accommodations', 'select') then
+    raise exception 'anon must not directly read accommodations';
+  end if;
+
+  if exists (
+    select 1 from pg_roles where rolname = 'authenticated'
+  ) and has_table_privilege(
+    'authenticated',
+    'public.accommodations',
+    'select'
+  ) then
+    raise exception 'authenticated must not directly read accommodations';
+  end if;
 end
 $build024_verify$;
 

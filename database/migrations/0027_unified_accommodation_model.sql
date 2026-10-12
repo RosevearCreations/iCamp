@@ -309,7 +309,7 @@ end;
 $$;
 
 create constraint trigger accommodations_require_subtype
-after insert or update of accommodation_kind on public.accommodations
+after insert or update on public.accommodations
 deferrable initially deferred
 for each row execute function icamp_private.enforce_accommodation_subtype_link();
 
