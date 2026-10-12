@@ -98,7 +98,7 @@ export default async function AccommodationAdministrationPage({
           <p className="eyebrow">Build 025</p>
           <h1>Accommodation & campsite inventory</h1>
           <p className="hero-panel__lead">
-            Manage one canonical accommodation inventory, including campsite
+            Extend the Build 024 Unified accommodation model with campsite
             type, utility service, dimensions and RV-fit details.
           </p>
         </section>
