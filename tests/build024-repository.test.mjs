@@ -27,7 +27,10 @@ test("Build 024 RLS and service use accommodation permissions and audit evidence
   assert.match(migration, /force row level security/u);
   assert.match(migration, /accommodation\.read/u);
   assert.match(migration, /accommodation\.manage/u);
-  assert.match(migration, /revoke all on public\.accommodations from authenticated/u);
+  assert.match(
+    migration,
+    /revoke all on public\.accommodations from authenticated/u,
+  );
   assert.match(service, /set local role icamp_app/u);
   assert.match(service, /accommodation\.map_identity\.create/u);
   assert.match(service, /accommodation\.create/u);
