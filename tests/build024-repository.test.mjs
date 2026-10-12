@@ -40,12 +40,19 @@ test("Build 024 RLS and service use accommodation permissions and audit evidence
   assert.match(service, /status_revision/u);
 });
 
-test("Build 024 remains in development while the active queue is Build 024", async () => {
+test("Build 024 is fully promoted and advances the queue", async () => {
   const build = await readFile("docs/BUILD_024.md", "utf8");
   const queue = await readFile("docs/BUILD_QUEUE.md", "utf8");
-  assert.match(build, /IN DEVELOPMENT/u);
+
+  assert.match(build, /FULLY PROMOTED — `main` GREEN/u);
   assert.match(
     queue,
-    /Next active build[\s\S]*Build 024 — Unified Accommodation Model[\s\S]*QUEUED — NOT STARTED/u,
+    /Build 024 — Unified Accommodation Model[\s\S]*FULLY PROMOTED — `main` GREEN[\s\S]*Next active build[\s\S]*Build 025 — Campsite Types & Utility\/Service Model[\s\S]*QUEUED — NOT STARTED/u,
   );
+  assert.match(build, /27bd1223f098c4b6d6a48be9d830791ec91bcbd7/u);
+  assert.match(build, /38252538101/u);
+  assert.match(build, /38252538144/u);
+  assert.match(build, /38252538111/u);
+  assert.match(build, /20261012125624/u);
+  assert.match(build, /No manual user action was required/u);
 });
