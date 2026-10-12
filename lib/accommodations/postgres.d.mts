@@ -48,8 +48,10 @@ export interface AccommodationRecord {
     kitchenType: "none" | "kitchenette" | "full";
     washroomType: "none" | "shared" | "private";
     showerType: "none" | "shared" | "private";
-    heatingType: "none" | "electric" | "propane" | "wood" | "heat_pump" | "other";
-    coolingType: "none" | "fan" | "window_ac" | "central_ac" | "heat_pump" | "other";
+    heatingType:
+      "none" | "electric" | "propane" | "wood" | "heat_pump" | "other";
+    coolingType:
+      "none" | "fan" | "window_ac" | "central_ac" | "heat_pump" | "other";
     hasRefrigerator: boolean;
     hasCooktop: boolean;
     hasOven: boolean;
@@ -147,7 +149,6 @@ export function updateCampsiteDetails(input: {
   detailRowVersion: number;
   availabilityRevision: number;
 }>;
-
 
 export function updateRentalCottageDetails(input: {
   actorUserId: string;
