@@ -16,15 +16,16 @@ import { listCampgroundStructure } from "@/lib/campground-structure/postgres.mjs
 import {
   createAccommodationAction,
   updateAccommodationAction,
+  updateCampsiteDetailsAction,
 } from "./actions";
 import styles from "./accommodation-admin.module.css";
 
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Unified accommodation inventory · iCamp",
+  title: "Accommodation & campsite inventory · iCamp",
   description:
-    "Manage canonical campsite, cottage and permanent-unit inventory.",
+    "Manage canonical accommodations plus campsite types, utilities and fit.",
 };
 
 const kindLabels = {
@@ -94,11 +95,11 @@ export default async function AccommodationAdministrationPage({
         </nav>
 
         <section className="hero-panel">
-          <p className="eyebrow">Build 024</p>
-          <h1>Unified accommodation model</h1>
+          <p className="eyebrow">Build 025</p>
+          <h1>Accommodation & campsite inventory</h1>
           <p className="hero-panel__lead">
-            Manage one canonical inventory for campsites, rental cottages and
-            permanent units while keeping type-specific detail in later builds.
+            Extend the Build 024 Unified accommodation model with campsite type,
+            utility service, dimensions and RV-fit details.
           </p>
         </section>
 
@@ -139,7 +140,7 @@ export default async function AccommodationAdministrationPage({
             title="Campsites, cottages & permanent units"
             id="inventory-heading"
             helpTopic="accommodation.inventory"
-            trailing={<span className="build-chip">Build 024</span>}
+            trailing={<span className="build-chip">Build 025</span>}
           />
           <div className={styles.summaryGrid}>
             <div>
@@ -291,13 +292,340 @@ export default async function AccommodationAdministrationPage({
                   </form>
                 ) : null}
 
-                <p className={styles.boundary}>
-                  {accommodation.kind === "campsite"
-                    ? "Build 025 adds campsite type, utility and dimension details."
-                    : accommodation.kind === "rental_cottage"
+                {accommodation.campsiteDetails ? (
+                  <section
+                    className={styles.detailPanel}
+                    aria-label="Campsite type, utilities and fit"
+                  >
+                    <SectionHeading
+                      eyebrow="Build 025"
+                      title="Campsite type, utilities & fit"
+                      id={"campsite-services-" + accommodation.id}
+                      helpTopic="campsite.services"
+                    />
+                    <div className={styles.metaGrid}>
+                      <div>
+                        <span>Type / service</span>
+                        <strong>
+                          {accommodation.campsiteDetails.campsiteType} ·{" "}
+                          {accommodation.campsiteDetails.serviceLevel}
+                        </strong>
+                      </div>
+                      <div>
+                        <span>Stay profile</span>
+                        <strong>
+                          {accommodation.campsiteDetails.stayProfile.replace(
+                            "_",
+                            "-",
+                          )}
+                          {accommodation.campsiteDetails.isWaterfront
+                            ? " · waterfront"
+                            : ""}
+                        </strong>
+                      </div>
+                      <div>
+                        <span>Utilities</span>
+                        <strong>
+                          {accommodation.campsiteDetails.electricalAmperage > 0
+                            ? accommodation.campsiteDetails.electricalAmperage +
+                              "A"
+                            : "no electric"}{" "}
+                          · water {accommodation.campsiteDetails.waterService} ·
+                          waste{" "}
+                          {accommodation.campsiteDetails.wastewaterService} ·
+                          Wi-Fi {accommodation.campsiteDetails.wifiService}
+                        </strong>
+                      </div>
+                      <div>
+                        <span>Site / RV fit</span>
+                        <strong>
+                          {accommodation.campsiteDetails.siteLengthMeters ??
+                            "?"}
+                          m ×{" "}
+                          {accommodation.campsiteDetails.siteWidthMeters ?? "?"}
+                          m · RV max{" "}
+                          {accommodation.campsiteDetails.maxRvLengthMeters ??
+                            "?"}
+                          m
+                        </strong>
+                      </div>
+                    </div>
+
+                    {canManage ? (
+                      <form
+                        action={updateCampsiteDetailsAction}
+                        className={styles.formGrid}
+                      >
+                        <input
+                          type="hidden"
+                          name="campgroundId"
+                          value={selected.campgroundId}
+                        />
+                        <input
+                          type="hidden"
+                          name="accommodationId"
+                          value={accommodation.id}
+                        />
+                        <input
+                          type="hidden"
+                          name="detailRowVersion"
+                          value={accommodation.campsiteDetails.rowVersion}
+                        />
+                        <label className={styles.field}>
+                          <span>Campsite type</span>
+                          <select
+                            name="campsiteType"
+                            defaultValue={
+                              accommodation.campsiteDetails.campsiteType
+                            }
+                          >
+                            <option value="tent">Tent</option>
+                            <option value="rv">RV</option>
+                            <option value="mixed">Mixed tent / RV</option>
+                          </select>
+                        </label>
+                        <label className={styles.field}>
+                          <span>Service level</span>
+                          <select
+                            name="serviceLevel"
+                            defaultValue={
+                              accommodation.campsiteDetails.serviceLevel
+                            }
+                          >
+                            <option value="unserviced">Unserviced</option>
+                            <option value="partial">Partially serviced</option>
+                            <option value="serviced">Serviced</option>
+                          </select>
+                        </label>
+                        <label className={styles.field}>
+                          <span>Stay profile</span>
+                          <select
+                            name="stayProfile"
+                            defaultValue={
+                              accommodation.campsiteDetails.stayProfile
+                            }
+                          >
+                            <option value="transient">Transient</option>
+                            <option value="seasonal">Seasonal</option>
+                            <option value="yearly">Yearly</option>
+                            <option value="walk_up">Walk-up</option>
+                          </select>
+                        </label>
+                        <label className={styles.field}>
+                          <span>Electrical service</span>
+                          <select
+                            name="electricalAmperage"
+                            defaultValue={
+                              accommodation.campsiteDetails.electricalAmperage
+                            }
+                          >
+                            <option value="0">None</option>
+                            <option value="15">15A</option>
+                            <option value="20">20A</option>
+                            <option value="30">30A</option>
+                            <option value="50">50A</option>
+                          </select>
+                        </label>
+                        <label className={styles.field}>
+                          <span>Water</span>
+                          <select
+                            name="waterService"
+                            defaultValue={
+                              accommodation.campsiteDetails.waterService
+                            }
+                          >
+                            <option value="none">None</option>
+                            <option value="shared">Shared nearby</option>
+                            <option value="site">At site</option>
+                          </select>
+                        </label>
+                        <label className={styles.field}>
+                          <span>Sewer / septic</span>
+                          <select
+                            name="wastewaterService"
+                            defaultValue={
+                              accommodation.campsiteDetails.wastewaterService
+                            }
+                          >
+                            <option value="none">None</option>
+                            <option value="sewer">Sewer</option>
+                            <option value="septic">Septic</option>
+                          </select>
+                        </label>
+                        <label className={styles.field}>
+                          <span>Wi-Fi</span>
+                          <select
+                            name="wifiService"
+                            defaultValue={
+                              accommodation.campsiteDetails.wifiService
+                            }
+                          >
+                            <option value="none">None</option>
+                            <option value="shared">Shared coverage</option>
+                            <option value="site">At site</option>
+                          </select>
+                        </label>
+                        <label className={styles.field}>
+                          <span>Site length (m)</span>
+                          <input
+                            name="siteLengthMeters"
+                            type="number"
+                            min="0.01"
+                            max="500"
+                            step="0.01"
+                            defaultValue={
+                              accommodation.campsiteDetails.siteLengthMeters ??
+                              ""
+                            }
+                          />
+                        </label>
+                        <label className={styles.field}>
+                          <span>Site width (m)</span>
+                          <input
+                            name="siteWidthMeters"
+                            type="number"
+                            min="0.01"
+                            max="500"
+                            step="0.01"
+                            defaultValue={
+                              accommodation.campsiteDetails.siteWidthMeters ??
+                              ""
+                            }
+                          />
+                        </label>
+                        <label className={styles.field}>
+                          <span>Max RV length (m)</span>
+                          <input
+                            name="maxRvLengthMeters"
+                            type="number"
+                            min="0.01"
+                            max="500"
+                            step="0.01"
+                            defaultValue={
+                              accommodation.campsiteDetails.maxRvLengthMeters ??
+                              ""
+                            }
+                          />
+                        </label>
+                        <label className={styles.field}>
+                          <span>Max RV width (m)</span>
+                          <input
+                            name="maxRvWidthMeters"
+                            type="number"
+                            min="0.01"
+                            max="500"
+                            step="0.01"
+                            defaultValue={
+                              accommodation.campsiteDetails.maxRvWidthMeters ??
+                              ""
+                            }
+                          />
+                        </label>
+                        <label className={styles.field}>
+                          <span>Max RV height (m)</span>
+                          <input
+                            name="maxRvHeightMeters"
+                            type="number"
+                            min="0.01"
+                            max="500"
+                            step="0.01"
+                            defaultValue={
+                              accommodation.campsiteDetails.maxRvHeightMeters ??
+                              ""
+                            }
+                          />
+                        </label>
+                        <label className={styles.field}>
+                          <span>Surface</span>
+                          <select
+                            name="surfaceType"
+                            defaultValue={
+                              accommodation.campsiteDetails.surfaceType
+                            }
+                          >
+                            <option value="natural">Natural</option>
+                            <option value="grass">Grass</option>
+                            <option value="gravel">Gravel</option>
+                            <option value="paved">Paved</option>
+                            <option value="concrete">Concrete</option>
+                            <option value="mixed">Mixed</option>
+                          </select>
+                        </label>
+                        <label className={styles.field}>
+                          <span>Shade</span>
+                          <select
+                            name="shadeLevel"
+                            defaultValue={
+                              accommodation.campsiteDetails.shadeLevel
+                            }
+                          >
+                            <option value="none">None</option>
+                            <option value="partial">Partial</option>
+                            <option value="full">Full</option>
+                          </select>
+                        </label>
+                        <div className={styles.checkGrid}>
+                          <label>
+                            <input
+                              type="checkbox"
+                              name="isWaterfront"
+                              defaultChecked={
+                                accommodation.campsiteDetails.isWaterfront
+                              }
+                            />
+                            Waterfront
+                          </label>
+                          <label>
+                            <input
+                              type="checkbox"
+                              name="pullThrough"
+                              defaultChecked={
+                                accommodation.campsiteDetails.pullThrough
+                              }
+                            />
+                            Pull-through
+                          </label>
+                          <label>
+                            <input
+                              type="checkbox"
+                              name="hasFireRing"
+                              defaultChecked={
+                                accommodation.campsiteDetails.hasFireRing
+                              }
+                            />
+                            Fire ring
+                          </label>
+                          <label>
+                            <input
+                              type="checkbox"
+                              name="hasPicnicTable"
+                              defaultChecked={
+                                accommodation.campsiteDetails.hasPicnicTable
+                              }
+                            />
+                            Picnic table
+                          </label>
+                        </div>
+                        <div className={styles.actions}>
+                          <button className="primary-button" type="submit">
+                            Save campsite details
+                          </button>
+                        </div>
+                      </form>
+                    ) : null}
+                    <p className={styles.boundary}>
+                      These physical/service facts feed later compatibility and
+                      booking builds; Build 034 remains authoritative for
+                      reservation compatibility.
+                    </p>
+                  </section>
+                ) : (
+                  <p className={styles.boundary}>
+                    {accommodation.kind === "rental_cottage"
                       ? "Build 026 adds cottage occupancy, facilities and accessibility."
                       : "Ownership and transfer detail remains in later permanent-unit builds."}
-                </p>
+                  </p>
+                )}
               </article>
             ))}
 
