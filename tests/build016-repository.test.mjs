@@ -124,6 +124,6 @@ test("Build 016 source of truth remains completed after later queue advances", a
   );
   assert.match(
     queue,
-    /Next active build[\s\S]*Build 026 — Rental Cottage Model[\s\S]*QUEUED — NOT STARTED/u,
+    /Next active build[\s\S]*Build 027 — Cottage Turnover & Housekeeping Model[\s\S]*QUEUED — NOT STARTED/u,
   );
 });
