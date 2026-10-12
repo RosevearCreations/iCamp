@@ -169,9 +169,7 @@ export default async function AccommodationAdministrationPage({
               <article className={styles.card} key={accommodation.id}>
                 <div className={styles.cardHeader}>
                   <div>
-                    <p className="eyebrow">
-                      {kindLabels[accommodation.kind]}
-                    </p>
+                    <p className="eyebrow">{kindLabels[accommodation.kind]}</p>
                     <h3>{accommodation.displayName}</h3>
                   </div>
                   <span className={styles.state}>
@@ -268,10 +266,7 @@ export default async function AccommodationAdministrationPage({
                         <option value="">None</option>
                         {structure.sections.flatMap((section) =>
                           section.subsections.map((subsection) => (
-                            <option
-                              key={subsection.id}
-                              value={subsection.id}
-                            >
+                            <option key={subsection.id} value={subsection.id}>
                               {section.name} / {subsection.name}
                             </option>
                           )),
@@ -390,7 +385,10 @@ export default async function AccommodationAdministrationPage({
           </section>
         ) : null}
 
-        <section className="content-panel" aria-labelledby="connections-heading">
+        <section
+          className="content-panel"
+          aria-labelledby="connections-heading"
+        >
           <SectionHeading
             eyebrow="Connected foundations"
             title="Map & structure"
