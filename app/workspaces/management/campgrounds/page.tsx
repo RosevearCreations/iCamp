@@ -475,6 +475,28 @@ export default async function CampgroundAdministrationPage({
           </form>
         </section>
 
+        <section className="content-panel" aria-labelledby="accommodations-heading">
+          <SectionHeading
+            eyebrow="Accommodation inventory"
+            title="Unified campsites, cottages & permanent units"
+            id="accommodations-heading"
+            helpTopic="accommodation.inventory"
+            trailing={<span className="build-chip">Build 024</span>}
+          />
+          <p>
+            Manage shared accommodation identity, subtype linkage and the
+            availability/status integration hooks used by later booking builds.
+          </p>
+          <Link
+            className="primary-link primary-link--dark"
+            href={`/workspaces/management/campgrounds/accommodations?campground=${encodeURIComponent(
+              structure.campground.id,
+            )}`}
+          >
+            Open accommodation inventory
+          </Link>
+        </section>
+
         <section className="content-panel" aria-labelledby="map-images-heading">
           <SectionHeading
             eyebrow="Campground map"
