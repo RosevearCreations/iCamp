@@ -1,7 +1,5 @@
 export type AccommodationKind =
-  | "campsite"
-  | "rental_cottage"
-  | "permanent_unit";
+  "campsite" | "rental_cottage" | "permanent_unit";
 
 export const accommodationKinds: readonly AccommodationKind[];
 
