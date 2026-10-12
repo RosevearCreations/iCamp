@@ -366,8 +366,27 @@ Delivered:
 - no new Vercel, Cloudflare, paid mapping, GIS or icon resource;
 - exact-tree feature, `dev` and production promotion with CI, browser E2E, database, CodeQL and Secret Scan gates GREEN.
 
+### Build 024 — Unified Accommodation Model
+Status: **FULLY PROMOTED — `main` GREEN.**
+
+Delivered:
+- one canonical accommodation parent shared by campsite, rental-cottage and permanent-unit inventory;
+- exactly one enforced matching subtype linkage per accommodation;
+- required same-scope linkage to a Build 023 canonical map identity, including the new permanent-unit map kind;
+- automatic reuse of compatible unclaimed map identities or atomic creation of a matching identity;
+- shared monotonic availability/status revision hooks without prematurely implementing later booking/status engines;
+- lifecycle-aware inventory eligibility with common code, name, section and optional subsection administration;
+- forced PostgreSQL RLS through the trusted `icamp_app` role with `accommodation.read` / `accommodation.manage` enforcement;
+- direct `anon` and `authenticated` access kept revoked;
+- optimistic row-version protection and append-oriented audit evidence for accommodation/map-identity creation and updates;
+- Web/PWA accommodation registry, contextual circular help, freshness tracking and links to campground structure/map identities;
+- honest IVR/DTMF and SMS/MMS staff-assisted administration boundary;
+- hosted Supabase migration 0027 with zero Security Advisor findings and no new unindexed-FK advisory;
+- no new Vercel, Cloudflare, paid mapping or external inventory resource;
+- exact-tree feature, `dev` and production promotion with CI, browser E2E, database, CodeQL and Secret Scan gates GREEN.
+
 ## Next active build
-**Build 024 — Unified Accommodation Model**
+**Build 025 — Campsite Types & Utility/Service Model**
 
 Status: **QUEUED — NOT STARTED**
 

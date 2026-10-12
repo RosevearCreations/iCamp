@@ -1,7 +1,7 @@
 # Build 024 — Unified Accommodation Model
 
 ## Status
-**IN DEVELOPMENT — feature branch verification pending.**
+**FULLY PROMOTED — `main` GREEN.**
 
 ## Roadmap scope
 - canonical accommodation parent model;
@@ -40,5 +40,17 @@ The public accommodation tables use forced RLS through the trusted `icamp_app` r
 ## Platform impact
 Build 024 remains on the existing Next.js/PostgreSQL/Supabase stack. No new Vercel, Cloudflare, paid mapping or external inventory resource is required.
 
+## Promotion evidence
+- Final feature head: `028e062b8c58f914835c35df14665767185a3d7b`.
+- Feature PR #92 passed CI `38251817785`, CodeQL `38251817772` and Secret Scan `38251817919`; Verify, Browser end-to-end and Database migrations all succeeded.
+- Feature merge into `dev`: `029b7e771ab8d0cc99c972e22d5864b6dd7673ba`.
+- Independent `dev` proof: CI `38252020975`, CodeQL `38252020986` and Secret Scan `38252020883` all succeeded.
+- Hosted Supabase migration `0027_unified_accommodation_model`: version `20261012125624`.
+- Supabase Security Advisor returned zero findings after migration 0027.
+- Supabase Performance Advisor reported no Build 024 unindexed-foreign-key finding; only expected unused-index INFO was present on the empty prototype database.
+- Production PR #93 passed CI `38252297013`, CodeQL `38252297188` and Secret Scan `38252297196`.
+- First production merge on `main`: `27bd1223f098c4b6d6a48be9d830791ec91bcbd7`.
+- Production push proof: CI `38252538101`, CodeQL `38252538144` and Secret Scan `38252538111` all succeeded; Verify, Browser end-to-end and Database migrations were GREEN.
+
 ## Manual action
-No manual user action is expected unless the connected Supabase project rejects the Build 024 migration for an external configuration reason.
+No manual user action was required to promote Build 024.
