@@ -493,11 +493,12 @@ export default async function CampgroundAdministrationPage({
           </p>
           <Link
             className="primary-link primary-link--dark"
+            aria-label="Open accommodation inventory and assembly"
             href={`/workspaces/management/campgrounds/accommodations?campground=${encodeURIComponent(
               structure.campground.id,
             )}`}
           >
-            Open accommodation assembly
+            Open accommodation assembly · Build 024–026
           </Link>
         </section>
 
