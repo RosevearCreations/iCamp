@@ -41,11 +41,23 @@ test("Build 026 exposes audited rental cottage administration", async () => {
   assert.match(help, /Build 034/u);
 });
 
-test("Build 026 stays queued until production closeout", async () => {
+test("Build 026 is fully promoted and hands off to Build 027", async () => {
+  const build = await readFile("docs/BUILD_026.md", "utf8");
   const queue = await readFile("docs/BUILD_QUEUE.md", "utf8");
 
+  assert.match(build, /Build 026 — Rental Cottage Model/u);
+  assert.match(build, /FULLY PROMOTED — `main` GREEN/u);
+  assert.match(build, /d954b8885e89f8f94991811767e44498e125bee7/u);
+  assert.match(build, /38320978747/u);
+  assert.match(build, /38320978713/u);
+  assert.match(build, /38320978755/u);
+  assert.match(build, /20261012231044/u);
+  assert.match(build, /No manual user action was required/u);
+  assert.match(build, /Web\/PWA/u);
+  assert.match(build, /IVR\/DTMF/u);
+  assert.match(build, /SMS\/MMS/u);
   assert.match(
     queue,
-    /Next active build[\s\S]*Build 026 — Rental Cottage Model[\s\S]*QUEUED — NOT STARTED/u,
+    /Build 026 — Rental Cottage Model[\s\S]*FULLY PROMOTED — `main` GREEN[\s\S]*Next active build[\s\S]*Build 027 — Cottage Turnover & Housekeeping Model[\s\S]*QUEUED — NOT STARTED/u,
   );
 });
