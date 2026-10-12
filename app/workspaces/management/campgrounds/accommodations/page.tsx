@@ -101,12 +101,15 @@ export default async function AccommodationAdministrationPage({
           <p className="hero-panel__lead">
             Put the accommodation system together in one working interface:
             canonical map-linked inventory, campsite service/fit detail and
-            rental cottage occupancy, facilities, appliances, accessibility
-            and view.
+            rental cottage occupancy, facilities, appliances, accessibility and
+            view.
           </p>
         </section>
 
-        <div className={styles.assemblyRail} aria-label="Accommodation model assembly">
+        <div
+          className={styles.assemblyRail}
+          aria-label="Accommodation model assembly"
+        >
           <div className={styles.assemblyStep}>
             <span>Build 024</span>
             <strong>Canonical identity</strong>
@@ -115,12 +118,16 @@ export default async function AccommodationAdministrationPage({
           <div className={styles.assemblyStep}>
             <span>Build 025</span>
             <strong>Campsite detail</strong>
-            <small>Type, utilities, physical fit and site characteristics.</small>
+            <small>
+              Type, utilities, physical fit and site characteristics.
+            </small>
           </div>
           <div className={styles.assemblyStep}>
             <span>Build 026</span>
             <strong>Cottage detail</strong>
-            <small>Sleeping, facilities, climate, appliances and accessibility.</small>
+            <small>
+              Sleeping, facilities, climate, appliances and accessibility.
+            </small>
           </div>
         </div>
 
@@ -687,7 +694,8 @@ export default async function AccommodationAdministrationPage({
                       <div>
                         <span>Climate / view</span>
                         <strong>
-                          heat {accommodation.cottageDetails.heatingType.replace(
+                          heat{" "}
+                          {accommodation.cottageDetails.heatingType.replace(
                             "_",
                             " ",
                           )}{" "}
@@ -726,7 +734,9 @@ export default async function AccommodationAdministrationPage({
                           <span>Cottage style</span>
                           <select
                             name="cottageStyle"
-                            defaultValue={accommodation.cottageDetails.cottageStyle}
+                            defaultValue={
+                              accommodation.cottageDetails.cottageStyle
+                            }
                           >
                             <option value="rustic">Rustic</option>
                             <option value="serviced">Serviced</option>
@@ -739,7 +749,9 @@ export default async function AccommodationAdministrationPage({
                             name="bedroomCount"
                             min={0}
                             max={20}
-                            defaultValue={accommodation.cottageDetails.bedroomCount}
+                            defaultValue={
+                              accommodation.cottageDetails.bedroomCount
+                            }
                             required
                           />
                         </label>
@@ -761,7 +773,9 @@ export default async function AccommodationAdministrationPage({
                             name="maxOccupancy"
                             min={1}
                             max={80}
-                            defaultValue={accommodation.cottageDetails.maxOccupancy}
+                            defaultValue={
+                              accommodation.cottageDetails.maxOccupancy
+                            }
                             required
                           />
                         </label>
@@ -769,7 +783,9 @@ export default async function AccommodationAdministrationPage({
                           <span>Kitchen</span>
                           <select
                             name="kitchenType"
-                            defaultValue={accommodation.cottageDetails.kitchenType}
+                            defaultValue={
+                              accommodation.cottageDetails.kitchenType
+                            }
                           >
                             <option value="none">None</option>
                             <option value="kitchenette">Kitchenette</option>
@@ -780,7 +796,9 @@ export default async function AccommodationAdministrationPage({
                           <span>Washroom</span>
                           <select
                             name="washroomType"
-                            defaultValue={accommodation.cottageDetails.washroomType}
+                            defaultValue={
+                              accommodation.cottageDetails.washroomType
+                            }
                           >
                             <option value="none">None</option>
                             <option value="shared">Shared</option>
@@ -791,7 +809,9 @@ export default async function AccommodationAdministrationPage({
                           <span>Shower</span>
                           <select
                             name="showerType"
-                            defaultValue={accommodation.cottageDetails.showerType}
+                            defaultValue={
+                              accommodation.cottageDetails.showerType
+                            }
                           >
                             <option value="none">None</option>
                             <option value="shared">Shared</option>
@@ -802,7 +822,9 @@ export default async function AccommodationAdministrationPage({
                           <span>Heating</span>
                           <select
                             name="heatingType"
-                            defaultValue={accommodation.cottageDetails.heatingType}
+                            defaultValue={
+                              accommodation.cottageDetails.heatingType
+                            }
                           >
                             <option value="none">None</option>
                             <option value="electric">Electric</option>
@@ -816,7 +838,9 @@ export default async function AccommodationAdministrationPage({
                           <span>Cooling</span>
                           <select
                             name="coolingType"
-                            defaultValue={accommodation.cottageDetails.coolingType}
+                            defaultValue={
+                              accommodation.cottageDetails.coolingType
+                            }
                           >
                             <option value="none">None</option>
                             <option value="fan">Fan</option>
@@ -859,7 +883,9 @@ export default async function AccommodationAdministrationPage({
                             <input
                               type="checkbox"
                               name="hasCooktop"
-                              defaultChecked={accommodation.cottageDetails.hasCooktop}
+                              defaultChecked={
+                                accommodation.cottageDetails.hasCooktop
+                              }
                             />
                             Cooktop
                           </label>
@@ -867,7 +893,9 @@ export default async function AccommodationAdministrationPage({
                             <input
                               type="checkbox"
                               name="hasOven"
-                              defaultChecked={accommodation.cottageDetails.hasOven}
+                              defaultChecked={
+                                accommodation.cottageDetails.hasOven
+                              }
                             />
                             Oven
                           </label>
