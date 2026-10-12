@@ -32,7 +32,8 @@ export interface AccommodationRecord {
     maxRvLengthMeters: number | null;
     maxRvWidthMeters: number | null;
     maxRvHeightMeters: number | null;
-    surfaceType: "natural" | "grass" | "gravel" | "paved" | "concrete" | "mixed";
+    surfaceType:
+      "natural" | "grass" | "gravel" | "paved" | "concrete" | "mixed";
     pullThrough: boolean;
     shadeLevel: "none" | "partial" | "full";
     hasFireRing: boolean;
@@ -89,7 +90,6 @@ export function updateAccommodation(input: {
   availabilityRevision: number;
   statusRevision: number;
 }>;
-
 
 export function updateCampsiteDetails(input: {
   actorUserId: string;
