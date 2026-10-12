@@ -124,6 +124,12 @@ values (
 
 set constraints all immediate;
 
+select set_config(
+  'icamp.test.b25_accommodation_id',
+  :'b25_accommodation_id',
+  true
+);
+
 do $build025_verify$
 declare
   detail record;
@@ -149,7 +155,7 @@ begin
     has_picnic_table
   into detail
   from public.campsites
-  where accommodation_id = :'b25_accommodation_id'::uuid;
+  where accommodation_id = current_setting('icamp.test.b25_accommodation_id', true)::uuid;
 
   if detail.campsite_type <> 'rv'
      or detail.service_level <> 'serviced'
@@ -170,15 +176,15 @@ begin
 
   select availability_revision into before_revision
   from public.accommodations
-  where id = :'b25_accommodation_id'::uuid;
+  where id = current_setting('icamp.test.b25_accommodation_id', true)::uuid;
 
   update public.campsites
   set electrical_amperage = 30
-  where accommodation_id = :'b25_accommodation_id'::uuid;
+  where accommodation_id = current_setting('icamp.test.b25_accommodation_id', true)::uuid;
 
   select availability_revision into after_revision
   from public.accommodations
-  where id = :'b25_accommodation_id'::uuid;
+  where id = current_setting('icamp.test.b25_accommodation_id', true)::uuid;
 
   if after_revision <> before_revision + 1 then
     raise exception 'Campsite compatibility change did not advance availability revision';
@@ -187,7 +193,7 @@ begin
   begin
     update public.campsites
     set electrical_amperage = 25
-    where accommodation_id = :'b25_accommodation_id'::uuid;
+    where accommodation_id = current_setting('icamp.test.b25_accommodation_id', true)::uuid;
   exception
     when check_violation then
       rejected_invalid_amperage := true;
