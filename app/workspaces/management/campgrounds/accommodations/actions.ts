@@ -111,7 +111,6 @@ export async function updateCampsiteDetailsAction(formData: FormData) {
   finish(campgroundId, "Campsite details saved.");
 }
 
-
 export async function updateRentalCottageDetailsAction(formData: FormData) {
   const campgroundId = field(formData, "campgroundId");
   const session = await requireCampgroundPermission(
