@@ -8,6 +8,7 @@ import {
   createAccommodation,
   updateAccommodation,
   updateCampsiteDetails,
+  updateRentalCottageDetails,
 } from "@/lib/accommodations/postgres.mjs";
 
 const path = "/workspaces/management/campgrounds/accommodations";
@@ -108,4 +109,40 @@ export async function updateCampsiteDetailsAction(formData: FormData) {
   });
 
   finish(campgroundId, "Campsite details saved.");
+}
+
+
+export async function updateRentalCottageDetailsAction(formData: FormData) {
+  const campgroundId = field(formData, "campgroundId");
+  const session = await requireCampgroundPermission(
+    campgroundId,
+    "accommodation.manage",
+    path,
+  );
+
+  await updateRentalCottageDetails({
+    actorUserId: session.user.id,
+    actorSessionId: session.sessionId,
+    campgroundId,
+    accommodationId: field(formData, "accommodationId"),
+    expectedDetailRowVersion: Number(field(formData, "detailRowVersion")),
+    cottageStyle: field(formData, "cottageStyle"),
+    bedroomCount: field(formData, "bedroomCount"),
+    bedCount: field(formData, "bedCount"),
+    maxOccupancy: field(formData, "maxOccupancy"),
+    kitchenType: field(formData, "kitchenType"),
+    washroomType: field(formData, "washroomType"),
+    showerType: field(formData, "showerType"),
+    heatingType: field(formData, "heatingType"),
+    coolingType: field(formData, "coolingType"),
+    hasRefrigerator: checked(formData, "hasRefrigerator"),
+    hasCooktop: checked(formData, "hasCooktop"),
+    hasOven: checked(formData, "hasOven"),
+    hasMicrowave: checked(formData, "hasMicrowave"),
+    stepFreeAccess: checked(formData, "stepFreeAccess"),
+    accessibleWashroom: checked(formData, "accessibleWashroom"),
+    viewType: field(formData, "viewType"),
+  });
+
+  finish(campgroundId, "Rental cottage details saved.");
 }
