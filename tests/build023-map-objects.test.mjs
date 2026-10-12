@@ -15,6 +15,7 @@ test("Build 023 covers every canonical map object family", () => {
     [
       "site",
       "cottage",
+      "permanent_unit",
       "pool",
       "washroom",
       "gate",
@@ -25,6 +26,10 @@ test("Build 023 covers every canonical map object family", () => {
     ],
   );
   assert.equal(mapObjectKindDefinition("site")?.defaultLayerKey, "booking");
+  assert.equal(
+    mapObjectKindDefinition("permanent_unit")?.defaultLayerKey,
+    "booking",
+  );
   assert.equal(mapObjectKindDefinition("gate")?.defaultLayerKey, "security");
   assert.equal(mapObjectKindDefinition("road")?.defaultLayerKey, "utilities");
 });

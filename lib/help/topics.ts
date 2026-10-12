@@ -197,13 +197,30 @@ export const helpTopics = {
     summary:
       "Build 023 gives each mapped site, cottage or facility one stable canonical identity and allows exactly one polygon or point binding.",
     details: [
-      "Create a canonical map identity with a short unique code and one of the supported kinds: site, cottage, pool, washroom, gate, dock, road, building or asset.",
+      "Create a canonical map identity with a short unique code and one of the supported kinds: site, cottage, permanent unit, pool, washroom, gate, dock, road, building or asset.",
       "Bind an unbound canonical object to one saved polygon, or move the pointer over the active overhead image and bind it as an exact point.",
       "A canonical object cannot be bound twice, and one polygon cannot represent two canonical objects. Database foreign keys also prevent bindings to missing or cross-campground records.",
       "Point geometry uses the Build 019 source-pixel plus normalized 0–1 coordinate contract. Polygon bindings inherit the polygon image version and layer at the database boundary.",
       "The inspector is permission filtered on the server using the bound layer's visibility permission. Unbound identities are visible only to users who can configure the campground.",
       "Builds 024–030 add accommodation, cottage, asset and status details to these identities rather than creating duplicate map identities.",
       "Map placement remains graphical-only for telephone and SMS. Non-visual channels can identify objects by code and use secure visual handoff or staff assistance for geometry.",
+    ],
+    audience: "privileged",
+  },
+  "accommodation.inventory": {
+    id: "accommodation.inventory",
+    slug: "unified-accommodation-inventory",
+    title: "Unified accommodation inventory",
+    summary:
+      "Build 024 gives campsites, rental cottages and permanent units one shared canonical parent while preserving subtype-specific expansion points.",
+    details: [
+      "Every accommodation has one code, name, campground section, optional subsection, lifecycle state and canonical Build 023 map identity.",
+      "Campsites, rental cottages and permanent units each receive exactly one matching subtype linkage. Database deferred constraints reject missing, mismatched or duplicate subtype structures.",
+      "The availability and status hook revisions are stable integration points, not the full booking or status engines. Build 030 owns detailed states, history and transition rules.",
+      "Changing lifecycle state advances both hook revisions so later engines and caches can detect a shared-inventory change.",
+      "Build 025 adds campsite types and utilities; Build 026 adds cottage-specific facilities and occupancy; Build 028 adds public galleries.",
+      "Accommodation administration requires accommodation.manage. Read-only inventory access uses accommodation.read.",
+      "Telephone and SMS can reference accommodation codes in later workflows, but structural administration remains authenticated Web/PWA or staff-assisted.",
     ],
     audience: "privileged",
   },
