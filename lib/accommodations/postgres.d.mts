@@ -39,6 +39,34 @@ export interface AccommodationRecord {
     hasFireRing: boolean;
     hasPicnicTable: boolean;
   } | null;
+  cottageDetails: {
+    rowVersion: number;
+    cottageStyle: "rustic" | "serviced";
+    bedroomCount: number;
+    bedCount: number;
+    maxOccupancy: number;
+    kitchenType: "none" | "kitchenette" | "full";
+    washroomType: "none" | "shared" | "private";
+    showerType: "none" | "shared" | "private";
+    heatingType: "none" | "electric" | "propane" | "wood" | "heat_pump" | "other";
+    coolingType: "none" | "fan" | "window_ac" | "central_ac" | "heat_pump" | "other";
+    hasRefrigerator: boolean;
+    hasCooktop: boolean;
+    hasOven: boolean;
+    hasMicrowave: boolean;
+    stepFreeAccess: boolean;
+    accessibleWashroom: boolean;
+    viewType:
+      | "none"
+      | "woodland"
+      | "waterfront"
+      | "lake"
+      | "river"
+      | "ocean"
+      | "mountain"
+      | "garden"
+      | "other";
+  } | null;
   availabilityHook: {
     accommodationId: string;
     campgroundId: string;
@@ -115,6 +143,34 @@ export function updateCampsiteDetails(input: {
   shadeLevel: string;
   hasFireRing?: boolean;
   hasPicnicTable?: boolean;
+}): Promise<{
+  detailRowVersion: number;
+  availabilityRevision: number;
+}>;
+
+
+export function updateRentalCottageDetails(input: {
+  actorUserId: string;
+  actorSessionId?: string | null;
+  campgroundId: string;
+  accommodationId: string;
+  expectedDetailRowVersion: number;
+  cottageStyle: string;
+  bedroomCount: number | string;
+  bedCount: number | string;
+  maxOccupancy: number | string;
+  kitchenType: string;
+  washroomType: string;
+  showerType: string;
+  heatingType: string;
+  coolingType: string;
+  hasRefrigerator?: boolean;
+  hasCooktop?: boolean;
+  hasOven?: boolean;
+  hasMicrowave?: boolean;
+  stepFreeAccess?: boolean;
+  accessibleWashroom?: boolean;
+  viewType: string;
 }): Promise<{
   detailRowVersion: number;
   availabilityRevision: number;
