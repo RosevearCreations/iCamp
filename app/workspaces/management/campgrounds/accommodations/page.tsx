@@ -17,15 +17,16 @@ import {
   createAccommodationAction,
   updateAccommodationAction,
   updateCampsiteDetailsAction,
+  updateRentalCottageDetailsAction,
 } from "./actions";
 import styles from "./accommodation-admin.module.css";
 
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Accommodation & campsite inventory · iCamp",
+  title: "Accommodation assembly · iCamp",
   description:
-    "Manage canonical accommodations plus campsite types, utilities and fit.",
+    "Manage canonical accommodations, campsite service detail and rental cottage facilities in one interface.",
 };
 
 const kindLabels = {
@@ -95,13 +96,43 @@ export default async function AccommodationAdministrationPage({
         </nav>
 
         <section className="hero-panel">
-          <p className="eyebrow">Build 025</p>
-          <h1>Accommodation & campsite inventory</h1>
+          <p className="eyebrow">Build 026</p>
+          <h1>Accommodation assembly</h1>
           <p className="hero-panel__lead">
-            Extend the Build 024 Unified accommodation model with campsite type,
-            utility service, dimensions and RV-fit details.
+            Put the accommodation system together in one working interface:
+            canonical map-linked inventory, campsite service/fit detail and
+            rental cottage occupancy, facilities, appliances, accessibility and
+            view.
           </p>
         </section>
+
+        <div
+          className={styles.assemblyRail}
+          aria-label="Accommodation model assembly"
+        >
+          <div className={styles.assemblyStep}>
+            <span>Build 024</span>
+            <strong>Canonical identity</strong>
+            <small>
+              Unified accommodation model: one map-linked parent, lifecycle and
+              shared hooks.
+            </small>
+          </div>
+          <div className={styles.assemblyStep}>
+            <span>Build 025</span>
+            <strong>Campsite detail</strong>
+            <small>
+              Type, utilities, physical fit and site characteristics.
+            </small>
+          </div>
+          <div className={styles.assemblyStep}>
+            <span>Build 026</span>
+            <strong>Cottage detail</strong>
+            <small>
+              Sleeping, facilities, climate, appliances and accessibility.
+            </small>
+          </div>
+        </div>
 
         {params.saved ? (
           <div className={styles.notice}>{params.saved}</div>
@@ -140,7 +171,7 @@ export default async function AccommodationAdministrationPage({
             title="Campsites, cottages & permanent units"
             id="inventory-heading"
             helpTopic="accommodation.inventory"
-            trailing={<span className="build-chip">Build 025</span>}
+            trailing={<span className="build-chip">Build 026</span>}
           />
           <div className={styles.summaryGrid}>
             <div>
@@ -162,6 +193,16 @@ export default async function AccommodationAdministrationPage({
                 {accommodations.filter((item) => item.subtypeLinked).length}
               </strong>
               <span>Subtype links verified</span>
+            </div>
+            <div>
+              <strong>
+                {
+                  accommodations.filter(
+                    (item) => item.kind === "rental_cottage",
+                  ).length
+                }
+              </strong>
+              <span>Rental cottages</span>
             </div>
           </div>
 
@@ -619,11 +660,298 @@ export default async function AccommodationAdministrationPage({
                       reservation compatibility.
                     </p>
                   </section>
+                ) : accommodation.cottageDetails ? (
+                  <section
+                    className={styles.detailPanel}
+                    aria-label="Rental cottage occupancy, facilities and accessibility"
+                  >
+                    <SectionHeading
+                      eyebrow="Build 026"
+                      title="Rental cottage facilities & occupancy"
+                      id={"cottage-services-" + accommodation.id}
+                      helpTopic="cottage.facilities"
+                    />
+                    <div className={styles.metaGrid}>
+                      <div>
+                        <span>Style / occupancy</span>
+                        <strong>
+                          {accommodation.cottageDetails.cottageStyle} · up to{" "}
+                          {accommodation.cottageDetails.maxOccupancy} guests
+                        </strong>
+                      </div>
+                      <div>
+                        <span>Sleeping</span>
+                        <strong>
+                          {accommodation.cottageDetails.bedroomCount} bedrooms ·{" "}
+                          {accommodation.cottageDetails.bedCount} beds
+                        </strong>
+                      </div>
+                      <div>
+                        <span>Facilities</span>
+                        <strong>
+                          {accommodation.cottageDetails.kitchenType} kitchen ·{" "}
+                          {accommodation.cottageDetails.washroomType} washroom ·{" "}
+                          {accommodation.cottageDetails.showerType} shower
+                        </strong>
+                      </div>
+                      <div>
+                        <span>Climate / view</span>
+                        <strong>
+                          heat{" "}
+                          {accommodation.cottageDetails.heatingType.replace(
+                            "_",
+                            " ",
+                          )}{" "}
+                          · cooling{" "}
+                          {accommodation.cottageDetails.coolingType.replace(
+                            "_",
+                            " ",
+                          )}{" "}
+                          · {accommodation.cottageDetails.viewType} view
+                        </strong>
+                      </div>
+                    </div>
+
+                    {canManage ? (
+                      <form
+                        action={updateRentalCottageDetailsAction}
+                        className={styles.formGrid}
+                      >
+                        <input
+                          type="hidden"
+                          name="campgroundId"
+                          value={selected.campgroundId}
+                        />
+                        <input
+                          type="hidden"
+                          name="accommodationId"
+                          value={accommodation.id}
+                        />
+                        <input
+                          type="hidden"
+                          name="detailRowVersion"
+                          value={accommodation.cottageDetails.rowVersion}
+                        />
+
+                        <label className={styles.field}>
+                          <span>Cottage style</span>
+                          <select
+                            name="cottageStyle"
+                            defaultValue={
+                              accommodation.cottageDetails.cottageStyle
+                            }
+                          >
+                            <option value="rustic">Rustic</option>
+                            <option value="serviced">Serviced</option>
+                          </select>
+                        </label>
+                        <label className={styles.field}>
+                          <span>Bedrooms</span>
+                          <input
+                            type="number"
+                            name="bedroomCount"
+                            min={0}
+                            max={20}
+                            defaultValue={
+                              accommodation.cottageDetails.bedroomCount
+                            }
+                            required
+                          />
+                        </label>
+                        <label className={styles.field}>
+                          <span>Beds</span>
+                          <input
+                            type="number"
+                            name="bedCount"
+                            min={1}
+                            max={40}
+                            defaultValue={accommodation.cottageDetails.bedCount}
+                            required
+                          />
+                        </label>
+                        <label className={styles.field}>
+                          <span>Maximum occupancy</span>
+                          <input
+                            type="number"
+                            name="maxOccupancy"
+                            min={1}
+                            max={80}
+                            defaultValue={
+                              accommodation.cottageDetails.maxOccupancy
+                            }
+                            required
+                          />
+                        </label>
+                        <label className={styles.field}>
+                          <span>Kitchen</span>
+                          <select
+                            name="kitchenType"
+                            defaultValue={
+                              accommodation.cottageDetails.kitchenType
+                            }
+                          >
+                            <option value="none">None</option>
+                            <option value="kitchenette">Kitchenette</option>
+                            <option value="full">Full kitchen</option>
+                          </select>
+                        </label>
+                        <label className={styles.field}>
+                          <span>Washroom</span>
+                          <select
+                            name="washroomType"
+                            defaultValue={
+                              accommodation.cottageDetails.washroomType
+                            }
+                          >
+                            <option value="none">None</option>
+                            <option value="shared">Shared</option>
+                            <option value="private">Private</option>
+                          </select>
+                        </label>
+                        <label className={styles.field}>
+                          <span>Shower</span>
+                          <select
+                            name="showerType"
+                            defaultValue={
+                              accommodation.cottageDetails.showerType
+                            }
+                          >
+                            <option value="none">None</option>
+                            <option value="shared">Shared</option>
+                            <option value="private">Private</option>
+                          </select>
+                        </label>
+                        <label className={styles.field}>
+                          <span>Heating</span>
+                          <select
+                            name="heatingType"
+                            defaultValue={
+                              accommodation.cottageDetails.heatingType
+                            }
+                          >
+                            <option value="none">None</option>
+                            <option value="electric">Electric</option>
+                            <option value="propane">Propane</option>
+                            <option value="wood">Wood</option>
+                            <option value="heat_pump">Heat pump</option>
+                            <option value="other">Other</option>
+                          </select>
+                        </label>
+                        <label className={styles.field}>
+                          <span>Cooling</span>
+                          <select
+                            name="coolingType"
+                            defaultValue={
+                              accommodation.cottageDetails.coolingType
+                            }
+                          >
+                            <option value="none">None</option>
+                            <option value="fan">Fan</option>
+                            <option value="window_ac">Window A/C</option>
+                            <option value="central_ac">Central A/C</option>
+                            <option value="heat_pump">Heat pump</option>
+                            <option value="other">Other</option>
+                          </select>
+                        </label>
+                        <label className={styles.field}>
+                          <span>View</span>
+                          <select
+                            name="viewType"
+                            defaultValue={accommodation.cottageDetails.viewType}
+                          >
+                            <option value="none">No advertised view</option>
+                            <option value="woodland">Woodland</option>
+                            <option value="waterfront">Waterfront</option>
+                            <option value="lake">Lake</option>
+                            <option value="river">River</option>
+                            <option value="ocean">Ocean</option>
+                            <option value="mountain">Mountain</option>
+                            <option value="garden">Garden</option>
+                            <option value="other">Other</option>
+                          </select>
+                        </label>
+
+                        <div className={styles.checkGrid}>
+                          <label>
+                            <input
+                              type="checkbox"
+                              name="hasRefrigerator"
+                              defaultChecked={
+                                accommodation.cottageDetails.hasRefrigerator
+                              }
+                            />
+                            Refrigerator
+                          </label>
+                          <label>
+                            <input
+                              type="checkbox"
+                              name="hasCooktop"
+                              defaultChecked={
+                                accommodation.cottageDetails.hasCooktop
+                              }
+                            />
+                            Cooktop
+                          </label>
+                          <label>
+                            <input
+                              type="checkbox"
+                              name="hasOven"
+                              defaultChecked={
+                                accommodation.cottageDetails.hasOven
+                              }
+                            />
+                            Oven
+                          </label>
+                          <label>
+                            <input
+                              type="checkbox"
+                              name="hasMicrowave"
+                              defaultChecked={
+                                accommodation.cottageDetails.hasMicrowave
+                              }
+                            />
+                            Microwave
+                          </label>
+                          <label>
+                            <input
+                              type="checkbox"
+                              name="stepFreeAccess"
+                              defaultChecked={
+                                accommodation.cottageDetails.stepFreeAccess
+                              }
+                            />
+                            Step-free access
+                          </label>
+                          <label>
+                            <input
+                              type="checkbox"
+                              name="accessibleWashroom"
+                              defaultChecked={
+                                accommodation.cottageDetails.accessibleWashroom
+                              }
+                            />
+                            Accessible washroom
+                          </label>
+                        </div>
+                        <div className={styles.actions}>
+                          <button className="primary-button" type="submit">
+                            Save cottage details
+                          </button>
+                        </div>
+                      </form>
+                    ) : null}
+
+                    <p className={styles.boundary}>
+                      These physical cottage facts feed later capacity and
+                      compatibility builds. Build 033 owns capacity rules and
+                      Build 034 remains authoritative for reservation
+                      compatibility.
+                    </p>
+                  </section>
                 ) : (
                   <p className={styles.boundary}>
-                    {accommodation.kind === "rental_cottage"
-                      ? "Build 026 adds cottage occupancy, facilities and accessibility."
-                      : "Ownership and transfer detail remains in later permanent-unit builds."}
+                    Ownership and transfer detail remains in later
+                    permanent-unit builds.
                   </p>
                 )}
               </article>

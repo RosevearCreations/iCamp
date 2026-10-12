@@ -242,6 +242,26 @@ export const helpTopics = {
     audience: "privileged",
     related: ["accommodation.inventory"],
   },
+  "cottage.facilities": {
+    id: "cottage.facilities",
+    slug: "rental-cottage-facilities-and-occupancy",
+    title: "Rental cottage facilities and occupancy",
+    summary:
+      "Build 026 keeps each rental cottage's sleeping capacity, facilities, appliances, accessibility and view attached to the canonical accommodation record.",
+    details: [
+      "Classify the cottage as rustic or serviced, then record bedrooms, beds and maximum advertised sleeping occupancy as physical facts.",
+      "Kitchen supports none, kitchenette or full kitchen. Washroom and shower are tracked independently as none, shared or private.",
+      "Heating and cooling describe the installed cottage systems. Refrigerator, cooktop, oven and microwave are separate appliance facts rather than assumptions based on cottage style.",
+      "Step-free access and accessible washroom are recorded independently so later compatibility and public-description workflows can make precise decisions.",
+      "View describes the advertised physical setting and does not replace Build 028 gallery media.",
+      "Any cottage detail change advances the parent accommodation availability revision so later capacity, compatibility and availability systems can detect the change.",
+      "Build 033 later owns configurable guest-capacity rules and Build 034 owns booking compatibility. This build records the underlying physical facts only.",
+      "Configuration is an authenticated Web/PWA management task. IVR/DTMF and SMS/MMS may later read concise cottage facts or hand off to staff, but structural edits remain in the authenticated interface.",
+    ],
+    audience: "privileged",
+    related: ["accommodation.inventory"],
+  },
+
   "campground.map.images": {
     id: "campground.map.images",
     slug: "campground-overhead-image-library",
