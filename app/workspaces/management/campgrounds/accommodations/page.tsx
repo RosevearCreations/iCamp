@@ -297,10 +297,11 @@ export default async function AccommodationAdministrationPage({
                     className={styles.detailPanel}
                     aria-label="Campsite type, utilities and fit"
                   >
-                    <div>
-                      <p className="eyebrow">Build 025</p>
-                      <h4>Campsite type, utilities & fit</h4>
-                    </div>
+                    <SectionHeading
+                      eyebrow="Build 025"
+                      title="Campsite type, utilities & fit"
+                      helpTopic="campsite.services"
+                    />
                     <div className={styles.metaGrid}>
                       <div>
                         <span>Type / service</span>
