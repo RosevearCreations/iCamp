@@ -243,7 +243,8 @@
 }
 
 @media (max-width: 42rem) {
-  .assemblyRail {
+  .assemblyRail,
+  .summaryGrid {
     grid-template-columns: 1fr;
   }
 }
