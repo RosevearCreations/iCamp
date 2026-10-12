@@ -388,7 +388,7 @@ Delivered:
 ## Next active build
 **Build 025 — Campsite Types & Utility/Service Model**
 
-Status: **QUEUED — NOT STARTED**
+Status: **IMPLEMENTED — PROMOTION IN PROGRESS**
 
 ## Operating rule
 - Work primarily on `dev`.
