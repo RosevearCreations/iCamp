@@ -475,7 +475,10 @@ export default async function CampgroundAdministrationPage({
           </form>
         </section>
 
-        <section className="content-panel" aria-labelledby="accommodations-heading">
+        <section
+          className="content-panel"
+          aria-labelledby="accommodations-heading"
+        >
           <SectionHeading
             eyebrow="Accommodation inventory"
             title="Unified campsites, cottages & permanent units"
