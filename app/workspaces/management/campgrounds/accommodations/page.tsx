@@ -300,6 +300,7 @@ export default async function AccommodationAdministrationPage({
                     <SectionHeading
                       eyebrow="Build 025"
                       title="Campsite type, utilities & fit"
+                      id={"campsite-services-" + accommodation.id}
                       helpTopic="campsite.services"
                     />
                     <div className={styles.metaGrid}>
@@ -326,8 +327,8 @@ export default async function AccommodationAdministrationPage({
                         <span>Utilities</span>
                         <strong>
                           {accommodation.campsiteDetails.electricalAmperage > 0
-                            ? accommodation.campsiteDetails
-                                .electricalAmperage + "A"
+                            ? accommodation.campsiteDetails.electricalAmperage +
+                              "A"
                             : "no electric"}{" "}
                           · water {accommodation.campsiteDetails.waterService} ·
                           waste{" "}
@@ -338,7 +339,8 @@ export default async function AccommodationAdministrationPage({
                       <div>
                         <span>Site / RV fit</span>
                         <strong>
-                          {accommodation.campsiteDetails.siteLengthMeters ?? "?"}
+                          {accommodation.campsiteDetails.siteLengthMeters ??
+                            "?"}
                           m ×{" "}
                           {accommodation.campsiteDetails.siteWidthMeters ?? "?"}
                           m · RV max{" "}
