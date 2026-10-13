@@ -634,6 +634,32 @@ export default async function CampgroundAdministrationPage({
           </Link>
         </section>
 
+        <section
+          className="content-panel"
+          aria-labelledby="live-availability-heading"
+        >
+          <SectionHeading
+            eyebrow="Booking inventory"
+            title="Server-authoritative live availability"
+            id="live-availability-heading"
+            helpTopic="campground.structure"
+            trailing={<span className="build-chip">Build 035</span>}
+          />
+          <p>
+            Read live booking inventory from reservations, temporary holds,
+            management restrictions, turnover work and seasonal assignments.
+          </p>
+          <Link
+            className="primary-link primary-link--dark"
+            href={
+              "/workspaces/management/campgrounds/availability?campground=" +
+              encodeURIComponent(structure.campground.id)
+            }
+          >
+            Open live availability
+          </Link>
+        </section>
+
         <section className="content-panel" aria-labelledby="map-images-heading">
           <SectionHeading
             eyebrow="Campground map"
