@@ -80,7 +80,6 @@ test("internal workspaces are non-indexable and SEO contract is explicit", () =>
   assert.match(seo, /mobile-first/u);
 });
 
-
 test("Build 029 covers hosted composite foreign keys", () => {
   assert.match(fkIndexes, /operational_assets_map_object_scope_fk_idx/u);
   assert.match(fkIndexes, /operational_facilities_asset_scope_fk_idx/u);
