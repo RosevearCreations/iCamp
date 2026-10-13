@@ -103,10 +103,7 @@ export default async function CampgroundStatusPage({
         ? listOperationalAssets(session.user.id, selected.campgroundId)
         : Promise.resolve([]),
       canReadAccommodations
-        ? listAccommodationStatusHistory(
-            session.user.id,
-            selected.campgroundId,
-          )
+        ? listAccommodationStatusHistory(session.user.id, selected.campgroundId)
         : Promise.resolve([]),
       canReadAssets
         ? listOperationalAssetStatusHistory(
