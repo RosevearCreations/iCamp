@@ -553,6 +553,33 @@ export default async function CampgroundAdministrationPage({
           </Link>
         </section>
 
+        <section
+          className="content-panel"
+          aria-labelledby="booking-rules-heading"
+        >
+          <SectionHeading
+            eyebrow="Booking configuration"
+            title="Booking calendar & date rules"
+            id="booking-rules-heading"
+            helpTopic="campground.structure"
+            trailing={<span className="build-chip">Build 032</span>}
+          />
+          <p>
+            Configure check-in/out times, booking windows, stay limits,
+            weekend classification and named holiday/season calendars before
+            live availability and pricing consume them.
+          </p>
+          <Link
+            className="primary-link primary-link--dark"
+            href={
+              "/workspaces/management/campgrounds/booking-rules?campground=" +
+              encodeURIComponent(structure.campground.id)
+            }
+          >
+            Open booking calendar & date rules
+          </Link>
+        </section>
+
         <section className="content-panel" aria-labelledby="map-images-heading">
           <SectionHeading
             eyebrow="Campground map"
