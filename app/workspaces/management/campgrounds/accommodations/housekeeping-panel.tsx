@@ -193,11 +193,7 @@ export function HousekeepingPanel({
                       />
                     </label>
                     <label className={styles.inlineCheck}>
-                      <input
-                        type="checkbox"
-                        name="isRequired"
-                        defaultChecked
-                      />
+                      <input type="checkbox" name="isRequired" defaultChecked />
                       Required
                     </label>
                     <button className="primary-button" type="submit">
@@ -247,16 +243,8 @@ export function HousekeepingPanel({
           action={createCottageHousekeepingTemplateAction}
           className={styles.housekeepingCreate}
         >
-          <input
-            type="hidden"
-            name="campgroundId"
-            value={campgroundId}
-          />
-          <input
-            type="hidden"
-            name="accommodationId"
-            value={accommodationId}
-          />
+          <input type="hidden" name="campgroundId" value={campgroundId} />
+          <input type="hidden" name="accommodationId" value={accommodationId} />
           <label className={styles.field}>
             <span>Template name</span>
             <input
@@ -349,18 +337,13 @@ export function HousekeepingPanel({
                   <p>Scheduled {formatDate(turnover.scheduledFor)}</p>
                 </div>
                 <span className={styles.statusPill}>
-                  {
-                    turnover.itemChecks.filter((item) => item.checked)
-                      .length
-                  }
-                  /{turnover.itemChecks.length} checked
+                  {turnover.itemChecks.filter((item) => item.checked).length}/
+                  {turnover.itemChecks.length} checked
                 </span>
               </div>
 
               {turnover.blockedReason ? (
-                <p className={styles.blockedReason}>
-                  {turnover.blockedReason}
-                </p>
+                <p className={styles.blockedReason}>{turnover.blockedReason}</p>
               ) : null}
 
               <div className={styles.checklist}>
@@ -394,11 +377,7 @@ export function HousekeepingPanel({
                             name="turnoverId"
                             value={turnover.id}
                           />
-                          <input
-                            type="hidden"
-                            name="checkId"
-                            value={item.id}
-                          />
+                          <input type="hidden" name="checkId" value={item.id} />
                           <label className={styles.inlineCheck}>
                             <input
                               type="checkbox"
@@ -437,11 +416,7 @@ export function HousekeepingPanel({
                     name="campgroundId"
                     value={campgroundId}
                   />
-                  <input
-                    type="hidden"
-                    name="turnoverId"
-                    value={turnover.id}
-                  />
+                  <input type="hidden" name="turnoverId" value={turnover.id} />
                   <div className={styles.checkGrid}>
                     <label>
                       <input type="checkbox" name="linenComplete" />
@@ -462,19 +437,11 @@ export function HousekeepingPanel({
                   </div>
                   <label className={styles.fieldWide}>
                     <span>Damage notes</span>
-                    <textarea
-                      name="damageNotes"
-                      rows={2}
-                      maxLength={2000}
-                    />
+                    <textarea name="damageNotes" rows={2} maxLength={2000} />
                   </label>
                   <label className={styles.fieldWide}>
                     <span>Security notes</span>
-                    <textarea
-                      name="securityNotes"
-                      rows={2}
-                      maxLength={2000}
-                    />
+                    <textarea name="securityNotes" rows={2} maxLength={2000} />
                   </label>
                   <button className="primary-button" type="submit">
                     Record readiness inspection
