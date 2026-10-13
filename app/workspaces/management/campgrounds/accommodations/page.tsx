@@ -143,7 +143,8 @@ export default async function AccommodationAdministrationPage({
             <span>Build 027</span>
             <strong>Turnover readiness</strong>
             <small>
-              Templates, linen, housekeeping, inventory and damage/security inspection.
+              Templates, linen, housekeeping, inventory and damage/security
+              inspection.
             </small>
           </div>
         </div>
