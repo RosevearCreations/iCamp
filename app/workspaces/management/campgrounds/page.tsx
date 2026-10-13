@@ -526,6 +526,33 @@ export default async function CampgroundAdministrationPage({
           </Link>
         </section>
 
+        <section
+          className="content-panel"
+          aria-labelledby="status-engine-heading"
+        >
+          <SectionHeading
+            eyebrow="Current operating state"
+            title="Accommodation & asset status engine"
+            id="status-engine-heading"
+            helpTopic="status.engine"
+            trailing={<span className="build-chip">Build 030</span>}
+          />
+          <p>
+            Control campsite, cottage, permanent-unit, facility, equipment and
+            fleet state through server-enforced transition rules with durable
+            history.
+          </p>
+          <Link
+            className="primary-link primary-link--dark"
+            href={
+              "/workspaces/management/campgrounds/status?campground=" +
+              encodeURIComponent(structure.campground.id)
+            }
+          >
+            Open status control centre
+          </Link>
+        </section>
+
         <section className="content-panel" aria-labelledby="map-images-heading">
           <SectionHeading
             eyebrow="Campground map"

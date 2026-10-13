@@ -1,0 +1,151 @@
+.selector,
+.statusGrid,
+.transitionForm,
+.historyGrid {
+  display: grid;
+  gap: 1rem;
+}
+
+.selector {
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+}
+
+.statusGrid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.8rem;
+}
+
+.metrics > div,
+.statusCard,
+.historyItem {
+  border: 1px solid var(--border);
+  border-radius: 0.9rem;
+}
+
+.metrics > div {
+  display: grid;
+  gap: 0.25rem;
+  padding: 0.85rem 1rem;
+}
+
+.metrics span,
+.field span,
+.kicker,
+.historyItem small {
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.metrics strong {
+  font-size: 1.55rem;
+}
+
+.statusCard {
+  display: grid;
+  gap: 0.9rem;
+  padding: 1rem;
+}
+
+.cardHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.cardHeader h3,
+.cardHeader p {
+  margin: 0;
+}
+
+.state {
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 0.35rem 0.7rem;
+  font-size: 0.82rem;
+  font-weight: 850;
+  text-transform: capitalize;
+}
+
+.transitionForm {
+  grid-template-columns: minmax(0, 0.7fr) minmax(0, 1.3fr) auto;
+  align-items: end;
+}
+
+.field {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.field select,
+.field input {
+  width: 100%;
+  min-height: 2.7rem;
+}
+
+.historyGrid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.historyItem {
+  display: grid;
+  gap: 0.35rem;
+  padding: 0.85rem;
+}
+
+.historyItem p {
+  margin: 0;
+}
+
+.notice,
+.boundary,
+.empty {
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: 0.8rem;
+}
+
+.boundary,
+.empty {
+  color: var(--muted);
+}
+
+.linkRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+@media (max-width: 900px) {
+  .metrics,
+  .statusGrid,
+  .historyGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .transitionForm {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .selector,
+  .metrics,
+  .statusGrid,
+  .historyGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .cardHeader {
+    display: grid;
+  }
+}

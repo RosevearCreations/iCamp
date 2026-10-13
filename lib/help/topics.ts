@@ -233,7 +233,7 @@ export const helpTopics = {
     details: [
       "Every accommodation has one code, name, campground section, optional subsection, lifecycle state and canonical Build 023 map identity.",
       "Campsites, rental cottages and permanent units each receive exactly one matching subtype linkage. Database deferred constraints reject missing, mismatched or duplicate subtype structures.",
-      "The availability and status hook revisions are stable integration points, not the full booking or status engines. Build 030 owns detailed states, history and transition rules.",
+      "Build 030 now turns the shared status revision into authoritative current state, PostgreSQL transition rules and durable history. Booking availability still arrives in later booking builds.",
       "Changing lifecycle state advances both hook revisions so later engines and caches can detect a shared-inventory change.",
       "Build 025 adds campsite types, utilities, dimensions and physical-fit detail; Build 026 adds cottage-specific facilities and occupancy; Build 028 adds public galleries.",
       "Accommodation administration requires accommodation.manage. Read-only inventory access uses accommodation.read.",
@@ -290,7 +290,7 @@ export const helpTopics = {
       "Each live turnover records item checks and item-level issues. The first check advances a scheduled turnover into active work.",
       "The readiness inspection records linen completion, housekeeping completion, inventory completion, damage and security issues. A clean complete inspection marks the turnover ready; unresolved work leaves it blocked.",
       "Turnover lifecycle changes advance the shared accommodation availability and status revision hooks so later engines can detect readiness changes.",
-      "Build 030 remains authoritative for the full accommodation status engine and Build 034 remains authoritative for booking compatibility and reservation decisions.",
+      "Build 030 owns the full accommodation status state machine and durable transition history. Build 034 remains authoritative for booking compatibility and reservation decisions.",
       "Web/PWA provides the full workflow. IVR/DTMF and SMS/MMS may later read concise readiness facts or route staff, but detailed checklist editing and inspection notes remain authenticated Web/PWA or staff-assisted.",
     ],
     audience: "privileged",
@@ -313,6 +313,24 @@ export const helpTopics = {
     ],
     audience: "privileged",
     related: ["accommodation.inventory", "cottage.facilities"],
+  },
+
+  "status.engine": {
+    id: "status.engine",
+    slug: "accommodation-asset-status-engine",
+    title: "Accommodation and asset status engine",
+    summary:
+      "Build 030 keeps current accommodation and operational-asset state in one server-authoritative engine with validated transitions and durable history.",
+    details: [
+      "Accommodation states cover available, held, reserved, arriving, occupied, departing, inspection, maintenance, winterized and closed.",
+      "Facility, equipment and fleet states cover unknown, operational, limited, inspection, maintenance, unavailable, seasonal, winterized and closed.",
+      "PostgreSQL owns the allowed transition edges. The interface requests a change; it cannot bypass a transition that the database rejects.",
+      "Every real state change advances the subject status revision and appends history with the actor, timestamp and optional operations reason. Accommodation state changes also advance the availability revision.",
+      "Build 031 deliberately owns dated closures, bulk holds, section blocks and map-publication overrides; Build 030 does not pretend a current-state value is a scheduling system.",
+      "Web/PWA is the full management surface. Later IVR/SMS workflows can read or request concise status changes through the same canonical server commands rather than creating channel-specific state.",
+    ],
+    audience: "privileged",
+    related: ["accommodation.inventory", "asset.inventory"],
   },
 
   "campground.map.images": {

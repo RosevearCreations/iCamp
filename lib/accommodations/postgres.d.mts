@@ -13,6 +13,17 @@ export interface AccommodationRecord {
   code: string;
   displayName: string;
   lifecycleState: "active" | "inactive" | "archived";
+  statusState:
+    | "available"
+    | "held"
+    | "reserved"
+    | "arriving"
+    | "occupied"
+    | "departing"
+    | "inspection"
+    | "maintenance"
+    | "winterized"
+    | "closed";
   availabilityRevision: number;
   statusRevision: number;
   rowVersion: number;
