@@ -1,6 +1,6 @@
 # Build 036 — Atomic Temporary Reservation Holds
 
-Status: **IMPLEMENTED — promotion in progress.**
+Status: **PRODUCTION CANDIDATE — `dev` GREEN.**
 
 ## Scope
 Build 036 owns temporary booking inventory hold creation, configurable duration, countdown, atomic conflict prevention, expiry/release and idempotency. It extends the protected `reservation_holds` source introduced by Build 035 without creating a parallel availability model.
@@ -28,7 +28,13 @@ Build 036 owns temporary booking inventory hold creation, configurable duration,
 ## Verification
 - repository tests cover duration/key validation, dual advisory-lock contract, expiry/release ownership, idempotency mapping and countdown behavior;
 - PostgreSQL migration verification requires the duration setting, atomic create/release/expiry functions, trusted-role mutation privileges/policies and direct-role denial;
-- hosted Supabase migration/advisor and production evidence will be recorded during promotion.
+- feature PR #140 head `bbc0655bbfbe4c2c7a1f0743b7f0fe57eb8372e3`: CI `38485807093`, CodeQL `38485807107`, Secret Scan `38485807046` — all GREEN;
+- feature merged to `dev` as `f0435cbad068dd55954663974e81c4d6b395ffb7`;
+- independent `dev` validation: CI `38486142646`, CodeQL `38486142691`, Secret Scan `38486142643` — all GREEN, including Verify, Browser E2E and Database migrations;
+- hosted Supabase migration `20261013234525` (`atomic_temporary_reservation_holds`) is live;
+- hosted verifier confirms duration setting, atomic create/release/expiry functions, trusted `icamp_app` mutation privileges/policies and direct-role denial;
+- Supabase Security Advisor: zero findings;
+- Supabase Performance Advisor: no Build-036-specific regression; only existing unused-index INFO notices remain.
 
 ## Next queued build
 **Build 037 — Public Interactive Booking Map**
