@@ -10,6 +10,13 @@ import {
   updateCampsiteDetails,
   updateRentalCottageDetails,
 } from "@/lib/accommodations/postgres.mjs";
+import {
+  addCottageInventoryChecklistItem,
+  createCottageHousekeepingTemplate,
+  createCottageTurnover,
+  recordCottageDamageInspection,
+  recordCottageTurnoverItemCheck,
+} from "@/lib/housekeeping/postgres.mjs";
 
 const path = "/workspaces/management/campgrounds/accommodations";
 
@@ -144,4 +151,122 @@ export async function updateRentalCottageDetailsAction(formData: FormData) {
   });
 
   finish(campgroundId, "Rental cottage details saved.");
+}
+
+export async function createCottageHousekeepingTemplateAction(
+  formData: FormData,
+) {
+  const campgroundId = field(formData, "campgroundId");
+  const session = await requireCampgroundPermission(
+    campgroundId,
+    "accommodation.manage",
+    path,
+  );
+
+  await createCottageHousekeepingTemplate({
+    actorUserId: session.user.id,
+    actorSessionId: session.sessionId,
+    campgroundId,
+    accommodationId: field(formData, "accommodationId"),
+    name: field(formData, "name"),
+    turnoverType: field(formData, "turnoverType"),
+    expectedMinutes: field(formData, "expectedMinutes"),
+    linenRequirements: field(formData, "linenRequirements"),
+    housekeepingRequirements: field(formData, "housekeepingRequirements"),
+    damageInspectionRequired: checked(formData, "damageInspectionRequired"),
+    securityInspectionRequired: checked(formData, "securityInspectionRequired"),
+  });
+
+  finish(campgroundId, "Cottage turnover template created.");
+}
+
+export async function addCottageInventoryChecklistItemAction(
+  formData: FormData,
+) {
+  const campgroundId = field(formData, "campgroundId");
+  const session = await requireCampgroundPermission(
+    campgroundId,
+    "accommodation.manage",
+    path,
+  );
+
+  await addCottageInventoryChecklistItem({
+    actorUserId: session.user.id,
+    actorSessionId: session.sessionId,
+    campgroundId,
+    templateId: field(formData, "templateId"),
+    category: field(formData, "category"),
+    name: field(formData, "name"),
+    requiredQuantity: field(formData, "requiredQuantity"),
+    unit: field(formData, "unit"),
+    expectedCondition: field(formData, "expectedCondition"),
+    sortOrder: field(formData, "sortOrder"),
+    isRequired: checked(formData, "isRequired"),
+  });
+
+  finish(campgroundId, "Cottage inventory checklist item added.");
+}
+
+export async function createCottageTurnoverAction(formData: FormData) {
+  const campgroundId = field(formData, "campgroundId");
+  const session = await requireCampgroundPermission(
+    campgroundId,
+    "accommodation.manage",
+    path,
+  );
+
+  await createCottageTurnover({
+    actorUserId: session.user.id,
+    actorSessionId: session.sessionId,
+    campgroundId,
+    templateId: field(formData, "templateId"),
+    notes: field(formData, "notes"),
+  });
+
+  finish(campgroundId, "Cottage turnover started.");
+}
+
+export async function recordCottageTurnoverItemCheckAction(formData: FormData) {
+  const campgroundId = field(formData, "campgroundId");
+  const session = await requireCampgroundPermission(
+    campgroundId,
+    "accommodation.manage",
+    path,
+  );
+
+  await recordCottageTurnoverItemCheck({
+    actorUserId: session.user.id,
+    actorSessionId: session.sessionId,
+    campgroundId,
+    turnoverId: field(formData, "turnoverId"),
+    checkId: field(formData, "checkId"),
+    issueFound: checked(formData, "issueFound"),
+    notes: field(formData, "notes"),
+  });
+
+  finish(campgroundId, "Turnover checklist evidence saved.");
+}
+
+export async function recordCottageDamageInspectionAction(formData: FormData) {
+  const campgroundId = field(formData, "campgroundId");
+  const session = await requireCampgroundPermission(
+    campgroundId,
+    "accommodation.manage",
+    path,
+  );
+
+  await recordCottageDamageInspection({
+    actorUserId: session.user.id,
+    actorSessionId: session.sessionId,
+    campgroundId,
+    turnoverId: field(formData, "turnoverId"),
+    linenComplete: checked(formData, "linenComplete"),
+    housekeepingComplete: checked(formData, "housekeepingComplete"),
+    damageFound: checked(formData, "damageFound"),
+    securityIssueFound: checked(formData, "securityIssueFound"),
+    damageNotes: field(formData, "damageNotes"),
+    securityNotes: field(formData, "securityNotes"),
+  });
+
+  finish(campgroundId, "Cottage readiness inspection recorded.");
 }

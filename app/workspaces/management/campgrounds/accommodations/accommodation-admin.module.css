@@ -205,7 +205,7 @@
 
 .assemblyRail {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 0.75rem;
 }
 
@@ -245,5 +245,227 @@
   .assemblyRail,
   .summaryGrid {
     grid-template-columns: 1fr;
+  }
+}
+
+.housekeepingPanel {
+  display: grid;
+  gap: 1rem;
+  margin-top: 0.35rem;
+  padding-top: 1rem;
+  border-top: 2px solid var(--line);
+}
+
+.housekeepingSummary {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.55rem;
+}
+
+.housekeepingSummary > div {
+  display: grid;
+  gap: 0.2rem;
+  padding: 0.65rem;
+  border: 1px solid var(--line);
+  border-radius: 0.7rem;
+  background: var(--surface-soft);
+}
+
+.housekeepingSummary span,
+.checklistItem span,
+.turnoverCheck span {
+  color: var(--muted);
+  font-size: 0.68rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.housekeepingSummary strong {
+  color: var(--brand);
+}
+
+.housekeepingGrid,
+.turnoverList {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.housekeepingCard,
+.turnoverCard {
+  display: grid;
+  gap: 0.8rem;
+  padding: 0.85rem;
+  border: 1px solid var(--line);
+  border-radius: 0.8rem;
+  background: var(--surface-soft);
+}
+
+.housekeepingHeader {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+  align-items: flex-start;
+}
+
+.housekeepingHeader h4,
+.housekeepingHeader p {
+  margin: 0;
+}
+
+.statusPill {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.5rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--brand);
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: capitalize;
+}
+
+.templateNotes {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.templateNotes p {
+  margin: 0;
+  font-size: 0.8rem;
+  line-height: 1.45;
+}
+
+.checklist {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.checklistItem,
+.turnoverCheck {
+  display: grid;
+  gap: 0.2rem;
+  padding: 0.55rem;
+  border: 1px solid var(--line);
+  border-radius: 0.6rem;
+  background: #fff;
+}
+
+.checklistItem small,
+.turnoverCheck small {
+  color: var(--muted);
+}
+
+.compactForm,
+.housekeepingCreate,
+.inspectionForm {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.65rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--line);
+}
+
+.turnoverLaunch {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.65rem;
+  align-items: end;
+}
+
+.fieldWide {
+  display: grid;
+  gap: 0.35rem;
+  grid-column: span 3;
+}
+
+.fieldWide span {
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.field textarea,
+.fieldWide textarea,
+.checkAction input {
+  width: 100%;
+  padding: 0.65rem 0.75rem;
+  border: 1px solid var(--line);
+  border-radius: 0.7rem;
+  background: #fff;
+  color: var(--ink);
+  font: inherit;
+}
+
+.inlineCheck {
+  display: flex;
+  gap: 0.45rem;
+  align-items: center;
+  color: var(--ink);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.turnoverCheck {
+  grid-template-columns: minmax(0, 1fr) minmax(15rem, 1fr);
+  align-items: center;
+}
+
+.turnoverCheck > div {
+  display: grid;
+  gap: 0.2rem;
+}
+
+.checkAction {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 0.45rem;
+  align-items: center;
+}
+
+.blockedReason {
+  padding: 0.55rem 0.65rem;
+  border: 1px solid var(--line);
+  border-radius: 0.6rem;
+  background: #fff;
+  color: var(--brand);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+@media (max-width: 64rem) {
+  .housekeepingSummary,
+  .compactForm,
+  .housekeepingCreate,
+  .inspectionForm {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .fieldWide {
+    grid-column: span 2;
+  }
+
+  .turnoverCheck {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 42rem) {
+  .housekeepingSummary,
+  .compactForm,
+  .housekeepingCreate,
+  .inspectionForm,
+  .turnoverLaunch,
+  .checkAction {
+    grid-template-columns: 1fr;
+  }
+
+  .fieldWide {
+    grid-column: span 1;
+  }
+
+  .housekeepingHeader {
+    display: grid;
   }
 }

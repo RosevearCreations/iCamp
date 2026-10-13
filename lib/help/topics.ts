@@ -261,6 +261,24 @@ export const helpTopics = {
     audience: "privileged",
     related: ["accommodation.inventory"],
   },
+  "cottage.housekeeping": {
+    id: "cottage.housekeeping",
+    slug: "cottage-turnover-housekeeping-readiness",
+    title: "Cottage turnover and housekeeping readiness",
+    summary:
+      "Build 027 turns cottage departure cleaning into reusable templates, snapshotted inventory checks and auditable damage/security readiness evidence.",
+    details: [
+      "Create reusable turnover templates for normal departures, deep cleans, seasonal opening/closing or maintenance resets. Linen and housekeeping instructions stay with the template.",
+      "Inventory checklist items are categorized and ordered. Starting a turnover snapshots the current checklist so later template edits cannot rewrite historical evidence.",
+      "Each live turnover records item checks and item-level issues. The first check advances a scheduled turnover into active work.",
+      "The readiness inspection records linen completion, housekeeping completion, inventory completion, damage and security issues. A clean complete inspection marks the turnover ready; unresolved work leaves it blocked.",
+      "Turnover lifecycle changes advance the shared accommodation availability and status revision hooks so later engines can detect readiness changes.",
+      "Build 030 remains authoritative for the full accommodation status engine and Build 034 remains authoritative for booking compatibility and reservation decisions.",
+      "Web/PWA provides the full workflow. IVR/DTMF and SMS/MMS may later read concise readiness facts or route staff, but detailed checklist editing and inspection notes remain authenticated Web/PWA or staff-assisted.",
+    ],
+    audience: "privileged",
+    related: ["cottage.facilities", "accommodation.inventory"],
+  },
 
   "campground.map.images": {
     id: "campground.map.images",

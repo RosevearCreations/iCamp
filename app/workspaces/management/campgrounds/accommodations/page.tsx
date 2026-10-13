@@ -12,6 +12,7 @@ import {
   listAssignedCampgrounds,
 } from "@/lib/authz/postgres.mjs";
 import { listCampgroundStructure } from "@/lib/campground-structure/postgres.mjs";
+import { listCottageHousekeeping } from "@/lib/housekeeping/postgres.mjs";
 
 import {
   createAccommodationAction,
@@ -20,6 +21,7 @@ import {
   updateRentalCottageDetailsAction,
 } from "./actions";
 import styles from "./accommodation-admin.module.css";
+import { HousekeepingPanel } from "./housekeeping-panel";
 
 export const dynamic = "force-dynamic";
 
@@ -73,14 +75,19 @@ export default async function AccommodationAdministrationPage({
     "accommodation.manage",
   );
 
-  const [structure, accommodations] = await Promise.all([
+  const [structure, accommodations, housekeeping] = await Promise.all([
     listCampgroundStructure(session.user.id, selected.campgroundId),
     listAccommodations(session.user.id, selected.campgroundId),
+    listCottageHousekeeping(session.user.id, selected.campgroundId),
   ]);
 
   if (!structure) {
     redirect("/auth/not-authorized");
   }
+
+  const housekeepingByAccommodation = new Map(
+    housekeeping.map((item) => [item.accommodationId, item]),
+  );
 
   return (
     <AppShell>
@@ -96,13 +103,13 @@ export default async function AccommodationAdministrationPage({
         </nav>
 
         <section className="hero-panel">
-          <p className="eyebrow">Build 026</p>
+          <p className="eyebrow">Build 027</p>
           <h1>Accommodation assembly</h1>
           <p className="hero-panel__lead">
             Put the accommodation system together in one working interface:
-            canonical map-linked inventory, campsite service/fit detail and
-            rental cottage occupancy, facilities, appliances, accessibility and
-            view.
+            canonical map-linked inventory, campsite service/fit detail,
+            rental-cottage physical facts, and now real turnover, housekeeping,
+            inventory and readiness inspection operations.
           </p>
         </section>
 
@@ -130,6 +137,14 @@ export default async function AccommodationAdministrationPage({
             <strong>Cottage detail</strong>
             <small>
               Sleeping, facilities, climate, appliances and accessibility.
+            </small>
+          </div>
+          <div className={styles.assemblyStep}>
+            <span>Build 027</span>
+            <strong>Turnover readiness</strong>
+            <small>
+              Templates, linen, housekeeping, inventory and damage/security
+              inspection.
             </small>
           </div>
         </div>
@@ -171,7 +186,7 @@ export default async function AccommodationAdministrationPage({
             title="Campsites, cottages & permanent units"
             id="inventory-heading"
             helpTopic="accommodation.inventory"
-            trailing={<span className="build-chip">Build 026</span>}
+            trailing={<span className="build-chip">Build 027</span>}
           />
           <div className={styles.summaryGrid}>
             <div>
@@ -947,6 +962,13 @@ export default async function AccommodationAdministrationPage({
                       Build 034 remains authoritative for reservation
                       compatibility.
                     </p>
+
+                    <HousekeepingPanel
+                      campgroundId={selected.campgroundId}
+                      accommodationId={accommodation.id}
+                      canManage={canManage}
+                      state={housekeepingByAccommodation.get(accommodation.id)}
+                    />
                   </section>
                 ) : (
                   <p className={styles.boundary}>
