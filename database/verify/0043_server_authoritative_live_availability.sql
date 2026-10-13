@@ -16,7 +16,13 @@ begin
   if not exists (select 1 from pg_trigger where tgname='seasonal_assignments_no_live_conflict' and not tgisinternal) then
     raise exception 'seasonal concurrency trigger missing';
   end if;
-  if has_table_privilege('anon','public.reservations','select') then raise exception 'anon must not directly read reservations'; end if;
-  if has_table_privilege('authenticated','public.reservation_holds','select') then raise exception 'authenticated must not directly read holds'; end if;
+  if exists (select 1 from pg_roles where rolname = 'anon')
+    and has_table_privilege('anon','public.reservations','select') then
+    raise exception 'anon must not directly read reservations';
+  end if;
+  if exists (select 1 from pg_roles where rolname = 'authenticated')
+    and has_table_privilege('authenticated','public.reservation_holds','select') then
+    raise exception 'authenticated must not directly read holds';
+  end if;
 end
 $verify$;

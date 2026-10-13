@@ -84,8 +84,14 @@ export default async function LiveAvailabilityPage({
           <SectionHeading
             eyebrow="Booking inventory"
             title="Server-authoritative live availability"
-            description="A ten-second live refresh combines reservations, temporary holds, management closures/holds, unresolved cottage turnover and seasonal assignments."
+            id="live-availability-title"
+            helpTopic="campground.structure"
           />
+          <p>
+            A ten-second live refresh combines reservations, temporary holds,
+            management closures/holds, unresolved cottage turnover and seasonal
+            assignments.
+          </p>
         </section>
         <section className="content-card">
           <form method="get" className="form-grid">
