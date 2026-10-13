@@ -442,6 +442,21 @@ create index campground_map_publication_events_actor_idx
   )
   where actor_user_id is not null;
 
+create or replace function icamp_private.prevent_map_publication_event_mutation()
+returns trigger
+language plpgsql
+security invoker
+set search_path = ''
+as $
+begin
+  raise exception 'Map publication events are append-only';
+end;
+$;
+
+create trigger campground_map_publication_events_append_only
+before update or delete on icamp_private.campground_map_publication_events
+for each row execute function icamp_private.prevent_map_publication_event_mutation();
+
 revoke all on icamp_private.campground_map_publication_events from public;
 
 do $build031_private_permissions$
