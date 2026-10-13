@@ -52,7 +52,7 @@ test("Build 027 is fully promoted and hands off to Build 028", async () => {
   const queue = await readFile("docs/BUILD_QUEUE.md", "utf8");
 
   assert.match(build, /Build 027 — Cottage Turnover & Housekeeping Model/u);
-  assert.match(build, /FULLY PROMOTED — \`main\` GREEN/u);
+  assert.match(build, /FULLY PROMOTED — `main` GREEN/u);
   assert.match(build, /Web\/PWA/u);
   assert.match(build, /IVR\/DTMF/u);
   assert.match(build, /SMS\/MMS/u);
@@ -61,7 +61,7 @@ test("Build 027 is fully promoted and hands off to Build 028", async () => {
   assert.match(build, /38332092924/u);
   assert.match(
     queue,
-    /Build 027 — Cottage Turnover & Housekeeping Model[\s\S]*FULLY PROMOTED — \`main\` GREEN[\s\S]*Next active build[\s\S]*Build 028 — Site\/Cottage Public Gallery: Up to 10 Images[\s\S]*QUEUED — NOT STARTED/u,
+    /Build 027 — Cottage Turnover & Housekeeping Model[\s\S]*FULLY PROMOTED — `main` GREEN[\s\S]*Next active build[\s\S]*Build 028 — Site\/Cottage Public Gallery: Up to 10 Images[\s\S]*QUEUED — NOT STARTED/u,
   );
 });
 
