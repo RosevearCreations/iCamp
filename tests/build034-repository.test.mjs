@@ -2,13 +2,43 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
 
-const migration = await readFile(new URL("../database/migrations/0042_accommodation_compatibility_engine.sql", import.meta.url), "utf8");
-const verify = await readFile(new URL("../database/verify/0042_accommodation_compatibility_engine.sql", import.meta.url), "utf8");
-const core = await readFile(new URL("../lib/accommodation-compatibility/core.mjs", import.meta.url), "utf8");
-const service = await readFile(new URL("../lib/accommodation-compatibility/postgres.mjs", import.meta.url), "utf8");
-const page = await readFile(new URL("../app/workspaces/management/campgrounds/compatibility/page.tsx", import.meta.url), "utf8");
-const build = await readFile(new URL("../docs/BUILD_034.md", import.meta.url), "utf8");
-const queue = await readFile(new URL("../docs/BUILD_QUEUE.md", import.meta.url), "utf8");
+const migration = await readFile(
+  new URL(
+    "../database/migrations/0042_accommodation_compatibility_engine.sql",
+    import.meta.url,
+  ),
+  "utf8",
+);
+const verify = await readFile(
+  new URL(
+    "../database/verify/0042_accommodation_compatibility_engine.sql",
+    import.meta.url,
+  ),
+  "utf8",
+);
+const core = await readFile(
+  new URL("../lib/accommodation-compatibility/core.mjs", import.meta.url),
+  "utf8",
+);
+const service = await readFile(
+  new URL("../lib/accommodation-compatibility/postgres.mjs", import.meta.url),
+  "utf8",
+);
+const page = await readFile(
+  new URL(
+    "../app/workspaces/management/campgrounds/compatibility/page.tsx",
+    import.meta.url,
+  ),
+  "utf8",
+);
+const build = await readFile(
+  new URL("../docs/BUILD_034.md", import.meta.url),
+  "utf8",
+);
+const queue = await readFile(
+  new URL("../docs/BUILD_QUEUE.md", import.meta.url),
+  "utf8",
+);
 
 test("Build 034 adds protected pet and accessibility compatibility facts", () => {
   assert.match(migration, /accessible_site/u);
@@ -27,7 +57,16 @@ test("Build 034 provides one server-authoritative compatibility engine", () => {
 });
 
 test("Build 034 covers type, size, utilities, accessibility, pets, occupancy and features", () => {
-  for (const token of ["campsiteType","maxRvLengthMeters","electricalAmperage","needsWaterAtSite","needsStepFreeAccess","petsAllowed","physicalMaxOccupancy","requiredFeatures"]) {
+  for (const token of [
+    "campsiteType",
+    "maxRvLengthMeters",
+    "electricalAmperage",
+    "needsWaterAtSite",
+    "needsStepFreeAccess",
+    "petsAllowed",
+    "physicalMaxOccupancy",
+    "requiredFeatures",
+  ]) {
     assert.match(core, new RegExp(token, "u"));
   }
 });
