@@ -280,6 +280,24 @@ export const helpTopics = {
     related: ["cottage.facilities", "accommodation.inventory"],
   },
 
+  "accommodation.gallery": {
+    id: "accommodation.gallery",
+    slug: "accommodation-public-gallery",
+    title: "Public site and cottage gallery",
+    summary:
+      "Build 028 curates up to ten guest-facing campsite or cottage images without mixing public photography with internal operational evidence.",
+    details: [
+      "Each campsite or rental cottage may have at most ten active public gallery images. The first image becomes the hero automatically, and managers can choose a different hero later.",
+      "Alternative text is required for every image. Captions are optional, and sort order controls the public sequence independently of upload time.",
+      "Each gallery image keeps a validated source plus a smaller thumbnail and optimized WebP variant. The common variants are prepared before upload so the free development path does not depend on a paid image-transformation service.",
+      "Gallery objects reuse the Build 008 public-media storage boundary. Internal maintenance, housekeeping, damage and security media remain separate and are never exposed by gallery membership.",
+      "Build 038 later consumes the same curated records for the public campsite/cottage detail and booking experience instead of creating a second image library.",
+      "Web/PWA provides the full visual workflow. IVR/DTMF can describe concise gallery facts or transfer to staff; SMS/MMS can use a secure visual handoff. Neither channel pretends image editing is non-visual.",
+    ],
+    audience: "privileged",
+    related: ["accommodation.inventory", "cottage.facilities"],
+  },
+
   "campground.map.images": {
     id: "campground.map.images",
     slug: "campground-overhead-image-library",
