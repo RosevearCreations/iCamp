@@ -236,6 +236,13 @@ set status = 'ready',
     completed_at = statement_timestamp()
 where id = :'b27_turnover_id';
 
+select set_config('icamp.test.b27_org_id', :'b27_org_id', true);
+select set_config('icamp.test.b27_camp_id', :'b27_camp_id', true);
+select set_config('icamp.test.b27_accommodation_id', :'b27_accommodation_id', true);
+select set_config('icamp.test.b27_turnover_id', :'b27_turnover_id', true);
+select set_config('icamp.test.b27_before_availability', :'b27_before_availability', true);
+select set_config('icamp.test.b27_before_status', :'b27_before_status', true);
+
 do $build027_verify$
 declare
   current_availability bigint;
@@ -246,20 +253,22 @@ begin
   select availability_revision, status_revision
   into current_availability, current_status
   from public.accommodations
-  where id = :'b27_accommodation_id';
+  where id = current_setting('icamp.test.b27_accommodation_id', true)::uuid;
 
-  if current_availability < :'b27_before_availability'::bigint + 2 then
+  if current_availability <
+     current_setting('icamp.test.b27_before_availability', true)::bigint + 2 then
     raise exception 'Turnover lifecycle did not advance accommodation availability revision';
   end if;
 
-  if current_status < :'b27_before_status'::bigint + 2 then
+  if current_status <
+     current_setting('icamp.test.b27_before_status', true)::bigint + 2 then
     raise exception 'Turnover lifecycle did not advance accommodation status revision';
   end if;
 
   if not exists (
     select 1
     from public.cottage_turnover_item_checks
-    where turnover_id = :'b27_turnover_id'
+    where turnover_id = current_setting('icamp.test.b27_turnover_id', true)::uuid
       and checked
       and item_name = 'Bath towel sets'
   ) then
@@ -269,7 +278,7 @@ begin
   if not exists (
     select 1
     from public.cottage_damage_inspections
-    where turnover_id = :'b27_turnover_id'
+    where turnover_id = current_setting('icamp.test.b27_turnover_id', true)::uuid
       and inspection_result = 'pass'
       and linen_complete
       and housekeeping_complete
@@ -289,9 +298,9 @@ begin
       turnover_type
     )
     values (
-      :'b27_org_id',
-      :'b27_camp_id',
-      :'b27_accommodation_id',
+      current_setting('icamp.test.b27_org_id', true)::uuid,
+      current_setting('icamp.test.b27_camp_id', true)::uuid,
+      current_setting('icamp.test.b27_accommodation_id', true)::uuid,
       'Bad template',
       'unknown'
     );
