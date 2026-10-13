@@ -61,3 +61,15 @@ test("Build 027 remains queued until production closeout", async () => {
     /Next active build[\s\S]*Build 027 — Cottage Turnover & Housekeeping Model[\s\S]*QUEUED — NOT STARTED/u,
   );
 });
+
+
+test("Build 027 covers hosted foreign-key advisor findings", async () => {
+  const indexes = await readFile(
+    "database/migrations/0031_cottage_turnover_fk_indexes.sql",
+    "utf8",
+  );
+
+  assert.match(indexes, /cottage_turnovers_template_scope_idx/u);
+  assert.match(indexes, /cottage_turnover_item_checks_source_scope_idx/u);
+  assert.match(indexes, /cottage_turnover_item_checks_cottage_idx/u);
+});
