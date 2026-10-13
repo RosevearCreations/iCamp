@@ -15,7 +15,11 @@ export interface OperationalAsset {
   statusRevision: number;
   notes: string;
   rowVersion: number;
-  facility: null | { facilityType: string; guestVisibility: string; rowVersion: number };
+  facility: null | {
+    facilityType: string;
+    guestVisibility: string;
+    rowVersion: number;
+  };
   equipment: null | {
     equipmentType: string;
     make: string;
@@ -37,8 +41,18 @@ export interface OperationalMapObject {
   sectionName: string | null;
   mapBound: boolean;
 }
-export function listOperationalAssets(userId: string, campgroundId: string): Promise<OperationalAsset[]>;
-export function listOperationalMapObjects(userId: string, campgroundId: string): Promise<OperationalMapObject[]>;
-export function createOperationalAsset(input: Record<string, unknown>): Promise<string>;
-export function updateOperationalAsset(input: Record<string, unknown>): Promise<{ rowVersion: number; statusRevision: number }>;
+export function listOperationalAssets(
+  userId: string,
+  campgroundId: string,
+): Promise<OperationalAsset[]>;
+export function listOperationalMapObjects(
+  userId: string,
+  campgroundId: string,
+): Promise<OperationalMapObject[]>;
+export function createOperationalAsset(
+  input: Record<string, unknown>,
+): Promise<string>;
+export function updateOperationalAsset(
+  input: Record<string, unknown>,
+): Promise<{ rowVersion: number; statusRevision: number }>;
 export function closeOperationalAssetPoolForTests(): Promise<void>;

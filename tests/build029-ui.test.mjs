@@ -3,7 +3,10 @@ import { readFile } from "node:fs/promises";
 import test from "node:test";
 
 const page = await readFile(
-  new URL("../app/workspaces/management/campgrounds/assets/page.tsx", import.meta.url),
+  new URL(
+    "../app/workspaces/management/campgrounds/assets/page.tsx",
+    import.meta.url,
+  ),
   "utf8",
 );
 const campground = await readFile(

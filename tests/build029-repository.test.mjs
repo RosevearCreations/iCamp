@@ -3,16 +3,28 @@ import { readFile } from "node:fs/promises";
 import test from "node:test";
 
 const migration = await readFile(
-  new URL("../database/migrations/0033_operational_asset_equipment_fleet.sql", import.meta.url),
+  new URL(
+    "../database/migrations/0033_operational_asset_equipment_fleet.sql",
+    import.meta.url,
+  ),
   "utf8",
 );
 const service = await readFile(
   new URL("../lib/operational-assets/postgres.mjs", import.meta.url),
   "utf8",
 );
-const build = await readFile(new URL("../docs/BUILD_029.md", import.meta.url), "utf8");
-const seo = await readFile(new URL("../docs/SEO_WEB_DISCOVERY.md", import.meta.url), "utf8");
-const workspaceLayout = await readFile(new URL("../app/workspaces/layout.tsx", import.meta.url), "utf8");
+const build = await readFile(
+  new URL("../docs/BUILD_029.md", import.meta.url),
+  "utf8",
+);
+const seo = await readFile(
+  new URL("../docs/SEO_WEB_DISCOVERY.md", import.meta.url),
+  "utf8",
+);
+const workspaceLayout = await readFile(
+  new URL("../app/workspaces/layout.tsx", import.meta.url),
+  "utf8",
+);
 
 test("Build 029 defines canonical facility and equipment inventory", () => {
   assert.match(migration, /create table public\.operational_assets/u);
