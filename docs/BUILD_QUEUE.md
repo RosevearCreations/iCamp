@@ -448,8 +448,25 @@ Delivered:
 - no new paid service, storage bucket, Vercel project, Cloudflare project or worker;
 - exact-tree feature, `dev` and production promotion with CI, Browser E2E, Database, CodeQL and Secret Scan gates GREEN.
 
+### Build 029 — Operational Asset & Equipment/Fleet Model
+Status: **FULLY PROMOTED — `main` GREEN.**
+
+Delivered:
+- canonical operational asset parent with facility and equipment/fleet subtypes;
+- pools, water parks, washrooms, fields, playgrounds, halls, beaches, docks, launches, roads, parking, gates, buildings, garbage/septic areas, utilities and similar facility types;
+- tractors, mowers, maintenance vehicles, carts, trailers, power equipment, watercraft and other equipment/fleet types;
+- make/model/serial/ownership facts, usage meter snapshot and storage/home location;
+- required facility map identity plus optional mobile-equipment map linkage to Build 023 canonical objects;
+- current operating-state/status-revision hooks while preserving Build 030 as the authoritative status-history and transition engine;
+- forced-RLS asset/equipment permissions with direct anon/authenticated denial and audited writes;
+- visible responsive Operational Assets & Equipment Operations Workbench integrated into Management → Campgrounds;
+- repository-level Web, Mobile, SEO & Discovery contract with explicit noindex boundaries for authenticated workspaces/auth routes, H1/metadata/canonical/sitemap/structured-data/mobile/accessibility requirements for future public routes;
+- hosted Supabase migrations 0033/0034, zero Security Advisor findings and advisor-driven composite FK index closure;
+- no new Vercel, Cloudflare or paid hosted runtime;
+- exact-tree feature, hardening, `dev` and production promotion with CI, Browser E2E, Database, CodeQL and Secret Scan gates GREEN.
+
 ## Next active build
-**Build 029 — Operational Asset & Equipment/Fleet Model**
+**Build 030 — Accommodation & Asset Status Engine**
 
 Status: **QUEUED — NOT STARTED**
 

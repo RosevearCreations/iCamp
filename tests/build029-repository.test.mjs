@@ -32,6 +32,10 @@ const workspaceLayout = await readFile(
   new URL("../app/workspaces/layout.tsx", import.meta.url),
   "utf8",
 );
+const queue = await readFile(
+  new URL("../docs/BUILD_QUEUE.md", import.meta.url),
+  "utf8",
+);
 
 test("Build 029 defines canonical facility and equipment inventory", () => {
   assert.match(migration, /create table public\.operational_assets/u);
@@ -84,4 +88,17 @@ test("Build 029 covers hosted composite foreign keys", () => {
   assert.match(fkIndexes, /operational_assets_map_object_scope_fk_idx/u);
   assert.match(fkIndexes, /operational_facilities_asset_scope_fk_idx/u);
   assert.match(fkIndexes, /operational_equipment_asset_scope_fk_idx/u);
+});
+
+test("Build 029 production closeout is recorded", () => {
+  assert.match(build, /FULLY PROMOTED — `main` GREEN/u);
+  assert.match(build, /20261013041752/u);
+  assert.match(build, /20261013042811/u);
+  assert.match(build, /b5d16ac6872e81d21a3a46fc3417ffc8f42a28f1/u);
+  assert.match(build, /38346799657/u);
+  assert.match(build, /zero findings/u);
+  assert.match(
+    queue,
+    /Build 029 — Operational Asset & Equipment\/Fleet Model[\s\S]*FULLY PROMOTED — `main` GREEN[\s\S]*Next active build[\s\S]*Build 030 — Accommodation & Asset Status Engine[\s\S]*QUEUED — NOT STARTED/u,
+  );
 });

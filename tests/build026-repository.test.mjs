@@ -58,6 +58,6 @@ test("Build 026 is fully promoted and hands off to Build 027", async () => {
   assert.match(build, /SMS\/MMS/u);
   assert.match(
     queue,
-    /Build 026 — Rental Cottage Model[\s\S]*FULLY PROMOTED — `main` GREEN[\s\S]*Next active build[\s\S]*Build 029 — Operational Asset & Equipment\/Fleet Model[\s\S]*QUEUED — NOT STARTED/u,
+    /Build 026 — Rental Cottage Model[\s\S]*FULLY PROMOTED — `main` GREEN[\s\S]*Next active build[\s\S]*Build 030 — Accommodation & Asset Status Engine[\s\S]*QUEUED — NOT STARTED/u,
   );
 });
