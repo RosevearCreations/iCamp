@@ -130,6 +130,6 @@ test("Build 018 source of truth records production promotion and queue advance",
   );
   assert.match(
     queue,
-    /Next active build[\s\S]*Build 027 — Cottage Turnover & Housekeeping Model[\s\S]*QUEUED — NOT STARTED/u,
+    /Next active build[\s\S]*Build 028 — Site\/Cottage Public Gallery: Up to 10 Images[\s\S]*QUEUED — NOT STARTED/u,
   );
 });
