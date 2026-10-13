@@ -1,6 +1,6 @@
 # Build 035 — Server-Authoritative Live Availability
 
-Status: **PRODUCTION READY — `dev` GREEN**
+Status: **FULLY PROMOTED — `main` GREEN.**
 
 ## Scope
 Build 035 makes one server-side answer authoritative for whether an accommodation can be offered for a date window. It combines active reservations, unexpired temporary holds, Build 031 management closures/holds, unresolved Build 027 cottage turnover work and seasonal assignments.
@@ -39,8 +39,11 @@ Build 036 remains the owner of temporary-hold creation, countdown, expiry/releas
 - feature branch: `build-035-server-authoritative-live-availability`
 - feature PR: #136
 - advisor hardening PR: #137
-- `dev`: GREEN and production-ready
-- `main`: pending production promotion
+- `dev`: GREEN and production-ready at `5cc644ef066d4880fa0ce52a14d681fd90e8dd66`
+- production PR: #138 — production-candidate CI `38479563062`, CodeQL `38479563131`, Secret Scan `38479563027` all GREEN
+- production merge: `b68953c20b2963c76fd56d7fc827b0ea615defae`
+- independent `main` verification: CI `38479783341`, CodeQL `38479783327`, Secret Scan `38479783330` — all GREEN
+- `main`: **Production GREEN**
 
 ## Next queued build
 **Build 036 — Atomic Temporary Reservation Holds**
