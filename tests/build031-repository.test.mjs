@@ -74,8 +74,14 @@ test("Build 031 defines protected dated management restrictions", () => {
 test("Build 031 makes restriction replacement and cancellation auditable", () => {
   assert.match(managementService, /overrideConflicts/u);
   assert.match(managementService, /Superseded by management override/u);
-  assert.match(managementService, /campground\.management\.restriction\.create/u);
-  assert.match(managementService, /campground\.management\.restriction\.cancel/u);
+  assert.match(
+    managementService,
+    /campground\.management\.restriction\.create/u,
+  );
+  assert.match(
+    managementService,
+    /campground\.management\.restriction\.cancel/u,
+  );
   assert.match(managementService, /appendAuditEvent/u);
   assert.match(migration, /guard_management_restriction_mutation/u);
 });
