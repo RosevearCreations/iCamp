@@ -433,8 +433,23 @@ Delivered:
 - no new paid or hosted platform resource;
 - exact-tree feature, hardening, `dev` and production promotion with CI, Browser E2E, Database, CodeQL and Secret Scan gates GREEN.
 
+### Build 028 — Site/Cottage Public Gallery: Up to 10 Images
+Status: **FULLY PROMOTED — `main` GREEN.**
+
+Delivered:
+- maximum ten active guest-facing images per campsite or rental cottage with a single hero, explicit ordering, captions and required accessible alternative text;
+- real source, thumbnail and optimized WebP delivery variants while reusing the existing Build 008 public-media storage boundary;
+- browser-side free-first derivative preparation with server validation, avoiding a paid image-transformation dependency during prototype development;
+- strict public-gallery separation from internal maintenance, housekeeping, damage and security evidence;
+- audited gallery create/update/archive service with accommodation/media permission checks, optimistic concurrency and media lifecycle evidence;
+- visible responsive gallery management integrated directly into the Accommodation Operations Workbench;
+- durable iCamp Operations Workbench interface direction, replacing build-number navigation with role workspace, campground context, canonical object workbench and task-panel layers;
+- hosted Supabase migration 0032 with forced RLS, direct-role denial, rollback-only ten-image/hero enforcement proof and zero Security Advisor findings;
+- no new paid service, storage bucket, Vercel project, Cloudflare project or worker;
+- exact-tree feature, `dev` and production promotion with CI, Browser E2E, Database, CodeQL and Secret Scan gates GREEN.
+
 ## Next active build
-**Build 028 — Site/Cottage Public Gallery: Up to 10 Images**
+**Build 029 — Operational Asset & Equipment/Fleet Model**
 
 Status: **QUEUED — NOT STARTED**
 
