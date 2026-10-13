@@ -49,7 +49,7 @@ export function GalleryPanel({
 
       {hero ? (
         <div className={styles.galleryHero}>
-          {hero.optimizedUrl ?? hero.sourceUrl ? (
+          {(hero.optimizedUrl ?? hero.sourceUrl) ? (
             <img
               src={hero.optimizedUrl ?? hero.sourceUrl ?? undefined}
               alt={hero.altText}
@@ -80,7 +80,7 @@ export function GalleryPanel({
         <div className={styles.galleryGrid}>
           {images.map((image) => (
             <article className={styles.galleryCard} key={image.id}>
-              {image.thumbnailUrl ?? image.sourceUrl ? (
+              {(image.thumbnailUrl ?? image.sourceUrl) ? (
                 <img
                   src={image.thumbnailUrl ?? image.sourceUrl ?? undefined}
                   alt={image.altText}
@@ -88,12 +88,15 @@ export function GalleryPanel({
                   height={image.thumbnailHeight}
                 />
               ) : (
-                <div className={styles.galleryPlaceholder}>Image unavailable</div>
+                <div className={styles.galleryPlaceholder}>
+                  Image unavailable
+                </div>
               )}
 
               <div className={styles.galleryCardHeader}>
                 <strong>
-                  {image.isHero ? "Hero" : "Gallery"} · position {image.sortOrder}
+                  {image.isHero ? "Hero" : "Gallery"} · position{" "}
+                  {image.sortOrder}
                 </strong>
                 <small>{image.caption ?? "No caption"}</small>
               </div>
@@ -201,10 +204,10 @@ export function GalleryPanel({
       ) : null}
 
       <p className={styles.boundary}>
-        Public accommodation photography is intentionally separate from
-        internal maintenance, housekeeping and damage evidence. Build 038 can
-        reuse this published gallery in the guest booking/detail experience
-        without exposing operational media.
+        Public accommodation photography is intentionally separate from internal
+        maintenance, housekeeping and damage evidence. Build 038 can reuse this
+        published gallery in the guest booking/detail experience without
+        exposing operational media.
       </p>
     </section>
   );
