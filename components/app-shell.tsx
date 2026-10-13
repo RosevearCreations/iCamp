@@ -29,7 +29,7 @@ export function AppShell({
 
         <div className="topbar__status" aria-label="Build status">
           <span className="status-dot" aria-hidden="true" />
-          Build 004 · Authentication & secure sessions
+          Operations workbench · live application
         </div>
       </header>
 
