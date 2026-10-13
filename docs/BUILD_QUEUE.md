@@ -416,8 +416,25 @@ Delivered:
 - no new paid or hosted platform resource;
 - exact-tree feature, `dev` and production promotion with CI, browser E2E, database, CodeQL and Secret Scan gates GREEN.
 
+### Build 027 — Cottage Turnover & Housekeeping Model
+Status: **FULLY PROMOTED — `main` GREEN.**
+
+Delivered:
+- reusable cottage turnover templates for departure, deep-clean, seasonal and maintenance-reset workflows;
+- explicit linen and housekeeping instructions plus categorized cottage inventory checklists;
+- immutable per-turnover checklist snapshots so template edits cannot rewrite historical work evidence;
+- live checklist completion, issue notes and assigned turnover lifecycle state;
+- repeatable damage/security readiness inspections with ready/blocked operational outcomes;
+- canonical accommodation availability/status revision propagation for turnover lifecycle changes;
+- forced-RLS `icamp_app` data access, direct anon/authenticated denial and append-oriented audit evidence;
+- visible Build 027 turnover/housekeeping operations integrated directly into the existing Accommodation assembly;
+- hosted Supabase migrations 0030/0031 with zero Security Advisor findings and advisor-driven composite FK index closure;
+- transactional hosted verification of checklist snapshots, damage/security evidence and revision-hook propagation;
+- no new paid or hosted platform resource;
+- exact-tree feature, hardening, `dev` and production promotion with CI, Browser E2E, Database, CodeQL and Secret Scan gates GREEN.
+
 ## Next active build
-**Build 027 — Cottage Turnover & Housekeeping Model**
+**Build 028 — Site/Cottage Public Gallery: Up to 10 Images**
 
 Status: **QUEUED — NOT STARTED**
 

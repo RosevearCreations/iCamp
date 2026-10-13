@@ -1,7 +1,7 @@
 # Build 027 — Cottage Turnover & Housekeeping Model
 
 ## Status
-**FEATURE IMPLEMENTATION — promotion evidence pending.**
+**FULLY PROMOTED — `main` GREEN.**
 
 ## Roadmap scope
 - turnover templates;
@@ -71,9 +71,53 @@ Mutations enforce accommodation.manage before writes and append audit evidence f
 ## Platform impact
 Build 027 remains on the existing Next.js/PostgreSQL/Supabase stack. It requires no new Vercel project, Cloudflare project, storage bucket, paid mapping service or paid prototype dependency.
 
+## Hosted database verification
+- Hosted Supabase project remained healthy on PostgreSQL 17.11.
+- Migration 0030_cottage_turnover_housekeeping is live as version 20261013011632.
+- Advisor hardening migration 0031_cottage_turnover_fk_indexes is live as version 20261013012145.
+- All five Build 027 tables are present with forced RLS.
+- The cottage-turnover parent revision trigger is present and its function remains SECURITY INVOKER.
+- Direct anon/authenticated reads of turnover and inspection records are denied.
+- A rollback-only hosted lifecycle proof verified turnover creation, checklist snapshot evidence, passing damage/security inspection and both canonical revision hooks without retaining synthetic rows.
+- Supabase Security Advisor reports zero findings.
+- Supabase Performance Advisor's three Build 027 unindexed-foreign-key notices were eliminated by migration 0031. Remaining new-schema notices are INFO-level unused-index observations expected before production traffic.
+
 ## Promotion evidence
-Pending feature, dev, hosted database, production and final closeout gates.
+Feature PR #104:
+- exact feature head: edf126a566c21fc472ae46427b616363a3e19c38;
+- CI 38331113701 — GREEN;
+- CodeQL 38331113751 — GREEN;
+- Secret Scan 38331113683 — GREEN;
+- merged to dev at c35ef5d9bb3e7da46c20b0dbbb26d968a1b10235.
+
+Hosted-advisor hardening PR #105:
+- exact hardening head: 8f69e9328cb5cda407db8ba9fd7d8cc2c5415e6e;
+- CI 38331567824 — GREEN;
+- CodeQL 38331567788 — GREEN;
+- Secret Scan 38331567784 — GREEN;
+- merged to dev at 27c1a3e0805a29ff2fbc0702136357e9644c0004.
+
+Final independent dev push:
+- CI 38331755160 — GREEN;
+- CodeQL 38331755210 — GREEN;
+- Secret Scan 38331755173 — GREEN.
+
+Production PR #106:
+- CI 38331910997 — GREEN;
+- CodeQL 38331910993 — GREEN;
+- Secret Scan 38331911004 — GREEN;
+- merged to main at 871b650d85311e2f62c891837f5264a11f7f96ef.
+
+Independent feature main push:
+- CI 38332092924 — GREEN;
+- CodeQL 38332092896 — GREEN;
+- Secret Scan 38332092913 — GREEN;
+- Verify, Browser end-to-end and Database migrations all succeeded.
+
+## Manual action
+No manual user action was required to implement, verify or promote Build 027.
 
 ## Next build
-After production closeout, queue advancement is expected to:
-**Build 028 — Site/Cottage Public Gallery: Up to 10 Images**.
+**Build 028 — Site/Cottage Public Gallery: Up to 10 Images**
+
+Status: **QUEUED — NOT STARTED**.
