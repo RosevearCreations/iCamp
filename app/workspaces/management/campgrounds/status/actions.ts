@@ -86,7 +86,6 @@ export async function transitionOperationalAssetStatusAction(
   finish(campgroundId, "Operational asset status updated.");
 }
 
-
 export async function createManagementRestrictionAction(formData: FormData) {
   const campgroundId = field(formData, "campgroundId");
   const session = await requireCampgroundPermission(
