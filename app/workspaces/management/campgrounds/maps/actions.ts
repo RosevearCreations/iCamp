@@ -179,6 +179,8 @@ export async function publishMapVersionAction(formData: FormData) {
     mapVersionId: field(formData, "mapVersionId"),
     expectedRowVersion: numberField(formData, "rowVersion"),
     reason: field(formData, "reason"),
+    overrideIncompleteBindings:
+      field(formData, "overrideIncompleteBindings") === "on",
   });
 
   finish(campgroundId, "Published map image version updated.");
