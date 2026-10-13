@@ -2,7 +2,7 @@
 
 ## Status
 
-**IMPLEMENTED ON FEATURE BRANCH — PROMOTION PENDING.**
+**FULLY PROMOTED — `main` GREEN.**
 
 ## Scope
 
@@ -51,10 +51,23 @@ No new paid service, hosting project, worker, storage bucket or external runtime
 
 ## Promotion evidence
 
-Promotion evidence will be recorded here after the feature branch passes CI, dev passes independent post-merge checks, hosted Supabase migration/advisors are verified, and main passes independent production checks.
+Build 031 completed the full protected promotion path:
+
+- feature PR #123 passed Verify, Browser E2E, Database migrations/idempotence, CodeQL/JavaScript analysis and Secret Scan before merge to `dev`;
+- the feature merged to `dev` and the resulting dev commit passed an independent full GREEN validation;
+- hosted Supabase migration `0038_management_closures_holds_map_publication` is live as version `20261013141614`;
+- hosted advisor hardening migration `0039_management_controls_advisor_hardening` is live as version `20261013142221`;
+- hosted FORCE RLS, no application DELETE privilege, overlap trigger and append-only map-publication evidence were verified;
+- Supabase Security Advisor reports zero findings;
+- all Build-031-specific Performance Advisor findings were closed: six missing foreign-key covering indexes and three duplicate permissive SELECT policies; only expected young-database unused-index INFO remains;
+- advisor-hardening PR #124 passed the full gate set, merged to `dev`, and the resulting dev commit passed an independent full GREEN validation;
+- production PR #125 passed fresh Verify, Browser E2E, Database migrations/idempotence, CodeQL/JavaScript analysis and Secret Scan gates;
+- production merge SHA `7f5161a722ef4e9b9196405361f087b719ee27b7` passed independent post-merge `main` validation.
+
+No manual user action was required to promote Build 031.
 
 ## Next build after closeout
 
 **Build 032 — Booking Calendar & Date Rules**
 
-Status: **NOT STARTED UNTIL BUILD 031 IS FULLY PROMOTED**
+Status: **QUEUED — NOT STARTED**

@@ -130,6 +130,6 @@ test("Build 018 source of truth records production promotion and queue advance",
   );
   assert.match(
     queue,
-    /Next active build[\s\S]*Build 031 — Management Closures, Holds & Map Publication[\s\S]*QUEUED — NOT STARTED/u,
+    /Next active build[\s\S]*Build 032 — Booking Calendar & Date Rules[\s\S]*QUEUED — NOT STARTED/u,
   );
 });

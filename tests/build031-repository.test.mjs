@@ -107,11 +107,16 @@ test("Build 031 blocks unsafe map publication unless override is explicit", () =
   assert.match(mapPage, /Published-map switch history/u);
 });
 
-test("Build 031 documentation preserves the next-build boundary", () => {
-  assert.match(build, /IMPLEMENTED ON FEATURE BRANCH — PROMOTION PENDING/u);
-  assert.match(build, /Build 032 — Booking Calendar & Date Rules/u);
+test("Build 031 production closeout advances the active queue", () => {
+  assert.match(build, /FULLY PROMOTED — `main` GREEN/u);
+  assert.match(build, /production PR #125/u);
+  assert.match(build, /7f5161a722ef4e9b9196405361f087b719ee27b7/u);
+  assert.match(build, /20261013141614/u);
+  assert.match(build, /20261013142221/u);
+  assert.match(build, /zero findings/u);
+  assert.match(build, /No manual user action was required/u);
   assert.match(
     queue,
-    /Build 031 — Management Closures, Holds & Map Publication/u,
+    /Build 031 — Management Closures, Holds & Map Publication[\s\S]*FULLY PROMOTED — `main` GREEN[\s\S]*Next active build[\s\S]*Build 032 — Booking Calendar & Date Rules[\s\S]*QUEUED — NOT STARTED/u,
   );
 });

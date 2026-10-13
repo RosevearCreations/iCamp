@@ -480,8 +480,24 @@ Delivered:
 - exact-tree feature, hardening, `dev` and production promotion with CI, Browser E2E, Database, CodeQL and Secret Scan gates GREEN;
 - production merge SHA `50d0e05fe6c75efb620b8909aebdbad291076b86` independently GREEN after merge.
 
+### Build 031 — Management Closures, Holds & Map Publication
+Status: **FULLY PROMOTED — `main` GREEN.**
+
+Delivered:
+- bulk date-scoped closures and holds for accommodations, operational assets and campground sections;
+- inclusive date windows, required reasons and database overlap protection;
+- auditable management override semantics that cancel/supersede instead of rewriting history;
+- cancellation-only mutation after creation with optimistic row-version protection;
+- FORCE RLS and dedicated `campground.operations.manage` authorization;
+- responsive Management → Campgrounds → Status controls for bulk scheduling, review and cancellation;
+- safe map publication blocked by unbound/stale canonical object bindings unless an explicit audited override is used;
+- append-only map publication switch evidence with publication revisions, readiness counts, actor and reason;
+- hosted Supabase migrations 0038/0039 with zero Security Advisor findings and all Build-031-specific Performance Advisor warnings closed;
+- exact-tree feature, advisor hardening, `dev` and production promotion with Verify, Browser E2E, Database, CodeQL/JavaScript analysis and Secret Scan gates GREEN;
+- production merge SHA `7f5161a722ef4e9b9196405361f087b719ee27b7` independently GREEN after merge.
+
 ## Next active build
-**Build 031 — Management Closures, Holds & Map Publication**
+**Build 032 — Booking Calendar & Date Rules**
 
 Status: **QUEUED — NOT STARTED**
 
