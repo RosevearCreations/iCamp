@@ -179,7 +179,8 @@ export default async function BookingRulesPage({
             <div>
               <span>Booking window</span>
               <strong>
-                {policy.minimumBookingLeadDays}–{policy.maximumBookingLeadDays} d
+                {policy.minimumBookingLeadDays}–{policy.maximumBookingLeadDays}{" "}
+                d
               </strong>
             </div>
             <div>
@@ -207,7 +208,10 @@ export default async function BookingRulesPage({
             id="policy-heading"
             helpTopic="campground.structure"
           />
-          <form action={saveBookingRulePolicyAction} className={styles.formGrid}>
+          <form
+            action={saveBookingRulePolicyAction}
+            className={styles.formGrid}
+          >
             <input
               type="hidden"
               name="campgroundId"
@@ -473,7 +477,9 @@ export default async function BookingRulesPage({
             <div className={styles.previewBad}>{previewError}</div>
           ) : preview ? (
             <div
-              className={preview.eligible ? styles.previewGood : styles.previewBad}
+              className={
+                preview.eligible ? styles.previewGood : styles.previewBad
+              }
             >
               <strong>
                 {preview.eligible
@@ -483,10 +489,12 @@ export default async function BookingRulesPage({
               <p>
                 {preview.nights} nights · {preview.leadDays} days lead ·{" "}
                 {preview.weekendNights} weekend nights · effective stay{" "}
-                {preview.effectiveMinimumStay}–{preview.effectiveMaximumStay} nights
+                {preview.effectiveMinimumStay}–{preview.effectiveMaximumStay}{" "}
+                nights
               </p>
               <p>
-                Check-in {preview.checkInTime} · check-out {preview.checkOutTime}
+                Check-in {preview.checkInTime} · check-out{" "}
+                {preview.checkOutTime}
               </p>
               {preview.seasonNames.length > 0 ? (
                 <p>Seasons: {preview.seasonNames.join(", ")}</p>

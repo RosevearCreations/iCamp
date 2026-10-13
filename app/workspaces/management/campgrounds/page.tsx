@@ -565,9 +565,9 @@ export default async function CampgroundAdministrationPage({
             trailing={<span className="build-chip">Build 032</span>}
           />
           <p>
-            Configure check-in/out times, booking windows, stay limits,
-            weekend classification and named holiday/season calendars before
-            live availability and pricing consume them.
+            Configure check-in/out times, booking windows, stay limits, weekend
+            classification and named holiday/season calendars before live
+            availability and pricing consume them.
           </p>
           <Link
             className="primary-link primary-link--dark"
