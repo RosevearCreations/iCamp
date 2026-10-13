@@ -9,7 +9,7 @@ const migration = await readFile(
   ),
   "utf8",
 );
-const service = await readFile(
+const fkIndexes = await readFile(\n  new URL("../database/migrations/0034_operational_asset_fk_indexes.sql", import.meta.url),\n  "utf8",\n);\nconst service = await readFile(
   new URL("../lib/operational-assets/postgres.mjs", import.meta.url),
   "utf8",
 );
@@ -71,4 +71,11 @@ test("internal workspaces are non-indexable and SEO contract is explicit", () =>
   assert.match(seo, /Structured data/u);
   assert.match(seo, /Core Web Vitals/u);
   assert.match(seo, /mobile-first/u);
+});
+
+
+test("Build 029 covers hosted composite foreign keys", () => {
+  assert.match(fkIndexes, /operational_assets_map_object_scope_fk_idx/u);
+  assert.match(fkIndexes, /operational_facilities_asset_scope_fk_idx/u);
+  assert.match(fkIndexes, /operational_equipment_asset_scope_fk_idx/u);
 });
