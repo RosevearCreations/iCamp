@@ -153,6 +153,9 @@ update public.operational_assets
 set operating_state = 'limited'
 where id = :'b30_asset_id';
 
+select set_config('icamp.test.b30_accommodation_id', :'b30_accommodation_id', true);
+select set_config('icamp.test.b30_asset_id', :'b30_asset_id', true);
+
 do $build030_verify$
 declare
   accommodation_revision bigint;
@@ -166,7 +169,7 @@ begin
   select status_revision, availability_revision
   into accommodation_revision, availability_revision
   from public.accommodations
-  where id = :'b30_accommodation_id';
+  where id = current_setting('icamp.test.b30_accommodation_id', true)::uuid;
 
   if accommodation_revision <> 2 or availability_revision <> 2 then
     raise exception 'Accommodation status transition did not advance both revisions';
@@ -175,7 +178,7 @@ begin
   select count(*)
   into accommodation_history_count
   from public.accommodation_status_history
-  where accommodation_id = :'b30_accommodation_id';
+  where accommodation_id = current_setting('icamp.test.b30_accommodation_id', true)::uuid;
 
   if accommodation_history_count <> 2 then
     raise exception 'Accommodation status history did not record baseline plus transition';
@@ -184,7 +187,7 @@ begin
   select status_revision
   into asset_revision
   from public.operational_assets
-  where id = :'b30_asset_id';
+  where id = current_setting('icamp.test.b30_asset_id', true)::uuid;
 
   if asset_revision <> 2 then
     raise exception 'Operational asset status transition did not advance status revision';
@@ -193,7 +196,7 @@ begin
   select count(*)
   into asset_history_count
   from public.operational_asset_status_history
-  where asset_id = :'b30_asset_id';
+  where asset_id = current_setting('icamp.test.b30_asset_id', true)::uuid;
 
   if asset_history_count <> 2 then
     raise exception 'Operational asset status history did not record baseline plus transition';
@@ -202,7 +205,7 @@ begin
   begin
     update public.accommodations
     set status_state = 'departing'
-    where id = :'b30_accommodation_id';
+    where id = current_setting('icamp.test.b30_accommodation_id', true)::uuid;
   exception
     when raise_exception then
       rejected_accommodation := true;
@@ -215,7 +218,7 @@ begin
   begin
     update public.operational_assets
     set operating_state = 'unknown'
-    where id = :'b30_asset_id';
+    where id = current_setting('icamp.test.b30_asset_id', true)::uuid;
   exception
     when raise_exception then
       rejected_asset := true;
