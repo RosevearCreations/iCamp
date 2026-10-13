@@ -159,19 +159,19 @@ select set_config('icamp.test.b30_asset_id', :'b30_asset_id', true);
 do $build030_verify$
 declare
   accommodation_revision bigint;
-  availability_revision bigint;
+  accommodation_availability_revision bigint;
   asset_revision bigint;
   accommodation_history_count integer;
   asset_history_count integer;
   rejected_accommodation boolean := false;
   rejected_asset boolean := false;
 begin
-  select status_revision, availability_revision
-  into accommodation_revision, availability_revision
-  from public.accommodations
+  select a.status_revision, a.availability_revision
+  into accommodation_revision, accommodation_availability_revision
+  from public.accommodations a
   where id = current_setting('icamp.test.b30_accommodation_id', true)::uuid;
 
-  if accommodation_revision <> 2 or availability_revision <> 2 then
+  if accommodation_revision <> 2 or accommodation_availability_revision <> 2 then
     raise exception 'Accommodation status transition did not advance both revisions';
   end if;
 
