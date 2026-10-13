@@ -607,7 +607,10 @@ export default async function CampgroundAdministrationPage({
           </Link>
         </section>
 
-        <section className="content-panel" aria-labelledby="compatibility-heading">
+        <section
+          className="content-panel"
+          aria-labelledby="compatibility-heading"
+        >
           <SectionHeading
             eyebrow="Booking compatibility"
             title="Accommodation compatibility engine"
@@ -617,7 +620,8 @@ export default async function CampgroundAdministrationPage({
           />
           <p>
             Validate tent, RV and cottage fit against physical dimensions,
-            utilities, accessibility, pets, occupancy and accommodation features.
+            utilities, accessibility, pets, occupancy and accommodation
+            features.
           </p>
           <Link
             className="primary-link primary-link--dark"
