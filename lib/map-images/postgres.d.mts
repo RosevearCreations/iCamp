@@ -77,7 +77,6 @@ export function registerOverheadMapVersion(input: {
   label: string;
   notes?: string | null;
   reason: string;
-  overrideIncompleteBindings?: boolean;
 }): Promise<CampgroundMapImageVersion>;
 
 export function setActiveMapVersion(input: {
@@ -93,6 +92,7 @@ export function publishMapVersion(input: {
   mapVersionId: string;
   expectedRowVersion: number;
   reason: string;
+  overrideIncompleteBindings?: boolean;
 }): Promise<CampgroundMapImageVersion>;
 
 export function closeMapImagePoolForTests(): Promise<void>;
