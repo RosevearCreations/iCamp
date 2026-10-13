@@ -9,7 +9,11 @@ const migration = await readFile(
   ),
   "utf8",
 );
-const fkIndexes = await readFile(\n  new URL("../database/migrations/0034_operational_asset_fk_indexes.sql", import.meta.url),\n  "utf8",\n);\nconst service = await readFile(
+const fkIndexes = await readFile(
+  new URL("../database/migrations/0034_operational_asset_fk_indexes.sql", import.meta.url),
+  "utf8",
+);
+const service = await readFile(
   new URL("../lib/operational-assets/postgres.mjs", import.meta.url),
   "utf8",
 );
