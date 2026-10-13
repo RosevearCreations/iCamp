@@ -297,7 +297,10 @@ export default async function CampgroundStatusPage({
         ) : null}
 
         {canReadAssets ? (
-          <section className="content-panel" aria-labelledby="asset-status-heading">
+          <section
+            className="content-panel"
+            aria-labelledby="asset-status-heading"
+          >
             <SectionHeading
               eyebrow="Operational inventory"
               title="Facility, equipment & fleet status"
