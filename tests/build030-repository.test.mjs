@@ -93,11 +93,11 @@ test("Build 030 server commands preserve actor context and audit transitions", (
 });
 
 test("Build 030 exposes one combined responsive status control centre", () => {
-  assert.match(page, /Accommodation &amp; asset status engine/u);
+  assert.match(page, /Campground status &amp; management controls/u);
   assert.match(page, /transitionAccommodationStatusAction/u);
   assert.match(page, /transitionOperationalAssetStatusAction/u);
   assert.match(page, /Recent status history/u);
-  assert.match(page, /Build 031 will add dated management closures/u);
+  assert.match(page, /Build 030 still owns immediate current state/u);
 });
 
 test("Build 030 documents promotion and advances the active queue", () => {

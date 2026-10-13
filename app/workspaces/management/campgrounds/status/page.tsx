@@ -10,6 +10,10 @@ import {
   getCampgroundAuthorization,
   listAssignedCampgrounds,
 } from "@/lib/authz/postgres.mjs";
+import {
+  listManagementRestrictions,
+  listManagementRestrictionTargets,
+} from "@/lib/management-controls/postgres.mjs";
 import { listOperationalAssets } from "@/lib/operational-assets/postgres.mjs";
 import {
   accommodationStatusStates,
@@ -19,6 +23,8 @@ import {
 } from "@/lib/status-engine/postgres.mjs";
 
 import {
+  cancelManagementRestrictionAction,
+  createManagementRestrictionAction,
   transitionAccommodationStatusAction,
   transitionOperationalAssetStatusAction,
 } from "./actions";
@@ -66,6 +72,7 @@ export default async function CampgroundStatusPage({
             "asset.manage",
             "equipment.read",
             "equipment.manage",
+            "campground.operations.manage",
           ].includes(permission),
         );
         return visible ? { ...campground, authorization } : null;
@@ -93,25 +100,44 @@ export default async function CampgroundStatusPage({
       "equipment.manage",
     ].includes(permission),
   );
+  const canManageOperations = permissions.includes(
+    "campground.operations.manage",
+  );
 
-  const [accommodations, assets, accommodationHistory, assetHistory] =
-    await Promise.all([
-      canReadAccommodations
-        ? listAccommodations(session.user.id, selected.campgroundId)
-        : Promise.resolve([]),
-      canReadAssets
-        ? listOperationalAssets(session.user.id, selected.campgroundId)
-        : Promise.resolve([]),
-      canReadAccommodations
-        ? listAccommodationStatusHistory(session.user.id, selected.campgroundId)
-        : Promise.resolve([]),
-      canReadAssets
-        ? listOperationalAssetStatusHistory(
-            session.user.id,
-            selected.campgroundId,
-          )
-        : Promise.resolve([]),
-    ]);
+  const [
+    accommodations,
+    assets,
+    accommodationHistory,
+    assetHistory,
+    restrictions,
+    restrictionTargets,
+  ] = await Promise.all([
+    canReadAccommodations
+      ? listAccommodations(session.user.id, selected.campgroundId)
+      : Promise.resolve([]),
+    canReadAssets
+      ? listOperationalAssets(session.user.id, selected.campgroundId)
+      : Promise.resolve([]),
+    canReadAccommodations
+      ? listAccommodationStatusHistory(session.user.id, selected.campgroundId)
+      : Promise.resolve([]),
+    canReadAssets
+      ? listOperationalAssetStatusHistory(
+          session.user.id,
+          selected.campgroundId,
+        )
+      : Promise.resolve([]),
+    canManageOperations
+      ? listManagementRestrictions(session.user.id, selected.campgroundId)
+      : Promise.resolve([]),
+    canManageOperations
+      ? listManagementRestrictionTargets(session.user.id, selected.campgroundId)
+      : Promise.resolve({
+          accommodations: [],
+          assets: [],
+          sections: [],
+        }),
+  ]);
 
   const accommodationAttention = accommodations.filter((item) =>
     ["inspection", "maintenance", "winterized", "closed"].includes(
@@ -123,6 +149,29 @@ export default async function CampgroundStatusPage({
       item.operatingState,
     ),
   ).length;
+  const currentRestrictionCount = restrictions.filter(
+    (item) => item.state === "active" || item.state === "upcoming",
+  ).length;
+  const targetGroups = [
+    {
+      kind: "accommodation",
+      title: "Accommodations",
+      hint: "Sites, cottages and permanent units",
+      items: restrictionTargets.accommodations,
+    },
+    {
+      kind: "asset",
+      title: "Facilities & equipment",
+      hint: "Operational assets and fleet/equipment",
+      items: restrictionTargets.assets,
+    },
+    {
+      kind: "section",
+      title: "Sections",
+      hint: "Whole campground sections",
+      items: restrictionTargets.sections,
+    },
+  ];
 
   return (
     <AppShell>
@@ -138,12 +187,12 @@ export default async function CampgroundStatusPage({
         </nav>
 
         <section className="hero-panel">
-          <p className="eyebrow">Build 030</p>
-          <h1>Accommodation &amp; asset status engine</h1>
+          <p className="eyebrow">Build 030 + 031</p>
+          <h1>Campground status &amp; management controls</h1>
           <p className="hero-panel__lead">
-            One control centre for current campground operating state. Every
-            change is checked by PostgreSQL transition rules, advances the
-            relevant revision and leaves durable status history.
+            Manage current operating state plus dated closures and holds.
+            PostgreSQL protects status transitions, overlapping restrictions,
+            row versions and durable evidence for every management override.
           </p>
         </section>
 
@@ -205,12 +254,197 @@ export default async function CampgroundStatusPage({
             </div>
           </div>
           <p className={styles.boundary}>
-            Build 030 owns current states, transition rules and append-only
-            history. Build 031 will add dated management closures, bulk holds
-            and map-publication overrides rather than hiding those future rules
-            inside this engine.
+            Build 030 still owns immediate current state. Build 031 adds
+            date-scoped management restrictions without silently rewriting those
+            states; later availability builds will consume both sources
+            authoritatively.
           </p>
         </section>
+
+        {canManageOperations ? (
+          <section
+            className="content-panel"
+            aria-labelledby="management-restrictions-heading"
+          >
+            <SectionHeading
+              eyebrow="Build 031"
+              title="Management closures & holds"
+              id="management-restrictions-heading"
+              helpTopic="status.engine"
+              trailing={
+                <span className="build-chip">
+                  {currentRestrictionCount} active / upcoming
+                </span>
+              }
+            />
+            <p className={styles.boundary}>
+              Schedule all-day date windows for one or many targets. Overlapping
+              restrictions are rejected unless the replacement checkbox is
+              deliberately selected; superseded rows remain preserved as audit
+              evidence.
+            </p>
+
+            <div className={styles.managementGrid}>
+              {targetGroups.map((group) => (
+                <form
+                  action={createManagementRestrictionAction}
+                  className={styles.managementCard}
+                  key={group.kind}
+                >
+                  <input
+                    type="hidden"
+                    name="campgroundId"
+                    value={selected.campgroundId}
+                  />
+                  <input type="hidden" name="targetKind" value={group.kind} />
+                  <div>
+                    <p className={styles.kicker}>{group.hint}</p>
+                    <h3>{group.title}</h3>
+                  </div>
+                  <label className={styles.field}>
+                    <span>Targets (Ctrl/Cmd for multiple)</span>
+                    <select
+                      className={styles.multiSelect}
+                      name="targetIds"
+                      multiple
+                      required
+                      size={Math.min(7, Math.max(3, group.items.length))}
+                    >
+                      {group.items.map((item) => (
+                        <option key={item.id} value={item.id}>
+                          {item.code} · {item.displayName}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                  <label className={styles.field}>
+                    <span>Restriction</span>
+                    <select name="restrictionKind" defaultValue="closure">
+                      <option value="closure">Closure</option>
+                      <option value="hold">Hold</option>
+                    </select>
+                  </label>
+                  <div className={styles.dateGrid}>
+                    <label className={styles.field}>
+                      <span>Start date</span>
+                      <input name="startsOn" type="date" required />
+                    </label>
+                    <label className={styles.field}>
+                      <span>End date</span>
+                      <input name="endsOn" type="date" required />
+                    </label>
+                  </div>
+                  <label className={styles.field}>
+                    <span>Reason</span>
+                    <input
+                      name="reason"
+                      minLength={8}
+                      maxLength={500}
+                      required
+                    />
+                  </label>
+                  <label className={styles.field}>
+                    <span>Operations note</span>
+                    <input name="notes" maxLength={1000} />
+                  </label>
+                  <label className={styles.checkboxField}>
+                    <input type="checkbox" name="overrideConflicts" />
+                    <span>
+                      Replace any overlapping restriction as an audited
+                      management override
+                    </span>
+                  </label>
+                  <button
+                    className="primary-button"
+                    type="submit"
+                    disabled={group.items.length === 0}
+                  >
+                    Schedule {group.title.toLowerCase()}
+                  </button>
+                </form>
+              ))}
+            </div>
+
+            <div className={styles.restrictionList}>
+              {restrictions.map((restriction) => (
+                <article
+                  className={styles.restrictionCard}
+                  key={restriction.id}
+                >
+                  <header className={styles.cardHeader}>
+                    <div>
+                      <p className={styles.kicker}>
+                        {restriction.targetKind} · {restriction.targetCode}
+                      </p>
+                      <h3>{restriction.targetName ?? "Management target"}</h3>
+                    </div>
+                    <div className={styles.badges}>
+                      <span className={styles.state}>
+                        {stateLabel(restriction.restrictionKind)}
+                      </span>
+                      <span className={styles.state}>
+                        {stateLabel(restriction.state)}
+                      </span>
+                      {restriction.isOverride ? (
+                        <span className={styles.state}>override</span>
+                      ) : null}
+                    </div>
+                  </header>
+                  <p className={styles.restrictionMeta}>
+                    {restriction.startsOn} through {restriction.endsOn} · row
+                    rev {restriction.rowVersion}
+                  </p>
+                  <p>{restriction.reason}</p>
+                  {restriction.notes ? <p>{restriction.notes}</p> : null}
+                  {restriction.cancelledAt ? (
+                    <p className={styles.boundary}>
+                      Cancelled: {restriction.cancellationReason}
+                    </p>
+                  ) : restriction.state === "active" ||
+                    restriction.state === "upcoming" ? (
+                    <form
+                      action={cancelManagementRestrictionAction}
+                      className={styles.cancelForm}
+                    >
+                      <input
+                        type="hidden"
+                        name="campgroundId"
+                        value={selected.campgroundId}
+                      />
+                      <input
+                        type="hidden"
+                        name="restrictionId"
+                        value={restriction.id}
+                      />
+                      <input
+                        type="hidden"
+                        name="rowVersion"
+                        value={restriction.rowVersion}
+                      />
+                      <label className={styles.field}>
+                        <span>Cancellation reason</span>
+                        <input
+                          name="reason"
+                          minLength={8}
+                          maxLength={500}
+                          required
+                        />
+                      </label>
+                      <button className="primary-button" type="submit">
+                        Cancel restriction
+                      </button>
+                    </form>
+                  ) : null}
+                </article>
+              ))}
+              {restrictions.length === 0 ? (
+                <p className={styles.empty}>
+                  No management closures or holds have been scheduled.
+                </p>
+              ) : null}
+            </div>
+          </section>
+        ) : null}
 
         {canReadAccommodations ? (
           <section

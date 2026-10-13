@@ -2,6 +2,7 @@ export const permissions = [
   "campground.configuration",
   "campground.map",
   "campground.map.publish",
+  "campground.operations.manage",
   "accommodation.read",
   "accommodation.manage",
   "accommodation.media.manage",
