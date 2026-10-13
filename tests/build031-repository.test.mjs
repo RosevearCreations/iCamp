@@ -103,7 +103,7 @@ test("Build 031 blocks unsafe map publication unless override is explicit", () =
   assert.match(mapService, /publicationRevision/u);
   assert.match(migration, /campground_map_publication_events_append_only/u);
   assert.match(mapPage, /Publication review required/u);
-  assert.match(mapPage, /audited management override/u);
+  assert.match(mapPage, /audited\s+management override/u);
   assert.match(mapPage, /Published-map switch history/u);
 });
 
