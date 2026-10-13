@@ -21,16 +21,12 @@ begin
     and policyname = 'operational_asset_status_history_insert';
 
   if accommodation_check is null
-     or position('current_setting' in lower(accommodation_check)) = 0
-     or position('initplan' in lower(pg_get_expr((select polqual from pg_policy where polrelid = 'public.accommodation_status_history'::regclass and polname = 'accommodation_status_history_insert'), 'public.accommodation_status_history'::regclass))) > 0 then
-    null;
-  end if;
-
-  if accommodation_check not like '%SELECT current_setting%' then
+     or position('SELECT current_setting' in accommodation_check) = 0 then
     raise exception 'Accommodation status-history policy does not wrap current_setting in SELECT';
   end if;
 
-  if asset_check not like '%SELECT current_setting%' then
+  if asset_check is null
+     or position('SELECT current_setting' in asset_check) = 0 then
     raise exception 'Operational asset status-history policy does not wrap current_setting in SELECT';
   end if;
 end
