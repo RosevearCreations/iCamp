@@ -45,18 +45,22 @@ test("Build 028 provides audited gallery services and real media variants", asyn
   assert.match(actions, /icamp-public-media/u);
 });
 
-test("Build 028 documents the Operations Workbench interface decision", async () => {
+test("Build 028 is fully promoted and documents the Operations Workbench interface decision", async () => {
   const direction = await readFile("docs/INTERFACE_DIRECTION.md", "utf8");
   const shell = await readFile("components/app-shell.tsx", "utf8");
   const queue = await readFile("docs/BUILD_QUEUE.md", "utf8");
+  const build = await readFile("docs/BUILD_028.md", "utf8");
 
   assert.match(direction, /Operations Workbench/u);
   assert.match(direction, /Global workspace navigation/u);
   assert.match(direction, /Property context/u);
   assert.match(direction, /Object workbench/u);
   assert.doesNotMatch(shell, /Build 004 · Authentication & secure sessions/u);
+  assert.match(build, /FULLY PROMOTED — `main` GREEN/u);
+  assert.match(build, /20261013023850/u);
+  assert.match(build, /38338123097/u);
   assert.match(
     queue,
-    /Build 028 — Site\/Cottage Public Gallery: Up to 10 Images[\s\S]*QUEUED — NOT STARTED/u,
+    /Build 028 — Site\/Cottage Public Gallery: Up to 10 Images[\s\S]*FULLY PROMOTED — `main` GREEN[\s\S]*Next active build[\s\S]*Build 029 — Operational Asset & Equipment\/Fleet Model[\s\S]*QUEUED — NOT STARTED/u,
   );
 });
