@@ -86,9 +86,12 @@ export default async function CampgroundStatusPage({
     permissions.includes("accommodation.manage");
   const canManageAccommodations = permissions.includes("accommodation.manage");
   const canReadAssets = permissions.some((permission) =>
-    ["asset.read", "asset.manage", "equipment.read", "equipment.manage"].includes(
-      permission,
-    ),
+    [
+      "asset.read",
+      "asset.manage",
+      "equipment.read",
+      "equipment.manage",
+    ].includes(permission),
   );
 
   const [accommodations, assets, accommodationHistory, assetHistory] =
