@@ -310,7 +310,6 @@ export async function recordCottageDamageInspectionAction(formData: FormData) {
   finish(campgroundId, "Cottage readiness inspection recorded.");
 }
 
-
 export async function uploadAccommodationGalleryImageAction(
   formData: FormData,
 ) {
@@ -525,7 +524,9 @@ export async function uploadAccommodationGalleryImageAction(
     });
   } catch (error) {
     await Promise.all(
-      uploaded.map((media) => adapter.deleteObject(media).catch(() => undefined)),
+      uploaded.map((media) =>
+        adapter.deleteObject(media).catch(() => undefined),
+      ),
     );
     throw error;
   }
