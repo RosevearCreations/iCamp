@@ -118,9 +118,9 @@ export default async function AccommodationAdministrationPage({
           <h1>Accommodation assembly</h1>
           <p className="hero-panel__lead">
             Put the accommodation system together in one working interface:
-            canonical map-linked inventory, campsite and cottage facts,
-            turnover readiness, and a curated guest-facing public gallery in
-            one operational workbench.
+            canonical map-linked inventory, campsite and cottage facts, turnover
+            readiness, and a curated guest-facing public gallery in one
+            operational workbench.
           </p>
         </section>
 
