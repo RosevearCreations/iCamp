@@ -607,6 +607,33 @@ export default async function CampgroundAdministrationPage({
           </Link>
         </section>
 
+        <section
+          className="content-panel"
+          aria-labelledby="compatibility-heading"
+        >
+          <SectionHeading
+            eyebrow="Booking compatibility"
+            title="Accommodation compatibility engine"
+            id="compatibility-heading"
+            helpTopic="campground.structure"
+            trailing={<span className="build-chip">Build 034</span>}
+          />
+          <p>
+            Validate tent, RV and cottage fit against physical dimensions,
+            utilities, accessibility, pets, occupancy and accommodation
+            features.
+          </p>
+          <Link
+            className="primary-link primary-link--dark"
+            href={
+              "/workspaces/management/campgrounds/compatibility?campground=" +
+              encodeURIComponent(structure.campground.id)
+            }
+          >
+            Open accommodation compatibility
+          </Link>
+        </section>
+
         <section className="content-panel" aria-labelledby="map-images-heading">
           <SectionHeading
             eyebrow="Campground map"

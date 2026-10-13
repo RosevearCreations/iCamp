@@ -110,6 +110,6 @@ test("Build 030 documents promotion and advances the active queue", () => {
   assert.match(build, /production PR #121/u);
   assert.match(
     queue,
-    /Next active build[\s\S]*Build 034 — Accommodation Compatibility Engine[\s\S]*QUEUED — NOT STARTED/u,
+    /(Next active build|Active build in promotion)[\s\S]*Build 034 — Accommodation Compatibility Engine[\s\S]*(QUEUED — NOT STARTED|IMPLEMENTED — PROMOTION IN PROGRESS)/u,
   );
 });
