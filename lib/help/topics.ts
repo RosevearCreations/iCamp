@@ -207,6 +207,23 @@ export const helpTopics = {
     ],
     audience: "privileged",
   },
+  "asset.inventory": {
+    id: "asset.inventory",
+    slug: "operational-assets-equipment-and-fleet",
+    title: "Operational assets, equipment and fleet",
+    summary:
+      "Build 029 keeps campground facilities, infrastructure, equipment and fleet in one map-aware canonical operations inventory.",
+    details: [
+      "Facilities include pools, water parks, washrooms, fields, playgrounds, halls, beaches, docks, launches, roads, parking, gates, buildings, garbage/septic areas, utilities and similar operational assets.",
+      "Facility records require a Build 023 canonical map identity. iCamp can reuse an unclaimed compatible identity or create one automatically when the facility is registered.",
+      "Equipment and fleet include tractors, mowers, maintenance vehicles, carts, trailers, power equipment and watercraft. Mobile equipment does not require a map position, but can use an asset map identity when useful.",
+      "Equipment records support make, model, serial number, ownership, current meter kind/value and storage or home location.",
+      "The current operating state and status revision are Build 029 integration hooks. Build 030 owns authoritative status history and transition rules.",
+      "Public candidate marks publication readiness only. It never makes an operational record public, indexable or accessible without a later public publishing workflow.",
+      "Authenticated Web/PWA is the full management channel. Voice/SMS can later identify assets by code, report concise status facts or route staff, while map placement stays graphical.",
+    ],
+    audience: "privileged",
+  },
   "accommodation.inventory": {
     id: "accommodation.inventory",
     slug: "unified-accommodation-inventory",
