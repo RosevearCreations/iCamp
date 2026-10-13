@@ -580,6 +580,33 @@ export default async function CampgroundAdministrationPage({
           </Link>
         </section>
 
+        <section
+          className="content-panel"
+          aria-labelledby="capacity-rules-heading"
+        >
+          <SectionHeading
+            eyebrow="Booking capacity"
+            title="Capacity, guest & vehicle limits"
+            id="capacity-rules-heading"
+            helpTopic="campground.structure"
+            trailing={<span className="build-chip">Build 033</span>}
+          />
+          <p>
+            Configure layered occupant, visitor and vehicle limits by
+            campground, accommodation type, section or individual accommodation,
+            including campsite-size bands.
+          </p>
+          <Link
+            className="primary-link primary-link--dark"
+            href={
+              "/workspaces/management/campgrounds/capacity-rules?campground=" +
+              encodeURIComponent(structure.campground.id)
+            }
+          >
+            Open capacity, guest & vehicle limits
+          </Link>
+        </section>
+
         <section className="content-panel" aria-labelledby="map-images-heading">
           <SectionHeading
             eyebrow="Campground map"
