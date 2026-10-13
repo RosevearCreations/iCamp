@@ -63,5 +63,16 @@ begin
   ) then
     raise exception 'Build 031 append/cancel mutation guard is missing';
   end if;
+
+  if not exists (
+    select 1
+    from pg_trigger
+    where tgrelid =
+      'icamp_private.campground_map_publication_events'::regclass
+      and tgname = 'campground_map_publication_events_append_only'
+      and not tgisinternal
+  ) then
+    raise exception 'Build 031 map publication evidence must be append-only';
+  end if;
 end
 $verify$;
