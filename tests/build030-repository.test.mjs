@@ -70,7 +70,10 @@ test("Build 030 status history is narrow, RLS protected and append only", () => 
     migration,
     /alter table public\.operational_asset_status_history force row level security/u,
   );
-  assert.match(migration, /revoke all on public\.accommodation_status_history from anon/u);
+  assert.match(
+    migration,
+    /revoke all on public\.accommodation_status_history from anon/u,
+  );
   assert.match(
     migration,
     /grant select, insert on public\.accommodation_status_history to icamp_app/u,
