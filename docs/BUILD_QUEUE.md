@@ -540,8 +540,20 @@ Delivered:
 - exact feature, `dev`, production PR and independent `main` verification with Verify, Browser E2E, Database migrations, CodeQL and Secret Scan GREEN;
 - production feature merge SHA `be04c5b7fbb15e9292124b7a3b70af8e5a95d4bf`.
 
+### Build 035 — Server-Authoritative Live Availability
+Status: **IMPLEMENTED — PROMOTION IN PROGRESS**
+
+Delivered:
+- one server-authoritative date-window availability result across reservations, unexpired temporary holds, management closures/holds, unresolved cottage turnover and seasonal assignments;
+- protected reservation, hold-source and seasonal-assignment persistence with direct anon/authenticated access denied;
+- PostgreSQL advisory-lock serialization and conflict rejection for competing inventory writes;
+- accommodation availability-revision propagation for reservation, hold and seasonal-assignment changes;
+- reusable server rejection contract with `ICAMP_ACCOMMODATION_UNAVAILABLE`;
+- responsive Management → Campgrounds → Live availability workbench with ten-second live refresh;
+- explicit Build 036 boundary preserving atomic temporary-hold creation/countdown/expiry/idempotency for the next build.
+
 ## Next active build
-**Build 035 — Server-Authoritative Live Availability**
+**Build 036 — Atomic Temporary Reservation Holds**
 
 Status: **QUEUED — NOT STARTED**
 

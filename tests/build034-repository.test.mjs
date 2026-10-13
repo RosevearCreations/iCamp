@@ -88,6 +88,6 @@ test("Build 034 records production closeout and queues Build 035", () => {
   assert.match(build, /20261013204945/u);
   assert.match(
     queue,
-    /Build 034 — Accommodation Compatibility Engine[\s\S]*FULLY PROMOTED — `main` GREEN[\s\S]*Next active build[\s\S]*Build 035 — Server-Authoritative Live Availability[\s\S]*QUEUED — NOT STARTED/u,
+    /Build 034 — Accommodation Compatibility Engine[\s\S]*FULLY PROMOTED — `main` GREEN[\s\S]*Build 035 — Server-Authoritative Live Availability[\s\S]*(IMPLEMENTED|FULLY PROMOTED)[\s\S]*Build 036 — Atomic Temporary Reservation Holds/u,
   );
 });
