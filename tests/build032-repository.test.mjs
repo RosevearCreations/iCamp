@@ -108,6 +108,6 @@ test("Build 032 production closeout advances the active queue", () => {
   assert.match(build, /no manual user action was required/iu);
   assert.match(
     queue,
-    /Build 032 — Booking Calendar & Date Rules[\s\S]*FULLY PROMOTED — `main` GREEN[\s\S]*Next active build[\s\S]*Build 033 — Capacity, Guest & Vehicle Limit Rules[\s\S]*QUEUED — NOT STARTED/u,
+    /Build 032 — Booking Calendar & Date Rules[\s\S]*FULLY PROMOTED — `main` GREEN[\s\S]*Next active build[\s\S]*Build 034 — Accommodation Compatibility Engine[\s\S]*QUEUED — NOT STARTED/u,
   );
 });

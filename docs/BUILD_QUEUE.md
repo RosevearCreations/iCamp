@@ -511,8 +511,22 @@ Delivered:
 - exact feature, `dev`, production PR and independent `main` verification with Verify, Browser E2E, Database/lifecycle/idempotence, CodeQL and Secret Scan GREEN;
 - production feature merge SHA `76019fd0ba807f89240556c6e5f02208b601dca1`.
 
+### Build 033 — Capacity, Guest & Vehicle Limit Rules
+Status: **FULLY PROMOTED — `main` GREEN.**
+
+Delivered:
+- layered occupant, visitor and vehicle limits by campground, accommodation type, section and individual accommodation;
+- optional non-overlapping campsite-area bands with partial inheritance;
+- rental-cottage physical sleeping capacity enforced as a hard ceiling;
+- append-preserved capacity-rule evidence with archive-and-replace workflow;
+- reusable server-side capacity evaluator and visible management preview;
+- FORCE RLS, actor-bound writes, no `icamp_app` DELETE privilege and audited create/archive operations;
+- hosted Supabase migration 0041 as `20261013172550`, with zero Security Advisor findings and no Build-033-specific Performance Advisor regression;
+- exact feature, `dev`, production PR and independent `main` verification with Verify, Browser E2E, Database/lifecycle/idempotence, CodeQL and Secret Scan GREEN;
+- production feature merge SHA `048dd3fb874f6404b99d0c8ebfba91fd8bc51e31`.
+
 ## Next active build
-**Build 033 — Capacity, Guest & Vehicle Limit Rules**
+**Build 034 — Accommodation Compatibility Engine**
 
 Status: **QUEUED — NOT STARTED**
 
