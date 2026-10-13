@@ -75,9 +75,8 @@ export default async function TemporaryReservationHoldsPage({
       campgroundId: selected.campgroundId,
     }),
   ]);
-  const canCreate = selected.authorization.permissions.includes(
-    "reservation.create",
-  );
+  const canCreate =
+    selected.authorization.permissions.includes("reservation.create");
   const canConfigure = selected.authorization.permissions.includes(
     "campground.configuration",
   );
@@ -158,7 +157,10 @@ export default async function TemporaryReservationHoldsPage({
         {canConfigure ? (
           <section className="content-card">
             <h2>Hold duration</h2>
-            <form action={updateTemporaryHoldDurationAction} className="form-grid">
+            <form
+              action={updateTemporaryHoldDurationAction}
+              className="form-grid"
+            >
               <input
                 type="hidden"
                 name="campgroundId"
@@ -270,7 +272,11 @@ export default async function TemporaryReservationHoldsPage({
                               name="departureDate"
                               value={departureDate}
                             />
-                            <input type="hidden" name="holdId" value={hold.id} />
+                            <input
+                              type="hidden"
+                              name="holdId"
+                              value={hold.id}
+                            />
                             <input
                               type="hidden"
                               name="holdKey"
