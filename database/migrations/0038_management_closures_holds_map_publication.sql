@@ -447,11 +447,11 @@ returns trigger
 language plpgsql
 security invoker
 set search_path = ''
-as $
+as $map_publication_guard$
 begin
   raise exception 'Map publication events are append-only';
 end;
-$;
+$map_publication_guard$;
 
 create trigger campground_map_publication_events_append_only
 before update or delete on icamp_private.campground_map_publication_events
