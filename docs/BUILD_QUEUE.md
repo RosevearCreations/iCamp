@@ -496,8 +496,23 @@ Delivered:
 - exact-tree feature, advisor hardening, `dev` and production promotion with Verify, Browser E2E, Database, CodeQL/JavaScript analysis and Secret Scan gates GREEN;
 - production merge SHA `7f5161a722ef4e9b9196405361f087b719ee27b7` independently GREEN after merge.
 
+### Build 032 — Booking Calendar & Date Rules
+Status: **FULLY PROMOTED — `main` GREEN.**
+
+Delivered:
+- campground-local check-in/out times, booking lead windows and minimum/maximum stay rules;
+- configurable weekend-day classification;
+- named holiday and season calendars with optional stay overrides;
+- append-preserved calendar evidence and server-side prevention of overlapping active seasons;
+- provider-independent booking-date evaluator for lead time, stay bounds, weekend nights, holiday and season matching;
+- responsive Management → Campgrounds → Booking calendar & date rules workbench with proposed-stay preview;
+- FORCE RLS, actor-bound writes, no `icamp_app` DELETE privilege and append-oriented audit evidence;
+- hosted Supabase migration 0040 as `20261013161558`, with zero Security Advisor findings and no Build-032-specific Performance Advisor regression;
+- exact feature, `dev`, production PR and independent `main` verification with Verify, Browser E2E, Database/lifecycle/idempotence, CodeQL and Secret Scan GREEN;
+- production feature merge SHA `76019fd0ba807f89240556c6e5f02208b601dca1`.
+
 ## Next active build
-**Build 032 — Booking Calendar & Date Rules**
+**Build 033 — Capacity, Guest & Vehicle Limit Rules**
 
 Status: **QUEUED — NOT STARTED**
 

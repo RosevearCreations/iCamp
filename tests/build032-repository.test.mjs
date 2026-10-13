@@ -42,6 +42,10 @@ const build = await readFile(
   new URL("../docs/BUILD_032.md", import.meta.url),
   "utf8",
 );
+const queue = await readFile(
+  new URL("../docs/BUILD_QUEUE.md", import.meta.url),
+  "utf8",
+);
 
 test("Build 032 persists protected campground booking rules", () => {
   assert.match(migration, /create table public\.campground_booking_rules/u);
@@ -93,4 +97,17 @@ test("Build 032 keeps availability and pricing in their later boundaries", () =>
   assert.match(build, /IVR\/DTMF/u);
   assert.match(build, /SMS\/MMS/u);
   assert.match(build, /no new paid service/u);
+});
+
+test("Build 032 production closeout advances the active queue", () => {
+  assert.match(build, /FULLY PROMOTED — `main` GREEN/u);
+  assert.match(build, /production PR #128/u);
+  assert.match(build, /76019fd0ba807f89240556c6e5f02208b601dca1/u);
+  assert.match(build, /20261013161558/u);
+  assert.match(build, /zero findings/u);
+  assert.match(build, /no manual user action was required/iu);
+  assert.match(
+    queue,
+    /Build 032 — Booking Calendar & Date Rules[\s\S]*FULLY PROMOTED — `main` GREEN[\s\S]*Next active build[\s\S]*Build 033 — Capacity, Guest & Vehicle Limit Rules[\s\S]*QUEUED — NOT STARTED/u,
+  );
 });

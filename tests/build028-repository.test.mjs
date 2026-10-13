@@ -61,6 +61,6 @@ test("Build 028 is fully promoted and documents the Operations Workbench interfa
   assert.match(build, /38338123097/u);
   assert.match(
     queue,
-    /Build 028 — Site\/Cottage Public Gallery: Up to 10 Images[\s\S]*FULLY PROMOTED — `main` GREEN[\s\S]*Next active build[\s\S]*Build 032 — Booking Calendar & Date Rules[\s\S]*QUEUED — NOT STARTED/u,
+    /Build 028 — Site\/Cottage Public Gallery: Up to 10 Images[\s\S]*FULLY PROMOTED — `main` GREEN[\s\S]*Next active build[\s\S]*Build 033 — Capacity, Guest & Vehicle Limit Rules[\s\S]*QUEUED — NOT STARTED/u,
   );
 });
