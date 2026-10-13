@@ -105,6 +105,6 @@ test("Build 017 production closeout is recorded and queue advances", async () =>
   );
   assert.match(
     queue,
-    /Next active build[\s\S]*Build 030 — Accommodation & Asset Status Engine[\s\S]*QUEUED — NOT STARTED/u,
+    /Next active build[\s\S]*Build 031 — Management Closures, Holds & Map Publication[\s\S]*QUEUED — NOT STARTED/u,
   );
 });

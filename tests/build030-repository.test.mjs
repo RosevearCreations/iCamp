@@ -100,14 +100,16 @@ test("Build 030 exposes one combined responsive status control centre", () => {
   assert.match(page, /Build 031 will add dated management closures/u);
 });
 
-test("Build 030 documents the boundary and remains the active queue item", () => {
-  assert.match(build, /FEATURE IMPLEMENTED — promotion in progress/u);
+test("Build 030 documents promotion and advances the active queue", () => {
+  assert.match(build, /FULLY PROMOTED — `main` GREEN/u);
   assert.match(
     build,
     /Build 031 — Management Closures, Holds & Map Publication/u,
   );
+  assert.match(build, /50d0e05fe6c75efb620b8909aebdbad291076b86/u);
+  assert.match(build, /production PR #121/u);
   assert.match(
     queue,
-    /Next active build[\s\S]*Build 030 — Accommodation & Asset Status Engine[\s\S]*QUEUED — NOT STARTED/u,
+    /Next active build[\s\S]*Build 031 — Management Closures, Holds & Map Publication[\s\S]*QUEUED — NOT STARTED/u,
   );
 });
