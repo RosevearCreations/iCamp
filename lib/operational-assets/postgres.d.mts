@@ -11,7 +11,16 @@ export interface OperationalAsset {
   code: string;
   displayName: string;
   lifecycleState: string;
-  operatingState: string;
+  operatingState:
+    | "unknown"
+    | "operational"
+    | "limited"
+    | "inspection"
+    | "maintenance"
+    | "unavailable"
+    | "seasonal"
+    | "winterized"
+    | "closed";
   statusRevision: number;
   notes: string;
   rowVersion: number;
