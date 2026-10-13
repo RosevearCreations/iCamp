@@ -146,7 +146,11 @@ export function GalleryUploadForm({
             ? "10 / 10 active public images"
             : `${imageCount} / 10 active public images · thumbnail and optimized WebP variants are prepared before upload`}
         </small>
-        <button className="primary-button" type="submit" disabled={busy || full}>
+        <button
+          className="primary-button"
+          type="submit"
+          disabled={busy || full}
+        >
           {busy ? "Preparing images…" : "Add public image"}
         </button>
       </div>
