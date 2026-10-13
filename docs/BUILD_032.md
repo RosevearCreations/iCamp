@@ -2,7 +2,7 @@
 
 ## Status
 
-**IMPLEMENTED — promotion in progress.**
+**FULLY PROMOTED — `main` GREEN.**
 
 ## Canonical roadmap scope
 
@@ -108,6 +108,22 @@ Build 032 does **not** own:
 ## Infrastructure
 
 Build 032 adds no new paid service, hosting project, worker, storage bucket, mapping provider or external runtime dependency.
+
+## Production promotion evidence
+
+- feature PR #127 promoted the completed Build 032 implementation to `dev`;
+- the feature merge on `dev` was independently GREEN at `539af8334ad4653b0cb2a03718439f4cc210f347`;
+- hosted Supabase migration `0040_booking_calendar_date_rules` is live as version `20261013161558`;
+- hosted verification confirmed FORCE RLS on both Build 032 tables, no `icamp_app` DELETE privilege, required policies, and the append-preservation/season-overlap triggers;
+- Supabase Security Advisor returned zero findings;
+- Supabase Performance Advisor showed no Build 032 missing-foreign-key, RLS, or multiple-policy regression; only expected unused-index INFO on newly created indexes;
+- production PR #128 passed fresh Verify, Browser E2E, Database/lifecycle/idempotence, CodeQL and Secret Scan gates before merge;
+- production feature merge SHA `76019fd0ba807f89240556c6e5f02208b601dca1` passed independent `main` push checks: CI run `38429464369`, CodeQL run `38429464395`, and Secret Scan run `38429464299`;
+- no manual user action was required to promote Build 032.
+
+## Next build
+
+**Build 033 — Capacity, Guest & Vehicle Limit Rules** is queued next.
 
 ## Verification target
 
