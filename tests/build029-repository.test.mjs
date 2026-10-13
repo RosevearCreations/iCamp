@@ -99,6 +99,6 @@ test("Build 029 production closeout is recorded", () => {
   assert.match(build, /zero findings/u);
   assert.match(
     queue,
-    /Build 029 — Operational Asset & Equipment\/Fleet Model[\s\S]*FULLY PROMOTED — `main` GREEN[\s\S]*Next active build[\s\S]*Build 033 — Capacity, Guest & Vehicle Limit Rules[\s\S]*QUEUED — NOT STARTED/u,
+    /Build 029 — Operational Asset & Equipment\/Fleet Model[\s\S]*FULLY PROMOTED — `main` GREEN[\s\S]*Next active build[\s\S]*Build 034 — Accommodation Compatibility Engine[\s\S]*QUEUED — NOT STARTED/u,
   );
 });

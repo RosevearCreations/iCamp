@@ -96,10 +96,15 @@ test("Build 033 keeps compatibility, availability and fees in later builds", () 
   assert.match(build, /no new paid service/u);
 });
 
-test("Build 033 remains the active queue item until promotion closeout", () => {
-  assert.match(build, /IMPLEMENTED — PROMOTION IN PROGRESS/u);
+test("Build 033 records completed production promotion and queues Build 034", () => {
+  assert.match(build, /FULLY PROMOTED — `main` GREEN/u);
+  assert.match(build, /production PR #131/iu);
+  assert.match(build, /048dd3fb874f6404b99d0c8ebfba91fd8bc51e31/u);
+  assert.match(build, /20261013172550/u);
+  assert.match(build, /zero findings/iu);
+  assert.match(build, /No manual user action was required/iu);
   assert.match(
     queue,
-    /Next active build[\s\S]*Build 033 — Capacity, Guest & Vehicle Limit Rules[\s\S]*QUEUED — NOT STARTED/u,
+    /Build 033 — Capacity, Guest & Vehicle Limit Rules[\s\S]*FULLY PROMOTED — `main` GREEN[\s\S]*Next active build[\s\S]*Build 034 — Accommodation Compatibility Engine[\s\S]*QUEUED — NOT STARTED/u,
   );
 });

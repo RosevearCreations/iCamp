@@ -47,7 +47,7 @@ test("Build 024 is fully promoted and advances the queue", async () => {
   assert.match(build, /FULLY PROMOTED — `main` GREEN/u);
   assert.match(
     queue,
-    /Build 024 — Unified Accommodation Model[\s\S]*FULLY PROMOTED — `main` GREEN[\s\S]*Next active build[\s\S]*Build 033 — Capacity, Guest & Vehicle Limit Rules[\s\S]*QUEUED — NOT STARTED/u,
+    /Build 024 — Unified Accommodation Model[\s\S]*FULLY PROMOTED — `main` GREEN[\s\S]*Next active build[\s\S]*Build 034 — Accommodation Compatibility Engine[\s\S]*QUEUED — NOT STARTED/u,
   );
   assert.match(build, /27bd1223f098c4b6d6a48be9d830791ec91bcbd7/u);
   assert.match(build, /38252538101/u);

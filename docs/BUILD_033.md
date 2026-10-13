@@ -2,7 +2,7 @@
 
 ## Status
 
-**IMPLEMENTED — PROMOTION IN PROGRESS.**
+**FULLY PROMOTED — `main` GREEN.**
 
 ## Canonical roadmap scope
 
@@ -114,18 +114,21 @@ Build 033 does **not** own:
 
 Build 033 adds **no new paid service**, hosting project, worker, storage bucket, mapping provider or external runtime dependency.
 
-## Promotion target
+## Production promotion evidence
 
-Promotion requires:
+- Feature PR #130 validated the Build 033 feature branch with fresh Verify, Browser E2E, Database migrations/lifecycle/idempotence, CodeQL and Secret Scan GREEN.
+- Feature head after formatting/type correction: `10adb9eef7ed6af57bb44076d1404741e9583797`.
+- Feature merge to `dev`: `a8a217018ee494359143f7b9d8bd9246ff3493a8`.
+- Independent `dev` push evidence: CI `38438235223`, CodeQL `38438234956`, Secret Scan `38438234886`, all GREEN.
+- Hosted Supabase migration `0041_capacity_guest_vehicle_limit_rules` is live as version `20261013172550`.
+- Hosted repository verification passed. `capacity_limit_rules` has RLS enabled and FORCE RLS, `icamp_app` has SELECT/INSERT/UPDATE and no DELETE, and the read/insert/archive policies plus guard/ambiguity/touch triggers are present.
+- Supabase Security Advisor reported **zero findings** after migration 0041.
+- Supabase Performance Advisor reported only expected `unused_index` INFO for fresh Build 033 indexes; there was no Build-033-specific security, missing-FK, RLS or policy regression requiring hardening.
+- Production PR #131 passed fresh Verify, Browser E2E, Database migrations/lifecycle/idempotence, CodeQL and Secret Scan gates.
+- Production feature merge to `main`: `048dd3fb874f6404b99d0c8ebfba91fd8bc51e31`.
+- Independent production `main` evidence: CI `38438995955`, CodeQL `38438995877`, Secret Scan `38438996078`, all GREEN.
+- No manual user action was required to promote Build 033.
 
-- repository/unit tests for rule validation, layered precedence, size-aware resolution and physical cottage caps;
-- database migration/verification gates;
-- application Verify and Browser E2E;
-- JavaScript/TypeScript analysis and CodeQL;
-- Gitleaks/Secret Scan;
-- hosted Supabase migration verification and advisors;
-- fresh `dev` and `main` GREEN promotion evidence.
-
-## Next build after successful promotion
+## Next build
 
 **Build 034 — Accommodation Compatibility Engine**.
