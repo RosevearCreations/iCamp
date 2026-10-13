@@ -33,7 +33,7 @@ test("Build 028 extends the Accommodation assembly with a visible gallery", asyn
   assert.match(panel, /Hero/u);
   assert.match(panel, /alternative text/i);
   assert.match(panel, /Build 038/u);
-  assert.match(panel, /internal maintenance/u);
+  assert.match(panel, /internal\s+maintenance/u);
 
   assert.match(upload, /createImageBitmap/u);
   assert.match(upload, /360/u);
