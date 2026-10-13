@@ -555,8 +555,20 @@ Delivered:
 - production PR #138 and independent `main` verification with Verify, Browser E2E, Database migrations, CodeQL and Secret Scan GREEN;
 - production feature merge SHA `b68953c20b2963c76fd56d7fc827b0ea615defae`.
 
+### Build 036 — Atomic Temporary Reservation Holds
+Status: **PRODUCTION CANDIDATE — `dev` GREEN.**
+
+Delivered:
+- campground-configurable temporary hold duration with bounded 2-60 minute policy;
+- campground-scoped idempotency keys with deterministic retry behavior;
+- advisory-lock serialization across hold-key retries and accommodation inventory;
+- automatic expiry semantics, lazy expiry reconciliation and explicit idempotent release;
+- RLS-protected hold mutation through the trusted `icamp_app` role while direct anon/authenticated mutation remains denied;
+- Management → Campgrounds → Live availability → Temporary holds workbench with one-second countdown and pending-state action buttons;
+- shared atomic hold authority documented for future Web/PWA, IVR/DTMF and SMS/MMS booking flows.
+
 ## Next active build
-**Build 036 — Atomic Temporary Reservation Holds**
+**Build 037 — Public Interactive Booking Map**
 
 Status: **QUEUED — NOT STARTED**
 

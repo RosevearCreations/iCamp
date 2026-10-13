@@ -94,6 +94,13 @@ export default async function LiveAvailabilityPage({
           </p>
         </section>
         <section className="content-card">
+          <p>
+            <Link
+              href={`/workspaces/management/campgrounds/availability/holds?campground=${encodeURIComponent(selected.campgroundId)}&arrivalDate=${encodeURIComponent(arrivalDate)}&departureDate=${encodeURIComponent(departureDate)}`}
+            >
+              Manage atomic temporary holds →
+            </Link>
+          </p>
           <form method="get" className="form-grid">
             <label>
               Campground
