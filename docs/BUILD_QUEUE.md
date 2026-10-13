@@ -541,7 +541,7 @@ Delivered:
 - production feature merge SHA `be04c5b7fbb15e9292124b7a3b70af8e5a95d4bf`.
 
 ### Build 035 — Server-Authoritative Live Availability
-Status: **IMPLEMENTED — PROMOTION IN PROGRESS**
+Status: **FULLY PROMOTED — `main` GREEN.**
 
 Delivered:
 - one server-authoritative date-window availability result across reservations, unexpired temporary holds, management closures/holds, unresolved cottage turnover and seasonal assignments;
@@ -550,7 +550,10 @@ Delivered:
 - accommodation availability-revision propagation for reservation, hold and seasonal-assignment changes;
 - reusable server rejection contract with `ICAMP_ACCOMMODATION_UNAVAILABLE`;
 - responsive Management → Campgrounds → Live availability workbench with ten-second live refresh;
-- explicit Build 036 boundary preserving atomic temporary-hold creation/countdown/expiry/idempotency for the next build.
+- explicit Build 036 boundary preserving atomic temporary-hold creation/countdown/expiry/idempotency for the next build;
+- hosted Supabase migrations `20261013223449` and `20261013223746`, zero Security Advisor findings and closure of all Build-035-specific unindexed-foreign-key findings;
+- production PR #138 and independent `main` verification with Verify, Browser E2E, Database migrations, CodeQL and Secret Scan GREEN;
+- production feature merge SHA `b68953c20b2963c76fd56d7fc827b0ea615defae`.
 
 ## Next active build
 **Build 036 — Atomic Temporary Reservation Holds**
