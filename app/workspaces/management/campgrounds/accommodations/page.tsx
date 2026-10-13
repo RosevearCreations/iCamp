@@ -12,6 +12,7 @@ import {
   listAssignedCampgrounds,
 } from "@/lib/authz/postgres.mjs";
 import { listCampgroundStructure } from "@/lib/campground-structure/postgres.mjs";
+import { listAccommodationGalleries } from "@/lib/gallery/postgres.mjs";
 import { listCottageHousekeeping } from "@/lib/housekeeping/postgres.mjs";
 
 import {
@@ -21,6 +22,7 @@ import {
   updateRentalCottageDetailsAction,
 } from "./actions";
 import styles from "./accommodation-admin.module.css";
+import { GalleryPanel } from "./gallery-panel";
 import { HousekeepingPanel } from "./housekeeping-panel";
 
 export const dynamic = "force-dynamic";
@@ -28,7 +30,7 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: "Accommodation assembly · iCamp",
   description:
-    "Manage canonical accommodations, campsite service detail and rental cottage facilities in one interface.",
+    "Manage accommodation identity, site/cottage detail, turnover readiness and public galleries in one operations workbench.",
 };
 
 const kindLabels = {
@@ -74,11 +76,14 @@ export default async function AccommodationAdministrationPage({
   const canManage = selected.authorization.permissions.includes(
     "accommodation.manage",
   );
+  const canManageGallery =
+    canManage && selected.authorization.permissions.includes("media.manage");
 
-  const [structure, accommodations, housekeeping] = await Promise.all([
+  const [structure, accommodations, housekeeping, gallery] = await Promise.all([
     listCampgroundStructure(session.user.id, selected.campgroundId),
     listAccommodations(session.user.id, selected.campgroundId),
     listCottageHousekeeping(session.user.id, selected.campgroundId),
+    listAccommodationGalleries(session.user.id, selected.campgroundId),
   ]);
 
   if (!structure) {
@@ -87,6 +92,12 @@ export default async function AccommodationAdministrationPage({
 
   const housekeepingByAccommodation = new Map(
     housekeeping.map((item) => [item.accommodationId, item]),
+  );
+  const galleryByAccommodation = new Map(
+    accommodations.map((item) => [
+      item.id,
+      gallery.filter((image) => image.accommodationId === item.id),
+    ]),
   );
 
   return (
@@ -103,13 +114,13 @@ export default async function AccommodationAdministrationPage({
         </nav>
 
         <section className="hero-panel">
-          <p className="eyebrow">Build 027</p>
+          <p className="eyebrow">Build 028</p>
           <h1>Accommodation assembly</h1>
           <p className="hero-panel__lead">
             Put the accommodation system together in one working interface:
-            canonical map-linked inventory, campsite service/fit detail,
-            rental-cottage physical facts, and now real turnover, housekeeping,
-            inventory and readiness inspection operations.
+            canonical map-linked inventory, campsite and cottage facts,
+            turnover readiness, and a curated guest-facing public gallery in
+            one operational workbench.
           </p>
         </section>
 
@@ -145,6 +156,14 @@ export default async function AccommodationAdministrationPage({
             <small>
               Templates, linen, housekeeping, inventory and damage/security
               inspection.
+            </small>
+          </div>
+          <div className={styles.assemblyStep}>
+            <span>Build 028</span>
+            <strong>Public gallery</strong>
+            <small>
+              Up to 10 curated site/cottage images with hero, captions, alt text
+              and responsive delivery variants.
             </small>
           </div>
         </div>
@@ -186,7 +205,7 @@ export default async function AccommodationAdministrationPage({
             title="Campsites, cottages & permanent units"
             id="inventory-heading"
             helpTopic="accommodation.inventory"
-            trailing={<span className="build-chip">Build 027</span>}
+            trailing={<span className="build-chip">Build 028</span>}
           />
           <div className={styles.summaryGrid}>
             <div>
@@ -976,6 +995,15 @@ export default async function AccommodationAdministrationPage({
                     permanent-unit builds.
                   </p>
                 )}
+
+                {accommodation.kind !== "permanent_unit" ? (
+                  <GalleryPanel
+                    campgroundId={selected.campgroundId}
+                    accommodationId={accommodation.id}
+                    canManage={canManageGallery}
+                    images={galleryByAccommodation.get(accommodation.id) ?? []}
+                  />
+                ) : null}
               </article>
             ))}
 
