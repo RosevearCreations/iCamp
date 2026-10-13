@@ -3,7 +3,11 @@
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
-export function AvailabilityLiveRefresh({ intervalMs = 10000 }: { intervalMs?: number }) {
+export function AvailabilityLiveRefresh({
+  intervalMs = 10000,
+}: {
+  intervalMs?: number;
+}) {
   const router = useRouter();
   useEffect(() => {
     const timer = window.setInterval(() => router.refresh(), intervalMs);
