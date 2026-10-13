@@ -1,10 +1,7 @@
 export type ManagementTargetKind = "accommodation" | "asset" | "section";
 export type ManagementRestrictionKind = "closure" | "hold";
 export type ManagementRestrictionState =
-  | "upcoming"
-  | "active"
-  | "ended"
-  | "cancelled";
+  "upcoming" | "active" | "ended" | "cancelled";
 
 export interface ManagementRestrictionRecord {
   id: string;
