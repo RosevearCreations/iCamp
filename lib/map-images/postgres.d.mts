@@ -21,12 +21,44 @@ export interface CampgroundMapImageVersion {
   rowVersion: number;
   originalFilename: string;
   mediaLifecycleState: string;
+  readiness: null | {
+    mapObjectCount: number;
+    targetBindingCount: number;
+    unboundObjectCount: number;
+    otherVersionBindingCount: number;
+    ready: boolean;
+  };
+}
+
+export interface CampgroundMapPublicationEvent {
+  id: string;
+  publicationRevision: number;
+  fromMapVersionId: string | null;
+  fromVersionNumber: number | null;
+  toMapVersionId: string;
+  toVersionNumber: number;
+  actorUserId: string | null;
+  reason: string;
+  overrideUsed: boolean;
+  readiness: {
+    mapObjectCount: number;
+    targetBindingCount: number;
+    unboundObjectCount: number;
+    otherVersionBindingCount: number;
+    ready: boolean;
+  };
+  occurredAt: Date | string;
 }
 
 export function listMapImageVersions(
   userId: string,
   campgroundId: string,
 ): Promise<CampgroundMapImageVersion[]>;
+
+export function listMapPublicationHistory(
+  userId: string,
+  campgroundId: string,
+): Promise<CampgroundMapPublicationEvent[]>;
 
 export function registerOverheadMapVersion(input: {
   actorUserId: string;
@@ -45,6 +77,7 @@ export function registerOverheadMapVersion(input: {
   label: string;
   notes?: string | null;
   reason: string;
+  overrideIncompleteBindings?: boolean;
 }): Promise<CampgroundMapImageVersion>;
 
 export function setActiveMapVersion(input: {
