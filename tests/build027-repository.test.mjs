@@ -19,7 +19,10 @@ test("Build 027 creates protected cottage housekeeping and turnover records", as
   assert.match(migration, /security_inspection_required/u);
   assert.match(migration, /cottage_turnovers_bump_parent_revisions/u);
   assert.match(migration, /force row level security/u);
-  assert.match(migration, /revoke all on public\.cottage_turnovers from authenticated/u);
+  assert.match(
+    migration,
+    /revoke all on public\.cottage_turnovers from authenticated/u,
+  );
 });
 
 test("Build 027 exposes audited turnover workflow services and actions", async () => {
