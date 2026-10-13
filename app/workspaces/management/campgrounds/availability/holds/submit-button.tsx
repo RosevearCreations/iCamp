@@ -11,7 +11,11 @@ export function HoldSubmitButton({
 }) {
   const status = useFormStatus();
   return (
-    <button type="submit" disabled={status.pending} aria-disabled={status.pending}>
+    <button
+      type="submit"
+      disabled={status.pending}
+      aria-disabled={status.pending}
+    >
       {status.pending ? pending : idle}
     </button>
   );
