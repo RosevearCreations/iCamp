@@ -105,6 +105,6 @@ test("Build 017 production closeout is recorded and queue advances", async () =>
   );
   assert.match(
     queue,
-    /(Next active build|Active build in promotion)[\s\S]*Build 034 — Accommodation Compatibility Engine[\s\S]*(QUEUED — NOT STARTED|IMPLEMENTED — PROMOTION IN PROGRESS)/u,
+    /Build 034 — Accommodation Compatibility Engine[\s\S]*FULLY PROMOTED — `main` GREEN/u,
   );
 });
