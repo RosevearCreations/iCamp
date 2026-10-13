@@ -62,7 +62,6 @@ test("Build 027 remains queued until production closeout", async () => {
   );
 });
 
-
 test("Build 027 covers hosted foreign-key advisor findings", async () => {
   const indexes = await readFile(
     "database/migrations/0031_cottage_turnover_fk_indexes.sql",
