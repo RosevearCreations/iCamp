@@ -153,7 +153,6 @@ export async function updateRentalCottageDetailsAction(formData: FormData) {
   finish(campgroundId, "Rental cottage details saved.");
 }
 
-
 export async function createCottageHousekeepingTemplateAction(
   formData: FormData,
 ) {
@@ -227,9 +226,7 @@ export async function createCottageTurnoverAction(formData: FormData) {
   finish(campgroundId, "Cottage turnover started.");
 }
 
-export async function recordCottageTurnoverItemCheckAction(
-  formData: FormData,
-) {
+export async function recordCottageTurnoverItemCheckAction(formData: FormData) {
   const campgroundId = field(formData, "campgroundId");
   const session = await requireCampgroundPermission(
     campgroundId,
@@ -250,9 +247,7 @@ export async function recordCottageTurnoverItemCheckAction(
   finish(campgroundId, "Turnover checklist evidence saved.");
 }
 
-export async function recordCottageDamageInspectionAction(
-  formData: FormData,
-) {
+export async function recordCottageDamageInspectionAction(formData: FormData) {
   const campgroundId = field(formData, "campgroundId");
   const session = await requireCampgroundPermission(
     campgroundId,
