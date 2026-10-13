@@ -112,35 +112,32 @@ export default async function CampgroundStatusPage({
     restrictions,
     restrictionTargets,
   ] = await Promise.all([
-      canReadAccommodations
-        ? listAccommodations(session.user.id, selected.campgroundId)
-        : Promise.resolve([]),
-      canReadAssets
-        ? listOperationalAssets(session.user.id, selected.campgroundId)
-        : Promise.resolve([]),
-      canReadAccommodations
-        ? listAccommodationStatusHistory(session.user.id, selected.campgroundId)
-        : Promise.resolve([]),
-      canReadAssets
-        ? listOperationalAssetStatusHistory(
-            session.user.id,
-            selected.campgroundId,
-          )
-        : Promise.resolve([]),
-      canManageOperations
-        ? listManagementRestrictions(session.user.id, selected.campgroundId)
-        : Promise.resolve([]),
-      canManageOperations
-        ? listManagementRestrictionTargets(
-            session.user.id,
-            selected.campgroundId,
-          )
-        : Promise.resolve({
-            accommodations: [],
-            assets: [],
-            sections: [],
-          }),
-    ]);
+    canReadAccommodations
+      ? listAccommodations(session.user.id, selected.campgroundId)
+      : Promise.resolve([]),
+    canReadAssets
+      ? listOperationalAssets(session.user.id, selected.campgroundId)
+      : Promise.resolve([]),
+    canReadAccommodations
+      ? listAccommodationStatusHistory(session.user.id, selected.campgroundId)
+      : Promise.resolve([]),
+    canReadAssets
+      ? listOperationalAssetStatusHistory(
+          session.user.id,
+          selected.campgroundId,
+        )
+      : Promise.resolve([]),
+    canManageOperations
+      ? listManagementRestrictions(session.user.id, selected.campgroundId)
+      : Promise.resolve([]),
+    canManageOperations
+      ? listManagementRestrictionTargets(session.user.id, selected.campgroundId)
+      : Promise.resolve({
+          accommodations: [],
+          assets: [],
+          sections: [],
+        }),
+  ]);
 
   const accommodationAttention = accommodations.filter((item) =>
     ["inspection", "maintenance", "winterized", "closed"].includes(
@@ -258,8 +255,8 @@ export default async function CampgroundStatusPage({
           </div>
           <p className={styles.boundary}>
             Build 030 still owns immediate current state. Build 031 adds
-            date-scoped management restrictions without silently rewriting
-            those states; later availability builds will consume both sources
+            date-scoped management restrictions without silently rewriting those
+            states; later availability builds will consume both sources
             authoritatively.
           </p>
         </section>
@@ -370,7 +367,10 @@ export default async function CampgroundStatusPage({
 
             <div className={styles.restrictionList}>
               {restrictions.map((restriction) => (
-                <article className={styles.restrictionCard} key={restriction.id}>
+                <article
+                  className={styles.restrictionCard}
+                  key={restriction.id}
+                >
                   <header className={styles.cardHeader}>
                     <div>
                       <p className={styles.kicker}>
