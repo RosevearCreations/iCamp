@@ -27,13 +27,13 @@ export const metadata: Metadata = {
 };
 
 function titleCase(value: string) {
-  return value.replaceAll("_", " ").replace(/\b\w/gu, (letter) =>
-    letter.toUpperCase(),
-  );
+  return value
+    .replaceAll("_", " ")
+    .replace(/\b\w/gu, (letter) => letter.toUpperCase());
 }
 
-function limitText(value: number | null) {
-  return value === null ? "Not set" : String(value);
+function limitText(value: number | null | undefined) {
+  return value === null || value === undefined ? "Not set" : String(value);
 }
 
 export default async function CapacityRulesPage({
@@ -100,7 +100,9 @@ export default async function CapacityRulesPage({
       return "Whole campground";
     }
     if (rule.scopeKind === "section") {
-      return "Section · " + (sectionNames.get(rule.sectionId ?? "") ?? "Unknown");
+      return (
+        "Section · " + (sectionNames.get(rule.sectionId ?? "") ?? "Unknown")
+      );
     }
     if (rule.scopeKind === "accommodation_type") {
       return "Type · " + titleCase(rule.accommodationKind ?? "unknown");
@@ -144,8 +146,7 @@ export default async function CapacityRulesPage({
             accommodationKind: previewAccommodation.accommodationKind,
             sectionId: previewAccommodation.sectionId,
             siteAreaSquareMeters: previewAccommodation.siteAreaSquareMeters,
-            physicalMaxOccupancy:
-              previewAccommodation.physicalMaxOccupancy,
+            physicalMaxOccupancy: previewAccommodation.physicalMaxOccupancy,
           },
           occupants: params.occupants ?? "1",
           visitors: params.visitors ?? "0",
@@ -239,10 +240,10 @@ export default async function CapacityRulesPage({
             </div>
           </div>
           <p className={styles.boundary}>
-            Precedence is campground → accommodation type → section →
-            individual accommodation. Within the same scope, a matching
-            campsite-size band overrides that scope&apos;s default fields.
-            Unspecified limits inherit from broader matching rules.
+            Precedence is campground → accommodation type → section → individual
+            accommodation. Within the same scope, a matching campsite-size band
+            overrides that scope&apos;s default fields. Unspecified limits
+            inherit from broader matching rules.
           </p>
         </section>
 
@@ -260,7 +261,10 @@ export default async function CapacityRulesPage({
             width measurements.
           </p>
 
-          <form action={createCapacityLimitRuleAction} className={styles.formGrid}>
+          <form
+            action={createCapacityLimitRuleAction}
+            className={styles.formGrid}
+          >
             <input
               type="hidden"
               name="campgroundId"
@@ -356,8 +360,8 @@ export default async function CapacityRulesPage({
             helpTopic="campground.structure"
           />
           <p className={styles.boundary}>
-            Rules are append-preserved. Archive a superseded rule and create
-            its replacement rather than rewriting historical configuration.
+            Rules are append-preserved. Archive a superseded rule and create its
+            replacement rather than rewriting historical configuration.
           </p>
 
           <div className={styles.ruleGrid}>

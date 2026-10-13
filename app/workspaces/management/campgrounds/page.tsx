@@ -593,8 +593,8 @@ export default async function CampgroundAdministrationPage({
           />
           <p>
             Configure layered occupant, visitor and vehicle limits by
-            campground, accommodation type, section or individual
-            accommodation, including campsite-size bands.
+            campground, accommodation type, section or individual accommodation,
+            including campsite-size bands.
           </p>
           <Link
             className="primary-link primary-link--dark"

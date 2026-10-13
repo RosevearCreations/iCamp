@@ -56,9 +56,7 @@ export async function createCapacityLimitRuleAction(formData: FormData) {
         ? field(formData, "accommodationKind")
         : null,
     accommodationId:
-      scopeKind === "accommodation"
-        ? field(formData, "accommodationId")
-        : null,
+      scopeKind === "accommodation" ? field(formData, "accommodationId") : null,
     minimumSiteAreaSquareMeters: optionalNumberField(
       formData,
       "minimumSiteAreaSquareMeters",

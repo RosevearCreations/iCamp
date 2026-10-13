@@ -1,13 +1,8 @@
 export type CapacityScopeKind =
-  | "campground"
-  | "accommodation_type"
-  | "section"
-  | "accommodation";
+  "campground" | "accommodation_type" | "section" | "accommodation";
 
 export type CapacityAccommodationKind =
-  | "campsite"
-  | "rental_cottage"
-  | "permanent_unit";
+  "campsite" | "rental_cottage" | "permanent_unit";
 
 export interface CapacityRule {
   id?: string | null;
