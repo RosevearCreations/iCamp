@@ -502,6 +502,30 @@ export default async function CampgroundAdministrationPage({
           </Link>
         </section>
 
+        <section className="content-panel" aria-labelledby="assets-heading">
+          <SectionHeading
+            eyebrow="Operational inventory"
+            title="Operational assets & equipment"
+            id="assets-heading"
+            helpTopic="asset.inventory"
+            trailing={<span className="build-chip">Build 029</span>}
+          />
+          <p>
+            Open the facilities, infrastructure, equipment and fleet workbench
+            for map linkage, ownership, meter facts and current operating-state
+            readiness.
+          </p>
+          <Link
+            className="primary-link primary-link--dark"
+            href={
+              "/workspaces/management/campgrounds/assets?campground=" +
+              encodeURIComponent(structure.campground.id)
+            }
+          >
+            Open operational assets workbench
+          </Link>
+        </section>
+
         <section className="content-panel" aria-labelledby="map-images-heading">
           <SectionHeading
             eyebrow="Campground map"
