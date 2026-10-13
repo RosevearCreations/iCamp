@@ -10,7 +10,10 @@ const migration = await readFile(
   "utf8",
 );
 const fkIndexes = await readFile(
-  new URL("../database/migrations/0034_operational_asset_fk_indexes.sql", import.meta.url),
+  new URL(
+    "../database/migrations/0034_operational_asset_fk_indexes.sql",
+    import.meta.url,
+  ),
   "utf8",
 );
 const service = await readFile(
