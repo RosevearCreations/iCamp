@@ -68,8 +68,12 @@ function OperatingStateSelect({ value }: Readonly<{ value: string }>) {
       <option value="unknown">Unknown</option>
       <option value="operational">Operational</option>
       <option value="limited">Limited</option>
+      <option value="inspection">Inspection</option>
+      <option value="maintenance">Maintenance</option>
       <option value="unavailable">Unavailable</option>
       <option value="seasonal">Seasonal</option>
+      <option value="winterized">Winterized</option>
+      <option value="closed">Closed</option>
     </select>
   );
 }
@@ -213,10 +217,21 @@ export default async function OperationalAssetsPage({
             </div>
           </div>
           <p className={styles.boundary}>
-            Build 029 records the current operating-state hook and revision.
-            Build 030 remains authoritative for status history, transition
-            rules, holds, maintenance closure and other state-machine behavior.
+            Build 030 now makes operating state authoritative: PostgreSQL checks
+            transitions, advances the status revision and records append-only
+            history. Dated closures and bulk holds remain Build 031 scope.
           </p>
+          <div className={styles.linkRow}>
+            <Link
+              className="primary-link primary-link--dark"
+              href={
+                "/workspaces/management/campgrounds/status?campground=" +
+                encodeURIComponent(selected.campgroundId)
+              }
+            >
+              Open Build 030 status control centre
+            </Link>
+          </div>
         </section>
 
         <section className="content-panel" aria-labelledby="inventory-heading">
