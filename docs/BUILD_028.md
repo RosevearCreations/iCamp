@@ -1,7 +1,7 @@
 # Build 028 — Site/Cottage Public Gallery: Up to 10 Images
 
 ## Status
-**FEATURE IMPLEMENTED — promotion in progress.**
+**FULLY PROMOTED — `main` GREEN.**
 
 ## Roadmap scope
 - maximum 10 active public images per campsite or rental cottage;
@@ -99,7 +99,7 @@ Public object URLs contain provider/object paths by design, but object keys are 
 - **SMS/MMS:** later flows may provide a secure visual handoff or public detail link; administrative editing remains authenticated Web/PWA or staff-assisted.
 - Public/guest consumption is intentionally deferred to the Build 038 campsite/cottage detail experience.
 
-## Verification plan
+## Verification and promotion evidence
 Automated coverage verifies:
 - schema constraints, gallery cap, hero uniqueness and direct-role denial;
 - gallery service permission, media and audit boundaries;
@@ -109,12 +109,49 @@ Automated coverage verifies:
 - the Operations Workbench interface source of truth;
 - preservation of the Build 027 turnover workflow.
 
-Before production promotion:
-- feature PR CI, Browser E2E, database lifecycle, CodeQL and Secret Scan must be GREEN;
-- independent `dev` push must be GREEN;
-- hosted Supabase migration 0032 must be applied and verified;
-- Security and Performance Advisors must be reviewed and current-build findings resolved;
-- production PR and independent `main` push must be GREEN.
+Feature PR **#109** reached exact head
+`d404d3b73466bc9aaba8656bcbffc0982fcdf2e9` with:
+- CI `38337419890` — GREEN;
+- CodeQL `38337419737` — GREEN;
+- Secret Scan `38337419779` — GREEN;
+- Verify, Browser E2E and Database migrations/lifecycle — SUCCESS.
+
+PR #109 merged to `dev` as
+`66ac8d0a2f7496310c42f3c25f7ce5e8c5f7c3fb`.
+
+Independent `dev` push evidence:
+- CI `38337610963` — GREEN;
+- CodeQL `38337610997` — GREEN;
+- Secret Scan `38337611025` — GREEN.
+
+Hosted Supabase migration **0032** is live as version
+`20261013023850`.
+
+Hosted verification proved:
+- forced RLS is enabled;
+- the gallery validation trigger is present;
+- the validation function is SECURITY INVOKER;
+- direct `anon` and `authenticated` SELECT access is denied;
+- the one-active-hero index exists;
+- a rollback-only synthetic lifecycle accepted exactly ten active images, preserved one hero, rejected an eleventh active image and retained no synthetic probe data.
+
+Supabase Security Advisor returned **zero findings** after migration 0032.
+Performance Advisor returned only INFO-level unused-index notices for the new/low-traffic schema and no Build 028 unindexed-foreign-key finding.
+
+Production PR **#110** (`dev` → `main`) passed:
+- CI `38337954945` — GREEN;
+- CodeQL `38337954858` — GREEN;
+- Secret Scan `38337954933` — GREEN;
+- Verify, Browser E2E and Database migrations/lifecycle — SUCCESS.
+
+PR #110 merged the feature state to `main` as
+`9efa3b40bb2d5ec10e8df3efbbf0d4664418ccdf`.
+
+Independent feature `main` push evidence:
+- CI `38338123097` — GREEN;
+- CodeQL `38338123084` — GREEN;
+- Secret Scan `38338123099` — GREEN;
+- Verify, Browser E2E and Database migrations/lifecycle — SUCCESS.
 
 ## Platform impact
 Build 028 remains on the existing Next.js/PostgreSQL/Supabase stack and existing Supabase Storage media buckets.
@@ -124,9 +161,12 @@ No new paid service or hosted project is required.
 ## Manual action
 No manual user action is currently required.
 
-## Queue
-Build 028 remains the active queued build until production closeout is complete.
+## Closeout
+Build 028 is fully implemented, hosted, independently verified on `dev`, promoted to `main`, and independently verified GREEN on the feature production commit.
 
-After Build 028 is fully promoted, the next build is:
+The final closeout promotion records this evidence and advances the active queue without changing Build 028 runtime behavior.
 
+## Next build
 **Build 029 — Operational Asset & Equipment/Fleet Model**
+
+Status: **QUEUED — NOT STARTED**
