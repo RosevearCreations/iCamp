@@ -10,7 +10,10 @@ import {
   getCampgroundAuthorization,
   listAssignedCampgrounds,
 } from "@/lib/authz/postgres.mjs";
-import { listMapImageVersions } from "@/lib/map-images/postgres.mjs";
+import {
+  listMapImageVersions,
+  listMapPublicationHistory,
+} from "@/lib/map-images/postgres.mjs";
 import { getMediaStorageConfig } from "@/lib/media/storage.mjs";
 
 import {
@@ -71,13 +74,15 @@ export default async function CampgroundMapImageLibraryPage({
   const selected =
     authorized.find((item) => item.campgroundId === params.campground) ??
     authorized[0];
-  const versions = await listMapImageVersions(
-    session.user.id,
-    selected.campgroundId,
-  );
+  const canPublish = selected.permissions.includes("campground.map.publish");
+  const [versions, publicationHistory] = await Promise.all([
+    listMapImageVersions(session.user.id, selected.campgroundId),
+    canPublish
+      ? listMapPublicationHistory(session.user.id, selected.campgroundId)
+      : Promise.resolve([]),
+  ]);
   const storage = getMediaStorageConfig();
   const uploadReady = Boolean(storage.projectUrl && storage.secretKey);
-  const canPublish = selected.permissions.includes("campground.map.publish");
   const activeVersion = versions.find((version) => version.isActive) ?? null;
 
   return (
@@ -94,12 +99,12 @@ export default async function CampgroundMapImageLibraryPage({
         </nav>
 
         <section className="hero-panel">
-          <p className="eyebrow">Build 018</p>
-          <h1>Overhead image library & versioning</h1>
+          <p className="eyebrow">Build 018 + 031</p>
+          <h1>Overhead image library & safe publication</h1>
           <p className="hero-panel__lead">
-            Upload real overhead, drone or site-plan imagery, keep immutable
-            source dimensions, and deliberately select the active/published map
-            version.
+            Upload and edit overhead map versions independently, then publish a
+            version only after canonical object bindings are ready. Any
+            incomplete-binding override is explicit and permanently evidenced.
           </p>
         </section>
 
@@ -291,6 +296,30 @@ export default async function CampgroundMapImageLibraryPage({
                     </dd>
                   </dl>
 
+                  {version.readiness ? (
+                    <div
+                      className={
+                        version.readiness.ready
+                          ? styles.readiness
+                          : styles.readinessWarning
+                      }
+                    >
+                      <strong>
+                        {version.readiness.ready
+                          ? "Publication ready"
+                          : "Publication review required"}
+                      </strong>
+                      <span>
+                        {version.readiness.targetBindingCount} of{" "}
+                        {version.readiness.mapObjectCount} active map objects
+                        bound to this version ·{" "}
+                        {version.readiness.unboundObjectCount} unbound ·{" "}
+                        {version.readiness.otherVersionBindingCount} bound to
+                        another version
+                      </span>
+                    </div>
+                  ) : null}
+
                   {version.notes ? <p>{version.notes}</p> : null}
 
                   <div className={styles.actions}>
@@ -346,6 +375,18 @@ export default async function CampgroundMapImageLibraryPage({
                             required
                           />
                         </label>
+                        {version.readiness && !version.readiness.ready ? (
+                          <label className={styles.override}>
+                            <input
+                              type="checkbox"
+                              name="overrideIncompleteBindings"
+                            />
+                            <span>
+                              Publish despite binding gaps as an audited
+                              management override
+                            </span>
+                          </label>
+                        ) : null}
                         <button className="primary-button" type="submit">
                           Publish version
                         </button>
@@ -357,6 +398,47 @@ export default async function CampgroundMapImageLibraryPage({
             </div>
           )}
         </section>
+
+        {canPublish ? (
+          <section
+            className="content-panel"
+            aria-labelledby="publication-history-heading"
+          >
+            <SectionHeading
+              eyebrow="Build 031 evidence"
+              title="Published-map switch history"
+              id="publication-history-heading"
+              helpTopic="campground.map.images"
+              trailing={
+                <span className="build-chip">
+                  {publicationHistory.length} events
+                </span>
+              }
+            />
+            {publicationHistory.length === 0 ? (
+              <p>No safe publication switch has been recorded yet.</p>
+            ) : (
+              <div className={styles.publicationHistory}>
+                {publicationHistory.map((event) => (
+                  <article className={styles.publicationEvent} key={event.id}>
+                    <strong>
+                      Revision {event.publicationRevision}: version{" "}
+                      {event.fromVersionNumber ?? "none"} → version{" "}
+                      {event.toVersionNumber}
+                    </strong>
+                    <span>
+                      {new Date(event.occurredAt).toLocaleString()} ·{" "}
+                      {event.overrideUsed
+                        ? "audited override used"
+                        : "readiness checks passed"}
+                    </span>
+                    <p>{event.reason}</p>
+                  </article>
+                ))}
+              </div>
+            )}
+          </section>
+        ) : null}
 
         <section className="content-panel" aria-labelledby="freshness-heading">
           <SectionHeading
