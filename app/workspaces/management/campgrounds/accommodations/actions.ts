@@ -506,9 +506,13 @@ export async function uploadAccommodationGalleryImageAction(
       });
     }
 
-    const [source, thumbnail, optimized] = uploads.map(
-      ({ body: _body, ...media }) => media,
-    );
+    const source = uploads[0];
+    const thumbnail = uploads[1];
+    const optimized = uploads[2];
+
+    if (!source || !thumbnail || !optimized) {
+      throw new Error("Gallery media preparation is incomplete.");
+    }
 
     await registerAccommodationGalleryImage({
       actorUserId: session.user.id,
