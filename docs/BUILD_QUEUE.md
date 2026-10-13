@@ -465,8 +465,23 @@ Delivered:
 - no new Vercel, Cloudflare or paid hosted runtime;
 - exact-tree feature, hardening, `dev` and production promotion with CI, Browser E2E, Database, CodeQL and Secret Scan gates GREEN.
 
+### Build 030 — Accommodation & Asset Status Engine
+Status: **FULLY PROMOTED — `main` GREEN.**
+
+Delivered:
+- authoritative accommodation states for available, held, reserved, arriving, occupied, departing, inspection, maintenance, winterized and closed;
+- authoritative facility/equipment/fleet states for unknown, operational, limited, inspection, maintenance, unavailable, seasonal, winterized and closed;
+- PostgreSQL-enforced transition rules and append-only status history for both state machines;
+- actor, timestamp, optional reason, revision and audit evidence for every real status transition;
+- accommodation status changes advance both status and availability revisions;
+- optimistic row-version protection and server-authorized transition commands;
+- responsive Management → Campgrounds → Status control centre spanning accommodations, facilities, equipment and fleet;
+- hosted Supabase migrations 0035–0037 with zero Security Advisor findings and Build 030 RLS performance warnings closed;
+- exact-tree feature, hardening, `dev` and production promotion with CI, Browser E2E, Database, CodeQL and Secret Scan gates GREEN;
+- production merge SHA `50d0e05fe6c75efb620b8909aebdbad291076b86` independently GREEN after merge.
+
 ## Next active build
-**Build 030 — Accommodation & Asset Status Engine**
+**Build 031 — Management Closures, Holds & Map Publication**
 
 Status: **QUEUED — NOT STARTED**
 

@@ -1,7 +1,7 @@
 # Build 030 — Accommodation & Asset Status Engine
 
 ## Status
-**FEATURE IMPLEMENTED — promotion in progress.**
+**FULLY PROMOTED — `main` GREEN.**
 
 ## Scope
 
@@ -42,18 +42,20 @@ Status-history tables are public-schema data with ENABLE + FORCE RLS, explicit a
 
 No new Vercel, Cloudflare, storage bucket, worker, paid service or public runtime is introduced.
 
-## Promotion requirements
+## Promotion evidence
 
-- feature PR to `dev`: CI, Browser E2E, database lifecycle, CodeQL and Secret Scan GREEN;
-- independent `dev` push GREEN;
-- hosted Supabase migration 0035 applied and verified;
-- Supabase Security and Performance Advisors reviewed, with any Build 030 findings closed;
-- production PR `dev` → `main` GREEN;
-- independent production `main` push GREEN;
-- production closeout evidence recorded and queue advanced.
+- feature PR #118 merged to `dev` after CI, Browser E2E, database lifecycle, CodeQL and Secret Scan were GREEN;
+- Supabase advisor hardening PRs #119 and #120 merged cleanly to `dev`;
+- independent `dev` SHA `d01c613ccd6f0abaf75474417b21733d89b5de70` passed Verify, Browser E2E, database lifecycle/idempotence, CodeQL and Secret Scan;
+- hosted Supabase migrations `0035_accommodation_asset_status_engine`, `0036_status_history_rls_initplan` and `0037_status_history_rls_initplan_scalar` applied successfully;
+- hosted Supabase Security Advisor returned zero findings;
+- Build 030-specific Supabase RLS performance warnings were closed; only generic unused-index INFO notices remain for the young project;
+- production PR #121 passed its own GREEN CI, Browser E2E, database lifecycle, CodeQL and Secret Scan gates;
+- production merge SHA `50d0e05fe6c75efb620b8909aebdbad291076b86` passed independent post-merge Verify, Browser E2E, database lifecycle/idempotence, JavaScript/TypeScript analysis and Secret Scan checks;
+- no manual user action was required.
 
 ## Next build after closeout
 
 **Build 031 — Management Closures, Holds & Map Publication**
 
-Status: **QUEUED AFTER BUILD 030 CLOSEOUT**
+Status: **QUEUED — NOT STARTED**
