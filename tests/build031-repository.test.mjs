@@ -117,6 +117,6 @@ test("Build 031 production closeout advances the active queue", () => {
   assert.match(build, /No manual user action was required/u);
   assert.match(
     queue,
-    /Build 031 — Management Closures, Holds & Map Publication[\s\S]*FULLY PROMOTED — `main` GREEN[\s\S]*(Next active build|Active build in promotion)[\s\S]*Build 034 — Accommodation Compatibility Engine[\s\S]*(QUEUED — NOT STARTED|IMPLEMENTED — PROMOTION IN PROGRESS)/u,
+    /Build 031 — Management Closures, Holds & Map Publication[\s\S]*FULLY PROMOTED — `main` GREEN[\s\S]*Build 034 — Accommodation Compatibility Engine[\s\S]*FULLY PROMOTED — `main` GREEN/u,
   );
 });

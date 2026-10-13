@@ -105,6 +105,6 @@ test("Build 033 records completed production promotion and hands off Build 034",
   assert.match(build, /No manual user action was required/iu);
   assert.match(
     queue,
-    /Build 033 — Capacity, Guest & Vehicle Limit Rules[\s\S]*FULLY PROMOTED — `main` GREEN[\s\S]*(Next active build|Active build in promotion)[\s\S]*Build 034 — Accommodation Compatibility Engine[\s\S]*(QUEUED — NOT STARTED|IMPLEMENTED — PROMOTION IN PROGRESS)/u,
+    /Build 033 — Capacity, Guest & Vehicle Limit Rules[\s\S]*FULLY PROMOTED — `main` GREEN[\s\S]*Build 034 — Accommodation Compatibility Engine[\s\S]*FULLY PROMOTED — `main` GREEN/u,
   );
 });

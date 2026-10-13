@@ -525,10 +525,25 @@ Delivered:
 - exact feature, `dev`, production PR and independent `main` verification with Verify, Browser E2E, Database/lifecycle/idempotence, CodeQL and Secret Scan GREEN;
 - production feature merge SHA `048dd3fb874f6404b99d0c8ebfba91fd8bc51e31`.
 
-## Active build in promotion
-**Build 034 — Accommodation Compatibility Engine**
+### Build 034 — Accommodation Compatibility Engine
+Status: **FULLY PROMOTED — `main` GREEN.**
 
-Status: **IMPLEMENTED — PROMOTION IN PROGRESS**
+Delivered:
+- server-authoritative tent, RV and cottage compatibility evaluation;
+- RV length, width, height, electrical, water, wastewater and Wi-Fi fit checks using existing campsite facts;
+- cottage occupancy, accessibility and requested-feature checks using existing cottage facts;
+- explicit campsite accessibility and campsite/cottage pet compatibility facts;
+- Build 033 capacity rules folded into the same booking-fit result;
+- stable server rejection contract for incompatible booking choices;
+- visible Management → Campgrounds compatibility preview and audited policy management;
+- hosted Supabase migration `20261013204945`, zero Security Advisor findings and no Build-034-specific advisor regression;
+- exact feature, `dev`, production PR and independent `main` verification with Verify, Browser E2E, Database migrations, CodeQL and Secret Scan GREEN;
+- production feature merge SHA `be04c5b7fbb15e9292124b7a3b70af8e5a95d4bf`.
+
+## Next active build
+**Build 035 — Server-Authoritative Live Availability**
+
+Status: **QUEUED — NOT STARTED**
 
 ## Operating rule
 - Work primarily on `dev`.

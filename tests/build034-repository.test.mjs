@@ -77,10 +77,17 @@ test("Build 034 exposes visible management preview and policy controls", () => {
   assert.match(page, /Save compatibility policy/u);
 });
 
-test("Build 034 keeps live availability in Build 035", () => {
+test("Build 034 records production closeout and queues Build 035", () => {
   assert.match(build, /Build 035/u);
   assert.match(build, /Web\/PWA/u);
   assert.match(build, /IVR\/DTMF/u);
   assert.match(build, /SMS\/MMS/u);
-  assert.match(queue, /Build 034 — Accommodation Compatibility Engine/u);
+  assert.match(build, /FULLY PROMOTED — `main` GREEN/u);
+  assert.match(build, /production PR #134/iu);
+  assert.match(build, /be04c5b7fbb15e9292124b7a3b70af8e5a95d4bf/u);
+  assert.match(build, /20261013204945/u);
+  assert.match(
+    queue,
+    /Build 034 — Accommodation Compatibility Engine[\s\S]*FULLY PROMOTED — `main` GREEN[\s\S]*Next active build[\s\S]*Build 035 — Server-Authoritative Live Availability[\s\S]*QUEUED — NOT STARTED/u,
+  );
 });
