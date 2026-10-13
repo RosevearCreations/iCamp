@@ -168,6 +168,18 @@ export default async function AccommodationAdministrationPage({
           </div>
         </div>
 
+        <div className={styles.linkRow}>
+          <Link
+            className="primary-link primary-link--dark"
+            href={
+              "/workspaces/management/campgrounds/status?campground=" +
+              encodeURIComponent(selected.campgroundId)
+            }
+          >
+            Open Build 030 status control centre
+          </Link>
+        </div>
+
         {params.saved ? (
           <div className={styles.notice}>{params.saved}</div>
         ) : null}

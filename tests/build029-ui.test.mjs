@@ -25,7 +25,7 @@ test("Build 029 exposes one integrated operations workbench", () => {
   assert.match(page, /Ownership/u);
   assert.match(page, /Meter reading/u);
   assert.match(page, /Map identity/u);
-  assert.match(page, /Build 030 remains authoritative/u);
+  assert.match(page, /Build 030 now makes operating state authoritative/u);
 });
 
 test("campground administration links to the Build 029 workbench", () => {
