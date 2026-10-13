@@ -526,7 +526,10 @@ export default async function CampgroundAdministrationPage({
           </Link>
         </section>
 
-        <section className="content-panel" aria-labelledby="status-engine-heading">
+        <section
+          className="content-panel"
+          aria-labelledby="status-engine-heading"
+        >
           <SectionHeading
             eyebrow="Current operating state"
             title="Accommodation & asset status engine"
