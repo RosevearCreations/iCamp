@@ -525,10 +525,10 @@ Delivered:
 - exact feature, `dev`, production PR and independent `main` verification with Verify, Browser E2E, Database/lifecycle/idempotence, CodeQL and Secret Scan GREEN;
 - production feature merge SHA `048dd3fb874f6404b99d0c8ebfba91fd8bc51e31`.
 
-## Next active build
+## Active build in promotion
 **Build 034 — Accommodation Compatibility Engine**
 
-Status: **QUEUED — NOT STARTED**
+Status: **IMPLEMENTED — PROMOTION IN PROGRESS**
 
 ## Operating rule
 - Work primarily on `dev`.
