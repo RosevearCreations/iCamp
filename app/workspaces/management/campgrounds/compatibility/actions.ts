@@ -18,7 +18,11 @@ function checked(formData: FormData, key: string) {
 
 export async function updateCompatibilityPolicyAction(formData: FormData) {
   const campgroundId = field(formData, "campgroundId");
-  const session = await requireCampgroundPermission(campgroundId, "accommodation.manage", path);
+  const session = await requireCampgroundPermission(
+    campgroundId,
+    "accommodation.manage",
+    path,
+  );
   const petsAllowed = checked(formData, "petsAllowed");
   await updateCompatibilityPolicy({
     actorUserId: session.user.id,
@@ -31,5 +35,11 @@ export async function updateCompatibilityPolicyAction(formData: FormData) {
     maxPets: petsAllowed ? Number(field(formData, "maxPets")) : 0,
   });
   revalidatePath(path);
-  redirect(path + "?campground=" + encodeURIComponent(campgroundId) + "&saved=" + encodeURIComponent("Compatibility policy updated."));
+  redirect(
+    path +
+      "?campground=" +
+      encodeURIComponent(campgroundId) +
+      "&saved=" +
+      encodeURIComponent("Compatibility policy updated."),
+  );
 }
