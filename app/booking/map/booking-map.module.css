@@ -1,0 +1,154 @@
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(15rem, 1fr);
+  gap: 1rem;
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1rem;
+  margin-bottom: 0.75rem;
+  color: var(--muted);
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.legend > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.swatch {
+  width: 0.85rem;
+  height: 0.85rem;
+  border: 1px solid rgb(23 50 43 / 40%);
+  border-radius: 0.2rem;
+}
+
+.viewport {
+  position: relative;
+  min-height: 22rem;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 1rem;
+  background:
+    linear-gradient(45deg, rgb(23 63 53 / 5%) 25%, transparent 25%),
+    linear-gradient(-45deg, rgb(23 63 53 / 5%) 25%, transparent 25%),
+    #eef2ed;
+  background-position:
+    0 0,
+    0.6rem 0.6rem;
+  background-size: 1.2rem 1.2rem;
+}
+
+.map {
+  display: block;
+  width: 100%;
+  height: auto;
+  min-height: 22rem;
+  max-height: 70vh;
+}
+
+.fallbackBackground {
+  fill: rgb(237 243 238 / 78%);
+}
+
+.polygon {
+  stroke: #17322b;
+  stroke-width: max(2px, 0.18%);
+  vector-effect: non-scaling-stroke;
+  transition:
+    opacity 120ms ease,
+    stroke-width 120ms ease;
+}
+
+.polygon:focus {
+  outline: none;
+  stroke: #ffffff;
+  stroke-width: max(5px, 0.36%);
+}
+
+.selectable {
+  cursor: pointer;
+}
+
+.disabled {
+  cursor: not-allowed;
+}
+
+.selected {
+  stroke: #ffffff;
+  stroke-width: max(5px, 0.36%);
+}
+
+.tone_green {
+  fill: rgb(75 170 96 / 72%);
+}
+
+.tone_grey {
+  fill: rgb(115 124 126 / 72%);
+}
+
+.tone_yellow {
+  fill: rgb(226 176 63 / 78%);
+}
+
+.tone_red {
+  fill: rgb(191 70 70 / 76%);
+}
+
+.selection {
+  display: grid;
+  align-content: start;
+  gap: 0.55rem;
+  padding: 1rem;
+  border: 1px solid var(--line);
+  border-radius: 1rem;
+  background: var(--surface-soft);
+}
+
+.selection strong {
+  color: var(--brand);
+  font-size: 1.05rem;
+}
+
+.selection span {
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.selectionLabel {
+  font-size: 0.72rem;
+  font-weight: 850;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.imageNotice {
+  position: absolute;
+  inset: auto 0.75rem 0.75rem;
+  z-index: 2;
+  margin: 0;
+  padding: 0.65rem 0.8rem;
+  border-radius: 0.65rem;
+  background: rgb(255 255 255 / 92%);
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+
+@media (max-width: 56rem) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+
+  .selection {
+    order: -1;
+  }
+
+  .viewport,
+  .map {
+    min-height: 18rem;
+  }
+}
