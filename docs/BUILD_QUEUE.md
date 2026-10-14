@@ -593,8 +593,22 @@ Delivered:
 - Web/PWA full visual experience with IVR/DTMF and SMS/MMS concise canonical-data/secure-handoff contracts;
 - no database migration or new hosted runtime.
 
+### Build 039 — Rate Plans & Dynamic Date Pricing
+Status: **FULLY PROMOTED — `main` GREEN.**
+
+Delivered:
+- canonical campsite/rental-cottage rate plans with accommodation-specific or accommodation-kind scope;
+- nightly, weekly, monthly, seasonal and yearly price fields stored in integer cents;
+- weekend, holiday, season, event and promotional dynamic adjustments;
+- server-authoritative quote calculation integrated into the public accommodation detail experience;
+- truthful unavailable-rate behavior instead of fabricated client-side pricing;
+- FORCE RLS, actor-bound pricing writes and no application DELETE privilege;
+- hosted Supabase migrations `20261014134304` and `20261014142429`;
+- zero Supabase Security Advisor findings and closure of all Build-039-specific FK-index and duplicate-policy warnings;
+- exact-tree feature, hardening, `dev` and production promotion with Verify, Browser E2E, Database/lifecycle/idempotence, CodeQL and Secret Scan GREEN.
+
 ## Next active build
-**Build 039 — Rate Plans & Dynamic Date Pricing**
+**Build 040 — Add-Ons, Passes and Service Fees**
 
 Status: **QUEUED — NOT STARTED**
 
