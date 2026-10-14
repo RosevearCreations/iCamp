@@ -1,6 +1,6 @@
 # Build 040 — Add-Ons, Passes and Service Fees
 
-Status: **IMPLEMENTED — promotion pending.**
+Status: **FULLY PROMOTED — `main` GREEN.**
 
 ## Scope delivered
 
@@ -85,4 +85,14 @@ No new paid service, Vercel project, Cloudflare project, Worker, D1 database or 
 
 ## Promotion evidence
 
-To be completed after exact-tree `dev` and `main` verification.
+- Feature PR **#154** passed Verify, Browser E2E, PostgreSQL migration/lifecycle/idempotence, CodeQL and Secret Scan.
+- Feature PR #154 merged to `dev` as `6568b49538aa9795250155abfbac1b102c105007`.
+- The exact `dev` merge SHA independently passed CI, Browser E2E, PostgreSQL migration/lifecycle/idempotence, CodeQL and Secret Scan.
+- Hosted Supabase migration `20261014171830 / add_ons_passes_service_fees` applied successfully and Build 040 verification SQL passed.
+- Supabase Security Advisor returned **0 findings** after the Build 040 DDL.
+- Supabase Performance Advisor returned no Build-040 WARN findings; only expected `unused_index` INFO entries for newly created indexes.
+- Production PR **#155** passed Verify, Browser E2E, PostgreSQL migration/lifecycle/idempotence, CodeQL and Secret Scan.
+- PR #155 merged the exact verified `dev` SHA to `main` as feature-promotion SHA `7e6bbfdec7afae037cbe49a6733aef6b3e37afa0`.
+- The exact production feature-promotion SHA independently passed CI, Browser E2E, PostgreSQL migration/lifecycle/idempotence, CodeQL and Secret Scan.
+
+Build 040 is therefore fully promoted. The release-record update advances the active queue to Build 041 without changing the Build 040 runtime payload.
