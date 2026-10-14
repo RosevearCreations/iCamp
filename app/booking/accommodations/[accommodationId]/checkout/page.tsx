@@ -73,11 +73,8 @@ export default async function ReservationCheckoutPage({
     notFound();
   }
 
-  const mapHref =
-    `/booking/map?campground=${encodeURIComponent(checkout.campground.slug)}`;
-  const errorMessage = query.error
-    ? checkoutErrorMessage(query.error)
-    : null;
+  const mapHref = `/booking/map?campground=${encodeURIComponent(checkout.campground.slug)}`;
+  const errorMessage = query.error ? checkoutErrorMessage(query.error) : null;
 
   if (checkout.hold.state !== "active") {
     return (
@@ -140,8 +137,7 @@ export default async function ReservationCheckoutPage({
         <section className="hero-panel">
           <p className="eyebrow">Build 041 · Reservation checkout</p>
           <h1>
-            {checkout.accommodation.code} ·{" "}
-            {checkout.accommodation.displayName}
+            {checkout.accommodation.code} · {checkout.accommodation.displayName}
           </h1>
           <p className="hero-panel__lead">
             {checkout.dates.arrivalDate} to {checkout.dates.departureDate} ·{" "}
@@ -356,15 +352,30 @@ export default async function ReservationCheckoutPage({
                 </p>
                 <label>
                   <span>RV length (metres)</span>
-                  <input name="rvLengthMeters" type="number" min="0.1" step="0.01" />
+                  <input
+                    name="rvLengthMeters"
+                    type="number"
+                    min="0.1"
+                    step="0.01"
+                  />
                 </label>
                 <label>
                   <span>RV width (metres)</span>
-                  <input name="rvWidthMeters" type="number" min="0.1" step="0.01" />
+                  <input
+                    name="rvWidthMeters"
+                    type="number"
+                    min="0.1"
+                    step="0.01"
+                  />
                 </label>
                 <label>
                   <span>RV height (metres)</span>
-                  <input name="rvHeightMeters" type="number" min="0.1" step="0.01" />
+                  <input
+                    name="rvHeightMeters"
+                    type="number"
+                    min="0.1"
+                    step="0.01"
+                  />
                 </label>
                 <label>
                   <span>Electrical amperage requested</span>
@@ -464,20 +475,14 @@ export default async function ReservationCheckoutPage({
               {checkout.dateRules.effectiveMaximumStay} nights.
             </p>
             {checkout.dateRules.holidayNames.length > 0 ? (
-              <p>
-                Holidays: {checkout.dateRules.holidayNames.join(", ")}.
-              </p>
+              <p>Holidays: {checkout.dateRules.holidayNames.join(", ")}.</p>
             ) : null}
             {checkout.dateRules.seasonNames.length > 0 ? (
               <p>Seasons: {checkout.dateRules.seasonNames.join(", ")}.</p>
             ) : null}
             <label>
-              <input
-                type="checkbox"
-                name="rulesAcknowledged"
-                required
-              />{" "}
-              I acknowledge the campground booking rules and authorize iCamp to
+              <input type="checkbox" name="rulesAcknowledged" required /> I
+              acknowledge the campground booking rules and authorize iCamp to
               revalidate availability, compatibility, capacity and all selected
               charges and save the resulting final server quote with this
               reservation.

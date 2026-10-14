@@ -112,8 +112,7 @@ export async function finalizeReservationCheckoutAction(formData: FormData) {
           field(formData, "electricalAmperage") || "0",
         ),
         needsWaterAtSite: formData.get("needsWaterAtSite") === "on",
-        needsWastewaterAtSite:
-          formData.get("needsWastewaterAtSite") === "on",
+        needsWastewaterAtSite: formData.get("needsWastewaterAtSite") === "on",
         needsWifi: formData.get("needsWifi") === "on",
         needsStepFreeAccess: formData.get("needsStepFreeAccess") === "on",
         needsAccessibleWashroom:

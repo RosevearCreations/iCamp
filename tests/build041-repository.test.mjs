@@ -10,10 +10,7 @@ const migration = await readFile(
   "utf8",
 );
 const verify = await readFile(
-  new URL(
-    "../database/verify/0049_reservation_checkout.sql",
-    import.meta.url,
-  ),
+  new URL("../database/verify/0049_reservation_checkout.sql", import.meta.url),
   "utf8",
 );
 const service = await readFile(

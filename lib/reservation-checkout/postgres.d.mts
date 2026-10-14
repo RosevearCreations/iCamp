@@ -97,27 +97,24 @@ export function finalizeReservationCheckout(input: {
 export function getPendingReservationCheckout(input: {
   userId: string;
   reservationId: string;
-}): Promise<
-  | {
-      id: string;
-      status: string;
-      campground: { name: string; slug: string };
-      accommodation: { code: string; displayName: string };
-      dates: { arrivalDate: string; departureDate: string };
-      contact: { name: string; email: string };
-      party: {
-        occupants: number;
-        visitors: number;
-        pets: number;
-        vehicles: number;
-      };
-      quote: {
-        currencyCode: string;
-        staySubtotalCents: number;
-        chargeTotalCents: number;
-        totalCents: number;
-      };
-      rulesAcknowledgedAt: Date | string;
-    }
-  | null
->;
+}): Promise<{
+  id: string;
+  status: string;
+  campground: { name: string; slug: string };
+  accommodation: { code: string; displayName: string };
+  dates: { arrivalDate: string; departureDate: string };
+  contact: { name: string; email: string };
+  party: {
+    occupants: number;
+    visitors: number;
+    pets: number;
+    vehicles: number;
+  };
+  quote: {
+    currencyCode: string;
+    staySubtotalCents: number;
+    chargeTotalCents: number;
+    totalCents: number;
+  };
+  rulesAcknowledgedAt: Date | string;
+} | null>;

@@ -61,8 +61,7 @@ export default async function PendingReservationPage({
             {reservation.accommodation.displayName}
           </p>
           <p>
-            {reservation.dates.arrivalDate} to{" "}
-            {reservation.dates.departureDate}
+            {reservation.dates.arrivalDate} to {reservation.dates.departureDate}
           </p>
         </section>
 
@@ -150,8 +149,8 @@ export default async function PendingReservationPage({
           </p>
           <p>
             <strong>IVR/DTMF:</strong> concise reservation status and total can
-            be read from the same canonical reservation; payment remains a
-            later provider-safe flow.
+            be read from the same canonical reservation; payment remains a later
+            provider-safe flow.
           </p>
           <p>
             <strong>SMS/MMS:</strong> concise pending status and a secure-link
