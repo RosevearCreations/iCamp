@@ -87,7 +87,10 @@ export default async function PublicBookingMapPage({
           </p>
         </section>
 
-        <section className="content-panel" aria-labelledby="booking-filter-title">
+        <section
+          className="content-panel"
+          aria-labelledby="booking-filter-title"
+        >
           <SectionHeading
             eyebrow="Dates & filters"
             title="Find accommodation"
@@ -225,8 +228,8 @@ export default async function PublicBookingMapPage({
           </p>
           <p>
             <strong>IVR/DTMF:</strong> the map is graphical-only; future booking
-            flows read the same authoritative date/type availability and identify
-            accommodations by code, with staff transfer when needed.
+            flows read the same authoritative date/type availability and
+            identify accommodations by code, with staff transfer when needed.
           </p>
           <p>
             <strong>SMS/MMS:</strong> future guided booking can return matching
