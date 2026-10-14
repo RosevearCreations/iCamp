@@ -143,6 +143,68 @@ export default async function PublicAccommodationDetailPage({
           </div>
         </section>
 
+        <section
+          className="content-panel"
+          aria-labelledby="booking-charges-heading"
+        >
+          <SectionHeading
+            eyebrow="Build 040 · Canonical booking charges"
+            title="Optional extras, passes & service fees"
+            id="booking-charges-heading"
+            helpTopic="shell.overview"
+          />
+          <p>
+            Prices below come from the server-authoritative campground charge
+            catalogue. Optional items are not added to a reservation until Build
+            041 checkout.
+          </p>
+          {detail.bookingCharges.items.length > 0 ? (
+            <ul>
+              {detail.bookingCharges.items.map((item) => (
+                <li key={item.id}>
+                  <strong>{item.displayName}</strong>
+                  {" · "}
+                  {item.priceLabel}
+                  {" · "}
+                  {item.applicationMode === "automatic"
+                    ? "Automatic service fee"
+                    : item.chargeKind === "pass"
+                      ? `Optional ${item.passDurationDays}-day pass`
+                      : "Optional add-on"}
+                  {item.description ? ` · ${item.description}` : ""}
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p>
+              No public add-ons, visitor passes or service fees are currently
+              configured.
+            </p>
+          )}
+          {detail.bookingCharges.automaticTotalCents !== null ? (
+            <p>
+              <strong>Automatic service fees:</strong>{" "}
+              {new Intl.NumberFormat("en-CA", {
+                style: "currency",
+                currency: detail.bookingCharges.currencyCode,
+              }).format(detail.bookingCharges.automaticTotalCents / 100)}
+              {detail.bookingCharges.estimatedTotalCents !== null
+                ? ` · Stay plus automatic fees: ${new Intl.NumberFormat(
+                    "en-CA",
+                    {
+                      style: "currency",
+                      currency: detail.bookingCharges.currencyCode,
+                    },
+                  ).format(detail.bookingCharges.estimatedTotalCents / 100)}`
+                : ""}
+            </p>
+          ) : null}
+          <p>
+            Tax and fee category codes are retained for later finance
+            configuration; Build 040 does not invent tax rates.
+          </p>
+        </section>
+
         <section className="content-panel" aria-labelledby="gallery-heading">
           <SectionHeading
             eyebrow="Guest-facing photography"
@@ -272,17 +334,18 @@ export default async function PublicAccommodationDetailPage({
           <h2>Channel contract</h2>
           <p>
             <strong>Web/PWA:</strong> full gallery, feature, rule, availability,
-            dynamic-price and map-context experience.
+            dynamic-price, add-on/pass/service-fee and map-context experience.
           </p>
           <p>
             <strong>IVR/DTMF:</strong> the same canonical campsite/cottage
-            facts, dates and availability can be read concisely by accommodation
-            code; gallery and map context use staff or secure-link handoff.
+            facts, dates, availability and canonical booking-charge prices can
+            be read concisely by accommodation code; gallery and long catalogues
+            use staff or secure-link handoff.
           </p>
           <p>
-            <strong>SMS/MMS:</strong> the same canonical facts and availability
-            can be summarized with a secure link back to this visual detail
-            page.
+            <strong>SMS/MMS:</strong> the same canonical facts, availability and
+            booking-charge prices can be summarized with a secure link back to
+            this visual detail page.
           </p>
         </section>
       </div>
