@@ -556,7 +556,7 @@ Delivered:
 - production feature merge SHA `b68953c20b2963c76fd56d7fc827b0ea615defae`.
 
 ### Build 036 — Atomic Temporary Reservation Holds
-Status: **PRODUCTION CANDIDATE — `dev` GREEN.**
+Status: **FULLY PROMOTED — `main` GREEN.**
 
 Delivered:
 - campground-configurable temporary hold duration with bounded 2-60 minute policy;
