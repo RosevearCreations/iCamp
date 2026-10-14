@@ -1,6 +1,6 @@
 # Build 041 — Reservation Checkout
 
-Status: **IMPLEMENTED — promotion pending.**
+Status: **FULLY PROMOTED — `main` GREEN.**
 
 ## Scope delivered
 
@@ -120,13 +120,14 @@ Build 043 continues to own confirmations, receipts and reservation documents aft
 
 No new paid service, Vercel project, Cloudflare project, Worker, D1 database, R2 bucket or payment provider is introduced by Build 041.
 
-## Promotion evidence
+## Production promotion evidence
 
-Promotion evidence will be finalized after:
-
-- feature PR gates are GREEN;
-- exact `dev` merge SHA is independently GREEN;
-- hosted Supabase migration and verification pass;
-- Security and Performance Advisor review is complete;
-- production PR gates are GREEN;
-- exact `main` merge SHA is independently GREEN.
+- Feature PR #158 promoted the complete Build 041 implementation into `dev`.
+- The exact final feature head was `6a01bd6055000766dd67a65578dffdba92534d9a`; Verify, Browser E2E, Database migrations/lifecycle/idempotence, CodeQL and Secret Scan were GREEN before merge.
+- Build 041 merged into `dev` as `0506267a4ca8604b077cdcaf3b155299ad569968`.
+- The exact `dev` merge SHA independently passed Verify, Browser E2E, Database migrations/lifecycle/idempotence, CodeQL and Secret Scan after merge.
+- Hosted Supabase migration `20261014203442 / reservation_checkout` is live and `database/verify/0049_reservation_checkout.sql` passed against the hosted database.
+- Post-DDL Supabase Security Advisor returned zero findings. Performance Advisor returned no Build-041 warning-class findings; only expected unused-index INFO notices were present for newly created indexes.
+- Production PR #159 passed fresh Verify, Browser E2E, Database migrations/lifecycle/idempotence, CodeQL and Secret Scan gates on exact `dev` head `0506267a4ca8604b077cdcaf3b155299ad569968`.
+- The validated runtime payload merged to `main` as `daad080d00a82cba9cc4eb3513115467e2009f9e`.
+- The exact runtime production SHA independently passed Verify, Browser E2E, Database migrations/lifecycle/idempotence, CodeQL and Secret Scan after merge.
