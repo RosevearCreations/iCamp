@@ -1,6 +1,6 @@
 # Build 038 — Campsite & Cottage Detail/Booking Experience
 
-Status: **IMPLEMENTED — feature validation pending.**
+Status: **PRODUCTION CANDIDATE — `dev` GREEN.**
 
 ## Canonical scope
 
@@ -60,3 +60,10 @@ Build 038 adds no paid service, Vercel project, Cloudflare project, Worker, D1 d
 **Build 039 — Rate Plans & Dynamic Date Pricing**
 
 Status: **QUEUED — NOT STARTED**
+
+## Promotion evidence
+
+- Feature PR #147 final head `638adbe533e5704e366bdac30bce758d1be8180d` — CI `38503688926`, CodeQL `38503688923`, Secret Scan `38503688951`: GREEN.
+- Feature merged to `dev` as `48b235ed9c948c77e01c61467c1aa90f82e5d61f`.
+- Independent exact-`dev` verification — CI `38503877072`, CodeQL `38503877078`, Secret Scan `38503877183`: GREEN, including Verify, Browser E2E and database lifecycle.
+- Build 038 requires no database migration and therefore no hosted Supabase schema change or advisor gate.

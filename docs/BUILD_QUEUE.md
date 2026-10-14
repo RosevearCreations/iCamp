@@ -580,8 +580,21 @@ Delivered:
 - Web/PWA full visual flow with honest IVR/DTMF and SMS/MMS canonical-data/secure-handoff fallbacks;
 - no database migration, new paid service, Vercel project, Cloudflare project, Worker, D1 database or R2 bucket.
 
+### Build 038 — Campsite & Cottage Detail/Booking Experience
+Status: **PRODUCTION CANDIDATE — `dev` GREEN.**
+
+Delivered:
+- public campsite/rental-cottage detail pages linked from the Build 037 booking map with selected dates preserved;
+- server-authoritative Build 035 live availability and blocker state;
+- Build 028 up-to-10-image guest gallery using optimized public media only;
+- canonical campsite and cottage features, pet/accessibility facts and Build 032 booking-rule summary;
+- current published-map context plus canonical Amenities-layer discovery;
+- truthful rate-status boundary with no fabricated amount before Build 039;
+- Web/PWA full visual experience with IVR/DTMF and SMS/MMS concise canonical-data/secure-handoff contracts;
+- no database migration or new hosted runtime.
+
 ## Next active build
-**Build 038 — Campsite & Cottage Detail/Booking Experience**
+**Build 039 — Rate Plans & Dynamic Date Pricing**
 
 Status: **QUEUED — NOT STARTED**
 
