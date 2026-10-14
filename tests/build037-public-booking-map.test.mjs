@@ -13,7 +13,7 @@ test("Build 037 normalizes date and public map filters", () => {
     normalizePublicBookingMapFilters({
       arrivalDate: "2026-10-20",
       departureDate: "2026-10-23",
-      kind: "COTTAGE",
+      kind: "RENTAL_COTTAGE",
       availability: "AVAILABLE",
     }),
     {
