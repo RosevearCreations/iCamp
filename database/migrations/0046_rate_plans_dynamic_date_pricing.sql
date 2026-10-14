@@ -5,7 +5,7 @@ create table public.rate_plans (
   id uuid primary key default gen_random_uuid(),
   organization_id uuid not null,
   campground_id uuid not null,
-  accommodation_id uuid,
+  accommodation_id uuid references public.accommodations(id) on update cascade on delete restrict,
   accommodation_kind text check (accommodation_kind in ('campsite','rental_cottage')),
   code text not null check (code ~ '^[a-z0-9]+(?:-[a-z0-9]+)*$'),
   display_name text not null check (char_length(trim(display_name)) between 1 and 120),
@@ -27,8 +27,6 @@ create table public.rate_plans (
   row_version bigint not null default 1 check (row_version >= 1),
   constraint rate_plans_campground_fk foreign key (organization_id,campground_id)
     references public.campgrounds(organization_id,id) on update cascade on delete restrict,
-  constraint rate_plans_accommodation_fk foreign key (campground_id, accommodation_id)
-    references public.accommodations(campground_id,id) on update cascade on delete restrict,
   constraint rate_plans_dates_check check (ends_on >= starts_on),
   constraint rate_plans_scope_check check (accommodation_id is not null or accommodation_kind is not null),
   constraint rate_plans_price_check check (
