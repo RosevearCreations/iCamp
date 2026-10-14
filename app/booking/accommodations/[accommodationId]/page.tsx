@@ -260,10 +260,10 @@ export default async function PublicAccommodationDetailPage({
           <div className={styles.actions}>
             <Link href={mapHref}>Choose a different accommodation</Link>
           </div>
-          <p>
-            Build 039 preserves Build 036 atomic hold authority.
-            Build 041 checkout ownership remains unchanged. A reservation is not
-            created merely because a server-authoritative accommodation price is
+          <p data-checkout-contract="Build 041 checkout ownership">
+            Build 039 preserves Build 036 atomic hold authority. Build 041
+            checkout ownership remains unchanged. A reservation is not created
+            merely because a server-authoritative accommodation price is
             available.
           </p>
         </section>
