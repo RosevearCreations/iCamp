@@ -162,7 +162,9 @@ export function PublicBookingMap({
                 campsite/cottage detail and booking step.
               </span>
             ) : (
-              <span>This accommodation cannot be selected for these dates.</span>
+              <span>
+                This accommodation cannot be selected for these dates.
+              </span>
             )}
           </>
         ) : (
