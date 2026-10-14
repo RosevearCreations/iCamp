@@ -25,9 +25,19 @@ export interface PublicAccommodationDetail {
   facts: Array<{ label: string; value: string }>;
   rules: Array<{ label: string; value: string }>;
   rateSummary: {
-    status: "rate_plans_pending";
+    status: "quoted" | "rate_unavailable";
     label: string;
     detail: string;
+    currencyCode: string | null;
+    totalCents: number | null;
+    baseCents: number | null;
+    adjustmentCents: number | null;
+    adjustments: Array<{
+      date: string;
+      code: string;
+      displayName: string;
+      deltaCents: number;
+    }>;
   };
   gallery: Array<{
     id: string;
