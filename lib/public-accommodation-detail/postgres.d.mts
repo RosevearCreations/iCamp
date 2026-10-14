@@ -39,6 +39,25 @@ export interface PublicAccommodationDetail {
       deltaCents: number;
     }>;
   };
+  bookingCharges: {
+    currencyCode: string;
+    automaticTotalCents: number | null;
+    estimatedTotalCents: number | null;
+    items: Array<{
+      id: string;
+      code: string;
+      displayName: string;
+      description: string | null;
+      chargeKind: "add_on" | "pass" | "service_fee";
+      applicationMode: "optional" | "automatic";
+      priceLabel: string;
+      passDurationDays: number | null;
+      minimumQuantity: number;
+      maximumQuantity: number;
+      taxCategoryCode: string | null;
+      feeCategoryCode: string | null;
+    }>;
+  };
   gallery: Array<{
     id: string;
     caption: string | null;
