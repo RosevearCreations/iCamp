@@ -145,7 +145,10 @@ export default async function PublicAccommodationDetailPage({
               {detail.gallery.map((image) => (
                 <figure key={image.id}>
                   {image.url ? (
-                    <img src={image.url} alt={image.altText} />
+                    <>
+                      {/* eslint-disable-next-line @next/next/no-img-element -- Build 028 already provides optimized public variants. */}
+                      <img src={image.url} alt={image.altText} />
+                    </>
                   ) : (
                     <div className={styles.status}>
                       Image temporarily unavailable.
