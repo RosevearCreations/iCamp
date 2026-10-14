@@ -29,7 +29,7 @@ export default async function PublicAccommodationDetailPage({
   params: Promise<{ accommodationId: string }>;
   searchParams: Promise<Record<string, string | undefined>>;
 }>) {
-  const [{ accommodationId }, query] = await Promise.all([params, searchParams]);
+  const [{ accommodationId }, query] = await Promise.all([\n    params,\n    searchParams,\n  ]);
   const campgroundSlug = query.campground ?? "";
   const arrivalDate = query.arrivalDate ?? isoDate(0);
   const departureDate = query.departureDate ?? isoDate(1);
@@ -67,7 +67,7 @@ export default async function PublicAccommodationDetailPage({
         </nav>
 
         <section className="hero-panel">
-          <p className="eyebrow">Build 038 · Campsite & cottage booking detail</p>
+          <p className="eyebrow">\n            Build 038 · Campsite & cottage booking detail\n          </p>
           <h1>
             {detail.accommodation.code} · {detail.accommodation.displayName}
           </h1>
@@ -79,7 +79,7 @@ export default async function PublicAccommodationDetailPage({
               ? ` · ${detail.accommodation.sectionName}`
               : ""}
             {" · "}
-            {detail.dates.nights} {detail.dates.nights === 1 ? "night" : "nights"}
+            {detail.dates.nights}{" "}\n            {detail.dates.nights === 1 ? "night" : "nights"}
           </p>
         </section>
 
@@ -105,7 +105,7 @@ export default async function PublicAccommodationDetailPage({
               {detail.availability.blockers.length > 0 ? (
                 <p>
                   Current blocker:{" "}
-                  {detail.availability.blockers.join(", ").replaceAll("_", " ")}.
+                  {detail.availability.blockers.join(", ").replaceAll("_", " ")}\n                  .
                 </p>
               ) : null}
             </div>
@@ -120,7 +120,7 @@ export default async function PublicAccommodationDetailPage({
             />
             <p>{detail.rateSummary.detail}</p>
             <p>
-              This page does not invent a placeholder price or client-side quote.
+              This page does not invent a placeholder price or client-side\n              quote.
             </p>
           </div>
         </section>
@@ -139,14 +139,14 @@ export default async function PublicAccommodationDetailPage({
                   {image.url ? (
                     <img src={image.url} alt={image.altText} />
                   ) : (
-                    <div className={styles.status}>Image temporarily unavailable.</div>
+                    <div className={styles.status}>\n                      Image temporarily unavailable.\n                    </div>
                   )}
-                  {image.caption ? <figcaption>{image.caption}</figcaption> : null}
+                  {image.caption ? (\n                    <figcaption>{image.caption}</figcaption>\n                  ) : null}
                 </figure>
               ))}
             </div>
           ) : (
-            <p>No public gallery images have been published for this accommodation.</p>
+            <p>\n              No public gallery images have been published for this\n              accommodation.\n            </p>
           )}
         </section>
 
@@ -188,7 +188,7 @@ export default async function PublicAccommodationDetailPage({
           </dl>
         </section>
 
-        <section className="content-panel" aria-labelledby="map-context-heading">
+        <section\n          className="content-panel"\n          aria-labelledby="map-context-heading"\n        >
           <SectionHeading
             eyebrow={`Published map v${detail.mapContext.versionNumber}`}
             title="Map context & nearby amenities"
