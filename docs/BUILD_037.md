@@ -1,6 +1,6 @@
 # Build 037 — Public Interactive Booking Map
 
-Status: **PRODUCTION CANDIDATE — `dev` GREEN.**
+Status: **FULLY PROMOTED — `main` GREEN.**
 
 ## Canonical scope
 
@@ -66,3 +66,18 @@ Independent `dev` validation on that exact commit is GREEN:
 - Database migrations/lifecycle — success.
 
 No hosted Supabase schema change is required for Build 037.
+
+
+## Production promotion closeout
+
+Production PR #145 merged Build 037 to `main` as `9b768cc80ba4e8eac8e6c3366573b32620688477`.
+
+Independent branch-specific verification on that exact `main` feature-merge commit is GREEN:
+- CI `38499066748` — success;
+- CodeQL `38499066900` — success;
+- Secret Scan `38499066846` — success;
+- Verify — success;
+- Browser end-to-end — success;
+- Database migrations/lifecycle — success.
+
+Build 037 required no hosted Supabase schema migration and introduced no additional hosted runtime.
