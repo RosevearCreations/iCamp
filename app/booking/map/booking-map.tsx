@@ -18,11 +18,17 @@ export function PublicBookingMap({
   mediaAssetId,
   sourceWidth,
   sourceHeight,
+  campgroundSlug,
+  arrivalDate,
+  departureDate,
   items,
 }: Readonly<{
   mediaAssetId: string;
   sourceWidth: number;
   sourceHeight: number;
+  campgroundSlug: string;
+  arrivalDate: string;
+  departureDate: string;
   items: PublicBookingMapItem[];
 }>) {
   const [imageUrl, setImageUrl] = useState<string | null>(null);
@@ -157,10 +163,26 @@ export function PublicBookingMap({
               Status: <b>{selected.label}</b>
             </span>
             {selected.selectable ? (
-              <span>
-                Available for these dates. Build 038 will add the full
-                campsite/cottage detail and booking step.
-              </span>
+              ["campsite", "rental_cottage"].includes(
+                selected.accommodationKind,
+              ) ? (
+                <a
+                  href={`/booking/accommodations/${encodeURIComponent(
+                    selected.accommodationId,
+                  )}?campground=${encodeURIComponent(
+                    campgroundSlug,
+                  )}&arrivalDate=${encodeURIComponent(
+                    arrivalDate,
+                  )}&departureDate=${encodeURIComponent(departureDate)}`}
+                >
+                  View campsite / cottage details →
+                </a>
+              ) : (
+                <span>
+                  Available for these dates. Detailed booking for this
+                  accommodation type is not part of Build 038.
+                </span>
+              )
             ) : (
               <span>
                 This accommodation cannot be selected for these dates.

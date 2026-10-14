@@ -165,6 +165,9 @@ export default async function PublicBookingMapPage({
             mediaAssetId={snapshot.map.mediaAssetId}
             sourceWidth={snapshot.map.sourceWidth}
             sourceHeight={snapshot.map.sourceHeight}
+            campgroundSlug={snapshot.campground.slug}
+            arrivalDate={snapshot.arrivalDate}
+            departureDate={snapshot.departureDate}
             items={snapshot.items}
           />
           <p>
@@ -203,6 +206,27 @@ export default async function PublicBookingMapPage({
                   >
                     <td>
                       {item.code} · {item.displayName}
+                      {item.selectable &&
+                      ["campsite", "rental_cottage"].includes(
+                        item.accommodationKind,
+                      ) ? (
+                        <>
+                          {" · "}
+                          <Link
+                            href={`/booking/accommodations/${encodeURIComponent(
+                              item.accommodationId,
+                            )}?campground=${encodeURIComponent(
+                              snapshot.campground.slug,
+                            )}&arrivalDate=${encodeURIComponent(
+                              snapshot.arrivalDate,
+                            )}&departureDate=${encodeURIComponent(
+                              snapshot.departureDate,
+                            )}`}
+                          >
+                            View details
+                          </Link>
+                        </>
+                      ) : null}
                     </td>
                     <td>{item.accommodationKind.replaceAll("_", " ")}</td>
                     <td>{item.label}</td>
