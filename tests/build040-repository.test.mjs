@@ -35,7 +35,10 @@ const build = await readFile(
 test("Build 040 persists a protected canonical booking charge catalog", () => {
   assert.match(migration, /create table public\.booking_charge_catalog/u);
   assert.match(migration, /'add_on'.*'pass'.*'service_fee'/su);
-  assert.match(migration, /'per_stay'.*'per_night'.*'per_unit'.*'percent_of_stay'/su);
+  assert.match(
+    migration,
+    /'per_stay'.*'per_night'.*'per_unit'.*'percent_of_stay'/su,
+  );
   assert.match(migration, /tax_category_code/u);
   assert.match(migration, /fee_category_code/u);
   assert.match(migration, /force row level security/u);

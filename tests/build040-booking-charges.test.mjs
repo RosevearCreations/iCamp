@@ -102,10 +102,11 @@ test("Build 040 filters charge catalog by accommodation scope", () => {
     accommodationKind: "campsite",
     publicOnly: true,
   });
-  assert.deepEqual(
-    items.map((item) => item.code).sort(),
-    ["booking-service-fee", "visitor-day-pass", "wifi-premium"],
-  );
+  assert.deepEqual(items.map((item) => item.code).sort(), [
+    "booking-service-fee",
+    "visitor-day-pass",
+    "wifi-premium",
+  ]);
 });
 
 test("Build 040 quotes selected add-ons, passes and automatic service fees", () => {

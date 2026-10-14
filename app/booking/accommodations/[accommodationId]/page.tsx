@@ -155,8 +155,8 @@ export default async function PublicAccommodationDetailPage({
           />
           <p>
             Prices below come from the server-authoritative campground charge
-            catalogue. Optional items are not added to a reservation until
-            Build 041 checkout.
+            catalogue. Optional items are not added to a reservation until Build
+            041 checkout.
           </p>
           {detail.bookingCharges.items.length > 0 ? (
             <ul>
@@ -176,7 +176,10 @@ export default async function PublicAccommodationDetailPage({
               ))}
             </ul>
           ) : (
-            <p>No public add-ons, visitor passes or service fees are currently configured.</p>
+            <p>
+              No public add-ons, visitor passes or service fees are currently
+              configured.
+            </p>
           )}
           {detail.bookingCharges.automaticTotalCents !== null ? (
             <p>
