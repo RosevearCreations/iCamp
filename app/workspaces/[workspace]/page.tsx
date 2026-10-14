@@ -101,6 +101,32 @@ export default async function WorkspacePage({
           </section>
         ) : null}
 
+        {workspace.slug === "public" ? (
+          <section
+            className="content-panel"
+            aria-labelledby="public-booking-map-heading"
+          >
+            <SectionHeading
+              eyebrow="Booking discovery"
+              title="Choose accommodation on the live map"
+              id="public-booking-map-heading"
+              helpTopic="shell.overview"
+              trailing={<span className="build-chip">Build 037</span>}
+            />
+            <p>
+              Explore the published campground map by dates and accommodation
+              type. Green polygons are selectable; grey, yellow and red explain
+              unavailable, maintenance and closed inventory.
+            </p>
+            <Link
+              className="primary-link primary-link--dark"
+              href="/booking/map"
+            >
+              Open interactive booking map
+            </Link>
+          </section>
+        ) : null}
+
         {workspace.slug === "management" ? (
           <section
             className="content-panel"
