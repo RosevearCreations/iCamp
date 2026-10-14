@@ -248,9 +248,9 @@ export default async function PublicAccommodationDetailPage({
             <Link href={mapHref}>Choose a different accommodation</Link>
           </div>
           <p>
-            Build 038 preserves Build 036 atomic hold authority, Build 039 pricing
-            ownership and Build 041 checkout ownership. A reservation is not
-            created from unpriced client-side data.
+            Build 038 preserves Build 036 atomic hold authority, Build 039
+            pricing ownership and Build 041 checkout ownership. A reservation is
+            not created from unpriced client-side data.
           </p>
         </section>
 
@@ -261,13 +261,14 @@ export default async function PublicAccommodationDetailPage({
             rate-status and map-context experience.
           </p>
           <p>
-            <strong>IVR/DTMF:</strong> the same canonical campsite/cottage facts,
-            dates and availability can be read concisely by accommodation code;
-            gallery and map context use staff or secure-link handoff.
+            <strong>IVR/DTMF:</strong> the same canonical campsite/cottage
+            facts, dates and availability can be read concisely by accommodation
+            code; gallery and map context use staff or secure-link handoff.
           </p>
           <p>
             <strong>SMS/MMS:</strong> the same canonical facts and availability
-            can be summarized with a secure link back to this visual detail page.
+            can be summarized with a secure link back to this visual detail
+            page.
           </p>
         </section>
       </div>

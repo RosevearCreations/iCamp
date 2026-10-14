@@ -67,6 +67,9 @@ test("Build 038 repository surface consumes canonical models", () => {
   assert.match(postgres, /accommodation_public_gallery_images/u);
   assert.match(postgres, /campground_booking_rules/u);
   assert.match(postgres, /layer_key = 'amenities'/u);
-  assert.match(postgres, /accommodation_kind in \('campsite', 'rental_cottage'\)/u);
+  assert.match(
+    postgres,
+    /accommodation_kind in \('campsite', 'rental_cottage'\)/u,
+  );
   assert.match(map, /View campsite \/ cottage details/u);
 });
