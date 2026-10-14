@@ -568,7 +568,7 @@ Delivered:
 - shared atomic hold authority documented for future Web/PWA, IVR/DTMF and SMS/MMS booking flows.
 
 ### Build 037 — Public Interactive Booking Map
-Status: **IMPLEMENTED — FEATURE VALIDATION PENDING.**
+Status: **PRODUCTION CANDIDATE — `dev` GREEN.**
 
 Delivered:
 - date/type/availability-driven public booking map over the currently published campground map version;
