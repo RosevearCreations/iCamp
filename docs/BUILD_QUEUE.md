@@ -581,7 +581,7 @@ Delivered:
 - no database migration, new paid service, Vercel project, Cloudflare project, Worker, D1 database or R2 bucket.
 
 ### Build 038 — Campsite & Cottage Detail/Booking Experience
-Status: **PRODUCTION CANDIDATE — `dev` GREEN.**
+Status: **FULLY PROMOTED — `main` GREEN.**
 
 Delivered:
 - public campsite/rental-cottage detail pages linked from the Build 037 booking map with selected dates preserved;

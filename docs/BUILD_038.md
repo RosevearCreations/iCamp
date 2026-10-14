@@ -1,6 +1,6 @@
 # Build 038 — Campsite & Cottage Detail/Booking Experience
 
-Status: **PRODUCTION CANDIDATE — `dev` GREEN.**
+Status: **FULLY PROMOTED — `main` GREEN.**
 
 ## Canonical scope
 
@@ -67,3 +67,10 @@ Status: **QUEUED — NOT STARTED**
 - Feature merged to `dev` as `48b235ed9c948c77e01c61467c1aa90f82e5d61f`.
 - Independent exact-`dev` verification — CI `38503877072`, CodeQL `38503877078`, Secret Scan `38503877183`: GREEN, including Verify, Browser E2E and database lifecycle.
 - Build 038 requires no database migration and therefore no hosted Supabase schema change or advisor gate.
+
+## Production closeout
+
+- Production PR #148 candidate `b815489d780f5123b22bb9efda135103d3a2d7e8` — CI `38504295766`, CodeQL `38504295940`, Secret Scan `38504295913`: GREEN.
+- Production feature/evidence merge: `450a42dd01db021f1881cfe67c9955f68ccc6d73`.
+- Independent exact-`main` verification at `450a42dd01db021f1881cfe67c9955f68ccc6d73` — CI `38504494804`, CodeQL `38504494781`, Secret Scan `38504494836`: GREEN, including Verify, Browser E2E and database lifecycle.
+- Production source remains GitHub `main` under the current rough-sketch platform decision; no new Vercel/Cloudflare runtime was created.
