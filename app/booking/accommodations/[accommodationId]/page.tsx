@@ -6,6 +6,7 @@ import { AppShell } from "@/components/app-shell";
 import { SectionHeading } from "@/components/section-heading";
 import { getPublicAccommodationDetail } from "@/lib/public-accommodation-detail/postgres.mjs";
 
+import { startReservationCheckoutAction } from "./checkout/actions";
 import styles from "./detail.module.css";
 
 export const dynamic = "force-dynamic";
@@ -55,6 +56,11 @@ export default async function PublicAccommodationDetailPage({
     `/booking/map?campground=${encodeURIComponent(detail.campground.slug)}` +
     `&arrivalDate=${encodeURIComponent(detail.dates.arrivalDate)}` +
     `&departureDate=${encodeURIComponent(detail.dates.departureDate)}`;
+  const checkoutReady =
+    detail.availability.selectable && detail.rateSummary.status === "quoted";
+  const checkoutError = query.checkoutError
+    ? "Checkout could not start because the selected accommodation or dates are no longer available."
+    : null;
 
   return (
     <AppShell>
@@ -314,19 +320,56 @@ export default async function PublicAccommodationDetailPage({
 
         <section className="content-panel" aria-labelledby="continue-heading">
           <SectionHeading
-            eyebrow="Booking handoff"
+            eyebrow="Build 041 · Reservation checkout"
             title="Continue from verified details"
             id="continue-heading"
             helpTopic="shell.overview"
           />
+          {checkoutError ? (
+            <p className="form-message form-message--error" role="alert">
+              {checkoutError}
+            </p>
+          ) : null}
+          {checkoutReady ? (
+            <form action={startReservationCheckoutAction}>
+              <input
+                type="hidden"
+                name="campgroundSlug"
+                value={detail.campground.slug}
+              />
+              <input
+                type="hidden"
+                name="accommodationId"
+                value={detail.accommodation.id}
+              />
+              <input
+                type="hidden"
+                name="arrivalDate"
+                value={detail.dates.arrivalDate}
+              />
+              <input
+                type="hidden"
+                name="departureDate"
+                value={detail.dates.departureDate}
+              />
+              <button className="primary-button" type="submit">
+                Continue to reservation checkout
+              </button>
+            </form>
+          ) : (
+            <p>
+              Checkout is unavailable until the selected dates are live
+              selectable and a current server-authoritative rate is available.
+            </p>
+          )}
           <div className={styles.actions}>
             <Link href={mapHref}>Choose a different accommodation</Link>
           </div>
           <p data-checkout-contract="Build 041 checkout ownership">
-            Build 039 preserves Build 036 atomic hold authority. Build 041
-            checkout ownership remains unchanged. A reservation is not created
-            merely because a server-authoritative accommodation price is
-            available.
+            Continuing creates or reuses an owner-bound temporary hold. Build
+            041 revalidates dates, availability, capacity, compatibility,
+            selected add-ons and the final server quote before creating a
+            pending reservation. No payment is captured until Build 042.
           </p>
         </section>
 
