@@ -36,13 +36,13 @@ begin
   from pg_policies
   where schemaname = 'public'
     and tablename = 'rate_plans'
-    and 'SELECT' = any(cmd::text[]);
+    and cmd = 'SELECT';
 
   select count(*) into rate_rule_select_policies
   from pg_policies
   where schemaname = 'public'
     and tablename = 'rate_rules'
-    and 'SELECT' = any(cmd::text[]);
+    and cmd = 'SELECT';
 
   if rate_plan_select_policies <> 1 then
     raise exception 'rate_plans must have exactly one SELECT policy, found %',
