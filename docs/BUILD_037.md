@@ -1,6 +1,6 @@
 # Build 037 — Public Interactive Booking Map
 
-Status: **IMPLEMENTED — FEATURE VALIDATION PENDING.**
+Status: **PRODUCTION CANDIDATE — `dev` GREEN.**
 
 ## Canonical scope
 
@@ -55,4 +55,14 @@ Build 038 remains responsible for the full campsite/cottage detail and booking e
 
 ## Validation
 
-Feature validation is pending GitHub CI, Browser E2E, database migration lifecycle, CodeQL and Secret Scan gates. No hosted Supabase schema change is required for Build 037.
+Feature PR #144 merged to `dev` as `76fa8853b9cb3c0f6f72a5fc07ff17f9c0d5e1a5`.
+
+Independent `dev` validation on that exact commit is GREEN:
+- CI `38496070266` — success;
+- CodeQL `38496070357` — success;
+- Secret Scan `38496070311` — success;
+- Verify — success;
+- Browser end-to-end — success;
+- Database migrations/lifecycle — success.
+
+No hosted Supabase schema change is required for Build 037.
