@@ -26,11 +26,13 @@ export function publicBookingMapPresentation(input?: {
   selectable: boolean;
 }>;
 
-export function publicMapPolygonPoints(geometry: {
-  vertices?: Array<{
-    image?: {
-      x?: number;
-      y?: number;
-    };
-  }>;
-} | null): string;
+export function publicMapPolygonPoints(
+  geometry: {
+    vertices?: Array<{
+      image?: {
+        x?: number;
+        y?: number;
+      };
+    }>;
+  } | null,
+): string;
