@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { getCurrentSession } from "@/lib/auth/current-session";
 import { hasCampgroundPermission } from "@/lib/authz/postgres.mjs";
 import { getMediaAccessDescriptor } from "@/lib/media/postgres.mjs";
+import { isPublishedCampgroundMapMedia } from "@/lib/public-booking-map/postgres.mjs";
 import {
   createSupabaseStorageAdapter,
   getMediaStorageConfig,
@@ -61,6 +62,27 @@ export async function GET(
         bucketKey: asset.bucketKey,
         objectKey: asset.objectKey,
       }),
+    });
+  }
+
+  if (await isPublishedCampgroundMapMedia(mediaId)) {
+    if (!config.secretKey) {
+      return NextResponse.json(
+        { error: "Published map media is temporarily unavailable." },
+        { status: 503 },
+      );
+    }
+
+    const signed = await adapter.createSignedReadUrl({
+      bucketKey: asset.bucketKey,
+      objectKey: asset.objectKey,
+      expiresIn: config.signedUrlSeconds,
+    });
+
+    return NextResponse.json({
+      access: "published-map",
+      url: signed.url,
+      expiresIn: signed.expiresIn,
     });
   }
 

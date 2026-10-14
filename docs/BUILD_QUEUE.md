@@ -567,8 +567,21 @@ Delivered:
 - Management → Campgrounds → Live availability → Temporary holds workbench with one-second countdown and pending-state action buttons;
 - shared atomic hold authority documented for future Web/PWA, IVR/DTMF and SMS/MMS booking flows.
 
+### Build 037 — Public Interactive Booking Map
+Status: **PRODUCTION CANDIDATE — `dev` GREEN.**
+
+Delivered:
+- date/type/availability-driven public booking map over the currently published campground map version;
+- canonical accommodation-to-map polygon bindings with no duplicate public inventory model;
+- green/grey/yellow/red operational presentation derived from live availability plus accommodation status;
+- keyboard/touch selectable accommodation polygons and matching accessible list alternative;
+- published overhead image access limited to media proven by PostgreSQL to be the active campground's published map;
+- public workspace discovery link plus noindex query-filter safety during the unhosted rough-sketch phase;
+- Web/PWA full visual flow with honest IVR/DTMF and SMS/MMS canonical-data/secure-handoff fallbacks;
+- no database migration, new paid service, Vercel project, Cloudflare project, Worker, D1 database or R2 bucket.
+
 ## Next active build
-**Build 037 — Public Interactive Booking Map**
+**Build 038 — Campsite & Cottage Detail/Booking Experience**
 
 Status: **QUEUED — NOT STARTED**
 
