@@ -35,8 +35,7 @@
   border-radius: 1rem;
   background:
     linear-gradient(45deg, rgb(23 63 53 / 5%) 25%, transparent 25%),
-    linear-gradient(-45deg, rgb(23 63 53 / 5%) 25%, transparent 25%),
-    #eef2ed;
+    linear-gradient(-45deg, rgb(23 63 53 / 5%) 25%, transparent 25%), #eef2ed;
   background-position:
     0 0,
     0.6rem 0.6rem;
