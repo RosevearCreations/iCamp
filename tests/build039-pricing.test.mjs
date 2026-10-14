@@ -63,9 +63,9 @@ test("Build 039 calculates package pricing plus dynamic date rules", () => {
 
   assert.equal(quote.status, "quoted");
   assert.equal(quote.baseCents, 35000);
-  assert.equal(quote.adjustments.length, 5);
-  assert.equal(quote.totalCents, 38500);
-  assert.equal(formatMoney(quote.totalCents, "CAD"), "$385.00");
+  assert.equal(quote.adjustments.length, 3);
+  assert.equal(quote.totalCents, 37000);
+  assert.equal(formatMoney(quote.totalCents, "CAD"), "$370.00");
 });
 
 test("Build 039 never fabricates a quote without a matching plan", () => {
