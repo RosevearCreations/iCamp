@@ -127,9 +127,19 @@ export default async function PublicAccommodationDetailPage({
             />
             <p>{detail.rateSummary.detail}</p>
             <p>
-              This page does not invent a placeholder price or client-side
-              quote.
+              Dynamic date price is calculated server-side from the canonical
+              rate plan and matching weekend, holiday, season, event or
+              promotional rules. No placeholder or client-side price is used.
             </p>
+            {detail.rateSummary.adjustments.length > 0 ? (
+              <p>
+                Applied adjustments:{" "}
+                {detail.rateSummary.adjustments
+                  .map((adjustment) => adjustment.displayName)
+                  .join(", ")}
+                .
+              </p>
+            ) : null}
           </div>
         </section>
 
@@ -250,10 +260,11 @@ export default async function PublicAccommodationDetailPage({
           <div className={styles.actions}>
             <Link href={mapHref}>Choose a different accommodation</Link>
           </div>
-          <p>
-            Build 038 preserves Build 036 atomic hold authority, Build 039
-            pricing ownership and Build 041 checkout ownership. A reservation is
-            not created from unpriced client-side data.
+          <p data-checkout-contract="Build 041 checkout ownership">
+            Build 039 preserves Build 036 atomic hold authority. Build 041
+            checkout ownership remains unchanged. A reservation is not created
+            merely because a server-authoritative accommodation price is
+            available.
           </p>
         </section>
 
@@ -261,7 +272,7 @@ export default async function PublicAccommodationDetailPage({
           <h2>Channel contract</h2>
           <p>
             <strong>Web/PWA:</strong> full gallery, feature, rule, availability,
-            rate-status and map-context experience.
+            dynamic-price and map-context experience.
           </p>
           <p>
             <strong>IVR/DTMF:</strong> the same canonical campsite/cottage
