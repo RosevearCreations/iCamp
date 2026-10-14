@@ -128,7 +128,7 @@ export default async function PublicBookingMapPage({
               <select name="kind" defaultValue={snapshot.kind}>
                 <option value="all">All types</option>
                 <option value="campsite">Campsites</option>
-                <option value="cottage">Cottages</option>
+                <option value="rental_cottage">Cottages</option>
                 <option value="permanent_unit">Permanent units</option>
               </select>
             </label>
