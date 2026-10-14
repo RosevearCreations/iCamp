@@ -623,8 +623,25 @@ Delivered:
 - zero Supabase Security Advisor findings and no Build-040 performance WARN findings;
 - exact-tree feature, `dev` and production promotion with Verify, Browser E2E, Database/lifecycle/idempotence, CodeQL and Secret Scan GREEN.
 
+### Build 041 — Reservation Checkout
+Status: **FULLY PROMOTED — `main` GREEN.**
+
+Delivered:
+- signed-in guest-owned temporary checkout holds with safe active-hold reuse;
+- reservation-specific primary guest/contact data plus occupant, visitor, pet and vehicle counts;
+- checkout-time Build 032 date-rule, Build 033 capacity and Build 034 compatibility revalidation;
+- server-authoritative Build 039 accommodation pricing plus Build 040 selected add-ons, passes and automatic service fees;
+- explicit campground booking-rule acknowledgement;
+- atomic hold conversion into one idempotent pending reservation;
+- immutable checkout, compatibility, rule, quote and charge-line evidence;
+- Web/PWA full checkout with IVR/DTMF and SMS/MMS structured/secure-link handoff contracts;
+- explicit no-payment boundary preserving deposits, balances and provider processing for Build 042;
+- hosted Supabase migration `20261014203442 / reservation_checkout`;
+- zero Supabase Security Advisor findings and no Build-041 performance WARN findings;
+- exact feature, `dev` and production runtime promotion with Verify, Browser E2E, Database/lifecycle/idempotence, CodeQL and Secret Scan GREEN.
+
 ## Next active build
-**Build 041 — Reservation Checkout**
+**Build 042 — Deposits, Balances & Payment Provider Adapter**
 
 Status: **QUEUED — NOT STARTED**
 
