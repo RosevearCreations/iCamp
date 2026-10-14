@@ -607,8 +607,24 @@ Delivered:
 - zero Supabase Security Advisor findings and closure of all Build-039-specific FK-index and duplicate-policy warnings;
 - exact-tree feature, hardening, `dev` and production promotion with Verify, Browser E2E, Database/lifecycle/idempotence, CodeQL and Secret Scan GREEN.
 
+### Build 040 — Add-Ons, Passes and Service Fees
+Status: **FULLY PROMOTED — `main` GREEN.**
+
+Delivered:
+- canonical campground-scoped booking charge catalogue for add-ons, visitor passes and service fees;
+- campground-wide, accommodation-type and accommodation-specific charge scope;
+- per-stay, per-night, per-unit and percentage-of-stay pricing in integer minor currency units;
+- server-authoritative automatic service-fee calculation and optional charge validation;
+- extra guest/vehicle, visitor day/week pass, Wi-Fi, garbage pickup, rental, launch-fee and other add-on support;
+- tax and fee classification hooks without invented tax rates;
+- public campsite/cottage detail integration with canonical charge prices and automatic-fee estimate;
+- FORCE RLS, explicit role grants, actor-bound pricing writes and no application DELETE privilege;
+- hosted Supabase migration `20261014171830 / add_ons_passes_service_fees`;
+- zero Supabase Security Advisor findings and no Build-040 performance WARN findings;
+- exact-tree feature, `dev` and production promotion with Verify, Browser E2E, Database/lifecycle/idempotence, CodeQL and Secret Scan GREEN.
+
 ## Next active build
-**Build 040 — Add-Ons, Passes and Service Fees**
+**Build 041 — Reservation Checkout**
 
 Status: **QUEUED — NOT STARTED**
 
