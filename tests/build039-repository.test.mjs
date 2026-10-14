@@ -2,11 +2,35 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
 
-const migration = await readFile(new URL("../database/migrations/0046_rate_plans_dynamic_date_pricing.sql", import.meta.url), "utf8");
-const verify = await readFile(new URL("../database/verify/0046_rate_plans_dynamic_date_pricing.sql", import.meta.url), "utf8");
-const detail = await readFile(new URL("../lib/public-accommodation-detail/postgres.mjs", import.meta.url), "utf8");
-const page = await readFile(new URL("../app/booking/accommodations/[accommodationId]/page.tsx", import.meta.url), "utf8");
-const build = await readFile(new URL("../docs/BUILD_039.md", import.meta.url), "utf8");
+const migration = await readFile(
+  new URL(
+    "../database/migrations/0046_rate_plans_dynamic_date_pricing.sql",
+    import.meta.url,
+  ),
+  "utf8",
+);
+const verify = await readFile(
+  new URL(
+    "../database/verify/0046_rate_plans_dynamic_date_pricing.sql",
+    import.meta.url,
+  ),
+  "utf8",
+);
+const detail = await readFile(
+  new URL("../lib/public-accommodation-detail/postgres.mjs", import.meta.url),
+  "utf8",
+);
+const page = await readFile(
+  new URL(
+    "../app/booking/accommodations/[accommodationId]/page.tsx",
+    import.meta.url,
+  ),
+  "utf8",
+);
+const build = await readFile(
+  new URL("../docs/BUILD_039.md", import.meta.url),
+  "utf8",
+);
 
 test("Build 039 persists protected canonical rate plans and date rules", () => {
   assert.match(migration, /create table public\.rate_plans/u);
