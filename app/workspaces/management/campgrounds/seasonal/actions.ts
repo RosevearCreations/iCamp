@@ -69,8 +69,7 @@ export async function createLongTermAssignmentAction(formData: FormData) {
         chargeDueOn: text(formData, "chargeDueOn"),
         reference: text(formData, "reference"),
         notes: text(formData, "notes"),
-        winterizationRequired:
-          formData.get("winterizationRequired") === "on",
+        winterizationRequired: formData.get("winterizationRequired") === "on",
       },
     });
     revalidatePath(path);
