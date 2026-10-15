@@ -11,10 +11,7 @@ import { getCampgroundAuthorization } from "@/lib/authz/postgres.mjs";
 import { formatMoney } from "@/lib/pricing/core.mjs";
 import { getReservationManagementDetail } from "@/lib/reservation-management/postgres.mjs";
 
-import {
-  cancelReservationAction,
-  updateReservationAction,
-} from "../actions";
+import { cancelReservationAction, updateReservationAction } from "../actions";
 import styles from "../reservations.module.css";
 
 export const dynamic = "force-dynamic";
@@ -39,7 +36,8 @@ export default async function ReservationManagementDetailPage({
   const { reservationId } = await params;
   const query = await searchParams;
   const campgroundId = String(query.campground ?? "").trim();
-  if (!campgroundId) redirect("/workspaces/management/campgrounds/reservations");
+  if (!campgroundId)
+    redirect("/workspaces/management/campgrounds/reservations");
 
   const path =
     "/workspaces/management/campgrounds/reservations/" +
@@ -54,11 +52,9 @@ export default async function ReservationManagementDetailPage({
   if (
     !authorization ||
     !authorization.permissions.some((key) =>
-      [
-        "reservation.read",
-        "reservation.modify",
-        "reservation.cancel",
-      ].includes(key),
+      ["reservation.read", "reservation.modify", "reservation.cancel"].includes(
+        key,
+      ),
     )
   ) {
     redirect("/auth/not-authorized");
@@ -177,11 +173,7 @@ export default async function ReservationManagementDetailPage({
                 name="rowVersion"
                 value={detail.reservation.rowVersion}
               />
-              <input
-                type="hidden"
-                name="idempotencyKey"
-                value={randomUUID()}
-              />
+              <input type="hidden" name="idempotencyKey" value={randomUUID()} />
               <label>
                 Guest display name
                 <input
@@ -285,9 +277,7 @@ export default async function ReservationManagementDetailPage({
                     <td>
                       {item.applicationMode === "automatic"
                         ? "automatic"
-                        : item.minimumQuantity +
-                          "–" +
-                          item.maximumQuantity}
+                        : item.minimumQuantity + "–" + item.maximumQuantity}
                     </td>
                   </tr>
                 ))}
@@ -305,9 +295,9 @@ export default async function ReservationManagementDetailPage({
               helpTopic="campground.structure"
             />
             <p>
-              Cancellation releases live inventory. Build 044 does not refund
-              or forfeit captured money; paid cancellations are flagged for
-              Build 045.
+              Cancellation releases live inventory. Build 044 does not refund or
+              forfeit captured money; paid cancellations are flagged for Build
+              045.
             </p>
             <form action={cancelReservationAction} className={styles.formGrid}>
               <input type="hidden" name="campgroundId" value={campgroundId} />
@@ -317,11 +307,7 @@ export default async function ReservationManagementDetailPage({
                 name="rowVersion"
                 value={detail.reservation.rowVersion}
               />
-              <input
-                type="hidden"
-                name="idempotencyKey"
-                value={randomUUID()}
-              />
+              <input type="hidden" name="idempotencyKey" value={randomUUID()} />
               <label className={styles.full}>
                 Cancellation reason
                 <textarea
@@ -353,11 +339,7 @@ export default async function ReservationManagementDetailPage({
                 </strong>
                 <p>{item.reason}</p>
                 <p>
-                  {formatMoney(
-                    item.previousTotalCents,
-                    item.currencyCode,
-                  )}{" "}
-                  →{" "}
+                  {formatMoney(item.previousTotalCents, item.currencyCode)} →{" "}
                   {formatMoney(item.revisedTotalCents, item.currencyCode)} ·
                   delta {formatMoney(item.deltaCents, item.currencyCode)}
                 </p>
