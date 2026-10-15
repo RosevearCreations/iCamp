@@ -1,6 +1,6 @@
 # iCamp Build 047 — Seasonal/Yearly Assignment Foundation
 
-Status: **IMPLEMENTED — production-hardening promotion gates running.**
+Status: **FULLY PROMOTED — `main` GREEN.**
 
 ## Purpose
 
@@ -79,3 +79,11 @@ No paid service, new hosting project, proprietary queue or second database is in
 ## Build boundary
 
 Build 048 remains responsible for Guest Profiles & Saved Stay Information. Detailed winterization inspection/sign-off, permanent-unit transfer/financing and long-term payment collection remain later roadmap capabilities.
+
+
+## Final production evidence
+
+- Production `main` and synchronized `dev`: `49522aacad8eaa8f74ed4593cbfb7368d811112f`.
+- Hardening PR #184; production PR #185.
+- Hosted Supabase hardening migration: `20261015150438 / build047_production_hardening`.
+- Main-push CI, Browser E2E, database migration verification, CodeQL and Secret Scan: GREEN.

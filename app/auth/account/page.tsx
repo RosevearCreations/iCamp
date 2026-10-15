@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 
 import { AppShell } from "@/components/app-shell";
 import { SectionHeading } from "@/components/section-heading";
@@ -41,6 +42,14 @@ export default async function AccountPage() {
               <dd>{session.assuranceLevel}</dd>
             </div>
           </dl>
+
+          {session.user.accountType === "guest" ? (
+            <p>
+              <Link href="/guest/profile">
+                Manage saved stay information & history →
+              </Link>
+            </p>
+          ) : null}
 
           <form action="/api/auth/logout" method="post">
             <button className="primary-button" type="submit">

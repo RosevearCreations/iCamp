@@ -76,6 +76,9 @@ export default async function ReservationManagementPage({
   });
   const mayCreate =
     selected.authorization.permissions.includes("reservation.create");
+  const mayUseGuestDesk = selected.authorization.permissions.some(
+    (permission) => permission === "guest.read" || permission === "guest.manage",
+  );
 
   return (
     <AppShell>
@@ -145,6 +148,18 @@ export default async function ReservationManagementPage({
               This ordinary office form creates a canonical pending reservation
               using current rates and active booking charges.
             </p>
+            {mayUseGuestDesk ? (
+              <p>
+                <Link
+                  href={
+                    "/workspaces/management/campgrounds/guests?campground=" +
+                    encodeURIComponent(selected.campgroundId)
+                  }
+                >
+                  Open guest profiles & saved stay information →
+                </Link>
+              </p>
+            ) : null}
             <p>
               <Link
                 href={
