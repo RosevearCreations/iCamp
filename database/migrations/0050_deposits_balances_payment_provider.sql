@@ -382,6 +382,6 @@ comment on table public.campground_payment_policies is
 comment on table public.reservation_payment_schedules is
   'Immutable Build 042 payment-policy snapshot derived from the Build 041 accepted reservation quote.';
 comment on table public.reservation_payments is
-  'Build 042 provider-neutral payment attempts. Raw card/PAN/CVV data is never stored.';
+  'Build 042 provider-neutral payment attempts. Sensitive payment credentials are never stored.';
 comment on table icamp_private.payment_provider_events is
   'Build 042 verified provider-event idempotency ledger; raw webhook bodies and payment credentials are excluded.';

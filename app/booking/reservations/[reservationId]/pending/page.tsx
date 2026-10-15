@@ -74,7 +74,7 @@ export default async function PendingReservationPage({
         <section className="content-panel">
           <SectionHeading
             eyebrow="Reservation status"
-            title="Pending confirmation"
+            title="Pending payment & confirmation"
             id="pending-status"
             helpTopic="shell.overview"
           />
