@@ -162,15 +162,15 @@ async function saveItemAction(
   );
 }
 
-export function saveStaffRvAction(formData: FormData) {
+export async function saveStaffRvAction(formData: FormData) {
   return saveItemAction(formData, "rv");
 }
 
-export function saveStaffVehicleAction(formData: FormData) {
+export async function saveStaffVehicleAction(formData: FormData) {
   return saveItemAction(formData, "vehicle");
 }
 
-export function saveStaffPetAction(formData: FormData) {
+export async function saveStaffPetAction(formData: FormData) {
   return saveItemAction(formData, "pet");
 }
 
