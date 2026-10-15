@@ -15,7 +15,8 @@ function text(formData: FormData, key: string) {
 }
 
 function errorMessage(error: unknown) {
-  const message = error instanceof Error ? error.message : "Reservation action failed.";
+  const message =
+    error instanceof Error ? error.message : "Reservation action failed.";
   return message.slice(0, 300);
 }
 
@@ -39,6 +40,7 @@ export async function createReservationAction(formData: FormData) {
   const campgroundId = text(formData, "campgroundId");
   const path = consolePath(campgroundId);
   const session = await requireStaff(path);
+  let destination: string;
 
   try {
     const result = await createManagedReservation({
@@ -57,18 +59,19 @@ export async function createReservationAction(formData: FormData) {
       },
     });
     revalidatePath(path);
-    redirect(
+    destination =
       detailPath(campgroundId, result.reservationId) +
-        "&saved=" +
-        encodeURIComponent(
-          result.idempotent
-            ? "Reservation creation was already applied."
-            : "Reservation created.",
-        ),
-    );
+      "&saved=" +
+      encodeURIComponent(
+        result.idempotent
+          ? "Reservation creation was already applied."
+          : "Reservation created.",
+      );
   } catch (error) {
     redirect(path + "&error=" + encodeURIComponent(errorMessage(error)));
   }
+
+  redirect(destination);
 }
 
 export async function updateReservationAction(formData: FormData) {
@@ -76,6 +79,7 @@ export async function updateReservationAction(formData: FormData) {
   const reservationId = text(formData, "reservationId");
   const path = detailPath(campgroundId, reservationId);
   const session = await requireStaff(path);
+  let destination: string;
 
   try {
     const result = await updateManagedReservation({
@@ -104,10 +108,12 @@ export async function updateReservationAction(formData: FormData) {
       (result.financialReviewRequired
         ? " Financial review is required before money is adjusted."
         : "");
-    redirect(path + "&saved=" + encodeURIComponent(message));
+    destination = path + "&saved=" + encodeURIComponent(message);
   } catch (error) {
     redirect(path + "&error=" + encodeURIComponent(errorMessage(error)));
   }
+
+  redirect(destination);
 }
 
 export async function cancelReservationAction(formData: FormData) {
@@ -115,6 +121,7 @@ export async function cancelReservationAction(formData: FormData) {
   const reservationId = text(formData, "reservationId");
   const path = detailPath(campgroundId, reservationId);
   const session = await requireStaff(path);
+  let destination: string;
 
   try {
     const result = await cancelManagedReservation({
@@ -133,8 +140,10 @@ export async function cancelReservationAction(formData: FormData) {
       (result.financialReviewRequired
         ? " Captured payment exists; Build 045 financial review is required. No refund was issued."
         : " No refund was issued.");
-    redirect(path + "&saved=" + encodeURIComponent(message));
+    destination = path + "&saved=" + encodeURIComponent(message);
   } catch (error) {
     redirect(path + "&error=" + encodeURIComponent(errorMessage(error)));
   }
+
+  redirect(destination);
 }
