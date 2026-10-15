@@ -33,9 +33,11 @@ Build 048 introduces one canonical campground-scoped guest profile that may exis
 
 ## Database
 
-Migration: `database/migrations/0059_guest_profiles_saved_stay.sql`.
+Primary migration: `database/migrations/0059_guest_profiles_saved_stay.sql`.
 
-Verification: `database/verify/0059_guest_profiles_saved_stay.sql`.
+Advisor hardening: `database/migrations/0060_build048_advisor_hardening.sql`.
+
+Verification: `database/verify/0059_guest_profiles_saved_stay.sql` and `database/verify/0060_build048_advisor_hardening.sql`.
 
 Primary tables:
 - `public.guest_profiles`;
@@ -53,3 +55,8 @@ The profile is a convenience record, not a replacement for authentication, commu
 ## Cost / provider impact
 
 No new paid service, Vercel project, Cloudflare resource, communications provider or external API is required for Build 048.
+
+
+## Hosted advisor hardening
+
+After the initial hosted Build 048 migration, Supabase Security Advisor reported zero findings. Performance Advisor identified duplicate permissive SELECT work from the saved-item `FOR ALL` policies and uncovered FK paths that lacked leading covering indexes. Migration 0060 replaces those broad policies with precise INSERT/UPDATE policies, adds immutable saved-item identity guards, and covers the Build 048 foreign-key paths before production promotion.
