@@ -96,6 +96,10 @@ create index reservation_management_state_updated_by_fk_idx
   on public.reservation_management_state (updated_by_user_id)
   where updated_by_user_id is not null;
 
+create index reservation_management_state_created_by_fk_idx
+  on public.reservation_management_state (created_by_user_id)
+  where created_by_user_id is not null;
+
 create table public.reservation_change_history (
   id uuid primary key default gen_random_uuid(),
   organization_id uuid not null,
