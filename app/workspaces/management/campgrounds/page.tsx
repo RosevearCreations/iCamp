@@ -660,6 +660,30 @@ export default async function CampgroundAdministrationPage({
           </Link>
         </section>
 
+        <section className="content-panel" aria-labelledby="payments-heading">
+          <SectionHeading
+            eyebrow="Reservation payments"
+            title="Deposits, balances & payment provider"
+            id="payments-heading"
+            helpTopic="campground.structure"
+            trailing={<span className="build-chip">Build 042</span>}
+          />
+          <p>
+            Configure booking deposits, refundable security-deposit timing,
+            remaining balance due rules and the provider-neutral payment
+            adapter.
+          </p>
+          <Link
+            className="primary-link primary-link--dark"
+            href={
+              "/workspaces/management/campgrounds/payments?campground=" +
+              encodeURIComponent(structure.campground.id)
+            }
+          >
+            Open deposits, balances & payments
+          </Link>
+        </section>
+
         <section className="content-panel" aria-labelledby="map-images-heading">
           <SectionHeading
             eyebrow="Campground map"
