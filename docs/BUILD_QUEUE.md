@@ -675,8 +675,27 @@ Delivered:
 - feature PR #167, production PR #168, exact `dev` SHA `a434a8fa270220822ea2a578ad7c8589c361072a`, and runtime production `main` SHA `a98457e72863c61f9a4b9dd4973170c4a8522052`;
 - exact feature, `dev` and production runtime promotion with Verify, Browser E2E, Database/lifecycle/idempotence, CodeQL and Secret Scan GREEN.
 
+### Build 044 — Reservation Management Console
+Status: **FULLY PROMOTED — `main` GREEN.**
+
+Delivered:
+- campground-scoped staff reservation creation using current Build 039 rates and Build 040 booking charges;
+- edit/move/extend/shorten workflows with optimistic row-version checks and transaction-level reservation serialization;
+- accommodation/date changes enforced by the existing live-inventory conflict authority plus revision-signal hardening for accommodation-only moves;
+- current reservation-management projection without rewriting Build 041 checkout, Build 042 payment-schedule/payment evidence or Build 043 confirmation/invoice/receipt evidence;
+- add-on, pass and service-fee repricing through the canonical charge engine;
+- cancellation that releases live inventory while explicitly executing no refund in Build 044;
+- paid changes/cancellations flagged for Build 045 financial review;
+- append-only complete reservation change history with before/after snapshots, reason, totals, delta, captured amount, actor, channel and idempotency evidence;
+- FORCE RLS and campground reservation permission enforcement;
+- Web/PWA full management console with verified-staff IVR/DTMF and SMS/MMS concise-action/secure-link fallbacks;
+- hosted Supabase migration `20261015042048 / reservation_management_console`;
+- zero Supabase Security Advisor findings and no Build-044 performance WARN findings;
+- feature PR #171, production PR #172, exact `dev` SHA `e2dc44925ca2cc52cc59f6e9e099366c7b387f20`, and runtime production `main` SHA `fb6cd4bb1c6bbf0f01b3d24898cc2758b56ecc5c`;
+- exact feature, `dev` and production runtime promotion with Verify, Browser E2E, Database/lifecycle/idempotence, CodeQL and Secret Scan GREEN.
+
 ## Next active build
-**Build 044 — Reservation Management Console**
+**Build 045 — Cancellation, Refund & Adjustment Safeguards**
 
 Status: **QUEUED — NOT STARTED**
 

@@ -1,6 +1,6 @@
 # Build 044 — Reservation Management Console
 
-Status: **IMPLEMENTED — promotion gates pending.**
+Status: **FULLY PROMOTED — `main` GREEN.**
 
 ## Scope
 
@@ -159,3 +159,16 @@ No channel bypasses authentication, campground authorization, availability confl
 No new paid provider or hosting resource is introduced.
 
 Build 044 uses the existing PostgreSQL database, Next.js application, pricing engine, booking-charge engine, authorization layer and audit ledger.
+
+
+## Promotion evidence
+
+- feature PR #171 merged exact GREEN head `12f57442429d4a46d443e7966f093d3bd10414ed` into `dev`;
+- exact post-merge `dev` SHA `e2dc44925ca2cc52cc59f6e9e099366c7b387f20` independently passed CI, CodeQL and Secret Scan;
+- hosted Supabase migration `20261015042048 / reservation_management_console` applied successfully;
+- hosted Build 044 verification contract passed;
+- Supabase Security Advisor returned zero findings;
+- Supabase Performance Advisor returned no Build-044 WARN findings; only the existing `unused_index` INFO class remained;
+- production PR #172 merged exact GREEN `dev` into `main`;
+- runtime production `main` SHA `fb6cd4bb1c6bbf0f01b3d24898cc2758b56ecc5c` independently passed CI, Browser E2E, Database lifecycle/idempotence, CodeQL and Secret Scan;
+- no paid provider, new hosting project or manual owner action was required.
