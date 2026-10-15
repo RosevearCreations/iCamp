@@ -58,7 +58,10 @@ test("Build 047 hardening verification covers RLS, direct access and Build 035 c
   assert.match(sql, /seasonal\.manage assignment policy missing/u);
   assert.match(sql, /permanent-unit rate-plan integration missing/u);
   assert.match(sql, /Build 035 seasonal availability authority missing/u);
-  assert.match(sql, /authenticated direct lifecycle access must remain denied/u);
+  assert.match(
+    sql,
+    /authenticated direct lifecycle access must remain denied/u,
+  );
 });
 
 test("Build 047 service supports campsites and permanent units with audit and optimistic lifecycle updates", async () => {
