@@ -725,7 +725,7 @@ Delivered:
 ## Current active build
 **Build 047 — Seasonal/Yearly Assignment Foundation**
 
-Status: **IN DELIVERY — implementation complete; dev promotion gates running**
+Status: **IN DELIVERY — production hardening complete; dev promotion gates running**
 
 ## Next after Build 047 reaches GREEN
 **Build 048 — Guest Profiles & Saved Stay Information**
