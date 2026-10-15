@@ -18,6 +18,10 @@ const printPageUrl = new URL(
   "../app/booking/reservations/[reservationId]/documents/print/page.tsx",
   import.meta.url,
 );
+const printButtonUrl = new URL(
+  "../components/print-button.tsx",
+  import.meta.url,
+);
 const paymentActionUrl = new URL(
   "../app/booking/reservations/[reservationId]/payment/actions.ts",
   import.meta.url,
@@ -56,16 +60,18 @@ test("Build 043 payment completion synchronizes documents and confirmation", asy
 });
 
 test("Build 043 exposes in-app and printable reservation documents", async () => {
-  const [documents, printable, repository] = await Promise.all([
+  const [documents, printable, printButton, repository] = await Promise.all([
     readFile(documentsPageUrl, "utf8"),
     readFile(printPageUrl, "utf8"),
+    readFile(printButtonUrl, "utf8"),
     readFile(repositoryUrl, "utf8"),
   ]);
 
   assert.match(documents, /In-app confirmation/u);
   assert.match(documents, /Printable view/u);
   assert.match(documents, /Captured payment evidence/u);
-  assert.match(printable, /print-document/u);\n  assert.match(printButton, /Print reservation documents/u);
+  assert.match(printable, /print-document/u);
+  assert.match(printButton, /Print reservation documents/u);
   assert.match(repository, /communication_dispatches/u);
   assert.match(repository, /channel,\s*purpose/u);
   assert.match(repository, /'email','transactional'/u);
