@@ -135,6 +135,16 @@ export default async function PaymentPolicyPage({
             A live provider remains replaceable behind the same adapter
             contract.
           </p>
+          <p>
+            <Link
+              href={
+                "/workspaces/management/campgrounds/refunds?campground=" +
+                encodeURIComponent(selected.campgroundId)
+              }
+            >
+              Configure Build 045 cancellation/refund safeguards →
+            </Link>
+          </p>
         </section>
 
         <section className="content-panel">
