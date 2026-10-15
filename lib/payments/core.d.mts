@@ -9,6 +9,31 @@ export interface PaymentPolicy {
   currencyCode: string;
 }
 
+export interface PaymentSchedule {
+  policy: PaymentPolicy;
+  bookingDate: string;
+  arrivalDate: string;
+  currencyCode: string;
+  reservationTotalCents: number;
+  bookingDepositCents: number;
+  reservationBalanceCents: number;
+  securityDepositCents: number;
+  securityDepositDueStage: PaymentPolicy["securityDepositDueStage"];
+  balanceDueMode: PaymentPolicy["balanceDueMode"];
+  balanceDueDate: string;
+  bookingDueCents: number;
+  totalPayableCents: number;
+}
+
+export interface PaymentProgress {
+  capturedCents: number;
+  dueToDateCents: number;
+  dueNowCents: number;
+  outstandingCents: number;
+  paidInFull: boolean;
+  currentDueSatisfied: boolean;
+}
+
 export const defaultPaymentPolicy: Readonly<PaymentPolicy>;
 export function moneyInputToCents(value: unknown, label?: string): number;
 export function percentInputToBasisPoints(value: unknown): number;
@@ -19,9 +44,9 @@ export function calculateReservationPaymentSchedule(input: {
   arrivalDate: string;
   bookingDate: string;
   policy: PaymentPolicy;
-}): any;
+}): PaymentSchedule;
 export function calculatePaymentProgress(input: {
-  schedule: any;
+  schedule: PaymentSchedule;
   capturedCents?: number;
   asOfDate: string;
-}): any;
+}): PaymentProgress;
