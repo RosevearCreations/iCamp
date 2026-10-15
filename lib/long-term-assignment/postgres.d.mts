@@ -78,11 +78,13 @@ export function createLongTermAssignment(input: {
     winterizationRequired?: boolean | string;
   };
   sourceChannel?: "web" | "staff" | "ivr" | "sms" | "import" | "system";
-}): Promise<Record<string, unknown> & {
-  id: string;
-  canonicalChargeAmountCents: number;
-  canonicalCurrencyCode: string;
-}>;
+}): Promise<
+  Record<string, unknown> & {
+    id: string;
+    canonicalChargeAmountCents: number;
+    canonicalCurrencyCode: string;
+  }
+>;
 
 export function transitionLongTermAssignment(input: {
   actorUserId: string;
@@ -95,9 +97,11 @@ export function transitionLongTermAssignment(input: {
     expectedRowVersion?: number | string | null;
   };
   sourceChannel?: "web" | "staff" | "ivr" | "sms" | "import" | "system";
-}): Promise<Record<string, unknown> & {
-  id: string;
-  assignment_state: "active" | "ended" | "cancelled";
-  occupancy_state: "assigned" | "temporarily_vacant" | "winter_closed";
-  row_version: number;
-}>;
+}): Promise<
+  Record<string, unknown> & {
+    id: string;
+    assignment_state: "active" | "ended" | "cancelled";
+    occupancy_state: "assigned" | "temporarily_vacant" | "winter_closed";
+    row_version: number;
+  }
+>;
