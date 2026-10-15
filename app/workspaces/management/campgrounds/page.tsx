@@ -660,7 +660,10 @@ export default async function CampgroundAdministrationPage({
           </Link>
         </section>
 
-        <section className="content-panel" aria-labelledby="reservations-heading">
+        <section
+          className="content-panel"
+          aria-labelledby="reservations-heading"
+        >
           <SectionHeading
             eyebrow="Reservation operations"
             title="Reservation management console"
