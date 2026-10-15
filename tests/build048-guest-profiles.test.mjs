@@ -128,5 +128,5 @@ test("Build 048 exposes full Web/PWA guest and staff surfaces with safe phone/SM
   assert.match(staffPage, /Optional profile/u);
   assert.match(staffPage, /account email blank/u);
   assert.match(staffPage, /Build 014/u);
-  assert.match(staffPage, /Build 053/u);
+  assert.match(staffPage, /Build\s+053/u);
 });
