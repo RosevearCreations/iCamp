@@ -161,7 +161,6 @@ export async function cancelReservationAction(formData: FormData) {
   redirect(destination);
 }
 
-
 export async function requestRefundAction(formData: FormData) {
   const campgroundId = text(formData, "campgroundId");
   const reservationId = text(formData, "reservationId");
@@ -175,10 +174,7 @@ export async function requestRefundAction(formData: FormData) {
       campgroundId,
       reservationId,
       originalPaymentId: text(formData, "originalPaymentId"),
-      amountCents: moneyInputToCents(
-        text(formData, "refundAmount"),
-        "Refund",
-      ),
+      amountCents: moneyInputToCents(text(formData, "refundAmount"), "Refund"),
       refundKind: text(formData, "refundKind") || "partial",
       reason: text(formData, "reason"),
       providerKey: config.provider,

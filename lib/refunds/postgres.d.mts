@@ -54,11 +54,13 @@ export function getCampgroundCancellationRefundPolicy(input: {
   campgroundId: string;
 }): Promise<RefundPolicySnapshot>;
 
-export function saveCampgroundCancellationRefundPolicy(input: {
-  actorUserId: string;
-  campgroundId: string;
-  expectedRowVersion: number;
-} & CancellationRefundPolicy): Promise<
+export function saveCampgroundCancellationRefundPolicy(
+  input: {
+    actorUserId: string;
+    campgroundId: string;
+    expectedRowVersion: number;
+  } & CancellationRefundPolicy,
+): Promise<
   CancellationRefundPolicy & {
     id: string | null;
     rowVersion: number;
@@ -110,11 +112,7 @@ export function recordReservationFinancialAdjustment(input: {
   campgroundId: string;
   reservationId: string;
   adjustmentKind: "credit" | "charge" | "forfeit" | "writeoff";
-  financialEffect:
-    | "customer_credit"
-    | "customer_debit"
-    | "retained"
-    | "none";
+  financialEffect: "customer_credit" | "customer_debit" | "retained" | "none";
   amountCents: number;
   currencyCode: string;
   reason: string;

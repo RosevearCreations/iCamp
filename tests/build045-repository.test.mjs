@@ -10,10 +10,7 @@ const verifyUrl = new URL(
   "../database/verify/0054_cancellation_refund_adjustment_safeguards.sql",
   import.meta.url,
 );
-const repositoryUrl = new URL(
-  "../lib/refunds/postgres.mjs",
-  import.meta.url,
-);
+const repositoryUrl = new URL("../lib/refunds/postgres.mjs", import.meta.url);
 const financialPageUrl = new URL(
   "../app/workspaces/management/campgrounds/reservations/[reservationId]/financial/page.tsx",
   import.meta.url,
@@ -26,7 +23,10 @@ const policyPageUrl = new URL(
 test("Build 045 schema preserves policy, original-payment refunds and append-only adjustments", async () => {
   const sql = await readFile(migrationUrl, "utf8");
 
-  assert.match(sql, /create table public\.campground_cancellation_refund_policies/u);
+  assert.match(
+    sql,
+    /create table public\.campground_cancellation_refund_policies/u,
+  );
   assert.match(sql, /create table public\.reservation_refunds/u);
   assert.match(sql, /original_payment_id uuid not null/u);
   assert.match(sql, /create table public\.reservation_financial_adjustments/u);
@@ -58,7 +58,10 @@ test("Build 045 repository enforces original-payment linkage and separate approv
   assert.match(source, /provider_refund_reference/u);
   assert.match(source, /reservation_financial_adjustments/u);
   assert.match(source, /appendAuditEvent/u);
-  assert.match(source, /Full refund must equal the entire remaining captured payment/u);
+  assert.match(
+    source,
+    /Full refund must equal the entire remaining captured payment/u,
+  );
   assert.doesNotMatch(source, /update public\.reservation_payments/iu);
 });
 

@@ -70,9 +70,8 @@ export default async function CancellationRefundPolicyPage({
   }
 
   const selected =
-    authorized.find(
-      ({ item }) => item.campgroundId === params.campground,
-    ) ?? authorized[0];
+    authorized.find(({ item }) => item.campgroundId === params.campground) ??
+    authorized[0];
   const snapshot = await getCampgroundCancellationRefundPolicy({
     userId: session.user.id,
     campgroundId: selected.item.campgroundId,
@@ -126,10 +125,7 @@ export default async function CancellationRefundPolicyPage({
                 defaultValue={selected.item.campgroundId}
               >
                 {authorized.map(({ item }) => (
-                  <option
-                    key={item.campgroundId}
-                    value={item.campgroundId}
-                  >
+                  <option key={item.campgroundId} value={item.campgroundId}>
                     {item.campgroundName}
                   </option>
                 ))}

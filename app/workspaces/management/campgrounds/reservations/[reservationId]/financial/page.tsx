@@ -60,9 +60,12 @@ export default async function ReservationFinancialSafeguardsPage({
   if (
     !authorization ||
     !authorization.permissions.some((permission) =>
-      ["payment.read", "refund.issue", "finance.read", "finance.manage"].includes(
-        permission,
-      ),
+      [
+        "payment.read",
+        "refund.issue",
+        "finance.read",
+        "finance.manage",
+      ].includes(permission),
     )
   ) {
     redirect("/auth/not-authorized");
@@ -214,7 +217,10 @@ export default async function ReservationFinancialSafeguardsPage({
                 </p>
 
                 {mayRefund && payment.remainingRefundableCents > 0 ? (
-                  <form action={requestRefundAction} className={styles.formGrid}>
+                  <form
+                    action={requestRefundAction}
+                    className={styles.formGrid}
+                  >
                     <input
                       type="hidden"
                       name="campgroundId"
@@ -255,7 +261,9 @@ export default async function ReservationFinancialSafeguardsPage({
                         defaultValue={isCancelled ? "cancellation" : "partial"}
                       >
                         <option value="partial">Partial refund</option>
-                        <option value="full">Full original payment refund</option>
+                        <option value="full">
+                          Full original payment refund
+                        </option>
                         {isCancelled ? (
                           <option value="cancellation">
                             Cancellation refund
@@ -405,21 +413,9 @@ export default async function ReservationFinancialSafeguardsPage({
               action={recordCancellationForfeitAction}
               className={styles.formGrid}
             >
-              <input
-                type="hidden"
-                name="campgroundId"
-                value={campgroundId}
-              />
-              <input
-                type="hidden"
-                name="reservationId"
-                value={reservationId}
-              />
-              <input
-                type="hidden"
-                name="idempotencyKey"
-                value={randomUUID()}
-              />
+              <input type="hidden" name="campgroundId" value={campgroundId} />
+              <input type="hidden" name="reservationId" value={reservationId} />
+              <input type="hidden" name="idempotencyKey" value={randomUUID()} />
               <label className={styles.full}>
                 Forfeit/review reason
                 <textarea
@@ -453,26 +449,14 @@ export default async function ReservationFinancialSafeguardsPage({
               action={recordFinancialAdjustmentAction}
               className={styles.formGrid}
             >
-              <input
-                type="hidden"
-                name="campgroundId"
-                value={campgroundId}
-              />
-              <input
-                type="hidden"
-                name="reservationId"
-                value={reservationId}
-              />
+              <input type="hidden" name="campgroundId" value={campgroundId} />
+              <input type="hidden" name="reservationId" value={reservationId} />
               <input
                 type="hidden"
                 name="currencyCode"
                 value={safeguards.reservation.currencyCode}
               />
-              <input
-                type="hidden"
-                name="idempotencyKey"
-                value={randomUUID()}
-              />
+              <input type="hidden" name="idempotencyKey" value={randomUUID()} />
               <label>
                 Adjustment kind
                 <select name="adjustmentKind" defaultValue="credit">
@@ -519,10 +503,7 @@ export default async function ReservationFinancialSafeguardsPage({
               <article key={adjustment.id}>
                 <strong>
                   {adjustment.adjustmentKind} ·{" "}
-                  {formatMoney(
-                    adjustment.amountCents,
-                    adjustment.currencyCode,
-                  )}
+                  {formatMoney(adjustment.amountCents, adjustment.currencyCode)}
                 </strong>
                 <p>
                   Effect {adjustment.financialEffect} · {adjustment.reason}
