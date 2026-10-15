@@ -136,11 +136,11 @@ export default async function PendingReservationPage({
               )}
             </strong>
           </p>
+          <p>No payment has been taken by the Build 041 checkout itself.</p>
           <p>
-            The accepted Build 041 quote remains immutable. No payment has been
-            taken by the Build 041 checkout itself; Build 042 snapshots deposit,
-            security-deposit and balance rules separately without rewriting this
-            checkout evidence.
+            The accepted Build 041 quote remains immutable. Build 042 snapshots
+            deposit, security-deposit and balance rules separately without
+            rewriting this checkout evidence.
           </p>
         </section>
 
