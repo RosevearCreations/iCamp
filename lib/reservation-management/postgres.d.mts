@@ -109,7 +109,16 @@ export function createManagedReservation(input: {
   reason: string;
   idempotencyKey?: string;
   sourceChannel?: "web" | "staff" | "ivr" | "sms" | "system";
-}): Promise<{ reservationId: string; idempotent: boolean }>;
+  intake?: {
+    bookingMode: "office" | "walk_up" | "overflow";
+    overflowAreaId?: string | null;
+    officeNote?: string | null;
+  } | null;
+}): Promise<{
+  reservationId: string;
+  idempotent: boolean;
+  bookingMode?: "office" | "walk_up" | "overflow" | null;
+}>;
 
 export function updateManagedReservation(input: {
   actorUserId: string;
