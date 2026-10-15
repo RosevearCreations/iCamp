@@ -9,7 +9,10 @@ import { getReservationPaymentSummary } from "@/lib/payments/postgres.mjs";
 import { getPaymentProviderConfig } from "@/lib/payments/provider.mjs";
 import { formatMoney } from "@/lib/pricing/core.mjs";
 
-import { completeSandboxPaymentAction } from "./actions";
+import {
+  completeSandboxPaymentAction,
+  confirmReservationAction,
+} from "./actions";
 
 export const dynamic = "force-dynamic";
 
@@ -50,7 +53,9 @@ export default async function ReservationPaymentPage({
 
   const config = getPaymentProviderConfig();
   const { schedule, progress } = summary;
-  const pendingHref = `/booking/reservations/${encodeURIComponent(reservationId)}/pending`;
+  const encodedId = encodeURIComponent(reservationId);
+  const pendingHref = `/booking/reservations/${encodedId}/pending`;
+  const documentsHref = `/booking/reservations/${encodedId}/documents`;
 
   return (
     <AppShell>
@@ -58,13 +63,13 @@ export default async function ReservationPaymentPage({
         <nav className="breadcrumbs" aria-label="Breadcrumb">
           <Link href="/">iCamp</Link>
           <span>/</span>
-          <Link href={pendingHref}>Pending reservation</Link>
+          <Link href={pendingHref}>Reservation</Link>
           <span>/</span>
           <span>Payment</span>
         </nav>
 
         <section className="hero-panel">
-          <p className="eyebrow">Build 042 · Deposits & balances</p>
+          <p className="eyebrow">Build 042–043 · Payment & confirmation</p>
           <h1>Reservation payment</h1>
           <p className="hero-panel__lead">
             {summary.reservation.accommodationCode} ·{" "}
@@ -152,11 +157,28 @@ export default async function ReservationPaymentPage({
                 Complete sandbox payment
               </button>
             </form>
+          ) : progress.dueNowCents === 0 &&
+            summary.reservation.status === "confirmed" ? (
+            <Link className="primary-link primary-link--dark" href={documentsHref}>
+              Open confirmation & documents →
+            </Link>
           ) : progress.dueNowCents === 0 ? (
-            <p>
-              <strong>Current payment obligation is satisfied.</strong>{" "}
-              Remaining balance rules continue to use the immutable schedule.
-            </p>
+            <>
+              <p>
+                <strong>Current payment obligation is satisfied.</strong>{" "}
+                Remaining balance rules continue to use the immutable schedule.
+              </p>
+              <form action={confirmReservationAction}>
+                <input
+                  type="hidden"
+                  name="reservationId"
+                  value={reservationId}
+                />
+                <button className="primary-button" type="submit">
+                  Confirm reservation & create documents
+                </button>
+              </form>
+            </>
           ) : (
             <p>
               The configured external provider adapter must complete payment
@@ -169,25 +191,26 @@ export default async function ReservationPaymentPage({
         <section className="content-panel">
           <h2>Provider safety & channel parity</h2>
           <p>
-            <strong>Web/PWA:</strong> the free sandbox adapter exercises the
-            same idempotent payment-attempt and verified provider-event path
-            used by a future live adapter.
+            <strong>Web/PWA:</strong> payment completion can now produce the
+            immutable Build 043 confirmation, invoice and captured-payment
+            receipts when the booking-time obligation is satisfied.
           </p>
           <p>
-            <strong>IVR/DTMF:</strong> callers may hear deposit/balance status,
-            but iCamp never collects raw card numbers, CVV values or full
-            payment credentials through keypad input.
+            <strong>IVR/DTMF:</strong> callers may hear confirmation number,
+            payment and balance status from the same canonical records. Raw
+            payment credentials are never collected through keypad input.
           </p>
           <p>
-            <strong>SMS/MMS:</strong> messages may provide concise payment
-            status and a secure-link handoff. Raw card data is never requested
-            or accepted by SMS/MMS.
+            <strong>SMS/MMS:</strong> messages may provide concise confirmation
+            status and a secure-link handoff to the printable document view.
+            Raw card data is never requested or accepted by SMS/MMS.
           </p>
           <p>
-            Build 043 owns confirmation numbers, receipts, invoices and
-            reservation documents after this payment boundary.
+            Transactional email uses the existing provider-neutral
+            communications dispatch model; the free mock provider completes the
+            development path without a paid email service.
           </p>
-          <Link href={pendingHref}>Return to pending reservation →</Link>
+          <Link href={pendingHref}>Return to reservation →</Link>
         </section>
       </div>
     </AppShell>
