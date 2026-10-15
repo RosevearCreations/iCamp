@@ -46,8 +46,7 @@ export default async function PendingReservationPage({
     `/booking/map?campground=${encodeURIComponent(reservation.campground.slug)}` +
     `&arrivalDate=${encodeURIComponent(reservation.dates.arrivalDate)}` +
     `&departureDate=${encodeURIComponent(reservation.dates.departureDate)}`;
-  const paymentHref =
-    `/booking/reservations/${encodeURIComponent(reservationId)}/payment`;
+  const paymentHref = `/booking/reservations/${encodeURIComponent(reservationId)}/payment`;
 
   return (
     <AppShell>
@@ -95,16 +94,14 @@ export default async function PendingReservationPage({
             {formatMoney(
               payment.progress.dueNowCents,
               payment.schedule.currencyCode,
-            )}.
+            )}
+            .
           </p>
           <p>
             Build 043 owns confirmation numbers, receipts and reservation
             documents after the payment boundary.
           </p>
-          <Link
-            className="primary-link primary-link--dark"
-            href={paymentHref}
-          >
+          <Link className="primary-link primary-link--dark" href={paymentHref}>
             Review deposit, balance & payment →
           </Link>
         </section>

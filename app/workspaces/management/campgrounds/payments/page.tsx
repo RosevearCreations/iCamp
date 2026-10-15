@@ -130,10 +130,10 @@ export default async function PaymentPolicyPage({
             <strong>{provider.mode}</strong>.
           </p>
           <p>
-            The built-in mock adapter is free and exercises payment
-            idempotency, captures and provider-event processing without
-            collecting card data. A live provider remains replaceable behind
-            the same adapter contract.
+            The built-in mock adapter is free and exercises payment idempotency,
+            captures and provider-event processing without collecting card data.
+            A live provider remains replaceable behind the same adapter
+            contract.
           </p>
         </section>
 
@@ -193,9 +193,7 @@ export default async function PaymentPolicyPage({
                 defaultValue={
                   policy.depositPercentageBasisPoints == null
                     ? "25.00"
-                    : (
-                        policy.depositPercentageBasisPoints / 100
-                      ).toFixed(2)
+                    : (policy.depositPercentageBasisPoints / 100).toFixed(2)
                 }
               />
             </label>
@@ -230,9 +228,7 @@ export default async function PaymentPolicyPage({
                 defaultValue={policy.balanceDueMode}
               >
                 <option value="at_booking">At booking</option>
-                <option value="days_before_arrival">
-                  Days before arrival
-                </option>
+                <option value="days_before_arrival">Days before arrival</option>
                 <option value="on_arrival">On arrival</option>
               </select>
             </label>

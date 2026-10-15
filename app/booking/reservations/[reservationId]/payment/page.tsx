@@ -50,8 +50,7 @@ export default async function ReservationPaymentPage({
 
   const config = getPaymentProviderConfig();
   const { schedule, progress } = summary;
-  const pendingHref =
-    `/booking/reservations/${encodeURIComponent(reservationId)}/pending`;
+  const pendingHref = `/booking/reservations/${encodeURIComponent(reservationId)}/pending`;
 
   return (
     <AppShell>

@@ -660,10 +660,7 @@ export default async function CampgroundAdministrationPage({
           </Link>
         </section>
 
-        <section
-          className="content-panel"
-          aria-labelledby="payments-heading"
-        >
+        <section className="content-panel" aria-labelledby="payments-heading">
           <SectionHeading
             eyebrow="Reservation payments"
             title="Deposits, balances & payment provider"
