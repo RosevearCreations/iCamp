@@ -61,10 +61,12 @@ begin
   ) then
     raise exception 'guest.manage profile update policy missing';
   end if;
-  if has_table_privilege('authenticated','public.guest_profiles','select') then
+  if exists (select 1 from pg_roles where rolname = 'authenticated')
+    and has_table_privilege('authenticated','public.guest_profiles','select') then
     raise exception 'authenticated direct guest profile access must remain denied';
   end if;
-  if has_table_privilege('anon','public.guest_profiles','select') then
+  if exists (select 1 from pg_roles where rolname = 'anon')
+    and has_table_privilege('anon','public.guest_profiles','select') then
     raise exception 'anon direct guest profile access must remain denied';
   end if;
   if not exists (
