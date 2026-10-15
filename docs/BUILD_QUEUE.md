@@ -712,10 +712,13 @@ Delivered:
 - feature PR #175, production PR #176, exact `dev` SHA `6ec3641c76c18db4f0635ef90448734b292c12b5`, and runtime production `main` SHA `7139df61f69f6c4e1466edd57830236db6642c99`;
 - exact feature, `dev` and production runtime promotion with Verify, Browser E2E, Database/lifecycle/idempotence, CodeQL and Secret Scan GREEN.
 
-## Next active build
+## Current active build
 **Build 046 — Walk-Up, Overflow & Office Booking**
 
-Status: **QUEUED — NOT STARTED**
+Status: **IN DELIVERY — implementation complete; feature promotion gates running**
+
+## Next after Build 046 reaches GREEN
+**Build 047 — Seasonal/Yearly Assignment Foundation**
 
 ## Operating rule
 - Work primarily on `dev`.
