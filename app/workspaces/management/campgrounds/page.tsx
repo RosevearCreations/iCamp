@@ -687,6 +687,34 @@ export default async function CampgroundAdministrationPage({
           </Link>
         </section>
 
+        <section
+          className="content-panel"
+          aria-labelledby="seasonal-assignments-heading"
+        >
+          <SectionHeading
+            eyebrow="Long-term accommodation"
+            title="Seasonal & yearly assignments"
+            id="seasonal-assignments-heading"
+            helpTopic="campground.structure"
+            trailing={<span className="build-chip">Build 047</span>}
+          />
+          <p>
+            Assign campsites and permanent units for seasonal or yearly terms,
+            snapshot the applicable long-term package rate and manage the
+            non-nightly lifecycle without creating parallel reservation
+            inventory.
+          </p>
+          <Link
+            className="primary-link primary-link--dark"
+            href={
+              "/workspaces/management/campgrounds/seasonal?campground=" +
+              encodeURIComponent(structure.campground.id)
+            }
+          >
+            Open seasonal & yearly assignments
+          </Link>
+        </section>
+
         <section className="content-panel" aria-labelledby="payments-heading">
           <SectionHeading
             eyebrow="Reservation payments"
