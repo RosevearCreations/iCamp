@@ -722,13 +722,24 @@ Delivered:
 - hosted Supabase migration `20261015140439 / walk_up_overflow_office_booking`;
 - production PR #180 merged to `main` at `f2de91b194fa737136287973426685e94b83a8a9`.
 
+### Build 047 — Seasonal/Yearly Assignment Foundation
+Status: **FULLY PROMOTED — `main` GREEN.**
+
+Delivered:
+- canonical seasonal/yearly campsite and permanent-unit assignments over Build 035 availability;
+- Build 039 server-derived long-term package pricing and immutable charge snapshots;
+- append-only lifecycle evidence, `seasonal.manage` authorization and winterization handoff;
+- hosted Supabase migrations through `20261015150438 / build047_production_hardening`;
+- feature hardening PR #184 and production PR #185;
+- production `main` SHA `49522aacad8eaa8f74ed4593cbfb7368d811112f` with CI, CodeQL and Secret Scan GREEN.
+
 ## Current active build
-**Build 047 — Seasonal/Yearly Assignment Foundation**
-
-Status: **IN DELIVERY — production hardening complete; dev promotion gates running**
-
-## Next after Build 047 reaches GREEN
 **Build 048 — Guest Profiles & Saved Stay Information**
+
+Status: **IMPLEMENTED — feature promotion gates are authoritative**
+
+## Next after Build 048 reaches GREEN
+**Build 049 — Front Desk Check-In**
 
 ## Operating rule
 - Work primarily on `dev`.
