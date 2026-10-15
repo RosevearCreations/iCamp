@@ -32,3 +32,25 @@ No new paid service, hosting project, database, storage bucket or provider. The 
 ## Boundary
 
 Build 047 does not perform winterization inspections/sign-off, permanent-unit ownership transfer, financing, or payment-provider collection. Those remain later roadmap work.
+
+
+## Promotion evidence
+
+- exact final feature `dev` SHA `1f43ae2cf8af73397eadab9a88a1479cf82c9619`;
+- feature PR #181 merged to `main`;
+- production merge SHA `62bb1bcb81b3f23439ffd5e076718f3f53e11b46`;
+- final `dev` gates GREEN: CI `38755058081`, CodeQL `38755057765`, Secret Scan `38755057834`;
+- independent production `main` gates GREEN: CI `38755407473`, CodeQL `38755407352`, Secret Scan `38755407705`;
+- hosted Supabase migrations `20261015144641 / seasonal_yearly_assignment_foundation` and `20261015144714 / build047_seasonal_assignment_event_scope_index` applied successfully;
+- hosted Build 047 verification contract passed;
+- Supabase Security Advisor returned zero findings;
+- the Build 047 unindexed-foreign-key performance finding was closed; only expected unused-index INFO notices remain;
+- no new paid provider, hosting project, database, object-storage bucket or manual operator action was required.
+
+## Final status
+
+**FULLY PROMOTED — `main` GREEN.**
+
+## Next build
+
+**Build 048 — Guest Profiles & Saved Stay Information.**
