@@ -65,7 +65,7 @@ test("Build 043 exposes in-app and printable reservation documents", async () =>
   assert.match(documents, /In-app confirmation/u);
   assert.match(documents, /Printable view/u);
   assert.match(documents, /Captured payment evidence/u);
-  assert.match(printable, /Print reservation documents/u);
+  assert.match(printable, /print-document/u);\n  assert.match(printButton, /Print reservation documents/u);
   assert.match(repository, /communication_dispatches/u);
   assert.match(repository, /channel,\s*purpose/u);
   assert.match(repository, /'email','transactional'/u);

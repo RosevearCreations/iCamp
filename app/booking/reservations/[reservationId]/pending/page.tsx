@@ -80,7 +80,9 @@ export default async function PendingReservationPage({
           <SectionHeading
             eyebrow="Reservation status"
             title={
-              confirmed ? "Confirmation available" : "Payment & confirmation"
+              confirmed
+                ? "Confirmation available"
+                : "Pending payment & confirmation"
             }
             id="pending-status"
             helpTopic="shell.overview"
