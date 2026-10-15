@@ -1,6 +1,6 @@
 # Build 045 — Cancellation, Refund & Adjustment Safeguards
 
-Status: **IMPLEMENTED — promotion gates pending.**
+Status: **FULLY PROMOTED — `main` GREEN.**
 
 ## Scope
 
@@ -183,3 +183,16 @@ Build 045 uses the existing PostgreSQL database, Next.js application, authorizat
 Build 045 does not add walk-up/overflow/office reservation intake; that remains Build 046.
 
 It also does not implement a general accounting ledger or POS refund domain. Later finance/POS builds may consume the append-only Build 045 evidence without rewriting it.
+
+
+## Promotion evidence
+
+- feature PR #175 merged exact GREEN head `46c59cca66ee8dcef54ed4362e0137d405762c00` into `dev`;
+- exact post-merge `dev` SHA `6ec3641c76c18db4f0635ef90448734b292c12b5` independently passed CI, Browser E2E, Database lifecycle/idempotence, CodeQL and Secret Scan;
+- hosted Supabase migration `20261015124028 / cancellation_refund_adjustment_safeguards` applied successfully;
+- hosted Build 045 verification contract passed;
+- Supabase Security Advisor returned zero findings;
+- Supabase Performance Advisor returned no Build-045 WARN findings; only the existing `unused_index` INFO class remained;
+- production PR #176 merged exact GREEN `dev` into `main`;
+- runtime production `main` SHA `7139df61f69f6c4e1466edd57830236db6642c99` independently passed CI, Browser E2E, Database lifecycle/idempotence, CodeQL and Secret Scan;
+- no paid provider, new hosting project or manual owner action was required.
