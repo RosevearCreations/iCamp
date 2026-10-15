@@ -18,14 +18,8 @@ alter table public.seasonal_assignments
   add column notes text;
 
 alter table public.seasonal_assignments
-  add constraint seasonal_assignments_kind_profile_check
-  check (
-    exists (
-      select 1
-      from public.campsites c
-      where c.accommodation_id = accommodation_id
-    )
-  ) not valid;
+  add constraint seasonal_assignments_scope_id_unique
+  unique (organization_id,campground_id,id);
 
 create table public.seasonal_assignment_events (
   id uuid primary key default gen_random_uuid(),
