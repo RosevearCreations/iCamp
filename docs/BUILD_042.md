@@ -17,6 +17,7 @@ Build 042 establishes the payment boundary on top of Build 041 pending reservati
 - idempotent private provider-event evidence;
 - guest-visible payment progress;
 - campground-management payment policy controls.
+- advisor-driven composite foreign-key index coverage for payment schedules and attempts.
 
 ## Payment schedule boundary
 
