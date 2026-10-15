@@ -38,6 +38,9 @@ create trigger campground_overflow_areas_touch_row
 before update on public.campground_overflow_areas
 for each row execute function icamp_private.touch_row();
 
+create index campground_overflow_areas_scope_idx
+  on public.campground_overflow_areas (organization_id, campground_id);
+
 create index campground_overflow_areas_active_idx
   on public.campground_overflow_areas (campground_id, is_active, display_name);
 
@@ -72,9 +75,13 @@ create table public.campground_overflow_area_members (
     on delete restrict
 );
 
+create index campground_overflow_area_members_area_fk_idx
+  on public.campground_overflow_area_members
+  (organization_id, campground_id, overflow_area_id);
+
 create index campground_overflow_area_members_accommodation_idx
   on public.campground_overflow_area_members
-  (campground_id, accommodation_id, overflow_area_id);
+  (organization_id, campground_id, accommodation_id);
 
 create index campground_overflow_area_members_created_by_idx
   on public.campground_overflow_area_members (created_by_user_id)
@@ -124,6 +131,15 @@ create table public.reservation_office_intake (
 create index reservation_office_intake_scope_idx
   on public.reservation_office_intake
   (campground_id, booking_mode, created_at desc);
+
+create index reservation_office_intake_reservation_fk_idx
+  on public.reservation_office_intake
+  (organization_id, campground_id, reservation_id);
+
+create index reservation_office_intake_area_fk_idx
+  on public.reservation_office_intake
+  (organization_id, campground_id, overflow_area_id)
+  where overflow_area_id is not null;
 
 create index reservation_office_intake_recorded_by_idx
   on public.reservation_office_intake (recorded_by_user_id);
