@@ -640,8 +640,26 @@ Delivered:
 - zero Supabase Security Advisor findings and no Build-041 performance WARN findings;
 - exact feature, `dev` and production runtime promotion with Verify, Browser E2E, Database/lifecycle/idempotence, CodeQL and Secret Scan GREEN.
 
+### Build 042 — Deposits, Balances & Payment Provider Adapter
+Status: **FULLY PROMOTED — `main` GREEN.**
+
+Delivered:
+- campground-configurable full, fixed-dollar and percentage booking deposits;
+- refundable security deposits with booking, balance or arrival due stages;
+- reservation balance rules for booking time, days before arrival or arrival;
+- immutable reservation payment-policy schedules derived from the Build 041 accepted quote;
+- provider-neutral, idempotent reservation payment attempts and payment-state evidence;
+- free mock/sandbox payment provider adapter with deterministic capture;
+- HMAC-signed, replay-bounded and idempotent payment webhook processing;
+- guest payment progress plus campground payment-policy management;
+- Web/PWA full payment flow with IVR/DTMF status-only and SMS/MMS secure-link fallbacks;
+- explicit no-raw-card/PAN/CVV/provider-secret persistence boundary;
+- hosted Supabase migrations `20261015012157 / deposits_balances_payment_provider` and `20261015012647 / payment_provider_fk_indexes`;
+- zero Supabase Security Advisor findings and closure of all Build-042 unindexed-foreign-key findings;
+- exact feature, advisor-hardening, `dev` and production runtime promotion with Verify, Browser E2E, Database/lifecycle/idempotence, CodeQL and Secret Scan GREEN.
+
 ## Next active build
-**Build 042 — Deposits, Balances & Payment Provider Adapter**
+**Build 043 — Confirmations, Receipts & Reservation Documents**
 
 Status: **QUEUED — NOT STARTED**
 
