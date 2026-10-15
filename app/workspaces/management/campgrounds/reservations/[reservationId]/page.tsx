@@ -69,6 +69,11 @@ export default async function ReservationManagementDetailPage({
 
   const mayModify = authorization.permissions.includes("reservation.modify");
   const mayCancel = authorization.permissions.includes("reservation.cancel");
+  const mayFinance = authorization.permissions.some((permission) =>
+    ["payment.read", "refund.issue", "finance.read", "finance.manage"].includes(
+      permission,
+    ),
+  );
   const editable = ["pending", "confirmed"].includes(detail.reservation.status);
   const selectionText = detail.state.chargeSelections
     .map((item) => item.code + ":" + item.quantity)
@@ -155,6 +160,21 @@ export default async function ReservationManagementDetailPage({
             Original Build 041 checkout, Build 042 payment schedule and Build
             043 confirmation documents remain immutable historical evidence.
           </p>
+          {mayFinance ? (
+            <p>
+              <Link
+                className="primary-link primary-link--dark"
+                href={
+                  "/workspaces/management/campgrounds/reservations/" +
+                  encodeURIComponent(reservationId) +
+                  "/financial?campground=" +
+                  encodeURIComponent(campgroundId)
+                }
+              >
+                Open Build 045 financial safeguards →
+              </Link>
+            </p>
+          ) : null}
         </section>
 
         {mayModify && editable ? (
