@@ -47,6 +47,69 @@ export interface ReservationRefundRecord {
   rowVersion: number;
 }
 
+
+export interface ReservationFinancialSafeguards {
+  reservation: {
+    id: string;
+    status: string;
+    arrivalDate: string;
+    departureDate: string;
+    currencyCode: string;
+    financialReviewRequired: boolean;
+    financialReviewReason: string | null;
+    currentTotalCents: number | null;
+  };
+  policy: CancellationRefundPolicy & {
+    id: string | null;
+    rowVersion: number;
+    persisted: boolean;
+  };
+  recommendation: {
+    daysBeforeArrival: number;
+    policyWindow: "early" | "late";
+    capturedRemainingCents: number;
+    recommendedRefundCents: number;
+    retainedCents: number;
+    feeAppliedCents: number;
+    allocations: Array<{
+      paymentId: string;
+      paymentPurpose: string;
+      remainingCents: number;
+      basisPoints: number;
+      recommendedCents: number;
+    }>;
+  };
+  payments: Array<{
+    id: string;
+    paymentPurpose: string;
+    amountCents: number;
+    currencyCode: string;
+    providerKey: string;
+    providerPaymentReference: string | null;
+    capturedAt: string | null;
+    reservedRefundCents: number;
+    succeededRefundCents: number;
+    remainingRefundableCents: number;
+    policyRecommendedCents: number;
+  }>;
+  refunds: ReservationRefundRecord[];
+  adjustments: Array<{
+    id: string;
+    reservationId: string;
+    refundId: string | null;
+    originalPaymentId: string | null;
+    adjustmentKind: string;
+    financialEffect: string;
+    amountCents: number;
+    currencyCode: string;
+    reason: string;
+    evidence: Record<string, unknown>;
+    actorUserId: string;
+    idempotencyKey: string;
+    occurredAt: string | null;
+  }>;
+}
+
 export function closeRefundsPoolForTests(): Promise<void>;
 
 export function getCampgroundCancellationRefundPolicy(input: {
@@ -72,7 +135,7 @@ export function getReservationFinancialSafeguards(input: {
   userId: string;
   campgroundId: string;
   reservationId: string;
-}): Promise<Record<string, any> | null>;
+}): Promise<ReservationFinancialSafeguards | null>;
 
 export function requestReservationRefund(input: {
   actorUserId: string;

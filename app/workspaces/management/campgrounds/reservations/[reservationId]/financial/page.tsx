@@ -192,7 +192,7 @@ export default async function ReservationFinancialSafeguardsPage({
             helpTopic="shell.overview"
           />
           <div className={styles.history}>
-            {safeguards.payments.map((payment: any) => (
+            {safeguards.payments.map((payment) => (
               <article key={payment.id}>
                 <strong>
                   {payment.paymentPurpose.replaceAll("_", " ")} ·{" "}
@@ -306,7 +306,7 @@ export default async function ReservationFinancialSafeguardsPage({
             helpTopic="shell.overview"
           />
           <div className={styles.history}>
-            {safeguards.refunds.map((refund: any) => (
+            {safeguards.refunds.map((refund) => (
               <article key={refund.id}>
                 <strong>
                   {refund.refundKind} ·{" "}
@@ -499,7 +499,7 @@ export default async function ReservationFinancialSafeguardsPage({
             helpTopic="shell.overview"
           />
           <div className={styles.history}>
-            {safeguards.adjustments.map((adjustment: any) => (
+            {safeguards.adjustments.map((adjustment) => (
               <article key={adjustment.id}>
                 <strong>
                   {adjustment.adjustmentKind} ·{" "}
