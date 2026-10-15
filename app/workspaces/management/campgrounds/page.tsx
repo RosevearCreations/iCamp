@@ -660,6 +660,30 @@ export default async function CampgroundAdministrationPage({
           </Link>
         </section>
 
+        <section className="content-panel" aria-labelledby="reservations-heading">
+          <SectionHeading
+            eyebrow="Reservation operations"
+            title="Reservation management console"
+            id="reservations-heading"
+            helpTopic="campground.structure"
+            trailing={<span className="build-chip">Build 044</span>}
+          />
+          <p>
+            Create, move, extend, shorten, reprice and cancel reservations with
+            complete change history and an explicit Build 045 financial-review
+            boundary.
+          </p>
+          <Link
+            className="primary-link primary-link--dark"
+            href={
+              "/workspaces/management/campgrounds/reservations?campground=" +
+              encodeURIComponent(structure.campground.id)
+            }
+          >
+            Open reservation management
+          </Link>
+        </section>
+
         <section className="content-panel" aria-labelledby="payments-heading">
           <SectionHeading
             eyebrow="Reservation payments"
