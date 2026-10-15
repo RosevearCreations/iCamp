@@ -1,11 +1,5 @@
 export type ReservationManagementChangeKind =
-  | "create"
-  | "edit"
-  | "move"
-  | "extend"
-  | "shorten"
-  | "fees"
-  | "cancel";
+  "create" | "edit" | "move" | "extend" | "shorten" | "fees" | "cancel";
 
 export interface ManagementChargeSelection {
   code: string;
@@ -16,7 +10,9 @@ export function parseManagementChargeSelections(
   value: string | ManagementChargeSelection[],
 ): ManagementChargeSelection[];
 
-export function normalizeReservationManagementInput(input?: Record<string, unknown>): {
+export function normalizeReservationManagementInput(
+  input?: Record<string, unknown>,
+): {
   accommodationId: string;
   arrivalDate: string;
   departureDate: string;
