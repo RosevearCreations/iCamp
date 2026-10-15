@@ -87,6 +87,11 @@ export async function createReservationAction(formData: FormData) {
       reason: text(formData, "reason"),
       idempotencyKey: text(formData, "idempotencyKey"),
       sourceChannel: "web",
+      intake: {
+        bookingMode: "office",
+        overflowAreaId: null,
+        officeNote: null,
+      },
       input: {
         accommodationId: text(formData, "accommodationId"),
         arrivalDate: text(formData, "arrivalDate"),

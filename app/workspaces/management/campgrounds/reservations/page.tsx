@@ -91,11 +91,12 @@ export default async function ReservationManagementPage({
         </nav>
 
         <section className="hero-panel">
-          <p className="eyebrow">Build 044 · Reservation operations</p>
+          <p className="eyebrow">Build 046 · Reservation & office operations</p>
           <h1>Reservation management console</h1>
           <p className="hero-panel__lead">
             Create, move, extend, shorten, reprice and cancel reservations while
-            preserving the original checkout/payment/document evidence.
+            preserving the original checkout/payment/document evidence, with a
+            dedicated front-office desk for walk-up and overflow intake.
           </p>
         </section>
 
@@ -141,9 +142,18 @@ export default async function ReservationManagementPage({
               helpTopic="campground.structure"
             />
             <p>
-              This creates a canonical pending reservation using current rates
-              and active booking charges. Walk-up/overflow office intake remains
-              Build 046.
+              This ordinary office form creates a canonical pending reservation
+              using current rates and active booking charges.
+            </p>
+            <p>
+              <Link
+                href={
+                  "/workspaces/management/campgrounds/reservations/office?campground=" +
+                  encodeURIComponent(selected.campgroundId)
+                }
+              >
+                Open walk-up / overflow office desk →
+              </Link>
             </p>
             <form action={createReservationAction} className={styles.formGrid}>
               <input
@@ -306,9 +316,9 @@ export default async function ReservationManagementPage({
             the authenticated web surface.
           </p>
           <p>
-            Build 044 never issues refunds. Any paid cancellation or financial
-            delta that touches an existing payment schedule is flagged for Build
-            045 review.
+            Build 046 records office intake without replacing the Build 044
+            change history. Paid cancellation/refund work remains protected by
+            the Build 045 financial safeguards.
           </p>
         </section>
       </div>
