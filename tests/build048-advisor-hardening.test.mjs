@@ -32,7 +32,10 @@ test("Build 048 advisor hardening covers new foreign-key paths", async () => {
 
 test("Build 048 advisor hardening verification asserts policy and index shape", async () => {
   const sql = await readFile(verifyUrl, "utf8");
-  assert.match(sql, /Each saved-item table must have exactly one SELECT policy/u);
+  assert.match(
+    sql,
+    /Each saved-item table must have exactly one SELECT policy/u,
+  );
   assert.match(sql, /Build 048 foreign-key covering indexes are incomplete/u);
   assert.match(sql, /Precise RV insert\/update policies are missing/u);
 });
