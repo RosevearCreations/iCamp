@@ -147,7 +147,9 @@ export default async function OfficeBookingPage({
           <div className={styles.notice}>{params.saved}</div>
         ) : null}
         {params.error ? (
-          <div className={styles.notice + " " + styles.error}>{params.error}</div>
+          <div className={styles.notice + " " + styles.error}>
+            {params.error}
+          </div>
         ) : null}
 
         <section className="content-panel">
@@ -202,11 +204,14 @@ export default async function OfficeBookingPage({
             />
             <p>
               Choose the intake mode deliberately. The server rejects a walk-up
-              booking unless the selected campsite is configured as walk-up,
-              and rejects overflow unless the accommodation belongs to the
-              selected active overflow area.
+              booking unless the selected campsite is configured as walk-up, and
+              rejects overflow unless the accommodation belongs to the selected
+              active overflow area.
             </p>
-            <form action={createOfficeBookingAction} className={styles.formGrid}>
+            <form
+              action={createOfficeBookingAction}
+              className={styles.formGrid}
+            >
               <input
                 type="hidden"
                 name="campgroundId"
@@ -334,7 +339,10 @@ export default async function OfficeBookingPage({
             </table>
           </div>
           {inventory.walkUpInventory.length === 0 ? (
-            <p>No active campsites are currently configured with a walk-up profile.</p>
+            <p>
+              No active campsites are currently configured with a walk-up
+              profile.
+            </p>
           ) : null}
         </section>
 
@@ -351,8 +359,9 @@ export default async function OfficeBookingPage({
                 {area.code} · {area.displayName}
               </h3>
               <p>
-                {area.isActive ? "Active" : "Inactive"} · {area.availableCount} of{" "}
-                {area.members.length} members available for the selected dates.
+                {area.isActive ? "Active" : "Inactive"} · {area.availableCount}{" "}
+                of {area.members.length} members available for the selected
+                dates.
               </p>
               {area.notes ? <p>{area.notes}</p> : null}
               <div className={styles.tableWrap}>
@@ -444,7 +453,12 @@ export default async function OfficeBookingPage({
               />
               <label>
                 Code
-                <input name="code" placeholder="overflow-a" maxLength={40} required />
+                <input
+                  name="code"
+                  placeholder="overflow-a"
+                  maxLength={40}
+                  required
+                />
               </label>
               <label>
                 Name
