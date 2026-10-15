@@ -1,6 +1,6 @@
 # Build 042 — Deposits, Balances & Payment Provider Adapter
 
-Status: **IMPLEMENTED — promotion pending.**
+Status: **FULLY PROMOTED — `main` GREEN.**
 
 ## Scope delivered
 
@@ -125,3 +125,18 @@ Build 045 remains responsible for cancellation refunds and adjustment safeguards
 No new paid service, Vercel project, Cloudflare project, Worker, D1 database or R2 bucket is introduced.
 
 The built-in payment adapter is free and local to the application. A future production provider is replaceable and can be added without rewriting the reservation/payment domain.
+
+
+## Production promotion evidence
+
+- Feature PR #162 promoted the complete Build 042 payment implementation into `dev`.
+- The exact final feature head was `dd72e39c1f6558ec6fbde1eaabc823187fd129f4`; Verify, Browser E2E, Database migrations/lifecycle/idempotence, CodeQL and Secret Scan were GREEN before merge.
+- The feature implementation merged into `dev` as `5d83a18a020f39c5f8f1fc09ccc6fb90c618e4ff`, and that exact merge SHA independently passed all five push gates.
+- Hosted Supabase migration `20261015012157 / deposits_balances_payment_provider` is live and Build 042 verification SQL passed.
+- Hosted Security Advisor returned zero findings. The first Performance Advisor pass identified three Build-042 unindexed composite foreign keys.
+- Advisor-hardening PR #163 added covering indexes and verification, passed all five PR gates, and merged into `dev` as `17b5122a23f2aa208af948e11734311a56499d03`.
+- Hosted Supabase migration `20261015012647 / payment_provider_fk_indexes` is live and its verification SQL passed.
+- After hardening, Security Advisor remained at zero findings and the Build-042 unindexed-foreign-key findings were closed; only the existing/new unused-index INFO class remained.
+- Production PR #164 passed fresh Verify, Browser E2E, Database migrations/lifecycle/idempotence, CodeQL and Secret Scan gates on exact `dev` head `17b5122a23f2aa208af948e11734311a56499d03`.
+- The validated runtime payload merged to `main` as `78ff27ae929fa59e2af478c90302688039d6fa06`.
+- The exact runtime production SHA independently passed Verify, Browser E2E, Database migrations/lifecycle/idempotence, CodeQL and Secret Scan after merge.
