@@ -40,6 +40,7 @@ export async function createOfficeBookingAction(formData: FormData) {
   const campgroundId = text(formData, "campgroundId");
   const path = officePath(campgroundId);
   const session = await requireStaff(path);
+  let destination: string;
 
   try {
     const result = await createManagedReservation({
@@ -63,24 +64,26 @@ export async function createOfficeBookingAction(formData: FormData) {
       },
     });
     revalidatePath(path);
-    redirect(
+    destination =
       detailPath(campgroundId, result.reservationId) +
-        "&saved=" +
-        encodeURIComponent(
-          result.idempotent
-            ? "Office booking was already applied."
-            : "Office booking created.",
-        ),
-    );
+      "&saved=" +
+      encodeURIComponent(
+        result.idempotent
+          ? "Office booking was already applied."
+          : "Office booking created.",
+      );
   } catch (error) {
     redirect(path + "&error=" + encodeURIComponent(errorMessage(error)));
   }
+
+  redirect(destination);
 }
 
 export async function createOverflowAreaAction(formData: FormData) {
   const campgroundId = text(formData, "campgroundId");
   const path = officePath(campgroundId);
   const session = await requireStaff(path);
+  let destination: string;
 
   try {
     await createOverflowArea({
@@ -94,16 +97,20 @@ export async function createOverflowAreaAction(formData: FormData) {
       reason: text(formData, "reason"),
     });
     revalidatePath(path);
-    redirect(path + "&saved=" + encodeURIComponent("Overflow area created."));
+    destination =
+      path + "&saved=" + encodeURIComponent("Overflow area created.");
   } catch (error) {
     redirect(path + "&error=" + encodeURIComponent(errorMessage(error)));
   }
+
+  redirect(destination);
 }
 
 export async function setOverflowAreaMembersAction(formData: FormData) {
   const campgroundId = text(formData, "campgroundId");
   const path = officePath(campgroundId);
   const session = await requireStaff(path);
+  let destination: string;
 
   try {
     await setOverflowAreaMembers({
@@ -116,10 +123,11 @@ export async function setOverflowAreaMembersAction(formData: FormData) {
       reason: text(formData, "reason"),
     });
     revalidatePath(path);
-    redirect(
-      path + "&saved=" + encodeURIComponent("Overflow membership updated."),
-    );
+    destination =
+      path + "&saved=" + encodeURIComponent("Overflow membership updated.");
   } catch (error) {
     redirect(path + "&error=" + encodeURIComponent(errorMessage(error)));
   }
+
+  redirect(destination);
 }
