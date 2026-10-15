@@ -1,6 +1,29 @@
 -- iCamp Build 044
 -- Reservation Management Console.
 
+-- Keep live-availability revision signals correct when a reservation moves
+-- between accommodations without changing dates/status.
+create or replace function icamp_private.bump_reservation_move_availability_revision()
+returns trigger
+language plpgsql
+security invoker
+set search_path = ''
+as $
+begin
+  if old.accommodation_id is distinct from new.accommodation_id then
+    update public.accommodations
+    set availability_revision = availability_revision + 1,
+        updated_by_user_id = coalesce(new.updated_by_user_id, updated_by_user_id)
+    where id in (old.accommodation_id, new.accommodation_id);
+  end if;
+  return null;
+end;
+$;
+
+create trigger reservations_move_bump_availability_revision
+after update of accommodation_id on public.reservations
+for each row execute function icamp_private.bump_reservation_move_availability_revision();
+
 create table public.reservation_management_state (
   id uuid primary key default gen_random_uuid(),
   organization_id uuid not null,
