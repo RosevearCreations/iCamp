@@ -33,6 +33,31 @@ function errorMessage(error: unknown) {
   return message.slice(0, 300);
 }
 
+function parseRefundKind(value: string): "partial" | "full" | "cancellation" {
+  if (value === "partial" || value === "full" || value === "cancellation") {
+    return value;
+  }
+  throw new Error("Refund kind is invalid.");
+}
+
+function parseFinancialAdjustment(value: string): {
+  adjustmentKind: "credit" | "charge" | "forfeit" | "writeoff";
+  financialEffect: "customer_credit" | "customer_debit" | "retained" | "none";
+} {
+  switch (value) {
+    case "credit":
+      return { adjustmentKind: "credit", financialEffect: "customer_credit" };
+    case "charge":
+      return { adjustmentKind: "charge", financialEffect: "customer_debit" };
+    case "forfeit":
+      return { adjustmentKind: "forfeit", financialEffect: "retained" };
+    case "writeoff":
+      return { adjustmentKind: "writeoff", financialEffect: "none" };
+    default:
+      throw new Error("Financial adjustment kind is invalid.");
+  }
+}
+
 function consolePath(campgroundId: string) {
   return (
     "/workspaces/management/campgrounds/reservations?campground=" +
@@ -175,7 +200,7 @@ export async function requestRefundAction(formData: FormData) {
       reservationId,
       originalPaymentId: text(formData, "originalPaymentId"),
       amountCents: moneyInputToCents(text(formData, "refundAmount"), "Refund"),
-      refundKind: text(formData, "refundKind") || "partial",
+      refundKind: parseRefundKind(text(formData, "refundKind") || "partial"),
       reason: text(formData, "reason"),
       providerKey: config.provider,
       idempotencyKey: text(formData, "idempotencyKey"),
@@ -267,17 +292,9 @@ export async function recordFinancialAdjustmentAction(formData: FormData) {
   const session = await requireStaff(path);
 
   try {
-    const adjustmentKind = text(formData, "adjustmentKind");
-    const effectByKind: Record<string, string> = {
-      credit: "customer_credit",
-      charge: "customer_debit",
-      forfeit: "retained",
-      writeoff: "none",
-    };
-    const financialEffect = effectByKind[adjustmentKind];
-    if (!financialEffect) {
-      throw new Error("Financial adjustment kind is invalid.");
-    }
+    const { adjustmentKind, financialEffect } = parseFinancialAdjustment(
+      text(formData, "adjustmentKind"),
+    );
 
     await recordReservationFinancialAdjustment({
       actorUserId: session.user.id,

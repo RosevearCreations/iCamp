@@ -509,7 +509,9 @@ export default async function ReservationFinancialSafeguardsPage({
                   Effect {adjustment.financialEffect} · {adjustment.reason}
                 </p>
                 <p className={styles.historyMeta}>
-                  {new Date(adjustment.occurredAt).toLocaleString("en-CA")}
+                  {adjustment.occurredAt
+                    ? new Date(adjustment.occurredAt).toLocaleString("en-CA")
+                    : "Time unavailable"}
                   {adjustment.originalPaymentId
                     ? " · original payment " + adjustment.originalPaymentId
                     : ""}
