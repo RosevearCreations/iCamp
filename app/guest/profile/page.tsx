@@ -41,11 +41,7 @@ function archiveForm(
       <input type="hidden" name="profileId" value={profileId} />
       <input type="hidden" name="itemId" value={itemId} />
       <input type="hidden" name="itemKind" value={itemKind} />
-      <input
-        type="hidden"
-        name="expectedRowVersion"
-        value={rowVersion}
-      />
+      <input type="hidden" name="expectedRowVersion" value={rowVersion} />
       <button className="secondary-button" type="submit">
         Archive
       </button>
@@ -126,7 +122,9 @@ export default async function GuestProfilePage({
           </p>
         </section>
 
-        {params.saved ? <div className={styles.notice}>{params.saved}</div> : null}
+        {params.saved ? (
+          <div className={styles.notice}>{params.saved}</div>
+        ) : null}
         {params.error ? (
           <div className={styles.notice + " " + styles.error}>
             {params.error}
@@ -207,7 +205,9 @@ export default async function GuestProfilePage({
                 name="contactEmail"
                 type="email"
                 maxLength={254}
-                defaultValue={detail?.profile.contactEmail ?? session.user.email}
+                defaultValue={
+                  detail?.profile.contactEmail ?? session.user.email
+                }
               />
             </label>
             <label>
@@ -222,7 +222,9 @@ export default async function GuestProfilePage({
               Preferred contact
               <select
                 name="preferredContactChannel"
-                defaultValue={detail?.profile.preferredContactChannel ?? "email"}
+                defaultValue={
+                  detail?.profile.preferredContactChannel ?? "email"
+                }
               >
                 <option value="email">Email</option>
                 <option value="sms">SMS</option>
@@ -271,8 +273,7 @@ export default async function GuestProfilePage({
                   <strong>{item.nickname}</strong> · {item.rvKind}
                   {item.make ? " · " + item.make : ""}
                   {item.model ? " " + item.model : ""}
-                  {item.lengthFeet ? " · " + item.lengthFeet + " ft" : ""}
-                  {" "}
+                  {item.lengthFeet ? " · " + item.lengthFeet + " ft" : ""}{" "}
                   {archiveForm(
                     selected.campgroundId,
                     detail.profile.id,
@@ -283,8 +284,16 @@ export default async function GuestProfilePage({
                 </p>
               ))}
               <form action={saveOwnRvAction} className={styles.formGrid}>
-                <input type="hidden" name="campgroundId" value={selected.campgroundId} />
-                <input type="hidden" name="profileId" value={detail.profile.id} />
+                <input
+                  type="hidden"
+                  name="campgroundId"
+                  value={selected.campgroundId}
+                />
+                <input
+                  type="hidden"
+                  name="profileId"
+                  value={detail.profile.id}
+                />
                 <label>
                   Nickname
                   <input name="nickname" maxLength={80} required />
@@ -300,11 +309,38 @@ export default async function GuestProfilePage({
                     <option value="other">Other</option>
                   </select>
                 </label>
-                <label>Make<input name="make" maxLength={80} /></label>
-                <label>Model<input name="model" maxLength={80} /></label>
-                <label>Year<input name="modelYear" type="number" min={1900} max={2200} /></label>
-                <label>Length (ft)<input name="lengthFeet" type="number" min={1} max={120} step="0.1" /></label>
-                <label>Slide-outs<input name="slideOutCount" type="number" min={0} max={12} defaultValue={0} /></label>
+                <label>
+                  Make
+                  <input name="make" maxLength={80} />
+                </label>
+                <label>
+                  Model
+                  <input name="model" maxLength={80} />
+                </label>
+                <label>
+                  Year
+                  <input name="modelYear" type="number" min={1900} max={2200} />
+                </label>
+                <label>
+                  Length (ft)
+                  <input
+                    name="lengthFeet"
+                    type="number"
+                    min={1}
+                    max={120}
+                    step="0.1"
+                  />
+                </label>
+                <label>
+                  Slide-outs
+                  <input
+                    name="slideOutCount"
+                    type="number"
+                    min={0}
+                    max={12}
+                    defaultValue={0}
+                  />
+                </label>
                 <label>
                   Electrical service
                   <select name="electricalServiceAmps" defaultValue="">
@@ -314,27 +350,60 @@ export default async function GuestProfilePage({
                     <option value="50">50 amp</option>
                   </select>
                 </label>
-                <label className={styles.full}>Notes<textarea name="notes" maxLength={1000} /></label>
-                <button className="primary-button" type="submit" disabled={!detail.profile.saveStayPreferences}>Save RV</button>
+                <label className={styles.full}>
+                  Notes
+                  <textarea name="notes" maxLength={1000} />
+                </label>
+                <button
+                  className="primary-button"
+                  type="submit"
+                  disabled={!detail.profile.saveStayPreferences}
+                >
+                  Save RV
+                </button>
               </form>
             </section>
 
             <section className="content-panel">
-              <SectionHeading eyebrow="Reusable travel details" title="Vehicle profiles" id="guest-vehicles" helpTopic="accommodation.inventory" />
-              <p>Plate and jurisdiction are intentionally not stored here; formal road-vehicle registration arrives in Build 053.</p>
+              <SectionHeading
+                eyebrow="Reusable travel details"
+                title="Vehicle profiles"
+                id="guest-vehicles"
+                helpTopic="accommodation.inventory"
+              />
+              <p>
+                Plate and jurisdiction are intentionally not stored here; formal
+                road-vehicle registration arrives in Build 053.
+              </p>
               {detail.vehicles.map((item) => (
                 <p key={item.id}>
                   <strong>{item.nickname}</strong> · {item.vehicleKind}
                   {item.make ? " · " + item.make : ""}
-                  {item.model ? " " + item.model : ""}
-                  {" "}
-                  {archiveForm(selected.campgroundId, detail.profile.id, item.id, "vehicle", item.rowVersion)}
+                  {item.model ? " " + item.model : ""}{" "}
+                  {archiveForm(
+                    selected.campgroundId,
+                    detail.profile.id,
+                    item.id,
+                    "vehicle",
+                    item.rowVersion,
+                  )}
                 </p>
               ))}
               <form action={saveOwnVehicleAction} className={styles.formGrid}>
-                <input type="hidden" name="campgroundId" value={selected.campgroundId} />
-                <input type="hidden" name="profileId" value={detail.profile.id} />
-                <label>Nickname<input name="nickname" maxLength={80} required /></label>
+                <input
+                  type="hidden"
+                  name="campgroundId"
+                  value={selected.campgroundId}
+                />
+                <input
+                  type="hidden"
+                  name="profileId"
+                  value={detail.profile.id}
+                />
+                <label>
+                  Nickname
+                  <input name="nickname" maxLength={80} required />
+                </label>
                 <label>
                   Vehicle type
                   <select name="vehicleKind" defaultValue="car">
@@ -347,29 +416,71 @@ export default async function GuestProfilePage({
                     <option value="other">Other</option>
                   </select>
                 </label>
-                <label>Make<input name="make" maxLength={80} /></label>
-                <label>Model<input name="model" maxLength={80} /></label>
-                <label>Colour<input name="color" maxLength={60} /></label>
-                <label>Year<input name="modelYear" type="number" min={1900} max={2200} /></label>
-                <label className={styles.full}>Notes<textarea name="notes" maxLength={1000} /></label>
-                <button className="primary-button" type="submit" disabled={!detail.profile.saveStayPreferences}>Save vehicle</button>
+                <label>
+                  Make
+                  <input name="make" maxLength={80} />
+                </label>
+                <label>
+                  Model
+                  <input name="model" maxLength={80} />
+                </label>
+                <label>
+                  Colour
+                  <input name="color" maxLength={60} />
+                </label>
+                <label>
+                  Year
+                  <input name="modelYear" type="number" min={1900} max={2200} />
+                </label>
+                <label className={styles.full}>
+                  Notes
+                  <textarea name="notes" maxLength={1000} />
+                </label>
+                <button
+                  className="primary-button"
+                  type="submit"
+                  disabled={!detail.profile.saveStayPreferences}
+                >
+                  Save vehicle
+                </button>
               </form>
             </section>
 
             <section className="content-panel">
-              <SectionHeading eyebrow="Reusable companion details" title="Pet profiles" id="guest-pets" helpTopic="accommodation.inventory" />
+              <SectionHeading
+                eyebrow="Reusable companion details"
+                title="Pet profiles"
+                id="guest-pets"
+                helpTopic="accommodation.inventory"
+              />
               {detail.pets.map((item) => (
                 <p key={item.id}>
                   <strong>{item.name}</strong> · {item.species}
-                  {item.breed ? " · " + item.breed : ""}
-                  {" "}
-                  {archiveForm(selected.campgroundId, detail.profile.id, item.id, "pet", item.rowVersion)}
+                  {item.breed ? " · " + item.breed : ""}{" "}
+                  {archiveForm(
+                    selected.campgroundId,
+                    detail.profile.id,
+                    item.id,
+                    "pet",
+                    item.rowVersion,
+                  )}
                 </p>
               ))}
               <form action={saveOwnPetAction} className={styles.formGrid}>
-                <input type="hidden" name="campgroundId" value={selected.campgroundId} />
-                <input type="hidden" name="profileId" value={detail.profile.id} />
-                <label>Name<input name="name" maxLength={80} required /></label>
+                <input
+                  type="hidden"
+                  name="campgroundId"
+                  value={selected.campgroundId}
+                />
+                <input
+                  type="hidden"
+                  name="profileId"
+                  value={detail.profile.id}
+                />
+                <label>
+                  Name
+                  <input name="name" maxLength={80} required />
+                </label>
                 <label>
                   Species
                   <select name="species" defaultValue="dog">
@@ -379,27 +490,67 @@ export default async function GuestProfilePage({
                     <option value="other">Other</option>
                   </select>
                 </label>
-                <label>Breed<input name="breed" maxLength={80} /></label>
-                <label>Weight (kg)<input name="weightKg" type="number" min="0.1" max={250} step="0.1" /></label>
-                <label className={styles.full}>Notes<textarea name="notes" maxLength={1000} /></label>
-                <button className="primary-button" type="submit" disabled={!detail.profile.saveStayPreferences}>Save pet</button>
+                <label>
+                  Breed
+                  <input name="breed" maxLength={80} />
+                </label>
+                <label>
+                  Weight (kg)
+                  <input
+                    name="weightKg"
+                    type="number"
+                    min="0.1"
+                    max={250}
+                    step="0.1"
+                  />
+                </label>
+                <label className={styles.full}>
+                  Notes
+                  <textarea name="notes" maxLength={1000} />
+                </label>
+                <button
+                  className="primary-button"
+                  type="submit"
+                  disabled={!detail.profile.saveStayPreferences}
+                >
+                  Save pet
+                </button>
               </form>
             </section>
 
             <section className="content-panel">
-              <SectionHeading eyebrow="History" title="Stays, long-term assignments & receipts" id="guest-history" helpTopic="auth.sessions" />
+              <SectionHeading
+                eyebrow="History"
+                title="Stays, long-term assignments & receipts"
+                id="guest-history"
+                helpTopic="auth.sessions"
+              />
               <h3>Reservation stays</h3>
               <div className={styles.tableWrap}>
                 <table>
-                  <thead><tr><th>Stay</th><th>Accommodation</th><th>Status</th><th>Confirmation</th><th>Total</th></tr></thead>
+                  <thead>
+                    <tr>
+                      <th>Stay</th>
+                      <th>Accommodation</th>
+                      <th>Status</th>
+                      <th>Confirmation</th>
+                      <th>Total</th>
+                    </tr>
+                  </thead>
                   <tbody>
                     {detail.stays.map((stay) => (
                       <tr key={stay.id}>
-                        <td>{stay.arrivalDate} → {stay.departureDate}</td>
-                        <td>{stay.accommodationCode} · {stay.accommodationName}</td>
+                        <td>
+                          {stay.arrivalDate} → {stay.departureDate}
+                        </td>
+                        <td>
+                          {stay.accommodationCode} · {stay.accommodationName}
+                        </td>
                         <td>{stay.status}</td>
                         <td>{stay.confirmationNumber ?? "—"}</td>
-                        <td>{formatMoney(stay.totalCents, stay.currencyCode)}</td>
+                        <td>
+                          {formatMoney(stay.totalCents, stay.currencyCode)}
+                        </td>
                       </tr>
                     ))}
                   </tbody>
@@ -408,26 +559,48 @@ export default async function GuestProfilePage({
               <h3>Seasonal/yearly assignments</h3>
               {detail.seasonalAssignments.map((assignment) => (
                 <p key={assignment.id}>
-                  {assignment.assignmentKind} · {assignment.accommodationCode} · {assignment.startsOn} to {assignment.endsOn} · {assignment.assignmentState}
+                  {assignment.assignmentKind} · {assignment.accommodationCode} ·{" "}
+                  {assignment.startsOn} to {assignment.endsOn} ·{" "}
+                  {assignment.assignmentState}
                 </p>
               ))}
               <h3>Receipts</h3>
               {detail.receipts.map((receipt) => (
                 <p key={receipt.id}>
-                  {receipt.receiptNumber} · {receipt.paymentPurpose} · {formatMoney(receipt.amountCents, receipt.currencyCode)}
+                  {receipt.receiptNumber} · {receipt.paymentPurpose} ·{" "}
+                  {formatMoney(receipt.amountCents, receipt.currencyCode)}
                 </p>
               ))}
-              {detail.stays.length === 0 && detail.receipts.length === 0 && detail.seasonalAssignments.length === 0 ? <p>No linked stay history is available yet.</p> : null}
+              {detail.stays.length === 0 &&
+              detail.receipts.length === 0 &&
+              detail.seasonalAssignments.length === 0 ? (
+                <p>No linked stay history is available yet.</p>
+              ) : null}
             </section>
           </>
         ) : null}
 
         <section className="content-panel">
           <h2>Channel contract & privacy boundary</h2>
-          <p><strong>Web/PWA:</strong> full guest profile, privacy, saved-stay and history experience.</p>
-          <p><strong>IVR/DTMF:</strong> verified guests can request concise profile/stay status; complex edits use verified staff assistance or a secure web handoff.</p>
-          <p><strong>SMS/MMS:</strong> verified concise profile/stay lookup and secure-link handoff are supported. Sensitive profile details are not echoed into unverified messages.</p>
-          <p>Raw payment-card details, passwords, medical records and formal road-vehicle registration data are never stored in Build 048 guest profiles.</p>
+          <p>
+            <strong>Web/PWA:</strong> full guest profile, privacy, saved-stay
+            and history experience.
+          </p>
+          <p>
+            <strong>IVR/DTMF:</strong> verified guests can request concise
+            profile/stay status; complex edits use verified staff assistance or
+            a secure web handoff.
+          </p>
+          <p>
+            <strong>SMS/MMS:</strong> verified concise profile/stay lookup and
+            secure-link handoff are supported. Sensitive profile details are not
+            echoed into unverified messages.
+          </p>
+          <p>
+            Raw payment-card details, passwords, medical records and formal
+            road-vehicle registration data are never stored in Build 048 guest
+            profiles.
+          </p>
         </section>
       </div>
     </AppShell>

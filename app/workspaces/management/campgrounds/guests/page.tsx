@@ -61,8 +61,7 @@ export default async function GuestProfileDeskPage({
     userId: session.user.id,
     campgroundId: selected.campgroundId,
   });
-  const mayManage =
-    selected.authorization.permissions.includes("guest.manage");
+  const mayManage = selected.authorization.permissions.includes("guest.manage");
 
   return (
     <AppShell>
@@ -87,7 +86,9 @@ export default async function GuestProfileDeskPage({
           </p>
         </section>
 
-        {params.saved ? <div className={styles.notice}>{params.saved}</div> : null}
+        {params.saved ? (
+          <div className={styles.notice}>{params.saved}</div>
+        ) : null}
         {params.error ? (
           <div className={styles.notice + " " + styles.error}>
             {params.error}
@@ -131,7 +132,10 @@ export default async function GuestProfileDeskPage({
               office-only profile, or enter an existing active guest-account
               email to link the profile.
             </p>
-            <form action={saveStaffGuestProfileAction} className={styles.formGrid}>
+            <form
+              action={saveStaffGuestProfileAction}
+              className={styles.formGrid}
+            >
               <input
                 type="hidden"
                 name="campgroundId"
@@ -230,7 +234,9 @@ export default async function GuestProfileDeskPage({
                       <br />
                       <small>{profile.contactPhone ?? "No phone"}</small>
                     </td>
-                    <td>{profile.userAccountId ? "Linked" : "Optional / none"}</td>
+                    <td>
+                      {profile.userAccountId ? "Linked" : "Optional / none"}
+                    </td>
                     <td>
                       {profile.rvCount} RV · {profile.vehicleCount} vehicle ·{" "}
                       {profile.petCount} pet
@@ -259,7 +265,9 @@ export default async function GuestProfileDeskPage({
               </tbody>
             </table>
           </div>
-          {profiles.length === 0 ? <p>No guest profiles are available.</p> : null}
+          {profiles.length === 0 ? (
+            <p>No guest profiles are available.</p>
+          ) : null}
         </section>
 
         <section className="content-panel">
@@ -279,9 +287,9 @@ export default async function GuestProfileDeskPage({
             before identity verification.
           </p>
           <p>
-            Build 014 remains the source of truth for messaging consent.
-            Build 053 will own formal road-vehicle plate/jurisdiction
-            registration; Build 048 stores only reusable travel descriptions.
+            Build 014 remains the source of truth for messaging consent. Build
+            053 will own formal road-vehicle plate/jurisdiction registration;
+            Build 048 stores only reusable travel descriptions.
           </p>
         </section>
       </div>

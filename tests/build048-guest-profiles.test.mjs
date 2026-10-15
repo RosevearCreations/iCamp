@@ -18,7 +18,10 @@ const verifyUrl = new URL(
   "../database/verify/0059_guest_profiles_saved_stay.sql",
   import.meta.url,
 );
-const serviceUrl = new URL("../lib/guest-profile/postgres.mjs", import.meta.url);
+const serviceUrl = new URL(
+  "../lib/guest-profile/postgres.mjs",
+  import.meta.url,
+);
 const guestPageUrl = new URL("../app/guest/profile/page.tsx", import.meta.url);
 const staffPageUrl = new URL(
   "../app/workspaces/management/campgrounds/guests/page.tsx",

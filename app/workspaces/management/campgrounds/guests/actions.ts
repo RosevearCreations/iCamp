@@ -19,10 +19,9 @@ function text(formData: FormData, key: string) {
 }
 
 function errorMessage(error: unknown) {
-  return (error instanceof Error ? error.message : "Guest profile action failed.").slice(
-    0,
-    300,
-  );
+  return (
+    error instanceof Error ? error.message : "Guest profile action failed."
+  ).slice(0, 300);
 }
 
 function deskPath(campgroundId: string) {
@@ -183,11 +182,7 @@ export async function archiveStaffSavedItemAction(formData: FormData) {
 
   try {
     const itemKind = text(formData, "itemKind");
-    if (
-      itemKind !== "rv" &&
-      itemKind !== "vehicle" &&
-      itemKind !== "pet"
-    ) {
+    if (itemKind !== "rv" && itemKind !== "vehicle" && itemKind !== "pet") {
       throw new Error("Saved item kind is invalid.");
     }
     await archiveGuestSavedItem({
@@ -204,11 +199,7 @@ export async function archiveStaffSavedItemAction(formData: FormData) {
     redirect(path + "&error=" + encodeURIComponent(errorMessage(error)));
   }
 
-  redirect(
-    path +
-      "&saved=" +
-      encodeURIComponent("Saved stay item archived."),
-  );
+  redirect(path + "&saved=" + encodeURIComponent("Saved stay item archived."));
 }
 
 export async function linkReservationAction(formData: FormData) {

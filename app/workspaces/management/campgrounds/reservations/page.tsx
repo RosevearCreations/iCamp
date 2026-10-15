@@ -77,7 +77,8 @@ export default async function ReservationManagementPage({
   const mayCreate =
     selected.authorization.permissions.includes("reservation.create");
   const mayUseGuestDesk = selected.authorization.permissions.some(
-    (permission) => permission === "guest.read" || permission === "guest.manage",
+    (permission) =>
+      permission === "guest.read" || permission === "guest.manage",
   );
 
   return (

@@ -98,9 +98,7 @@ export interface GuestProfileDetail {
 
 export function closeGuestProfilePoolForTests(): Promise<void>;
 
-export function listOwnGuestProfileScopes(input: {
-  userId: string;
-}): Promise<
+export function listOwnGuestProfileScopes(input: { userId: string }): Promise<
   Array<{
     campgroundId: string;
     campgroundName: string;

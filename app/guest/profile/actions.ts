@@ -17,10 +17,9 @@ function text(formData: FormData, key: string) {
 }
 
 function errorMessage(error: unknown) {
-  return (error instanceof Error ? error.message : "Guest profile action failed.").slice(
-    0,
-    300,
-  );
+  return (
+    error instanceof Error ? error.message : "Guest profile action failed."
+  ).slice(0, 300);
 }
 
 function pathFor(campgroundId: string) {
@@ -125,9 +124,7 @@ export async function saveOwnVehicleAction(formData: FormData) {
     redirect(path + "&error=" + encodeURIComponent(errorMessage(error)));
   }
 
-  redirect(
-    path + "&saved=" + encodeURIComponent("Vehicle profile saved."),
-  );
+  redirect(path + "&saved=" + encodeURIComponent("Vehicle profile saved."));
 }
 
 export async function saveOwnPetAction(formData: FormData) {
@@ -181,7 +178,5 @@ export async function archiveOwnSavedItemAction(formData: FormData) {
     redirect(path + "&error=" + encodeURIComponent(errorMessage(error)));
   }
 
-  redirect(
-    path + "&saved=" + encodeURIComponent("Saved stay item archived."),
-  );
+  redirect(path + "&saved=" + encodeURIComponent("Saved stay item archived."));
 }
