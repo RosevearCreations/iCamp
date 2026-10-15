@@ -712,13 +712,33 @@ Delivered:
 - feature PR #175, production PR #176, exact `dev` SHA `6ec3641c76c18db4f0635ef90448734b292c12b5`, and runtime production `main` SHA `7139df61f69f6c4e1466edd57830236db6642c99`;
 - exact feature, `dev` and production runtime promotion with Verify, Browser E2E, Database/lifecycle/idempotence, CodeQL and Secret Scan GREEN.
 
+### Build 046 — Walk-Up, Overflow & Office Booking
+Status: **FULLY PROMOTED — `main` GREEN.**
+
+Delivered:
+- canonical office, walk-up and overflow intake over Build 035 live availability and Build 044 reservation creation;
+- walk-up campsite eligibility and configurable overflow-area membership without parallel inventory;
+- append-only office-intake evidence and audited configuration changes;
+- hosted Supabase migration `20261015140439 / walk_up_overflow_office_booking`;
+- zero Supabase Security Advisor findings;
+- feature PR #179, production PR #180, exact production/main SHA `f2de91b194fa737136287973426685e94b83a8a9`;
+- exact `dev`/`main` convergence with Verify, Browser E2E, Database/lifecycle/idempotence, CodeQL and Secret Scan GREEN.
+
 ## Current active build
-**Build 046 — Walk-Up, Overflow & Office Booking**
+**Build 047 — Seasonal/Yearly Assignment Foundation**
 
 Status: **IN DELIVERY — implementation complete; feature promotion gates running**
 
-## Next after Build 046 reaches GREEN
-**Build 047 — Seasonal/Yearly Assignment Foundation**
+Delivered in feature branch:
+- canonical seasonal/yearly lifecycle by extending the existing Build 035 `seasonal_assignments` blocker;
+- campsite and permanent-unit long-term assignments with occupant/reference and winterization handoff;
+- immutable Build 039 seasonal/yearly package-price snapshots;
+- append-only assignment lifecycle events, row-version transitions and privileged audit evidence;
+- `seasonal.manage` authorization with FORCE RLS and denied direct browser-role access;
+- Web/PWA full management surface with verified-staff IVR/DTMF and SMS/MMS safe fallbacks.
+
+## Next after Build 047 reaches GREEN
+**Build 048 — Guest Profiles & Saved Stay Information**
 
 ## Operating rule
 - Work primarily on `dev`.
