@@ -154,7 +154,10 @@ export default async function SeasonalAssignmentsPage({
             site profile, rate scope, dates and canonical package amount before
             the assignment can be committed.
           </p>
-          <form action={createLongTermAssignmentAction} className={styles.formGrid}>
+          <form
+            action={createLongTermAssignmentAction}
+            className={styles.formGrid}
+          >
             <input
               type="hidden"
               name="campgroundId"
@@ -218,9 +221,8 @@ export default async function SeasonalAssignmentsPage({
               </select>
             </label>
             <label className={styles.full}>
-              <input type="checkbox" name="winterizationRequired" />{" "}
-              This assignment requires the later winterization/readiness
-              workflow.
+              <input type="checkbox" name="winterizationRequired" /> This
+              assignment requires the later winterization/readiness workflow.
             </label>
             <label className={styles.full}>
               Staff note / reason
@@ -434,10 +436,7 @@ export default async function SeasonalAssignmentsPage({
                               name="note"
                               value="End long-term assignment."
                             />
-                            <button
-                              className="secondary-button"
-                              type="submit"
-                            >
+                            <button className="secondary-button" type="submit">
                               End
                             </button>
                           </form>
@@ -476,10 +475,7 @@ export default async function SeasonalAssignmentsPage({
                               name="note"
                               value="Cancel long-term assignment."
                             />
-                            <button
-                              className="secondary-button"
-                              type="submit"
-                            >
+                            <button className="secondary-button" type="submit">
                               Cancel
                             </button>
                           </form>
@@ -513,9 +509,9 @@ export default async function SeasonalAssignmentsPage({
             <code> seasonal.manage </code> authorization.
           </p>
           <p>
-            Raw payment-card details are never accepted through the custom
-            voice or SMS flow. Build 047 records the canonical package charge
-            only; later finance builds own collection and settlement.
+            Raw payment-card details are never accepted through the custom voice
+            or SMS flow. Build 047 records the canonical package charge only;
+            later finance builds own collection and settlement.
           </p>
         </section>
       </div>
