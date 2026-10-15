@@ -12,9 +12,9 @@ import { getPendingReservationCheckout } from "@/lib/reservation-checkout/postgr
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Pending reservation · iCamp",
+  title: "Reservation · iCamp",
   description:
-    "Review the pending iCamp reservation, accepted quote and payment state.",
+    "Review the iCamp reservation, accepted quote, payment and confirmation state.",
   robots: { index: false, follow: false },
 };
 
@@ -46,7 +46,10 @@ export default async function PendingReservationPage({
     `/booking/map?campground=${encodeURIComponent(reservation.campground.slug)}` +
     `&arrivalDate=${encodeURIComponent(reservation.dates.arrivalDate)}` +
     `&departureDate=${encodeURIComponent(reservation.dates.departureDate)}`;
-  const paymentHref = `/booking/reservations/${encodeURIComponent(reservationId)}/payment`;
+  const encodedId = encodeURIComponent(reservationId);
+  const paymentHref = `/booking/reservations/${encodedId}/payment`;
+  const documentsHref = `/booking/reservations/${encodedId}/documents`;
+  const confirmed = payment.reservation.status === "confirmed";
 
   return (
     <AppShell>
@@ -56,12 +59,14 @@ export default async function PendingReservationPage({
           <span>/</span>
           <Link href={mapHref}>Booking map</Link>
           <span>/</span>
-          <span>Pending reservation</span>
+          <span>
+            {confirmed ? "Confirmed reservation" : "Pending reservation"}
+          </span>
         </nav>
 
         <section className="hero-panel">
-          <p className="eyebrow">Build 041–042 · Reservation & payment</p>
-          <h1>Pending reservation</h1>
+          <p className="eyebrow">Build 041–043 · Reservation lifecycle</p>
+          <h1>{confirmed ? "Confirmed reservation" : "Pending reservation"}</h1>
           <p className="hero-panel__lead">
             {reservation.accommodation.code} ·{" "}
             {reservation.accommodation.displayName}
@@ -74,7 +79,11 @@ export default async function PendingReservationPage({
         <section className="content-panel">
           <SectionHeading
             eyebrow="Reservation status"
-            title="Pending payment & confirmation"
+            title={
+              confirmed
+                ? "Confirmation available"
+                : "Pending payment & confirmation"
+            }
             id="pending-status"
             helpTopic="shell.overview"
           />
@@ -97,13 +106,21 @@ export default async function PendingReservationPage({
             )}
             .
           </p>
-          <p>
-            Build 043 owns confirmation numbers, receipts and reservation
-            documents after the payment boundary.
-          </p>
-          <Link className="primary-link primary-link--dark" href={paymentHref}>
-            Review deposit, balance & payment →
-          </Link>
+          {confirmed ? (
+            <Link
+              className="primary-link primary-link--dark"
+              href={documentsHref}
+            >
+              Open confirmation, invoice & receipts →
+            </Link>
+          ) : (
+            <Link
+              className="primary-link primary-link--dark"
+              href={paymentHref}
+            >
+              Review deposit, balance & payment →
+            </Link>
+          )}
         </section>
 
         <section className="content-panel">
@@ -139,8 +156,8 @@ export default async function PendingReservationPage({
           <p>No payment has been taken by the Build 041 checkout itself.</p>
           <p>
             The accepted Build 041 quote remains immutable. Build 042 snapshots
-            deposit, security-deposit and balance rules separately without
-            rewriting this checkout evidence.
+            payment rules separately, and Build 043 derives documents without
+            rewriting either source.
           </p>
         </section>
 
@@ -169,18 +186,18 @@ export default async function PendingReservationPage({
         <section className="content-panel">
           <h2>Channel contract</h2>
           <p>
-            <strong>Web/PWA:</strong> this view reads the same reservation,
-            immutable quote and payment schedule used by the payment page.
+            <strong>Web/PWA:</strong> confirmation, invoice and receipts are
+            available in-app with a printable view.
           </p>
           <p>
-            <strong>IVR/DTMF:</strong> concise reservation, deposit and balance
-            status may be read from the same authority. Raw card credentials are
-            never collected by keypad.
+            <strong>IVR/DTMF:</strong> concise confirmation number, stay dates
+            and payment/balance state can be read from the same canonical
+            records; printable documents use secure-link fallback.
           </p>
           <p>
-            <strong>SMS/MMS:</strong> concise status and a secure-link handoff
-            may reference this reservation. Raw payment-card data is never
-            requested by SMS.
+            <strong>SMS/MMS:</strong> concise confirmation state and secure-link
+            handoff are supported; sensitive documents are not serialized into
+            message bodies.
           </p>
           <p>
             <Link href={mapHref}>Return to the live booking map →</Link>
