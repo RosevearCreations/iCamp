@@ -1,6 +1,6 @@
 # Build 046 — Walk-Up, Overflow & Office Booking
 
-Status: **IMPLEMENTED — promotion verification in progress.**
+Status: **FULLY PROMOTED — `main` GREEN.**
 
 ## Scope
 
