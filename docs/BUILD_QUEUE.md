@@ -694,8 +694,26 @@ Delivered:
 - feature PR #171, production PR #172, exact `dev` SHA `e2dc44925ca2cc52cc59f6e9e099366c7b387f20`, and runtime production `main` SHA `fb6cd4bb1c6bbf0f01b3d24898cc2758b56ecc5c`;
 - exact feature, `dev` and production runtime promotion with Verify, Browser E2E, Database/lifecycle/idempotence, CodeQL and Secret Scan GREEN.
 
+### Build 045 — Cancellation, Refund & Adjustment Safeguards
+Status: **FULLY PROMOTED — `main` GREEN.**
+
+Delivered:
+- campground-configurable cancellation/refund policy with early/late refund percentages, refundable security-deposit treatment, cancellation fee and approval threshold;
+- policy-driven cancellation refund recommendations that never exceed captured, unrefunded Build 042 payment amounts;
+- original-payment-linked partial, full and cancellation refund requests with idempotency and active-refund reservation safeguards;
+- mandatory finance approval for threshold/policy overrides plus requester/approver separation;
+- provider-neutral refund execution through the free mock adapter with normalized private provider-event evidence;
+- append-only refund, credit, charge, forfeit, write-off and review-resolution financial adjustment evidence;
+- zero-refund cancellation forfeit/review resolution without rewriting Build 041 quote, Build 042 payment, Build 043 document or Build 044 change-history evidence;
+- FORCE RLS, campground finance/refund authorization and private provider-event boundaries;
+- Web/PWA full financial safeguard workspace with IVR/DTMF status-only/staff-assisted fallback and SMS/MMS secure-link fallback;
+- hosted Supabase migration `20261015124028 / cancellation_refund_adjustment_safeguards`;
+- zero Supabase Security Advisor findings and no Build-045 performance WARN findings;
+- feature PR #175, production PR #176, exact `dev` SHA `6ec3641c76c18db4f0635ef90448734b292c12b5`, and runtime production `main` SHA `7139df61f69f6c4e1466edd57830236db6642c99`;
+- exact feature, `dev` and production runtime promotion with Verify, Browser E2E, Database/lifecycle/idempotence, CodeQL and Secret Scan GREEN.
+
 ## Next active build
-**Build 045 — Cancellation, Refund & Adjustment Safeguards**
+**Build 046 — Walk-Up, Overflow & Office Booking**
 
 Status: **QUEUED — NOT STARTED**
 
