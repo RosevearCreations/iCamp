@@ -1,6 +1,6 @@
 # Build 043 — Confirmations, Receipts & Reservation Documents
 
-Status: **IMPLEMENTED — promotion gates pending.**
+Status: **FULLY PROMOTED — `main` GREEN.**
 
 ## Scope
 
@@ -142,3 +142,18 @@ Build 043 does not implement:
 No new Vercel project, Cloudflare project, Worker, D1 database, R2 bucket or paid provider is added.
 
 The implementation uses the existing PostgreSQL database, communications foundation and free mock communications provider.
+
+
+## Release evidence
+
+- Feature PR: **#167**.
+- Exact feature head accepted into `dev`: `c84f00a39b40d27dd26184929e1f4a7c15890e7d`.
+- Exact merged `dev` SHA: `a434a8fa270220822ea2a578ad7c8589c361072a`.
+- Production promotion PR: **#168**.
+- Runtime production `main` SHA: `a98457e72863c61f9a4b9dd4973170c4a8522052`.
+- Hosted Supabase migration: `20261015025538 / confirmations_receipts_reservation_documents`.
+- Hosted Build 043 verification passed.
+- Supabase Security Advisor: **0 findings**.
+- Supabase Performance Advisor: no Build-043 WARN findings; only the existing `unused_index` INFO class.
+- Exact merged `dev` and runtime production `main` independently passed Verify, Browser E2E, Database migrations/lifecycle/idempotence, CodeQL and Secret Scan.
+- No manual provider or deployment action was required.
