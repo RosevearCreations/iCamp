@@ -658,8 +658,25 @@ Delivered:
 - zero Supabase Security Advisor findings and closure of all Build-042 unindexed-foreign-key findings;
 - exact feature, advisor-hardening, `dev` and production runtime promotion with Verify, Browser E2E, Database/lifecycle/idempotence, CodeQL and Secret Scan GREEN.
 
+### Build 043 — Confirmations, Receipts & Reservation Documents
+Status: **FULLY PROMOTED — `main` GREEN.**
+
+Delivered:
+- confirmation after the immutable Build 042 booking-time payment obligation is satisfied, without requiring later balance or arrival-stage security amounts early;
+- deterministic confirmation, invoice and receipt numbers backed by immutable reservation-document evidence;
+- one confirmation and invoice per reservation plus one receipt per captured Build 042 payment;
+- reservation transition from `pending` to `confirmed` without rewriting Build 041 accepted quote or Build 042 payment-schedule evidence;
+- protected in-app confirmation, invoice, captured-payment receipt list and browser-printable reservation document view;
+- provider-neutral transactional confirmation-email dispatch through the existing communications domain and free mock provider;
+- FORCE RLS with `icamp_app` read-only access and trusted-server-only document writes;
+- Web/PWA full document experience with IVR/DTMF concise status and SMS/MMS secure-link fallbacks;
+- hosted Supabase migration `20261015025538 / confirmations_receipts_reservation_documents`;
+- zero Supabase Security Advisor findings and no Build-043 performance WARN findings;
+- feature PR #167, production PR #168, exact `dev` SHA `a434a8fa270220822ea2a578ad7c8589c361072a`, and runtime production `main` SHA `a98457e72863c61f9a4b9dd4973170c4a8522052`;
+- exact feature, `dev` and production runtime promotion with Verify, Browser E2E, Database/lifecycle/idempotence, CodeQL and Secret Scan GREEN.
+
 ## Next active build
-**Build 043 — Confirmations, Receipts & Reservation Documents**
+**Build 044 — Reservation Management Console**
 
 Status: **QUEUED — NOT STARTED**
 
