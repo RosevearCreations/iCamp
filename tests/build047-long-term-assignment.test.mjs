@@ -17,7 +17,7 @@ const verifyUrl = new URL(
   "../database/verify/0056_seasonal_yearly_assignment_foundation.sql",
   import.meta.url,
 );
-const serviceUrl = new URL("../lib/long-term-assignment/postgres.mjs", import.meta.url);
+const serviceUrl = new URL(\n  "../lib/long-term-assignment/postgres.mjs",\n  import.meta.url,\n);
 
 test("Build 047 normalizes seasonal and yearly assignments", () => {
   const value = normalizeLongTermAssignment({
