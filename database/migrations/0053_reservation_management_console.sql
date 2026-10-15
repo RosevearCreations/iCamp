@@ -8,7 +8,7 @@ returns trigger
 language plpgsql
 security invoker
 set search_path = ''
-as $
+as $move_revision$
 begin
   if old.accommodation_id is distinct from new.accommodation_id then
     update public.accommodations
@@ -18,7 +18,7 @@ begin
   end if;
   return null;
 end;
-$;
+$move_revision$;
 
 create trigger reservations_move_bump_availability_revision
 after update of accommodation_id on public.reservations
