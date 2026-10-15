@@ -74,9 +74,8 @@ export default async function ReservationManagementPage({
     userId: session.user.id,
     campgroundId: selected.campgroundId,
   });
-  const mayCreate = selected.authorization.permissions.includes(
-    "reservation.create",
-  );
+  const mayCreate =
+    selected.authorization.permissions.includes("reservation.create");
 
   return (
     <AppShell>
@@ -152,11 +151,7 @@ export default async function ReservationManagementPage({
                 name="campgroundId"
                 value={selected.campgroundId}
               />
-              <input
-                type="hidden"
-                name="idempotencyKey"
-                value={randomUUID()}
-              />
+              <input type="hidden" name="idempotencyKey" value={randomUUID()} />
               <label>
                 Guest display name
                 <input name="guestDisplayName" maxLength={160} required />
@@ -312,8 +307,8 @@ export default async function ReservationManagementPage({
           </p>
           <p>
             Build 044 never issues refunds. Any paid cancellation or financial
-            delta that touches an existing payment schedule is flagged for
-            Build 045 review.
+            delta that touches an existing payment schedule is flagged for Build
+            045 review.
           </p>
         </section>
       </div>
