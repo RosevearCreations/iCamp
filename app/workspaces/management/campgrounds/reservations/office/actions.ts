@@ -20,6 +20,13 @@ function errorMessage(error: unknown) {
   return message.slice(0, 300);
 }
 
+function bookingMode(value: string): "office" | "walk_up" | "overflow" {
+  if (value === "office" || value === "walk_up" || value === "overflow") {
+    return value;
+  }
+  throw new Error("Booking mode is invalid.");
+}
+
 function officePath(campgroundId: string) {
   return (
     "/workspaces/management/campgrounds/reservations/office?campground=" +
@@ -50,7 +57,7 @@ export async function createOfficeBookingAction(formData: FormData) {
       idempotencyKey: text(formData, "idempotencyKey"),
       sourceChannel: "web",
       intake: {
-        bookingMode: text(formData, "bookingMode"),
+        bookingMode: bookingMode(text(formData, "bookingMode")),
         overflowAreaId: text(formData, "overflowAreaId"),
         officeNote: text(formData, "officeNote"),
       },
