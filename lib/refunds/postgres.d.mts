@@ -47,7 +47,6 @@ export interface ReservationRefundRecord {
   rowVersion: number;
 }
 
-
 export interface ReservationFinancialSafeguards {
   reservation: {
     id: string;
