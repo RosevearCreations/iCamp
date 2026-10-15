@@ -59,7 +59,9 @@ export default async function PendingReservationPage({
           <span>/</span>
           <Link href={mapHref}>Booking map</Link>
           <span>/</span>
-          <span>{confirmed ? "Confirmed reservation" : "Pending reservation"}</span>
+          <span>
+            {confirmed ? "Confirmed reservation" : "Pending reservation"}
+          </span>
         </nav>
 
         <section className="hero-panel">
@@ -77,7 +79,9 @@ export default async function PendingReservationPage({
         <section className="content-panel">
           <SectionHeading
             eyebrow="Reservation status"
-            title={confirmed ? "Confirmation available" : "Payment & confirmation"}
+            title={
+              confirmed ? "Confirmation available" : "Payment & confirmation"
+            }
             id="pending-status"
             helpTopic="shell.overview"
           />

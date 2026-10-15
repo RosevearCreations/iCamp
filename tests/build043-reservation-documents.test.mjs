@@ -37,10 +37,7 @@ test("Build 043 confirms when the booking-time obligation is satisfied", () => {
 
 test("Build 043 document numbers are deterministic and non-secret", () => {
   const seed = "12345678-90ab-cdef-1234-567890abcdef";
-  assert.equal(
-    deterministicDocumentNumber("IC", seed),
-    "IC-1234567890ABCDEF",
-  );
+  assert.equal(deterministicDocumentNumber("IC", seed), "IC-1234567890ABCDEF");
   assert.equal(
     deterministicDocumentNumber("INV", seed),
     "INV-1234567890ABCDEF",

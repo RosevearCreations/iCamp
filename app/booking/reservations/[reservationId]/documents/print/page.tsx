@@ -19,8 +19,7 @@ export default async function PrintableReservationPage({
   params: Promise<{ reservationId: string }>;
 }>) {
   const { reservationId } = await params;
-  const path =
-    `/booking/reservations/${encodeURIComponent(reservationId)}/documents/print`;
+  const path = `/booking/reservations/${encodeURIComponent(reservationId)}/documents/print`;
   const session = await requireSignedIn(path);
 
   if (session.user.accountType !== "guest") {
@@ -57,8 +56,7 @@ export default async function PrintableReservationPage({
           {bundle.reservation.accommodationName}
         </p>
         <p>
-          {bundle.reservation.arrivalDate} to{" "}
-          {bundle.reservation.departureDate}
+          {bundle.reservation.arrivalDate} to {bundle.reservation.departureDate}
         </p>
         <p>
           Guest: {bundle.guest.name} · {bundle.guest.email}
@@ -110,8 +108,8 @@ export default async function PrintableReservationPage({
 
       <footer>
         <p>
-          This printable view reflects immutable Build 041 quote evidence,
-          Build 042 payment schedule evidence and Build 043 document records.
+          This printable view reflects immutable Build 041 quote evidence, Build
+          042 payment schedule evidence and Build 043 document records.
         </p>
       </footer>
     </main>

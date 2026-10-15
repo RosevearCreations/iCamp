@@ -60,11 +60,7 @@ export async function completeSandboxPaymentAction(formData: FormData) {
     ? "Current payment obligation is already satisfied."
     : "Sandbox payment captured and verified.";
 
-  if (
-    documents &&
-    "confirmation" in documents &&
-    documents.confirmation
-  ) {
+  if (documents && "confirmation" in documents && documents.confirmation) {
     redirect(paths.documents + "?payment=" + encodeURIComponent(message));
   }
 
@@ -89,11 +85,7 @@ export async function confirmReservationAction(formData: FormData) {
   revalidatePath(paths.pending);
   revalidatePath(paths.documents);
 
-  if (
-    documents &&
-    "confirmation" in documents &&
-    documents.confirmation
-  ) {
+  if (documents && "confirmation" in documents && documents.confirmation) {
     redirect(paths.documents);
   }
 

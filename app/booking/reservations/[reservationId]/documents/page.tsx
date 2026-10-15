@@ -18,9 +18,11 @@ export const metadata: Metadata = {
 };
 
 function emailLabel(state: string) {
-  if (state === "delivered") return "Delivered by the configured sandbox/provider.";
+  if (state === "delivered")
+    return "Delivered by the configured sandbox/provider.";
   if (state === "queued") return "Queued for the configured email provider.";
-  if (state === "failed") return "Delivery failed; the in-app copy remains available.";
+  if (state === "failed")
+    return "Delivery failed; the in-app copy remains available.";
   return "Email has not been queued.";
 }
 
@@ -52,8 +54,7 @@ export default async function ReservationDocumentsPage({
   }
 
   const printHref = path + "/print";
-  const paymentHref =
-    `/booking/reservations/${encodeURIComponent(reservationId)}/payment`;
+  const paymentHref = `/booking/reservations/${encodeURIComponent(reservationId)}/payment`;
 
   return (
     <AppShell>
@@ -109,7 +110,8 @@ export default async function ReservationDocumentsPage({
           </p>
           <p>
             Party: {bundle.guest.occupants} occupants · {bundle.guest.visitors}{" "}
-            visitors · {bundle.guest.pets} pets · {bundle.guest.vehicles} vehicles.
+            visitors · {bundle.guest.pets} pets · {bundle.guest.vehicles}{" "}
+            vehicles.
           </p>
           <p>
             Transactional email: <strong>{bundle.email.state}</strong>.{" "}

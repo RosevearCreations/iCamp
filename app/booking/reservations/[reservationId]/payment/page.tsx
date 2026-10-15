@@ -159,7 +159,10 @@ export default async function ReservationPaymentPage({
             </form>
           ) : progress.dueNowCents === 0 &&
             summary.reservation.status === "confirmed" ? (
-            <Link className="primary-link primary-link--dark" href={documentsHref}>
+            <Link
+              className="primary-link primary-link--dark"
+              href={documentsHref}
+            >
               Open confirmation & documents →
             </Link>
           ) : progress.dueNowCents === 0 ? (
@@ -202,8 +205,8 @@ export default async function ReservationPaymentPage({
           </p>
           <p>
             <strong>SMS/MMS:</strong> messages may provide concise confirmation
-            status and a secure-link handoff to the printable document view.
-            Raw card data is never requested or accepted by SMS/MMS.
+            status and a secure-link handoff to the printable document view. Raw
+            card data is never requested or accepted by SMS/MMS.
           </p>
           <p>
             Transactional email uses the existing provider-neutral
