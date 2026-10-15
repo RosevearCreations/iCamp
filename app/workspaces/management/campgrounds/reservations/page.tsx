@@ -104,7 +104,7 @@ export default async function ReservationManagementPage({
           <div className={styles.notice}>{params.saved}</div>
         ) : null}
         {params.error ? (
-          <div className={\`\${styles.notice} \${styles.error}\`}>
+          <div className={styles.notice + " " + styles.error}>
             {params.error}
           </div>
         ) : null}
