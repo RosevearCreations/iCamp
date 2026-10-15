@@ -77,5 +77,14 @@ begin
   ) then
     raise exception 'Build 044 append-only history trigger is missing';
   end if;
+
+  if not exists (
+    select 1 from pg_trigger
+    where tgname = 'reservations_move_bump_availability_revision'
+      and not tgisinternal
+  ) then
+    raise exception 'Build 044 reservation move availability revision trigger is missing';
+  end if;
+
 end
 $verify_build044$;
