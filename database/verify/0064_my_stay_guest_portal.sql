@@ -56,5 +56,13 @@ begin
   ) then
     raise exception 'Build 051 actor foreign-key indexes incomplete';
   end if;
+
+  if not exists (
+    select 1 from pg_indexes
+    where schemaname='public'
+      and indexname='campground_my_stay_settings_scope_fk_idx'
+  ) then
+    raise exception 'Build 051 campground scope foreign-key index missing';
+  end if;
 end
 $$;

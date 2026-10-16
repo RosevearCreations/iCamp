@@ -83,6 +83,9 @@ create table public.campground_my_stay_settings (
     on delete cascade
 );
 
+create index campground_my_stay_settings_scope_fk_idx
+  on public.campground_my_stay_settings(organization_id,campground_id);
+
 create index campground_my_stay_settings_created_by_fk_idx
   on public.campground_my_stay_settings(created_by_user_id)
   where created_by_user_id is not null;

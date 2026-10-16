@@ -580,10 +580,7 @@ export default async function CampgroundAdministrationPage({
           </Link>
         </section>
 
-        <section
-          className="content-panel"
-          aria-labelledby="my-stay-heading"
-        >
+        <section className="content-panel" aria-labelledby="my-stay-heading">
           <SectionHeading
             eyebrow="Guest experience"
             title="My Stay portal configuration"

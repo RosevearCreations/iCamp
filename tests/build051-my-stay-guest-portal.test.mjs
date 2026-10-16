@@ -78,7 +78,10 @@ test("Build 051 verification preserves direct-role denial and actor indexes", as
   const sql = await readFile(verifyUrl, "utf8");
   assert.match(sql, /guest stay-scoped read policy missing/u);
   assert.match(sql, /anon direct My Stay settings access must remain denied/u);
-  assert.match(sql, /authenticated direct My Stay settings access must remain denied/u);
+  assert.match(
+    sql,
+    /authenticated direct My Stay settings access must remain denied/u,
+  );
   assert.match(sql, /actor foreign-key indexes incomplete/u);
 });
 

@@ -216,9 +216,7 @@ export default async function MyStayPage({
                   <strong>Stay operations</strong>
                   <p>
                     Reservation: {phaseLabel(detail.reservation.status)}
-                    {detail.checkIn
-                      ? " · checked in"
-                      : " · not checked in yet"}
+                    {detail.checkIn ? " · checked in" : " · not checked in yet"}
                     {detail.checkOut ? " · checked out" : ""}
                   </p>
                 </article>
@@ -326,7 +324,8 @@ export default async function MyStayPage({
                 <article>
                   <strong>Stay rules</strong>
                   <p>
-                    Check-in: {detail.rules.currentCheckInTime ?? "configured at office"}{" "}
+                    Check-in:{" "}
+                    {detail.rules.currentCheckInTime ?? "configured at office"}{" "}
                     · check-out:{" "}
                     {detail.rules.currentCheckOutTime ?? "configured at office"}
                   </p>
@@ -484,7 +483,9 @@ export default async function MyStayPage({
                   </table>
                 </div>
               ) : (
-                <p>No captured-payment receipts are available for this stay yet.</p>
+                <p>
+                  No captured-payment receipts are available for this stay yet.
+                </p>
               )}
             </section>
 
