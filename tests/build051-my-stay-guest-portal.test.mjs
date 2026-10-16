@@ -114,7 +114,7 @@ test("Build 051 exposes campground-manager configuration without stealing future
   const page = await readFile(configPageUrl, "utf8");
   assert.match(page, /campground\.configuration/u);
   assert.match(page, /Build 078/u);
-  assert.match(page, /Builds 097–106/u);
-  assert.match(page, /Builds 112–116/u);
+  assert.match(page, /Builds\s+097–106/u);
+  assert.match(page, /Builds\s+112–116/u);
   assert.match(page, /Build 121/u);
 });
