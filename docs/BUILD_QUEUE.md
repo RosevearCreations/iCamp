@@ -744,13 +744,24 @@ Promotion evidence:
 - exact production CI, CodeQL and Secret Scan GREEN;
 - `dev` synchronized identically to `main`.
 
+### Build 049 — Front Desk Check-In
+Status: **FULLY PROMOTED — `main` GREEN.**
+
+Promotion evidence:
+- feature PR #190, advisor-hardening PR #191 and production PR #192;
+- hosted migrations `20261016005314 / front_desk_check_in` and `20261016005631 / build049_advisor_hardening`;
+- Supabase Security Advisor: zero findings;
+- final production `main` SHA `1213782a1a376c8ebf2df46942cee5c703c62159`;
+- exact production CI, CodeQL and Secret Scan GREEN;
+- `dev` synchronized identically to `main`.
+
 ## Current active build
-**Build 049 — Front Desk Check-In**
+**Build 050 — Check-Out & Accommodation Turnover Trigger**
 
 Status: **IMPLEMENTED — feature promotion gates are authoritative**
 
-## Next after Build 049 reaches GREEN
-**Build 050 — Check-Out & Accommodation Turnover Trigger**
+## Next after Build 050 reaches GREEN
+**Build 051 — My Stay Guest Portal**
 
 ## Operating rule
 - Work primarily on `dev`.
