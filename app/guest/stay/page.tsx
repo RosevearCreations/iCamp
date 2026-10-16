@@ -1,0 +1,519 @@
+import type { Metadata } from "next";
+import Link from "next/link";
+import { redirect } from "next/navigation";
+
+import { AppShell } from "@/components/app-shell";
+import { SectionHeading } from "@/components/section-heading";
+import { requireSignedIn } from "@/lib/auth/current-session";
+import { getMyStayDetail, listMyStays } from "@/lib/my-stay/postgres.mjs";
+import { formatMoney } from "@/lib/pricing/core.mjs";
+
+import styles from "../../workspaces/management/campgrounds/reservations/reservations.module.css";
+
+export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = {
+  title: "My Stay · iCamp",
+  description:
+    "Guest portal for reservation details, accommodation, map, rules, Wi-Fi, services, assistance and receipts.",
+  robots: { index: false, follow: false },
+};
+
+function phaseLabel(value: string) {
+  return value.replaceAll("_", " ");
+}
+
+function serviceLink(
+  title: string,
+  href: string | null,
+  futureBoundary: string,
+) {
+  return (
+    <article>
+      <strong>{title}</strong>
+      {href ? (
+        <p>
+          <a href={href}>Open {title.toLowerCase()} →</a>
+        </p>
+      ) : (
+        <p>
+          Not enabled for this campground yet. {futureBoundary} remains the
+          canonical transaction/content authority.
+        </p>
+      )}
+    </article>
+  );
+}
+
+export default async function MyStayPage({
+  searchParams,
+}: Readonly<{
+  searchParams: Promise<{ reservation?: string }>;
+}>) {
+  const path = "/guest/stay";
+  const session = await requireSignedIn(path);
+
+  if (session.user.accountType !== "guest") {
+    redirect("/auth/not-authorized");
+  }
+
+  const params = await searchParams;
+  const stays = await listMyStays({ userId: session.user.id });
+  const selected =
+    stays.find((stay) => stay.id === params.reservation) ??
+    stays.find((stay) => stay.status === "checked_in") ??
+    stays.find((stay) => stay.status === "confirmed") ??
+    stays[0] ??
+    null;
+
+  const detail = selected
+    ? await getMyStayDetail({
+        userId: session.user.id,
+        reservationId: selected.id,
+      })
+    : null;
+
+  const mapHref = detail
+    ? "/booking/map?campground=" +
+      encodeURIComponent(detail.reservation.campground.slug) +
+      "&arrivalDate=" +
+      encodeURIComponent(detail.reservation.arrivalDate) +
+      "&departureDate=" +
+      encodeURIComponent(detail.reservation.departureDate)
+    : null;
+  const paymentHref = detail
+    ? `/booking/reservations/${encodeURIComponent(
+        detail.reservation.id,
+      )}/payment`
+    : null;
+  const documentsHref =
+    detail?.documents.confirmationNumber != null
+      ? `/booking/reservations/${encodeURIComponent(
+          detail.reservation.id,
+        )}/documents`
+      : null;
+
+  return (
+    <AppShell>
+      <div className="page-stack">
+        <nav className="breadcrumbs" aria-label="Breadcrumb">
+          <Link href="/">iCamp</Link>
+          <span>/</span>
+          <Link href="/auth/account">Account</Link>
+          <span>/</span>
+          <span>My Stay</span>
+        </nav>
+
+        <section className="hero-panel">
+          <p className="eyebrow">Build 051 · Guest portal</p>
+          <h1>My Stay</h1>
+          <p className="hero-panel__lead">
+            One secure place for your reservation, accommodation, campground
+            map, rules, Wi-Fi guidance, guest services, assistance and receipts.
+          </p>
+          <div className="hero-actions">
+            <Link className="primary-link" href="/guest/profile">
+              Saved stay information
+            </Link>
+            <Link className="secondary-link" href="/auth/account">
+              Account
+            </Link>
+          </div>
+        </section>
+
+        <section className="content-panel">
+          <SectionHeading
+            eyebrow="Your reservations"
+            title="Choose a stay"
+            id="my-stay-list"
+            helpTopic="shell.overview"
+          />
+          {stays.length === 0 ? (
+            <p>
+              No guest-owned reservations are linked to this account yet. Start
+              from the public booking map to create a reservation.
+            </p>
+          ) : (
+            <div className={styles.tableWrap}>
+              <table>
+                <thead>
+                  <tr>
+                    <th>Campground</th>
+                    <th>Accommodation</th>
+                    <th>Dates</th>
+                    <th>Stay state</th>
+                    <th />
+                  </tr>
+                </thead>
+                <tbody>
+                  {stays.map((stay) => (
+                    <tr key={stay.id}>
+                      <td>{stay.campgroundName}</td>
+                      <td>
+                        {stay.accommodationCode} · {stay.accommodationName}
+                      </td>
+                      <td>
+                        {stay.arrivalDate} → {stay.departureDate}
+                      </td>
+                      <td>{phaseLabel(stay.phase)}</td>
+                      <td>
+                        <Link
+                          href={
+                            "/guest/stay?reservation=" +
+                            encodeURIComponent(stay.id)
+                          }
+                        >
+                          Open →
+                        </Link>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </section>
+
+        {detail ? (
+          <>
+            <section className="content-panel">
+              <SectionHeading
+                eyebrow={detail.reservation.campground.name}
+                title={
+                  detail.reservation.accommodation.code +
+                  " · " +
+                  detail.reservation.accommodation.displayName
+                }
+                id="my-stay-overview"
+                helpTopic="shell.overview"
+                trailing={
+                  <span className="build-chip">
+                    {phaseLabel(detail.reservation.phase)}
+                  </span>
+                }
+              />
+              <div className={styles.history}>
+                <article>
+                  <strong>Stay dates</strong>
+                  <p>
+                    {detail.reservation.arrivalDate} →{" "}
+                    {detail.reservation.departureDate}
+                  </p>
+                  <p>
+                    Campground local date:{" "}
+                    {detail.reservation.campgroundLocalDate}
+                  </p>
+                </article>
+                <article>
+                  <strong>Party</strong>
+                  <p>
+                    {detail.party.occupants} occupants · {detail.party.visitors}{" "}
+                    visitors · {detail.party.pets} pets ·{" "}
+                    {detail.party.vehicles} vehicles
+                  </p>
+                </article>
+                <article>
+                  <strong>Stay operations</strong>
+                  <p>
+                    Reservation: {phaseLabel(detail.reservation.status)}
+                    {detail.checkIn
+                      ? " · checked in"
+                      : " · not checked in yet"}
+                    {detail.checkOut ? " · checked out" : ""}
+                  </p>
+                </article>
+              </div>
+            </section>
+
+            <section className="content-panel">
+              <SectionHeading
+                eyebrow="Site / cottage"
+                title="Your accommodation"
+                id="my-stay-accommodation"
+                helpTopic="shell.overview"
+              />
+              {detail.campsite ? (
+                <div className={styles.history}>
+                  <article>
+                    <strong>Campsite</strong>
+                    <p>
+                      {phaseLabel(detail.campsite.campsiteType)} ·{" "}
+                      {phaseLabel(detail.campsite.serviceLevel)} ·{" "}
+                      {detail.campsite.surfaceType}
+                    </p>
+                  </article>
+                  <article>
+                    <strong>Utilities</strong>
+                    <p>
+                      Electrical {detail.campsite.electricalAmperage}A · water{" "}
+                      {phaseLabel(detail.campsite.waterService)} · wastewater{" "}
+                      {phaseLabel(detail.campsite.wastewaterService)}
+                    </p>
+                  </article>
+                  <article>
+                    <strong>Site features</strong>
+                    <p>
+                      {detail.campsite.isWaterfront ? "Waterfront · " : ""}
+                      {detail.campsite.pullThrough ? "Pull-through · " : ""}
+                      shade {detail.campsite.shadeLevel} ·{" "}
+                      {detail.campsite.hasFireRing
+                        ? "fire ring"
+                        : "no fire ring"}{" "}
+                      ·{" "}
+                      {detail.campsite.hasPicnicTable
+                        ? "picnic table"
+                        : "no picnic table"}
+                    </p>
+                  </article>
+                </div>
+              ) : null}
+
+              {detail.cottage ? (
+                <div className={styles.history}>
+                  <article>
+                    <strong>Cottage</strong>
+                    <p>
+                      {phaseLabel(detail.cottage.cottageStyle)} ·{" "}
+                      {detail.cottage.bedroomCount} bedrooms ·{" "}
+                      {detail.cottage.bedCount} beds · max{" "}
+                      {detail.cottage.maxOccupancy}
+                    </p>
+                  </article>
+                  <article>
+                    <strong>Kitchen & washroom</strong>
+                    <p>
+                      {phaseLabel(detail.cottage.kitchenType)} kitchen ·{" "}
+                      {phaseLabel(detail.cottage.washroomType)} washroom ·{" "}
+                      {phaseLabel(detail.cottage.showerType)} shower
+                    </p>
+                  </article>
+                  <article>
+                    <strong>Comfort & access</strong>
+                    <p>
+                      Heating {phaseLabel(detail.cottage.heatingType)} · cooling{" "}
+                      {phaseLabel(detail.cottage.coolingType)} · view{" "}
+                      {phaseLabel(detail.cottage.viewType)}
+                    </p>
+                  </article>
+                </div>
+              ) : null}
+            </section>
+
+            <section className="content-panel">
+              <SectionHeading
+                eyebrow="Getting around"
+                title="Map, rules & Wi-Fi"
+                id="my-stay-guidance"
+                helpTopic="shell.overview"
+              />
+              <div className={styles.history}>
+                <article>
+                  <strong>Campground map</strong>
+                  {mapHref ? (
+                    <p>
+                      <Link href={mapHref}>
+                        Open the published campground map →
+                      </Link>
+                    </p>
+                  ) : (
+                    <p>No published map link is available.</p>
+                  )}
+                  <p>
+                    The map uses the same published Build 037 campground map and
+                    accessible accommodation list.
+                  </p>
+                </article>
+                <article>
+                  <strong>Stay rules</strong>
+                  <p>
+                    Check-in: {detail.rules.currentCheckInTime ?? "configured at office"}{" "}
+                    · check-out:{" "}
+                    {detail.rules.currentCheckOutTime ?? "configured at office"}
+                  </p>
+                  <p>
+                    {detail.rules.guestSummary ??
+                      "Your accepted booking-rule snapshot remains the current stay evidence. Build 082 will add versioned campground/facility rule sets."}
+                  </p>
+                  <p>
+                    Booking acknowledgement:{" "}
+                    {detail.rules.bookingAcknowledgedAt ?? "not recorded"}.
+                    {detail.rules.checkInAcknowledgedAt
+                      ? " Front Desk acknowledgement: " +
+                        detail.rules.checkInAcknowledgedAt +
+                        "."
+                      : ""}
+                  </p>
+                </article>
+                <article>
+                  <strong>Wi-Fi</strong>
+                  <p>
+                    Site service:{" "}
+                    {detail.wifi.service
+                      ? phaseLabel(detail.wifi.service)
+                      : "campground guidance"}
+                  </p>
+                  {detail.wifi.networkName ? (
+                    <p>Network: {detail.wifi.networkName}</p>
+                  ) : null}
+                  <p>
+                    {detail.wifi.accessInstructions ??
+                      "No campground Wi-Fi access instructions have been published to My Stay."}
+                  </p>
+                </article>
+              </div>
+            </section>
+
+            <section className="content-panel">
+              <SectionHeading
+                eyebrow="During your stay"
+                title="Services & local information"
+                id="my-stay-services"
+                helpTopic="shell.overview"
+              />
+              <div className={styles.history}>
+                {serviceLink(
+                  "Campground store",
+                  detail.portal.storeUrl,
+                  "Build 121",
+                )}
+                {serviceLink(
+                  "Equipment rentals",
+                  detail.portal.rentalsUrl,
+                  "Builds 112–116",
+                )}
+                {serviceLink(
+                  "Events",
+                  detail.portal.eventsUrl,
+                  "Builds 097–099",
+                )}
+                {serviceLink(
+                  "Local interests",
+                  detail.portal.localInterestsUrl,
+                  "Builds 100–106",
+                )}
+              </div>
+            </section>
+
+            <section className="content-panel">
+              <SectionHeading
+                eyebrow="Help"
+                title="Assistance"
+                id="my-stay-assistance"
+                helpTopic="shell.overview"
+              />
+              <p>
+                {detail.portal.assistanceInstructions ??
+                  "Contact the campground office for assistance. Build 078 will add the canonical camper-assistance request workflow."}
+              </p>
+              {detail.portal.assistanceUrl ? (
+                <p>
+                  <a href={detail.portal.assistanceUrl}>
+                    Open campground assistance →
+                  </a>
+                </p>
+              ) : null}
+            </section>
+
+            <section className="content-panel">
+              <SectionHeading
+                eyebrow="Payments & documents"
+                title="Balance, receipts & confirmation"
+                id="my-stay-financial"
+                helpTopic="shell.overview"
+              />
+              <p>
+                Expected payable:{" "}
+                <strong>
+                  {formatMoney(
+                    detail.payment.expectedPayableCents,
+                    detail.payment.currencyCode,
+                  )}
+                </strong>{" "}
+                · captured:{" "}
+                {formatMoney(
+                  detail.payment.capturedCents,
+                  detail.payment.currencyCode,
+                )}{" "}
+                · outstanding:{" "}
+                {formatMoney(
+                  detail.payment.outstandingCents,
+                  detail.payment.currencyCode,
+                )}
+              </p>
+              {detail.payment.balanceDueDate ? (
+                <p>Balance due date: {detail.payment.balanceDueDate}</p>
+              ) : null}
+              <div className="hero-actions">
+                {paymentHref ? (
+                  <Link className="primary-link" href={paymentHref}>
+                    Payment details
+                  </Link>
+                ) : null}
+                {documentsHref ? (
+                  <Link className="secondary-link" href={documentsHref}>
+                    Confirmation, invoice & receipts
+                  </Link>
+                ) : null}
+              </div>
+              {detail.documents.receipts.length > 0 ? (
+                <div className={styles.tableWrap}>
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Receipt</th>
+                        <th>Purpose</th>
+                        <th>Amount</th>
+                        <th>Issued</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {detail.documents.receipts.map((receipt: any) => (
+                        <tr key={receipt.id}>
+                          <td>{receipt.receiptNumber}</td>
+                          <td>{phaseLabel(receipt.paymentPurpose)}</td>
+                          <td>
+                            {formatMoney(
+                              receipt.amountCents,
+                              receipt.currencyCode,
+                            )}
+                          </td>
+                          <td>{receipt.issuedAt ?? "—"}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              ) : (
+                <p>No captured-payment receipts are available for this stay yet.</p>
+              )}
+            </section>
+
+            <section className="content-panel">
+              <h2>Channel contract & privacy</h2>
+              <p>
+                <strong>Web/PWA:</strong> full My Stay experience.
+              </p>
+              <p>
+                <strong>IVR/DTMF:</strong> verified guests may hear concise stay
+                dates, accommodation code, balance and office guidance from the
+                same canonical records. Visual map/content uses secure web or
+                staff-assisted fallback.
+              </p>
+              <p>
+                <strong>SMS/MMS:</strong> verified guests may receive concise
+                stay status and secure-link handoff. Wi-Fi details, financial
+                information and private documents are not echoed before
+                verification.
+              </p>
+              <p>
+                Build 051 does not create parallel store, rental, event,
+                destination, assistance or versioned-rule records. Those remain
+                owned by Builds 078–082, 097–106, 112–121 and their successors.
+              </p>
+            </section>
+          </>
+        ) : null}
+      </div>
+    </AppShell>
+  );
+}

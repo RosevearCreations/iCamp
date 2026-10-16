@@ -44,11 +44,16 @@ export default async function AccountPage() {
           </dl>
 
           {session.user.accountType === "guest" ? (
-            <p>
-              <Link href="/guest/profile">
-                Manage saved stay information & history →
-              </Link>
-            </p>
+            <>
+              <p>
+                <Link href="/guest/stay">Open My Stay guest portal →</Link>
+              </p>
+              <p>
+                <Link href="/guest/profile">
+                  Manage saved stay information & history →
+                </Link>
+              </p>
+            </>
           ) : null}
 
           <form action="/api/auth/logout" method="post">
