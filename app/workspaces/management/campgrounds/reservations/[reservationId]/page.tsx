@@ -74,7 +74,9 @@ export default async function ReservationManagementDetailPage({
       permission,
     ),
   );
-  const editable = ["pending", "confirmed"].includes(detail.reservation.status);
+  const editable = ["pending", "confirmed", "checked_in"].includes(
+    detail.reservation.status,
+  );
   const selectionText = detail.state.chargeSelections
     .map((item) => item.code + ":" + item.quantity)
     .join(",");
@@ -100,7 +102,7 @@ export default async function ReservationManagementDetailPage({
         </nav>
 
         <section className="hero-panel">
-          <p className="eyebrow">Build 044 · Managed reservation</p>
+          <p className="eyebrow">Build 044 / 052 · Managed reservation</p>
           <h1>{detail.state.guestDisplayName}</h1>
           <p className="hero-panel__lead">
             {detail.reservation.accommodationCode} ·{" "}
@@ -120,6 +122,15 @@ export default async function ReservationManagementDetailPage({
         {query.error ? (
           <div className={styles.error + " " + styles.notice}>
             {query.error}
+          </div>
+        ) : null}
+
+        {detail.reservation.status === "checked_in" ? (
+          <div className={styles.review}>
+            <strong>Build 052 in-stay controls are active.</strong>{" "}
+            Extensions and accommodation moves recheck canonical availability,
+            reprice the stay, record any payment difference, and create
+            housekeeping/maintenance review evidence before the change commits.
           </div>
         ) : null}
 
@@ -180,8 +191,16 @@ export default async function ReservationManagementDetailPage({
         {mayModify && editable ? (
           <section className="content-panel">
             <SectionHeading
-              eyebrow="Edit / move / extend / shorten"
-              title="Update reservation"
+              eyebrow={
+                detail.reservation.status === "checked_in"
+                  ? "Build 052 · Extend / move active stay"
+                  : "Edit / move / extend / shorten"
+              }
+              title={
+                detail.reservation.status === "checked_in"
+                  ? "Adjust checked-in stay"
+                  : "Update reservation"
+              }
               id="managed-reservation-edit"
               helpTopic="campground.structure"
             />
@@ -221,7 +240,7 @@ export default async function ReservationManagementDetailPage({
                 >
                   {detail.accommodations.map((item) => (
                     <option key={item.id} value={item.id}>
-                      {item.code} · {item.displayName}
+                      {item.code} · {item.displayName} · {item.statusState}
                     </option>
                   ))}
                 </select>
@@ -263,9 +282,51 @@ export default async function ReservationManagementDetailPage({
                 />
               </label>
               <button className="primary-button" type="submit">
-                Revalidate, reprice & save
+                {detail.reservation.status === "checked_in"
+                  ? "Recheck availability, reprice & apply"
+                  : "Revalidate, reprice & save"}
               </button>
             </form>
+          </section>
+        ) : null}
+
+        {detail.stayAdjustments.length > 0 ? (
+          <section className="content-panel">
+            <SectionHeading
+              eyebrow="Build 052 · Operational evidence"
+              title="Checked-in stay adjustments"
+              id="checked-in-stay-adjustments"
+              helpTopic="campground.structure"
+            />
+            <div className={styles.history}>
+              {detail.stayAdjustments.map((item) => (
+                <article key={item.id}>
+                  <strong>{item.adjustmentKind}</strong>
+                  <p>{item.operationalSummary}</p>
+                  <p>
+                    {item.priorArrivalDate}–{item.priorDepartureDate} →{" "}
+                    {item.revisedArrivalDate}–{item.revisedDepartureDate}
+                  </p>
+                  <p>
+                    Payment difference:{" "}
+                    <strong>
+                      {formatMoney(item.deltaCents, item.currencyCode)}
+                    </strong>
+                    {item.financialReviewRequired
+                      ? " · financial review required"
+                      : ""}
+                  </p>
+                  <p className={styles.historyMeta}>
+                    Availability rechecked · housekeeping review{" "}
+                    {item.housekeepingReviewRequired ? "required" : "not required"}
+                    {" · "}maintenance review{" "}
+                    {item.maintenanceReviewRequired ? "required" : "not required"}
+                    {" · "}
+                    {new Date(item.occurredAt).toLocaleString("en-CA")}
+                  </p>
+                </article>
+              ))}
+            </div>
           </section>
         ) : null}
 
@@ -382,18 +443,18 @@ export default async function ReservationManagementDetailPage({
         <section className="content-panel">
           <h2>Channel contract</h2>
           <p>
-            <strong>Web/PWA:</strong> full modification, cancellation and
-            history experience.
+            <strong>Web/PWA:</strong> full modification, checked-in
+            extension/move, cancellation and history experience.
           </p>
           <p>
             <strong>IVR/DTMF:</strong> verified staff may perform concise
-            canonical reservation actions; multi-field pricing review uses
-            staff-assisted visual fallback.
+            canonical reservation actions; Build 052 move/repricing and
+            operational-handoff review uses staff-assisted visual fallback.
           </p>
           <p>
             <strong>SMS/MMS:</strong> verified staff workflows may initiate
             concise canonical actions and use secure-link fallback for complex
-            repricing/history review.
+            Build 052 repricing, move and operational-impact review.
           </p>
         </section>
       </div>
