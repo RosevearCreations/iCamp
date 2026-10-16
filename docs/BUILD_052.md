@@ -66,9 +66,19 @@ No channel bypasses live availability, permission, pricing or financial-review c
 
 ## Database
 
-Migration: `database/migrations/0065_stay_extension_accommodation_move.sql`.
+Migrations:
+- `database/migrations/0065_stay_extension_accommodation_move.sql`;
+- `database/migrations/0066_build052_advisor_hardening.sql`.
 
-Verification: `database/verify/0065_stay_extension_accommodation_move.sql`.
+Verification:
+- `database/verify/0065_stay_extension_accommodation_move.sql`;
+- `database/verify/0066_build052_advisor_hardening.sql`.
+
+Hosted Supabase:
+- `20261016222946 / stay_extension_accommodation_move`;
+- `20261016223019 / build052_advisor_hardening`;
+- Security Advisor: zero findings;
+- Build-052 unindexed-FK finding resolved; remaining Build-052 performance notices are INFO-only unused-index notices expected on a newly created evidence table.
 
 New append-only table:
 - `public.reservation_stay_adjustments`.
