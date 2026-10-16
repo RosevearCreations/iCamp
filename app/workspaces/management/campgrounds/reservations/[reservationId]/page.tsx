@@ -77,9 +77,9 @@ export default async function ReservationManagementDetailPage({
       permission,
     ),
   );
-  const editable = ["pending", "confirmed", "checked_in"].includes(
-    detail.reservation.status,
-  );
+  const editable =
+    ["pending", "confirmed"].includes(detail.reservation.status) ||
+    (detail.reservation.status === "checked_in" && mayManageAccommodation);
   const selectionText = detail.state.chargeSelections
     .map((item) => item.code + ":" + item.quantity)
     .join(",");
@@ -132,8 +132,8 @@ export default async function ReservationManagementDetailPage({
           <div className={styles.review}>
             <strong>Build 052 in-stay controls are active.</strong> Extensions
             recheck canonical availability and reprice the stay. Accommodation
-            moves also create housekeeping/maintenance evidence and require
-            accommodation-management authority.
+            moves also create housekeeping/maintenance evidence. Checked-in
+            stay adjustments require accommodation-management authority.
           </div>
         ) : null}
 
