@@ -62,6 +62,29 @@ export interface ReservationManagementDetail {
     sourceQuoteKind: string;
   };
   accommodations: ReservationManagementConsole["accommodations"];
+  stayAdjustments: Array<{
+    id: string;
+    adjustmentKind: string;
+    priorAccommodationId: string;
+    revisedAccommodationId: string;
+    priorArrivalDate: string;
+    priorDepartureDate: string;
+    revisedArrivalDate: string;
+    revisedDepartureDate: string;
+    currencyCode: string;
+    previousTotalCents: number;
+    revisedTotalCents: number;
+    deltaCents: number;
+    capturedCents: number;
+    financialReviewRequired: boolean;
+    housekeepingReviewRequired: boolean;
+    maintenanceReviewRequired: boolean;
+    priorAccommodationStatus: string | null;
+    revisedAccommodationStatus: string | null;
+    operationalSummary: string;
+    sourceChannel: string;
+    occurredAt: string;
+  }>;
   chargeCatalog: Array<{
     code: string;
     displayName: string;
@@ -134,6 +157,9 @@ export function updateManagedReservation(input: {
   idempotent: boolean;
   changeKind: string;
   financialReviewRequired?: boolean;
+  stayAdjustmentRecorded?: boolean;
+  housekeepingReviewRequired?: boolean;
+  maintenanceReviewRequired?: boolean;
 }>;
 
 export function cancelManagedReservation(input: {

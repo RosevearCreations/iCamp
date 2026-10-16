@@ -150,6 +150,11 @@ export async function updateReservationAction(formData: FormData) {
       " recorded." +
       (result.financialReviewRequired
         ? " Financial review is required before money is adjusted."
+        : "") +
+      (result.stayAdjustmentRecorded
+        ? result.maintenanceReviewRequired
+          ? " Checked-in move recorded; old-accommodation inspection/housekeeping and maintenance review are required."
+          : " Checked-in stay timing changed; housekeeping/turnover timing review is required."
         : "");
     destination = path + "&saved=" + encodeURIComponent(message);
   } catch (error) {
