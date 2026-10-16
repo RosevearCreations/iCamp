@@ -466,7 +466,7 @@ export default async function MyStayPage({
                       </tr>
                     </thead>
                     <tbody>
-                      {detail.documents.receipts.map((receipt: any) => (
+                      {detail.documents.receipts.map((receipt) => (
                         <tr key={receipt.id}>
                           <td>{receipt.receiptNumber}</td>
                           <td>{phaseLabel(receipt.paymentPurpose)}</td>
