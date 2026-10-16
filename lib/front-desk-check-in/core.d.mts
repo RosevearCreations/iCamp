@@ -1,9 +1,4 @@
-export type FrontDeskSourceChannel =
-  | "web"
-  | "staff"
-  | "ivr"
-  | "sms"
-  | "system";
+export type FrontDeskSourceChannel = "web" | "staff" | "ivr" | "sms" | "system";
 
 export interface ArrivalRequest {
   requestKind: "rental" | "store_add_on";

@@ -90,9 +90,8 @@ export default async function FrontDeskCheckInPage({
       })
     : null;
 
-  const canModify = selected.authorization.permissions.includes(
-    "reservation.modify",
-  );
+  const canModify =
+    selected.authorization.permissions.includes("reservation.modify");
   const needsOverride =
     detail != null &&
     (detail.reservation.outstandingBalanceCents > 0 ||
@@ -224,10 +223,7 @@ export default async function FrontDeskCheckInPage({
                     </td>
                     <td>
                       <Link
-                        href={checkInHref(
-                          selected.campgroundId,
-                          arrival.id,
-                        )}
+                        href={checkInHref(selected.campgroundId, arrival.id)}
                       >
                         Open →
                       </Link>
@@ -524,11 +520,7 @@ export default async function FrontDeskCheckInPage({
                 </label>
 
                 <label className={styles.full}>
-                  <input
-                    type="checkbox"
-                    name="rulesAcknowledged"
-                    required
-                  />{" "}
+                  <input type="checkbox" name="rulesAcknowledged" required />{" "}
                   Arrival party acknowledges current campground/site rules.
                 </label>
 
@@ -594,8 +586,8 @@ export default async function FrontDeskCheckInPage({
           <h2>Channel and successor-build boundary</h2>
           <p>
             <strong>Web/PWA:</strong> full arrival queue, live financial and
-            capacity verification, saved-stay matching, rule acknowledgement
-            and check-in evidence.
+            capacity verification, saved-stay matching, rule acknowledgement and
+            check-in evidence.
           </p>
           <p>
             <strong>IVR/DTMF:</strong> a verified staff member may perform
