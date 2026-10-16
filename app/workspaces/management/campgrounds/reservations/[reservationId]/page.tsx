@@ -261,8 +261,14 @@ export default async function ReservationManagementDetailPage({
                   name="arrivalDate"
                   type="date"
                   defaultValue={detail.reservation.arrivalDate}
+                  readOnly={detail.reservation.status === "checked_in"}
                   required
                 />
+                {detail.reservation.status === "checked_in" ? (
+                  <span className={styles.hint}>
+                    Historical arrival is locked after check-in.
+                  </span>
+                ) : null}
               </label>
               <label>
                 Departure
