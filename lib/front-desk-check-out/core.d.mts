@@ -1,14 +1,6 @@
-export type CheckOutSourceChannel =
-  | "web"
-  | "staff"
-  | "ivr"
-  | "sms"
-  | "system";
+export type CheckOutSourceChannel = "web" | "staff" | "ivr" | "sms" | "system";
 
-export type ReturnState =
-  | "not_applicable"
-  | "complete"
-  | "follow_up_required";
+export type ReturnState = "not_applicable" | "complete" | "follow_up_required";
 
 export interface ReservationCheckOutInput {
   departureConfirmed: true;

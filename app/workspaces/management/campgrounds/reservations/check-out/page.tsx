@@ -218,10 +218,7 @@ export default async function FrontDeskCheckOutPage({
                     </td>
                     <td>
                       <Link
-                        href={checkOutHref(
-                          selected.campgroundId,
-                          departure.id,
-                        )}
+                        href={checkOutHref(selected.campgroundId, departure.id)}
                       >
                         Open →
                       </Link>
@@ -305,10 +302,7 @@ export default async function FrontDeskCheckOutPage({
                       <tr>
                         <th>Financial handoff</th>
                         <td>
-                          {stateLabel(
-                            detail.checkOut.financialHandoffState,
-                          )}{" "}
-                          ·{" "}
+                          {stateLabel(detail.checkOut.financialHandoffState)} ·{" "}
                           {formatMoney(
                             detail.checkOut.outstandingBalanceCents,
                             detail.reservation.currencyCode,
@@ -322,9 +316,7 @@ export default async function FrontDeskCheckOutPage({
                           {stateLabel(detail.checkOut.rentalReturnState)} · keys{" "}
                           {stateLabel(detail.checkOut.keyReturnState)} ·
                           credentials{" "}
-                          {stateLabel(
-                            detail.checkOut.credentialReturnState,
-                          )}
+                          {stateLabel(detail.checkOut.credentialReturnState)}
                         </td>
                       </tr>
                       <tr>
@@ -334,9 +326,7 @@ export default async function FrontDeskCheckOutPage({
                             detail.checkOut.accommodationStatusBefore,
                           )}{" "}
                           →{" "}
-                          {stateLabel(
-                            detail.checkOut.accommodationStatusAfter,
-                          )}
+                          {stateLabel(detail.checkOut.accommodationStatusAfter)}
                         </td>
                       </tr>
                       <tr>
@@ -468,11 +458,7 @@ export default async function FrontDeskCheckOutPage({
                 </label>
 
                 <label className={styles.full}>
-                  <input
-                    type="checkbox"
-                    name="departureConfirmed"
-                    required
-                  />{" "}
+                  <input type="checkbox" name="departureConfirmed" required />{" "}
                   Confirm the guest has departed and the reservation should move
                   to completed.
                 </label>
@@ -537,9 +523,9 @@ export default async function FrontDeskCheckOutPage({
             uses authenticated staff Web/PWA.
           </p>
           <p>
-            <strong>SMS/MMS:</strong> verified staff may receive concise checkout
-            status and a secure-link handoff. Sensitive financial details and
-            raw payment-card data are not collected over messaging.
+            <strong>SMS/MMS:</strong> verified staff may receive concise
+            checkout status and a secure-link handoff. Sensitive financial
+            details and raw payment-card data are not collected over messaging.
           </p>
           <p>
             Build 027 remains the canonical cottage housekeeping engine. Build

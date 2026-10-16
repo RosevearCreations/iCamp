@@ -2,9 +2,7 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
 
-import {
-  normalizeReservationCheckOutInput,
-} from "../lib/front-desk-check-out/core.mjs";
+import { normalizeReservationCheckOutInput } from "../lib/front-desk-check-out/core.mjs";
 
 const migrationUrl = new URL(
   "../database/migrations/0063_check_out_accommodation_turnover.sql",
