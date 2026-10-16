@@ -1,6 +1,6 @@
 # Build 050 — Check-Out & Accommodation Turnover Trigger
 
-Status: **IMPLEMENTED — promotion status is determined by exact GitHub and hosted-database gates.**
+Status: **FULLY PROMOTED — `main` GREEN.**
 
 ## Purpose
 
@@ -70,6 +70,16 @@ Existing Build 027 tables remain canonical for cottage housekeeping:
 ## Cost / provider impact
 
 No new paid service, Vercel project, Cloudflare resource, communications provider or external API is introduced by Build 050.
+
+## Final promotion evidence
+
+- Feature PR #193 — GREEN and merged.
+- Production PR #194 — GREEN and merged.
+- Hosted migration `20261016123049 / check_out_accommodation_turnover`.
+- Supabase Security Advisor: zero findings.
+- Final production SHA: `a01f94a63345b2290875f68471124c33986970ae`.
+- Exact production CI, CodeQL and Secret Scan: GREEN.
+- `dev` and `main`: identical.
 
 ## Next build
 
