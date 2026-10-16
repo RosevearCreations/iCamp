@@ -580,6 +580,30 @@ export default async function CampgroundAdministrationPage({
           </Link>
         </section>
 
+        <section className="content-panel" aria-labelledby="my-stay-heading">
+          <SectionHeading
+            eyebrow="Guest experience"
+            title="My Stay portal configuration"
+            id="my-stay-heading"
+            helpTopic="campground.structure"
+            trailing={<span className="build-chip">Build 051</span>}
+          />
+          <p>
+            Publish campground guest rules, Wi-Fi guidance, assistance
+            instructions and safe handoff links for the authenticated My Stay
+            portal.
+          </p>
+          <Link
+            className="primary-link primary-link--dark"
+            href={
+              "/workspaces/management/campgrounds/guest-experience?campground=" +
+              encodeURIComponent(structure.campground.id)
+            }
+          >
+            Configure My Stay guest experience
+          </Link>
+        </section>
+
         <section
           className="content-panel"
           aria-labelledby="capacity-rules-heading"
