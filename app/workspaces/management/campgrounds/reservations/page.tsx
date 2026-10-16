@@ -186,6 +186,21 @@ export default async function ReservationManagementPage({
                 </Link>
               </p>
             ) : null}
+            {selected.authorization.permissions.includes("payment.read") &&
+            selected.authorization.permissions.includes(
+              "reservation.modify",
+            ) ? (
+              <p>
+                <Link
+                  href={
+                    "/workspaces/management/campgrounds/reservations/check-out?campground=" +
+                    encodeURIComponent(selected.campgroundId)
+                  }
+                >
+                  Open Front Desk Check-Out →
+                </Link>
+              </p>
+            ) : null}
             <form action={createReservationAction} className={styles.formGrid}>
               <input
                 type="hidden"
