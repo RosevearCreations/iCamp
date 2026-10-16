@@ -755,13 +755,24 @@ Promotion evidence:
 - exact production CI, CodeQL and Secret Scan GREEN;
 - `dev` synchronized identically to `main`.
 
+### Build 050 — Check-Out & Accommodation Turnover Trigger
+Status: **FULLY PROMOTED — `main` GREEN.**
+
+Promotion evidence:
+- feature PR #193 and production PR #194;
+- hosted migration `20261016123049 / check_out_accommodation_turnover`;
+- Supabase Security Advisor: zero findings;
+- final production `main` SHA `a01f94a63345b2290875f68471124c33986970ae`;
+- exact production CI, CodeQL and Secret Scan GREEN;
+- `dev` synchronized identically to `main`.
+
 ## Current active build
-**Build 050 — Check-Out & Accommodation Turnover Trigger**
+**Build 051 — My Stay Guest Portal**
 
 Status: **IMPLEMENTED — feature promotion gates are authoritative**
 
-## Next after Build 050 reaches GREEN
-**Build 051 — My Stay Guest Portal**
+## Next after Build 051 reaches GREEN
+**Build 052 — Stay Extension & Accommodation Move**
 
 ## Operating rule
 - Work primarily on `dev`.
