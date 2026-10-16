@@ -61,7 +61,9 @@ export default async function FrontDeskCheckInPage({
           session.user.id,
           campground.campgroundId,
         );
-        const permissions = authorization?.permissions ?? [];
+        if (!authorization) return null;
+
+        const permissions = authorization.permissions;
         const canReadReservation =
           permissions.includes("reservation.read") ||
           permissions.includes("reservation.modify");
