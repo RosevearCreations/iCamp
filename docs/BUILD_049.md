@@ -1,6 +1,6 @@
 # Build 049 — Front Desk Check-In
 
-Status: **IMPLEMENTED — promotion status is determined by exact GitHub and hosted-database gates.**
+Status: **FULLY PROMOTED — `main` GREEN.**
 
 ## Purpose
 
@@ -63,6 +63,17 @@ Both evidence tables are append-only. Check-in still updates the existing `publi
 ## Cost / provider impact
 
 No new paid service, Vercel project, Cloudflare project, communications provider or external API is introduced by Build 049.
+
+## Final promotion evidence
+
+- Feature PR #190 — GREEN.
+- Advisor-hardening PR #191 — GREEN.
+- Production PR #192 — GREEN and merged.
+- Hosted migrations `20261016005314 / front_desk_check_in` and `20261016005631 / build049_advisor_hardening`.
+- Supabase Security Advisor: zero findings.
+- Final production SHA: `1213782a1a376c8ebf2df46942cee5c703c62159`.
+- Exact production CI, CodeQL and Secret Scan: GREEN.
+- `dev` and `main`: identical.
 
 ## Next build
 
