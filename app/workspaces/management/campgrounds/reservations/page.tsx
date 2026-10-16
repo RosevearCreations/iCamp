@@ -171,6 +171,21 @@ export default async function ReservationManagementPage({
                 Open walk-up / overflow office desk →
               </Link>
             </p>
+            {selected.authorization.permissions.includes("payment.read") &&
+            selected.authorization.permissions.includes(
+              "reservation.modify",
+            ) ? (
+              <p>
+                <Link
+                  href={
+                    "/workspaces/management/campgrounds/reservations/check-in?campground=" +
+                    encodeURIComponent(selected.campgroundId)
+                  }
+                >
+                  Open Front Desk Check-In →
+                </Link>
+              </p>
+            ) : null}
             <form action={createReservationAction} className={styles.formGrid}>
               <input
                 type="hidden"
