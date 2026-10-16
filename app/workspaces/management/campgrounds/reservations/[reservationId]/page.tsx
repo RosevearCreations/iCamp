@@ -130,10 +130,10 @@ export default async function ReservationManagementDetailPage({
 
         {detail.reservation.status === "checked_in" ? (
           <div className={styles.review}>
-            <strong>Build 052 in-stay controls are active.</strong>{" "}
-            Extensions recheck canonical availability and reprice the stay.
-            Accommodation moves also create housekeeping/maintenance evidence
-            and require accommodation-management authority.
+            <strong>Build 052 in-stay controls are active.</strong> Extensions
+            recheck canonical availability and reprice the stay. Accommodation
+            moves also create housekeeping/maintenance evidence and require
+            accommodation-management authority.
           </div>
         ) : null}
 
@@ -334,9 +334,13 @@ export default async function ReservationManagementDetailPage({
                   </p>
                   <p className={styles.historyMeta}>
                     Availability rechecked · housekeeping review{" "}
-                    {item.housekeepingReviewRequired ? "required" : "not required"}
+                    {item.housekeepingReviewRequired
+                      ? "required"
+                      : "not required"}
                     {" · "}maintenance review{" "}
-                    {item.maintenanceReviewRequired ? "required" : "not required"}
+                    {item.maintenanceReviewRequired
+                      ? "required"
+                      : "not required"}
                     {" · "}
                     {new Date(item.occurredAt).toLocaleString("en-CA")}
                   </p>
