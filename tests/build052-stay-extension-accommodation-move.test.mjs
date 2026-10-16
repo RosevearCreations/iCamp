@@ -12,6 +12,10 @@ const verifyUrl = new URL(
   "../database/verify/0065_stay_extension_accommodation_move.sql",
   import.meta.url,
 );
+const hardeningUrl = new URL(
+  "../database/migrations/0066_build052_advisor_hardening.sql",
+  import.meta.url,
+);
 const serviceUrl = new URL(
   "../lib/reservation-management/postgres.mjs",
   import.meta.url,
@@ -52,6 +56,14 @@ test("Build 052 schema keeps in-stay adjustment evidence append-only and scoped"
   assert.match(sql, /reservation\.modify/u);
 });
 
+test("Build 052 advisor hardening covers the scoped reservation foreign key", async () => {
+  const sql = await readFile(hardeningUrl, "utf8");
+  assert.match(
+    sql,
+    /organization_id,\s*campground_id,\s*reservation_id,\s*occurred_at desc/u,
+  );
+});
+
 test("Build 052 verification preserves RLS and direct-role denial", async () => {
   const sql = await readFile(verifyUrl, "utf8");
   assert.match(sql, /stay-adjustment RLS must remain enabled and forced/u);
@@ -64,6 +76,7 @@ test("Build 052 extends canonical reservation management for checked-in stays", 
   const source = await readFile(serviceUrl, "utf8");
   assert.match(source, /"pending", "confirmed", "checked_in"/u);
   assert.match(source, /cannot rewrite its historical arrival date/u);
+  assert.match(source, /row\.status === "checked_in"/u);
   assert.match(source, /"accommodation\.manage"/u);
   assert.match(source, /Checked-in accommodation moves require/u);
   assert.match(source, /update public\.reservations/u);
