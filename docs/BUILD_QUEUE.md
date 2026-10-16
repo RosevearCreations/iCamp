@@ -777,13 +777,25 @@ Promotion evidence:
 - exact production CI, CodeQL and Secret Scan GREEN;
 - `dev` synchronized identically to `main`.
 
+### Build 052 — Stay Extension & Accommodation Move
+Status: **FULLY PROMOTED — `main` GREEN.**
+
+Promotion evidence:
+- feature PR #197 and production PR #198;
+- hosted migrations `20261016222946 / stay_extension_accommodation_move` and `20261016223019 / build052_advisor_hardening`;
+- Supabase Security Advisor: zero findings;
+- Build-052 composite reservation foreign-key performance finding resolved;
+- production feature `main` SHA `ac4fe9e8c9c60ef516f9e9cd02bdaca87e6f1ed6`;
+- exact production CI run #38977366289, CodeQL run #38977366278 and Secret Scan run #38977366262 GREEN;
+- Verify, Browser E2E, database/lifecycle/idempotence, production build and dependency audit GREEN.
+
 ## Current active build
-**Build 052 — Stay Extension & Accommodation Move**
-
-Status: **IMPLEMENTED — feature promotion gates are authoritative**
-
-## Next after Build 052 reaches GREEN
 **Build 053 — Road Vehicle Registration**
+
+Status: **QUEUED**
+
+## Next after Build 053 reaches GREEN
+**Build 054 — Day/Week Vehicle Passes & Extra-Vehicle Fees**
 
 ## Operating rule
 - Work primarily on `dev`.

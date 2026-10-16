@@ -1,6 +1,6 @@
 # Build 052 — Stay Extension & Accommodation Move
 
-Status: **IMPLEMENTED — promotion status is determined by exact GitHub and hosted-database gates.**
+Status: **FULLY PROMOTED — `main` GREEN.**
 
 ## Purpose
 
@@ -92,6 +92,15 @@ No new paid service, hosting project, communications provider or external API is
 ## Images / production variables
 
 Build 052 adds no mandatory image asset and no new required production secret/environment variable.
+
+## Promotion evidence
+
+- Feature PR: #197.
+- Production PR: #198.
+- Hosted migrations: `20261016222946 / stay_extension_accommodation_move` and `20261016223019 / build052_advisor_hardening`.
+- Supabase Security Advisor: zero findings.
+- Production feature `main` SHA: `ac4fe9e8c9c60ef516f9e9cd02bdaca87e6f1ed6`.
+- Production CI #38977366289, CodeQL #38977366278 and Secret Scan #38977366262: GREEN.
 
 ## Next build
 
