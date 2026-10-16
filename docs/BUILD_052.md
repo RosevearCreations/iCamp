@@ -12,7 +12,7 @@ Build 052 extends the existing Build 044 reservation-management authority so an 
 - historical arrival date is locked after check-in;
 - departure changes re-run current stay pricing and booking-charge calculations;
 - accommodation moves are accepted only through the canonical Build 035 reservation-conflict trigger;
-- checked-in moves require both `reservation.modify` and `accommodation.manage`;
+- checked-in stay adjustments require both `reservation.modify` and `accommodation.manage`;
 - checked-in move targets must be available, reserved or arriving before the transaction;
 - old accommodation moves through the existing Build 030 status engine toward inspection;
 - new accommodation moves through the existing Build 030 status engine to occupied;
@@ -50,7 +50,7 @@ These are operational handoff signals, not a duplicate maintenance work-order sy
 
 ## Authorization
 
-- checked-in extension/date adjustment: `reservation.modify`;
+- checked-in extension/date adjustment: `reservation.modify` plus `accommodation.manage`;
 - checked-in accommodation move: `reservation.modify` plus `accommodation.manage`;
 - read access to Build 052 evidence: `reservation.read` or `reservation.modify`.
 
