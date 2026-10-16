@@ -132,8 +132,8 @@ export default async function ReservationManagementDetailPage({
           <div className={styles.review}>
             <strong>Build 052 in-stay controls are active.</strong> Extensions
             recheck canonical availability and reprice the stay. Accommodation
-            moves also create housekeeping/maintenance evidence. Checked-in
-            stay adjustments require accommodation-management authority.
+            moves also create housekeeping/maintenance evidence. Checked-in stay
+            adjustments require accommodation-management authority.
           </div>
         ) : null}
 
