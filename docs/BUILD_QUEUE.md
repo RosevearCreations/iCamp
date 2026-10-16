@@ -733,13 +733,24 @@ Delivered:
 - feature hardening PR #184 and production PR #185;
 - production `main` SHA `49522aacad8eaa8f74ed4593cbfb7368d811112f` with CI, CodeQL and Secret Scan GREEN.
 
+### Build 048 — Guest Profiles & Saved Stay Information
+Status: **FULLY PROMOTED — `main` GREEN.**
+
+Promotion evidence:
+- feature PR #187, advisor-hardening PR #188 and production PR #189;
+- hosted migrations `20261015174554 / guest_profiles_saved_stay` and `20261015222110 / build048_advisor_hardening`;
+- Supabase Security Advisor: zero findings;
+- final production `main` SHA `1c9f6aefe746807c9edc00ff39ed81d451d3f0ec`;
+- exact production CI, CodeQL and Secret Scan GREEN;
+- `dev` synchronized identically to `main`.
+
 ## Current active build
-**Build 048 — Guest Profiles & Saved Stay Information**
+**Build 049 — Front Desk Check-In**
 
 Status: **IMPLEMENTED — feature promotion gates are authoritative**
 
-## Next after Build 048 reaches GREEN
-**Build 049 — Front Desk Check-In**
+## Next after Build 049 reaches GREEN
+**Build 050 — Check-Out & Accommodation Turnover Trigger**
 
 ## Operating rule
 - Work primarily on `dev`.
