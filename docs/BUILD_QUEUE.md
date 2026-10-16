@@ -766,13 +766,24 @@ Promotion evidence:
 - exact production CI, CodeQL and Secret Scan GREEN;
 - `dev` synchronized identically to `main`.
 
+### Build 051 — My Stay Guest Portal
+Status: **FULLY PROMOTED — `main` GREEN.**
+
+Promotion evidence:
+- feature PR #195 and production PR #196;
+- hosted migration `20261016132713 / my_stay_guest_portal`;
+- Supabase Security Advisor: zero findings;
+- final production `main` SHA `7976cac430a7639376faeb12a7c820478608bb37`;
+- exact production CI, CodeQL and Secret Scan GREEN;
+- `dev` synchronized identically to `main`.
+
 ## Current active build
-**Build 051 — My Stay Guest Portal**
+**Build 052 — Stay Extension & Accommodation Move**
 
 Status: **IMPLEMENTED — feature promotion gates are authoritative**
 
-## Next after Build 051 reaches GREEN
-**Build 052 — Stay Extension & Accommodation Move**
+## Next after Build 052 reaches GREEN
+**Build 053 — Road Vehicle Registration**
 
 ## Operating rule
 - Work primarily on `dev`.
