@@ -51,6 +51,8 @@ Migration: `database/migrations/0061_front_desk_check_in.sql`.
 
 Verification: `database/verify/0061_front_desk_check_in.sql`.
 
+Advisor hardening: `database/migrations/0062_build049_advisor_hardening.sql` with matching verification in `database/verify/0062_build049_advisor_hardening.sql`.
+
 Primary tables:
 
 - `public.reservation_check_ins`;
@@ -65,3 +67,8 @@ No new paid service, Vercel project, Cloudflare project, communications provider
 ## Next build
 
 **Build 050 — Check-Out & Accommodation Turnover Trigger**
+
+
+## Hosted advisor hardening
+
+After migration 0061 was applied to hosted Supabase, Security Advisor reported zero findings. Performance Advisor identified two INFO-level composite foreign-key paths on `public.reservation_check_ins` without matching leading indexes. Migration 0062 adds those covering indexes before production promotion.
