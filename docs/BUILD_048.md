@@ -1,6 +1,6 @@
 # Build 048 — Guest Profiles & Saved Stay Information
 
-Status: **IMPLEMENTED — promotion status is determined by exact GitHub and hosted-database gates.**
+Status: **FULLY PROMOTED — `main` GREEN.**
 
 ## Purpose
 
@@ -55,6 +55,17 @@ The profile is a convenience record, not a replacement for authentication, commu
 ## Cost / provider impact
 
 No new paid service, Vercel project, Cloudflare resource, communications provider or external API is required for Build 048.
+
+## Final promotion evidence
+
+- Feature PR #187 — GREEN.
+- Advisor-hardening PR #188 — GREEN.
+- Production PR #189 — GREEN.
+- Hosted migrations `20261015174554 / guest_profiles_saved_stay` and `20261015222110 / build048_advisor_hardening`.
+- Supabase Security Advisor: zero findings.
+- Final production SHA: `1c9f6aefe746807c9edc00ff39ed81d451d3f0ec`.
+- Exact production CI, CodeQL and Secret Scan: GREEN.
+- `dev` and `main`: identical.
 
 
 ## Hosted advisor hardening
