@@ -68,6 +68,9 @@ export default async function ReservationManagementDetailPage({
   if (!detail) notFound();
 
   const mayModify = authorization.permissions.includes("reservation.modify");
+  const mayManageAccommodation = authorization.permissions.includes(
+    "accommodation.manage",
+  );
   const mayCancel = authorization.permissions.includes("reservation.cancel");
   const mayFinance = authorization.permissions.some((permission) =>
     ["payment.read", "refund.issue", "finance.read", "finance.manage"].includes(
@@ -128,9 +131,9 @@ export default async function ReservationManagementDetailPage({
         {detail.reservation.status === "checked_in" ? (
           <div className={styles.review}>
             <strong>Build 052 in-stay controls are active.</strong>{" "}
-            Extensions and accommodation moves recheck canonical availability,
-            reprice the stay, record any payment difference, and create
-            housekeeping/maintenance review evidence before the change commits.
+            Extensions recheck canonical availability and reprice the stay.
+            Accommodation moves also create housekeeping/maintenance evidence
+            and require accommodation-management authority.
           </div>
         ) : null}
 
@@ -238,11 +241,18 @@ export default async function ReservationManagementDetailPage({
                   defaultValue={detail.reservation.accommodationId}
                   required
                 >
-                  {detail.accommodations.map((item) => (
-                    <option key={item.id} value={item.id}>
-                      {item.code} · {item.displayName} · {item.statusState}
-                    </option>
-                  ))}
+                  {detail.accommodations
+                    .filter(
+                      (item) =>
+                        detail.reservation.status !== "checked_in" ||
+                        mayManageAccommodation ||
+                        item.id === detail.reservation.accommodationId,
+                    )
+                    .map((item) => (
+                      <option key={item.id} value={item.id}>
+                        {item.code} · {item.displayName} · {item.statusState}
+                      </option>
+                    ))}
                 </select>
               </label>
               <label>
