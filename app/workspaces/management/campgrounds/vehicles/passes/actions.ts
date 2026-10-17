@@ -36,11 +36,7 @@ function destination(
   message: string,
 ) {
   return (
-    passDeskPath(campgroundId) +
-    "&" +
-    kind +
-    "=" +
-    encodeURIComponent(message)
+    passDeskPath(campgroundId) + "&" + kind + "=" + encodeURIComponent(message)
   );
 }
 
@@ -58,12 +54,8 @@ export async function saveVehiclePassPolicyAction(formData: FormData) {
       input: {
         dayPassChargeId: text(formData, "dayPassChargeId") || null,
         weekPassChargeId: text(formData, "weekPassChargeId") || null,
-        extraVehicleChargeId:
-          text(formData, "extraVehicleChargeId") || null,
-        includedStayVehicleCount: text(
-          formData,
-          "includedStayVehicleCount",
-        ),
+        extraVehicleChargeId: text(formData, "extraVehicleChargeId") || null,
+        includedStayVehicleCount: text(formData, "includedStayVehicleCount"),
         parkingRule: text(formData, "parkingRule"),
         accessRule: text(formData, "accessRule"),
       },
@@ -130,10 +122,7 @@ export async function issueExtraVehiclePassAction(formData: FormData) {
       idempotencyKey: text(formData, "idempotencyKey"),
       sourceChannel: "web",
       input: {
-        roadVehicleRegistrationId: text(
-          formData,
-          "roadVehicleRegistrationId",
-        ),
+        roadVehicleRegistrationId: text(formData, "roadVehicleRegistrationId"),
         validFromLocal: text(formData, "validFromLocal"),
         validUntilLocal: text(formData, "validUntilLocal"),
         notes: text(formData, "notes"),
