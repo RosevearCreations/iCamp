@@ -98,7 +98,11 @@ Build 055 therefore does not fabricate a QR code, wristband number, PIN, key-car
 
 Primary migration: database/migrations/0070_visitor_registration_site_specific_limits.sql.
 
-Verification: database/verify/0070_visitor_registration_site_specific_limits.sql.
+Advisor hardening: database/migrations/0071_build055_advisor_hardening.sql.
+
+Verification:
+- database/verify/0070_visitor_registration_site_specific_limits.sql;
+- database/verify/0071_build055_advisor_hardening.sql.
 
 Primary tables:
 - public.campground_visitor_policies;
@@ -107,7 +111,12 @@ Primary tables:
 - public.visitor_registration_payments;
 - icamp_private.visitor_registration_payment_provider_events.
 
-Hosted migration/advisor evidence will be recorded after feature verification and deployment.
+Hosted Supabase evidence:
+- 20261017232511 / visitor_registration_site_specific_limits — applied and verification SQL passed;
+- 20261017232536 / build055_advisor_hardening — applied and verification SQL passed;
+- Security Advisor after hardening: zero findings;
+- Performance Advisor initially identified one Build 055 composite host-accommodation foreign-key index gap; migration 0071 added visitor_registrations_scope_accommodation_fk_idx and removed that finding;
+- post-hardening performance output contains only expected INFO-level unused-index observations for newly created or existing indexes, with no Build 055 unindexed-foreign-key finding.
 
 ## Cost / provider / asset impact
 
