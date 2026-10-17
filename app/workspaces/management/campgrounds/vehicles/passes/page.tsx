@@ -224,7 +224,7 @@ export default async function VehiclePassesPage({
                   {dayCharges.map((charge) => (
                     <option key={charge.id} value={charge.id}>
                       {charge.displayName} ·{" "}
-                      {money(charge.unitPriceCents, charge.currencyCode)}
+                      {money(charge.unitPriceCents ?? 0, charge.currencyCode)}
                     </option>
                   ))}
                 </select>
@@ -240,7 +240,7 @@ export default async function VehiclePassesPage({
                   {weekCharges.map((charge) => (
                     <option key={charge.id} value={charge.id}>
                       {charge.displayName} ·{" "}
-                      {money(charge.unitPriceCents, charge.currencyCode)}
+                      {money(charge.unitPriceCents ?? 0, charge.currencyCode)}
                     </option>
                   ))}
                 </select>
@@ -256,7 +256,7 @@ export default async function VehiclePassesPage({
                   {extraCharges.map((charge) => (
                     <option key={charge.id} value={charge.id}>
                       {charge.displayName} ·{" "}
-                      {money(charge.unitPriceCents, charge.currencyCode)}
+                      {money(charge.unitPriceCents ?? 0, charge.currencyCode)}
                     </option>
                   ))}
                 </select>
@@ -502,8 +502,9 @@ export default async function VehiclePassesPage({
                     Driver: <strong>{pass.driverName}</strong>
                   </p>
                   <p>
-                    Valid: {formatDateTime(pass.validFrom)} →{" "}
-                    {formatDateTime(pass.validUntil)}
+                    Valid:{" "}
+                    {formatDateTime(pass.validFrom, data.campground.timeZone)} →{" "}
+                    {formatDateTime(pass.validUntil, data.campground.timeZone)}
                   </p>
                   <p>
                     Fee:{" "}
