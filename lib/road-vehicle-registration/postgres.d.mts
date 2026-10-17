@@ -1,7 +1,4 @@
-import type {
-  RoadVehicleKind,
-  RoadVehicleSourceChannel,
-} from "./core.mjs";
+import type { RoadVehicleKind, RoadVehicleSourceChannel } from "./core.mjs";
 
 export interface RoadVehicleRegistration {
   id: string;
