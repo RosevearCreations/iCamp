@@ -316,8 +316,8 @@ export default async function VisitorRegistrationPage({
             <p>
               The host must have an active pending, confirmed or checked-in
               reservation. Visitor capacity is resolved from the most specific
-              matching Build 033 rule and enforced atomically across
-              overlapping visit windows.
+              matching Build 033 rule and enforced atomically across overlapping
+              visit windows.
             </p>
             {data.reservations.length > 0 ? (
               <form action={registerVisitorAction} className={styles.formGrid}>
@@ -389,8 +389,8 @@ export default async function VisitorRegistrationPage({
 
                 {data.policy.identityVerificationMode !== "none" ? (
                   <label className={styles.full}>
-                    <input name="identityVerified" type="checkbox" required />{" "}
-                    I completed the configured{" "}
+                    <input name="identityVerified" type="checkbox" required /> I
+                    completed the configured{" "}
                     <strong>
                       {label(data.policy.identityVerificationMode)}
                     </strong>{" "}
@@ -569,8 +569,8 @@ export default async function VisitorRegistrationPage({
           <p>
             <strong>SMS/MMS:</strong> guided visitor facts use the same
             canonical workflow, with secure-link handoff for protected review
-            and payment. Government-ID details and payment credentials are
-            never requested by SMS.
+            and payment. Government-ID details and payment credentials are never
+            requested by SMS.
           </p>
           <p>
             Build 056 owns access credential abstraction, Build 062 owns
