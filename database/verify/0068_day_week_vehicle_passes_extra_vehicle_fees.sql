@@ -120,6 +120,28 @@ begin
     raise exception 'vehicle pass issuer must be able to read canonical Build 040 charges';
   end if;
 
+  if not exists (
+    select 1
+    from pg_policies
+    where schemaname='public'
+      and tablename='road_vehicle_registrations'
+      and policyname='road_vehicle_registrations_read'
+      and qual like '%vehicle.pass.issue%'
+  ) then
+    raise exception 'vehicle pass issuer must be able to read Build 053 road registrations';
+  end if;
+
+  if not exists (
+    select 1
+    from pg_policies
+    where schemaname='public'
+      and tablename='reservations'
+      and policyname='reservations_read'
+      and qual like '%vehicle.pass.issue%'
+  ) then
+    raise exception 'vehicle pass issuer must be able to read required reservation facts';
+  end if;
+
   if exists (select 1 from pg_roles where rolname='anon') then
     if has_table_privilege('anon','public.vehicle_passes','SELECT')
       or has_table_privilege('anon','public.vehicle_passes','INSERT')
