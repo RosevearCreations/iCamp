@@ -153,7 +153,7 @@ export default async function VisitorRegistrationPage({
         </nav>
 
         <section className="hero-panel">
-          <p className="eyebrow">Build 055 · Front desk & security operations</p>
+          <p className="eyebrow">\n            Build 055 · Front desk & security operations\n          </p>
           <h1>Visitor Registration & Site-Specific Limits</h1>
           <p className="hero-panel__lead">
             Register visitors against an active host reservation, resolve the
@@ -324,7 +324,7 @@ export default async function VisitorRegistrationPage({
                   name="campgroundId"
                   value={selected.campgroundId}
                 />
-                <input type="hidden" name="idempotencyKey" value={randomUUID()} />
+                <input\n                  type="hidden"\n                  name="idempotencyKey"\n                  value={randomUUID()}\n                />
 
                 <label className={styles.full}>
                   Host reservation / site
