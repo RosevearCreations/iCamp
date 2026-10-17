@@ -789,13 +789,28 @@ Promotion evidence:
 - exact production CI run #38977366289, CodeQL run #38977366278 and Secret Scan run #38977366262 GREEN;
 - Verify, Browser E2E, database/lifecycle/idempotence, production build and dependency audit GREEN.
 
+### Build 053 — Road Vehicle Registration
+Status: **FULLY PROMOTED — `main` GREEN.**
+
+Promotion evidence:
+- feature PR #200 and production PR #201;
+- hosted migration `20261017025818 / road_vehicle_registration`;
+- Supabase Security Advisor: zero findings;
+- no Build-053 warning-level or unindexed-foreign-key Performance Advisor regression;
+- exact feature head `f23b3119ca1c259318fdc893b58815cc9ceb2b6f` passed CI run #38997214216, CodeQL run #38997214246 and Secret Scan run #38997214181;
+- exact `dev` merge SHA `9d23a9a704b72dec4a5fddade6534218d89ad379` passed CI run #38997343478, CodeQL run #38997343472 and Secret Scan run #38997343521;
+- production PR gates passed CI run #38997477837, CodeQL run #38997477871 and Secret Scan run #38997477860;
+- production feature `main` SHA `72f2b62bee6a92c0bb161a19b2e54e8bd9f7fd57` passed CI run #38997620167, CodeQL run #38997620126 and Secret Scan run #38997620122;
+- Verify, Browser E2E, database/lifecycle/idempotence, production build and dependency audit GREEN;
+- `dev` synchronized to the production feature SHA and independently reverified GREEN.
+
 ## Current active build
-**Build 053 — Road Vehicle Registration**
+**Build 054 — Day/Week Vehicle Passes & Extra-Vehicle Fees**
 
 Status: **QUEUED**
 
-## Next after Build 053 reaches GREEN
-**Build 054 — Day/Week Vehicle Passes & Extra-Vehicle Fees**
+## Next after Build 054 reaches GREEN
+**Build 055 — Visitor Registration & Site-Specific Limits**
 
 ## Operating rule
 - Work primarily on `dev`.
