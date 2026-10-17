@@ -13,10 +13,7 @@ import {
 } from "@/lib/authz/postgres.mjs";
 import { listRoadVehicleRegistrationDesk } from "@/lib/road-vehicle-registration/postgres.mjs";
 
-import {
-  registerRoadVehicleAction,
-  revokeRoadVehicleAction,
-} from "./actions";
+import { registerRoadVehicleAction, revokeRoadVehicleAction } from "./actions";
 import styles from "../reservations/reservations.module.css";
 
 export const dynamic = "force-dynamic";
@@ -125,7 +122,9 @@ export default async function RoadVehicleRegistrationPage({
         </nav>
 
         <section className="hero-panel">
-          <p className="eyebrow">Build 053 · Front desk & security operations</p>
+          <p className="eyebrow">
+            Build 053 · Front desk & security operations
+          </p>
           <h1>Road Vehicle Registration</h1>
           <p className="hero-panel__lead">
             Register campground-hosted road vehicles against a host
@@ -195,7 +194,10 @@ export default async function RoadVehicleRegistrationPage({
               but plate/jurisdiction stays in this formal registration record
               and is never copied into the reusable guest profile.
             </p>
-            <form action={registerRoadVehicleAction} className={styles.formGrid}>
+            <form
+              action={registerRoadVehicleAction}
+              className={styles.formGrid}
+            >
               <input
                 type="hidden"
                 name="campgroundId"
@@ -408,7 +410,9 @@ export default async function RoadVehicleRegistrationPage({
             </table>
           </div>
           {data.registrations.length === 0 ? (
-            <p>No road vehicle registrations are recorded for this campground.</p>
+            <p>
+              No road vehicle registrations are recorded for this campground.
+            </p>
           ) : null}
         </section>
 
