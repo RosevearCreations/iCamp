@@ -114,7 +114,7 @@ test("Build 054 schema uses canonical charges, payment evidence and strict RLS",
   assert.match(sql, /booking_charge_catalog/u);
   assert.match(sql, /Vehicle pass fee snapshot must match/u);
   assert.match(sql, /vehicle\.pass\.issue/u);
-  assert.match(sql, /payment_state is trusted-server managed/u);
+  assert.match(sql, /payment state is trusted-server managed/u);
   assert.match(sql, /force row level security/u);
   assert.match(sql, /road_vehicle_registrations_read/u);
   assert.match(sql, /reservations_read/u);
