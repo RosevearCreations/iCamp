@@ -100,12 +100,10 @@ export default async function VehiclePassesPage({
   });
 
   const dayCharges = data.charges.filter(
-    (charge) =>
-      charge.chargeKind === "pass" && charge.passDurationDays === 1,
+    (charge) => charge.chargeKind === "pass" && charge.passDurationDays === 1,
   );
   const weekCharges = data.charges.filter(
-    (charge) =>
-      charge.chargeKind === "pass" && charge.passDurationDays === 7,
+    (charge) => charge.chargeKind === "pass" && charge.passDurationDays === 7,
   );
   const extraCharges = data.charges.filter(
     (charge) =>
@@ -114,8 +112,7 @@ export default async function VehiclePassesPage({
   );
   const eligibleExtraVehicles = data.registrations.filter(
     (registration) =>
-      registration.activeVehicleCount >
-        data.policy.includedStayVehicleCount &&
+      registration.activeVehicleCount > data.policy.includedStayVehicleCount &&
       !registration.hasOpenExtraPass,
   );
 
@@ -313,9 +310,9 @@ export default async function VehiclePassesPage({
               helpTopic="vehicle.passes"
             />
             <p>
-              Day passes may span at most 24 hours; week passes may span at
-              most seven days. The pass remains pending if a configured fee
-              must be captured.
+              Day passes may span at most 24 hours; week passes may span at most
+              seven days. The pass remains pending if a configured fee must be
+              captured.
             </p>
             <form
               action={issueNonStayVehiclePassAction}
@@ -493,8 +490,8 @@ export default async function VehiclePassesPage({
                     <div>
                       <strong>{pass.passNumber}</strong>
                       <div>
-                        {label(pass.passKind)} ·{" "}
-                        {pass.plateJurisdiction} {pass.plateNumber}
+                        {label(pass.passKind)} · {pass.plateJurisdiction}{" "}
+                        {pass.plateNumber}
                       </div>
                     </div>
                     <span>{label(pass.effectiveStatus)}</span>
@@ -565,7 +562,12 @@ export default async function VehiclePassesPage({
                       />
                       <label>
                         Revocation reason
-                        <input name="reason" minLength={3} maxLength={500} required />
+                        <input
+                          name="reason"
+                          minLength={3}
+                          maxLength={500}
+                          required
+                        />
                       </label>
                       <button type="submit">Revoke pass</button>
                     </form>
