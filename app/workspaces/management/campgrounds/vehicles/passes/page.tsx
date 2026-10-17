@@ -47,11 +47,11 @@ function addHours(localDateTime: string, hours: number) {
   return date.toISOString().slice(0, 16);
 }
 
-function formatDateTime(value: string) {
+function formatDateTime(value: string, timeZone: string) {
   return new Intl.DateTimeFormat("en-CA", {
     dateStyle: "medium",
     timeStyle: "short",
-    timeZone: "UTC",
+    timeZone,
   }).format(new Date(value));
 }
 
@@ -100,20 +100,20 @@ export default async function VehiclePassesPage({
   });
 
   const dayCharges = data.charges.filter(
-    (charge: any) =>
+    (charge) =>
       charge.chargeKind === "pass" && charge.passDurationDays === 1,
   );
   const weekCharges = data.charges.filter(
-    (charge: any) =>
+    (charge) =>
       charge.chargeKind === "pass" && charge.passDurationDays === 7,
   );
   const extraCharges = data.charges.filter(
-    (charge: any) =>
+    (charge) =>
       ["add_on", "service_fee"].includes(charge.chargeKind) &&
       charge.pricingBasis === "per_unit",
   );
   const eligibleExtraVehicles = data.registrations.filter(
-    (registration: any) =>
+    (registration) =>
       registration.activeVehicleCount >
         data.policy.includedStayVehicleCount &&
       !registration.hasOpenExtraPass,
@@ -224,7 +224,7 @@ export default async function VehiclePassesPage({
                   defaultValue={data.policy.dayPassChargeId ?? ""}
                 >
                   <option value="">Free / no configured fee</option>
-                  {dayCharges.map((charge: any) => (
+                  {dayCharges.map((charge) => (
                     <option key={charge.id} value={charge.id}>
                       {charge.displayName} ·{" "}
                       {money(charge.unitPriceCents, charge.currencyCode)}
@@ -240,7 +240,7 @@ export default async function VehiclePassesPage({
                   defaultValue={data.policy.weekPassChargeId ?? ""}
                 >
                   <option value="">Free / no configured fee</option>
-                  {weekCharges.map((charge: any) => (
+                  {weekCharges.map((charge) => (
                     <option key={charge.id} value={charge.id}>
                       {charge.displayName} ·{" "}
                       {money(charge.unitPriceCents, charge.currencyCode)}
@@ -256,7 +256,7 @@ export default async function VehiclePassesPage({
                   defaultValue={data.policy.extraVehicleChargeId ?? ""}
                 >
                   <option value="">Free / no configured fee</option>
-                  {extraCharges.map((charge: any) => (
+                  {extraCharges.map((charge) => (
                     <option key={charge.id} value={charge.id}>
                       {charge.displayName} ·{" "}
                       {money(charge.unitPriceCents, charge.currencyCode)}
@@ -426,7 +426,7 @@ export default async function VehiclePassesPage({
                   Registered stay vehicle
                   <select name="roadVehicleRegistrationId" required>
                     <option value="">Select vehicle</option>
-                    {eligibleExtraVehicles.map((registration: any) => (
+                    {eligibleExtraVehicles.map((registration) => (
                       <option key={registration.id} value={registration.id}>
                         {registration.plateJurisdiction}{" "}
                         {registration.plateNumber} ·{" "}
@@ -486,10 +486,10 @@ export default async function VehiclePassesPage({
           {data.passes.length === 0 ? (
             <p>No vehicle passes have been issued for this campground.</p>
           ) : (
-            <div className={styles.cardGrid}>
-              {data.passes.map((pass: any) => (
-                <article className={styles.card} key={pass.id}>
-                  <div className={styles.cardHeader}>
+            <div className="page-stack">
+              {data.passes.map((pass) => (
+                <article className="content-panel" key={pass.id}>
+                  <div>
                     <div>
                       <strong>{pass.passNumber}</strong>
                       <div>
