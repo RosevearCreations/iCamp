@@ -395,6 +395,24 @@ export const helpTopics = {
     related: ["vehicle.registration"],
   },
 
+  "visitor.registration": {
+    id: "visitor.registration",
+    slug: "visitor-registration-site-specific-limits",
+    title: "Visitor registration and site-specific limits",
+    summary:
+      "Build 055 registers reservation-hosted visitors, enforces the effective Build 033 site visitor limit, and preserves identity/contact, fee and visit-policy evidence.",
+    details: [
+      "Every visitor is linked to an active pending, confirmed or checked-in host reservation and its exact accommodation.",
+      "The visitor maximum is resolved from the most specific matching Build 033 campground, accommodation-type, section or accommodation rule, including eligible campsite size bands.",
+      "Overlapping open visitor registrations are serialized with a site advisory lock so simultaneous submissions cannot exceed the effective visitor limit.",
+      "Day/week fees reuse the Build 040 canonical pass catalogue and the Build 042 provider-neutral payment adapter. Raw payment credentials are never stored in the visitor domain.",
+      "Identity verification stores the configured method and completion evidence only. Build 055 does not store government-ID numbers or images.",
+      "Build 056 owns access credentials, Build 062 owns wristband/QR/pass validation, Build 063 owns credential lifecycle at arrival/departure and Build 060 owns enforceable access zones/schedules.",
+      "Web/PWA provides the full desk. IVR/DTMF uses verified staff/provider handoff for protected identity/payment steps; SMS/MMS uses secure links and never requests government-ID or payment credentials.",
+    ],
+    audience: "privileged",
+  },
+
   "customer.input": {
     id: "customer.input",
     slug: "customer-input-guidance",
