@@ -1,3 +1,8 @@
+import type {
+  PaymentProviderAdapter,
+  PaymentProviderEvent,
+} from "../payments/provider.mjs";
+
 export interface VehiclePassCharge {
   id: string;
   chargeKind: "add_on" | "pass" | "service_fee";
@@ -131,14 +136,7 @@ export function startVehiclePassPayment(input: {
   actorSessionId?: string | null;
   campgroundId: string;
   vehiclePassId: string;
-  provider: {
-    providerKey: string;
-    createPayment(input: Record<string, unknown>): Promise<{
-      providerPaymentReference: string;
-      state: string;
-    }>;
-    capturePayment(input: Record<string, unknown>): Promise<Record<string, unknown>>;
-  };
+  provider: PaymentProviderAdapter;
 }): Promise<{
   pass: VehiclePassRecord;
   payment: unknown;
@@ -147,7 +145,7 @@ export function startVehiclePassPayment(input: {
   duplicate?: boolean;
 }>;
 export function ingestVehiclePassPaymentProviderEvent(input: {
-  event: Record<string, unknown>;
+  event: PaymentProviderEvent;
   actorSessionId?: string | null;
 }): Promise<{
   duplicate: boolean;
