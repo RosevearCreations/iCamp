@@ -85,10 +85,7 @@ test("Build 053 schema keeps formal registration separate from passes and fees",
   assert.match(sql, /vehicle\.register/u);
   assert.match(sql, /force row level security/u);
   assert.match(sql, /Build 054/u);
-  assert.doesNotMatch(
-    sql,
-    /create policy[\s\S]{0,400}vehicle\.pass\.issue/iu,
-  );
+  assert.doesNotMatch(sql, /create policy[\s\S]{0,400}vehicle\.pass\.issue/iu);
 });
 
 test("Build 053 verification preserves RLS, evidence and direct-role denial", async () => {
