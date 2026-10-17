@@ -16,10 +16,7 @@ const verifyUrl = new URL(
   "../database/verify/0068_day_week_vehicle_passes_extra_vehicle_fees.sql",
   import.meta.url,
 );
-const serviceUrl = new URL(
-  "../lib/vehicle-pass/postgres.mjs",
-  import.meta.url,
-);
+const serviceUrl = new URL("../lib/vehicle-pass/postgres.mjs", import.meta.url);
 const pageUrl = new URL(
   "../app/workspaces/management/campgrounds/vehicles/passes/page.tsx",
   import.meta.url,
@@ -128,7 +125,10 @@ test("Build 054 schema uses canonical charges, payment evidence and strict RLS",
 test("Build 054 verification protects evidence and direct database roles", async () => {
   const sql = await readFile(verifyUrl, "utf8");
 
-  assert.match(sql, /vehicle pass payments must remain trusted-server write only/u);
+  assert.match(
+    sql,
+    /vehicle pass payments must remain trusted-server write only/u,
+  );
   assert.match(sql, /vehicle pass events must remain append-only/u);
   assert.match(sql, /vehicle pass provider events must remain private/u);
   assert.match(sql, /anon direct vehicle-pass access must remain denied/u);
