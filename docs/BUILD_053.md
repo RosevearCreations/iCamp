@@ -1,6 +1,6 @@
 # Build 053 — Road Vehicle Registration
 
-Status: **IMPLEMENTED — promotion in progress.**
+Status: **FULLY PROMOTED — `main` GREEN.**
 
 ## Purpose
 
@@ -66,7 +66,14 @@ Build 053 introduces no new paid service, Vercel project, Cloudflare resource, c
 
 ## Promotion
 
-Promotion evidence will be recorded here after exact feature, dev, production and closeout gates are GREEN.
+- feature PR #200 merged to `dev`;
+- production PR #201 merged to `main`;
+- exact feature head `f23b3119ca1c259318fdc893b58815cc9ceb2b6f` passed CI #38997214216, CodeQL #38997214246 and Secret Scan #38997214181;
+- exact `dev` merge SHA `9d23a9a704b72dec4a5fddade6534218d89ad379` passed CI #38997343478, CodeQL #38997343472 and Secret Scan #38997343521;
+- production PR checks passed CI #38997477837, CodeQL #38997477871 and Secret Scan #38997477860;
+- production feature `main` SHA `72f2b62bee6a92c0bb161a19b2e54e8bd9f7fd57` passed CI #38997620167, CodeQL #38997620126 and Secret Scan #38997620122;
+- `dev` was fast-forwarded to that production feature SHA and independently passed CI #38997767994, CodeQL #38997767996 and Secret Scan #38997768039;
+- Verify, Browser E2E, full database migration/lifecycle/idempotence verification, production build and dependency audit are GREEN.
 
 ## Next build
 
