@@ -129,8 +129,8 @@ export default async function RoadVehicleRegistrationPage({
           <p className="hero-panel__lead">
             Register campground-hosted road vehicles against a host
             accommodation with plate/jurisdiction, owner and driver, date
-            validity and revocation evidence. Day/week passes and extra-vehicle
-            fees remain Build 054.
+            validity and revocation evidence. Build 054 now handles day/week
+            passes, extra-vehicle fees and parking/access rule snapshots.
           </p>
         </section>
 
@@ -177,6 +177,16 @@ export default async function RoadVehicleRegistrationPage({
               }
             >
               Open reservation management →
+            </Link>
+          </p>
+          <p>
+            <Link
+              href={
+                "/workspaces/management/campgrounds/vehicles/passes?campground=" +
+                encodeURIComponent(selected.campgroundId)
+              }
+            >
+              Open Vehicle Passes & Fees →
             </Link>
           </p>
         </section>

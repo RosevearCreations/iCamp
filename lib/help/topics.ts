@@ -371,10 +371,28 @@ export const helpTopics = {
       "Saved guest vehicle descriptions from Build 048 may be linked for continuity, but formal plate and jurisdiction data stays in the registration record.",
       "A stay-linked registration must use the reservation's current host accommodation and remain inside the reservation date window.",
       "Registration status is active or revoked; an active record becomes effectively expired after its valid-until date without rewriting historical evidence.",
-      "Build 054 owns non-stay day/week passes, extra-vehicle fees and parking/access rules. Build 056/063 owns access credential issuance and lifecycle.",
+      "Build 054 now provides non-stay day/week passes, extra-vehicle fees and parking/access rule snapshots. Build 056/063 owns access credential issuance and lifecycle.",
       "Web/PWA provides the full desk. Verified IVR/DTMF and SMS/MMS use the existing vehicle.register canonical workflow with secure/staff handoff when protected visual review is required.",
     ],
     audience: "privileged",
+  },
+
+  "vehicle.passes": {
+    id: "vehicle.passes",
+    slug: "day-week-vehicle-passes-extra-vehicle-fees",
+    title: "Day/week vehicle passes and extra-vehicle fees",
+    summary:
+      "Build 054 issues non-stay day/week road-vehicle passes and stay-linked extra-vehicle passes using canonical fees plus immutable parking/access rule snapshots.",
+    details: [
+      "Day and week fees, plus the extra-vehicle fee, are selected from the Build 040 canonical charge catalogue; leaving a fee unselected makes that pass type free.",
+      "A paid pass remains pending until the provider-neutral payment flow reports capture. Raw card numbers, CVV values and other payment credentials are never stored in the vehicle-pass domain.",
+      "Extra-vehicle passes attach only to active Build 053 stay registrations beyond the campground's configured included-vehicle count.",
+      "Every issued pass snapshots its fee, currency, parking rule and access rule so later campground policy edits cannot rewrite historical evidence.",
+      "Build 056 owns access credential issuance and Build 060 owns enforceable access zones and schedules; Build 054 records the human-readable rule in force when the pass was issued.",
+      "Web/PWA provides the full desk. Verified IVR/DTMF uses staff/provider handoff for protected payment steps, while SMS/MMS uses a secure link; raw payment credentials are never requested through either custom channel.",
+    ],
+    audience: "privileged",
+    related: ["vehicle.registration"],
   },
 
   "customer.input": {
