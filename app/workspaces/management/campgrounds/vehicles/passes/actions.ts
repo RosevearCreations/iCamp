@@ -48,6 +48,7 @@ export async function saveVehiclePassPolicyAction(formData: FormData) {
   const campgroundId = text(formData, "campgroundId");
   const path = passDeskPath(campgroundId);
   const session = await requireStaff(path);
+  let next: string;
 
   try {
     await saveVehiclePassPolicy({
@@ -68,16 +69,19 @@ export async function saveVehiclePassPolicyAction(formData: FormData) {
       },
     });
     revalidatePath(path);
-    redirect(destination(campgroundId, "saved", "Vehicle pass policy saved."));
+    next = destination(campgroundId, "saved", "Vehicle pass policy saved.");
   } catch (error) {
-    redirect(destination(campgroundId, "error", errorMessage(error)));
+    next = destination(campgroundId, "error", errorMessage(error));
   }
+
+  redirect(next);
 }
 
 export async function issueNonStayVehiclePassAction(formData: FormData) {
   const campgroundId = text(formData, "campgroundId");
   const path = passDeskPath(campgroundId);
   const session = await requireStaff(path);
+  let next: string;
 
   try {
     const result = await createNonStayVehiclePass({
@@ -97,26 +101,27 @@ export async function issueNonStayVehiclePassAction(formData: FormData) {
       },
     });
     revalidatePath(path);
-    redirect(
-      destination(
-        campgroundId,
-        "saved",
-        result.idempotent
-          ? "This vehicle pass was already recorded."
-          : result.pass.paymentState === "unpaid"
-            ? "Vehicle pass created. Capture the configured fee to activate it."
-            : "Vehicle pass issued and active.",
-      ),
+    next = destination(
+      campgroundId,
+      "saved",
+      result.idempotent
+        ? "This vehicle pass was already recorded."
+        : result.pass.paymentState === "unpaid"
+          ? "Vehicle pass created. Capture the configured fee to activate it."
+          : "Vehicle pass issued and active.",
     );
   } catch (error) {
-    redirect(destination(campgroundId, "error", errorMessage(error)));
+    next = destination(campgroundId, "error", errorMessage(error));
   }
+
+  redirect(next);
 }
 
 export async function issueExtraVehiclePassAction(formData: FormData) {
   const campgroundId = text(formData, "campgroundId");
   const path = passDeskPath(campgroundId);
   const session = await requireStaff(path);
+  let next: string;
 
   try {
     const result = await createExtraVehiclePass({
@@ -135,26 +140,27 @@ export async function issueExtraVehiclePassAction(formData: FormData) {
       },
     });
     revalidatePath(path);
-    redirect(
-      destination(
-        campgroundId,
-        "saved",
-        result.idempotent
-          ? "This extra-vehicle pass was already recorded."
-          : result.pass.paymentState === "unpaid"
-            ? "Extra-vehicle pass created. Capture the configured fee to activate it."
-            : "Extra-vehicle pass issued and active.",
-      ),
+    next = destination(
+      campgroundId,
+      "saved",
+      result.idempotent
+        ? "This extra-vehicle pass was already recorded."
+        : result.pass.paymentState === "unpaid"
+          ? "Extra-vehicle pass created. Capture the configured fee to activate it."
+          : "Extra-vehicle pass issued and active.",
     );
   } catch (error) {
-    redirect(destination(campgroundId, "error", errorMessage(error)));
+    next = destination(campgroundId, "error", errorMessage(error));
   }
+
+  redirect(next);
 }
 
 export async function captureVehiclePassPaymentAction(formData: FormData) {
   const campgroundId = text(formData, "campgroundId");
   const path = passDeskPath(campgroundId);
   const session = await requireStaff(path);
+  let next: string;
 
   try {
     const result = await startVehiclePassPayment({
@@ -164,26 +170,27 @@ export async function captureVehiclePassPaymentAction(formData: FormData) {
       provider: createPaymentProviderAdapter(),
     });
     revalidatePath(path);
-    redirect(
-      destination(
-        campgroundId,
-        "saved",
-        result.alreadySatisfied
-          ? "Vehicle pass fee was already satisfied."
-          : result.pass?.paymentState === "captured"
-            ? "Vehicle pass fee captured and pass activated."
-            : "Vehicle pass payment is in progress.",
-      ),
+    next = destination(
+      campgroundId,
+      "saved",
+      result.alreadySatisfied
+        ? "Vehicle pass fee was already satisfied."
+        : result.pass?.paymentState === "captured"
+          ? "Vehicle pass fee captured and pass activated."
+          : "Vehicle pass payment is in progress.",
     );
   } catch (error) {
-    redirect(destination(campgroundId, "error", errorMessage(error)));
+    next = destination(campgroundId, "error", errorMessage(error));
   }
+
+  redirect(next);
 }
 
 export async function revokeVehiclePassAction(formData: FormData) {
   const campgroundId = text(formData, "campgroundId");
   const path = passDeskPath(campgroundId);
   const session = await requireStaff(path);
+  let next: string;
 
   try {
     const result = await revokeVehiclePass({
@@ -195,16 +202,16 @@ export async function revokeVehiclePassAction(formData: FormData) {
       sourceChannel: "web",
     });
     revalidatePath(path);
-    redirect(
-      destination(
-        campgroundId,
-        "saved",
-        result.idempotent
-          ? "Vehicle pass was already revoked."
-          : "Vehicle pass revoked.",
-      ),
+    next = destination(
+      campgroundId,
+      "saved",
+      result.idempotent
+        ? "Vehicle pass was already revoked."
+        : "Vehicle pass revoked.",
     );
   } catch (error) {
-    redirect(destination(campgroundId, "error", errorMessage(error)));
+    next = destination(campgroundId, "error", errorMessage(error));
   }
+
+  redirect(next);
 }
