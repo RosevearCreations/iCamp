@@ -1,18 +1,8 @@
 export type RoadVehicleSourceChannel =
-  | "web"
-  | "staff"
-  | "ivr"
-  | "sms"
-  | "system";
+  "web" | "staff" | "ivr" | "sms" | "system";
 
 export type RoadVehicleKind =
-  | "car"
-  | "truck"
-  | "suv"
-  | "van"
-  | "motorcycle"
-  | "tow_vehicle"
-  | "other";
+  "car" | "truck" | "suv" | "van" | "motorcycle" | "tow_vehicle" | "other";
 
 export interface RoadVehicleRegistrationInput {
   vehicleKind: RoadVehicleKind;
