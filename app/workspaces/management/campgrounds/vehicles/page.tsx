@@ -189,6 +189,16 @@ export default async function RoadVehicleRegistrationPage({
               Open Vehicle Passes & Fees →
             </Link>
           </p>
+          <p>
+            <Link
+              href={
+                "/workspaces/management/campgrounds/visitors?campground=" +
+                encodeURIComponent(selected.campgroundId)
+              }
+            >
+              Open Visitor Registration & Limits →
+            </Link>
+          </p>
         </section>
 
         {mayRegister ? (
