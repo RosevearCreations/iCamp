@@ -1,9 +1,5 @@
 export type VehiclePassSourceChannel =
-  | "web"
-  | "staff"
-  | "ivr"
-  | "sms"
-  | "system";
+  "web" | "staff" | "ivr" | "sms" | "system";
 
 export type NonStayVehiclePassKind = "day" | "week";
 
