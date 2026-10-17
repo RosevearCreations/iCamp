@@ -361,6 +361,22 @@ export const helpTopics = {
     ],
     audience: "privileged",
   },
+  "vehicle.registration": {
+    id: "vehicle.registration",
+    slug: "road-vehicle-registration",
+    title: "Road vehicle registration",
+    summary:
+      "Build 053 records formal campground road-vehicle plate, jurisdiction, owner/driver, host accommodation, validity and revocation evidence.",
+    details: [
+      "Saved guest vehicle descriptions from Build 048 may be linked for continuity, but formal plate and jurisdiction data stays in the registration record.",
+      "A stay-linked registration must use the reservation's current host accommodation and remain inside the reservation date window.",
+      "Registration status is active or revoked; an active record becomes effectively expired after its valid-until date without rewriting historical evidence.",
+      "Build 054 owns non-stay day/week passes, extra-vehicle fees and parking/access rules. Build 056/063 owns access credential issuance and lifecycle.",
+      "Web/PWA provides the full desk. Verified IVR/DTMF and SMS/MMS use the existing vehicle.register canonical workflow with secure/staff handoff when protected visual review is required.",
+    ],
+    audience: "privileged",
+  },
+
   "customer.input": {
     id: "customer.input",
     slug: "customer-input-guidance",
