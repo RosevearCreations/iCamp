@@ -80,6 +80,10 @@ export default async function ReservationManagementPage({
     (permission) =>
       permission === "guest.read" || permission === "guest.manage",
   );
+  const mayUseVehicleDesk = selected.authorization.permissions.some(
+    (permission) =>
+      permission === "vehicle.read" || permission === "vehicle.register",
+  );
 
   return (
     <AppShell>
@@ -158,6 +162,18 @@ export default async function ReservationManagementPage({
                   }
                 >
                   Open guest profiles & saved stay information →
+                </Link>
+              </p>
+            ) : null}
+            {mayUseVehicleDesk ? (
+              <p>
+                <Link
+                  href={
+                    "/workspaces/management/campgrounds/vehicles?campground=" +
+                    encodeURIComponent(selected.campgroundId)
+                  }
+                >
+                  Open Road Vehicle Registration →
                 </Link>
               </p>
             ) : null}
