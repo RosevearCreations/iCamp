@@ -1,6 +1,6 @@
 # Build 054 — Day/Week Vehicle Passes & Extra-Vehicle Fees
 
-Status: **IMPLEMENTED — promotion in progress.**
+Status: **FULLY PROMOTED — `main` GREEN.**
 
 ## Purpose
 
@@ -91,7 +91,11 @@ Primary tables:
 - `public.vehicle_pass_payments`;
 - `icamp_private.vehicle_pass_payment_provider_events`.
 
-Hosted migration and advisor evidence will be recorded after promotion gates complete.
+Hosted migrations:
+- `20261017174141 / day_week_vehicle_passes_extra_vehicle_fees`;
+- `20261017174220 / build054_advisor_hardening`.
+
+Hosted verification passed after both migrations. Supabase Security Advisor reports zero findings. The Build 054 composite foreign-key performance advisory on `public.vehicle_pass_payments` was resolved by migration 0069; remaining Build 054 performance notices are INFO-level unused-index notices expected for newly created tables.
 
 ## Cost / provider / asset impact
 
@@ -104,7 +108,14 @@ It reuses:
 
 ## Promotion
 
-Promotion evidence will be recorded after the exact feature, `dev`, production and closeout SHAs pass their required gates.
+- feature PR #203 merged to `dev`;
+- production PR #204 merged to `main`;
+- exact final feature SHA `8a0217acc5653d409bb22e6b0c42734c0ff27f9f` passed CI #39054917527, CodeQL #39054917539 and Secret Scan #39054917560;
+- exact `dev` merge SHA `c305dc2fa1879a85ba2d0db1f1c5d508ac695599` passed CI #39055081080, CodeQL #39055081131 and Secret Scan #39055081075;
+- production PR gates passed CI #39055239989, CodeQL #39055239953 and Secret Scan #39055239986;
+- production `main` SHA `07d087a96b3611d13f6a330ff9f78bddd87ace48` passed CI #39055398337, CodeQL #39055398510 and Secret Scan #39055398259;
+- `dev` synchronized to the same production SHA and independently passed CI #39055566951, CodeQL #39055566940 and Secret Scan #39055566950;
+- Verify, Browser E2E, database/lifecycle/idempotence, production build and dependency audit are GREEN.
 
 ## Next build
 
