@@ -330,6 +330,8 @@ as $$
 declare
   registration_row record;
   reservation_row record;
+  source_charge record;
+  campground_time_zone text;
 begin
   if new.pass_kind = 'day'
     and new.valid_until - new.valid_from > interval '24 hours' then
@@ -341,9 +343,61 @@ begin
     raise exception 'Week vehicle pass validity cannot exceed 7 days';
   end if;
 
+  if new.source_charge_id is null then
+    if new.fee_amount_cents <> 0 then
+      raise exception 'Vehicle pass fee requires a canonical source charge';
+    end if;
+  else
+    select
+      campground_id,
+      charge_kind,
+      pricing_basis,
+      unit_price_cents,
+      currency_code,
+      pass_duration_days,
+      is_active
+      into source_charge
+    from public.booking_charge_catalog
+    where id = new.source_charge_id;
+
+    if not found
+      or source_charge.campground_id <> new.campground_id
+      or source_charge.is_active is not true
+      or source_charge.unit_price_cents is distinct from new.fee_amount_cents
+      or source_charge.currency_code is distinct from new.currency_code then
+      raise exception 'Vehicle pass fee snapshot must match its active canonical source charge';
+    end if;
+
+    if new.pass_kind = 'day'
+      and (
+        source_charge.charge_kind <> 'pass'
+        or source_charge.pass_duration_days <> 1
+        or source_charge.pricing_basis = 'percent_of_stay'
+      ) then
+      raise exception 'Day vehicle pass requires a canonical one-day pass charge';
+    end if;
+
+    if new.pass_kind = 'week'
+      and (
+        source_charge.charge_kind <> 'pass'
+        or source_charge.pass_duration_days <> 7
+        or source_charge.pricing_basis = 'percent_of_stay'
+      ) then
+      raise exception 'Week vehicle pass requires a canonical seven-day pass charge';
+    end if;
+
+    if new.pass_kind = 'extra_vehicle'
+      and (
+        source_charge.charge_kind not in ('add_on','service_fee')
+        or source_charge.pricing_basis <> 'per_unit'
+      ) then
+      raise exception 'Extra-vehicle pass requires a canonical per-unit vehicle charge';
+    end if;
+  end if;
+
   if new.pass_kind = 'extra_vehicle' then
     select reservation_id,host_accommodation_id,registration_status,
-           plate_number,plate_jurisdiction
+           plate_number,plate_jurisdiction,valid_from,valid_until
       into registration_row
     from public.road_vehicle_registrations
     where organization_id = new.organization_id
@@ -372,9 +426,20 @@ begin
       raise exception 'Extra-vehicle pass reservation is unavailable';
     end if;
 
-    if new.valid_from::date < reservation_row.arrival_date
-      or new.valid_until::date > reservation_row.departure_date + 1 then
-      raise exception 'Extra-vehicle pass validity must stay within the reservation window';
+    select c.time_zone
+      into campground_time_zone
+    from public.campgrounds c
+    where c.id = new.campground_id;
+
+    if (new.valid_from at time zone campground_time_zone)::date
+         < reservation_row.arrival_date
+      or (new.valid_until at time zone campground_time_zone)::date
+         > reservation_row.departure_date
+      or (new.valid_from at time zone campground_time_zone)::date
+         < registration_row.valid_from
+      or (new.valid_until at time zone campground_time_zone)::date
+         > registration_row.valid_until then
+      raise exception 'Extra-vehicle pass validity must stay within the reservation and road-registration window';
     end if;
   end if;
 
