@@ -154,10 +154,7 @@ test("Build 055 schema resolves site limits and preserves payment/privacy bounda
   assert.match(sql, /resolve_visitor_limit/u);
   assert.match(sql, /scope_weight/u);
   assert.match(sql, /icamp-visitor-capacity/u);
-  assert.match(
-    sql,
-    /would exceed the effective site-specific visitor limit/u,
-  );
+  assert.match(sql, /would exceed the effective site-specific visitor limit/u);
   assert.match(sql, /booking_charge_catalog/u);
   assert.match(sql, /visitor\.register/u);
   assert.match(sql, /payment state is trusted-server managed/u);
@@ -175,13 +172,22 @@ test("Build 055 verification protects visitor evidence and direct roles", async 
     /visitor registration payments must remain trusted-server write only/u,
   );
   assert.match(sql, /visitor registration events must remain append-only/u);
-  assert.match(sql, /visitor registration provider events must remain private/u);
+  assert.match(
+    sql,
+    /visitor registration provider events must remain private/u,
+  );
   assert.match(sql, /site-specific visitor limit resolver is missing/u);
   assert.match(sql, /visitor overlap\/capacity lookup index is missing/u);
   assert.match(sql, /visitor registrar must be able to resolve Build 033/u);
-  assert.match(sql, /visitor registrar must be able to read canonical Build 040/u);
+  assert.match(
+    sql,
+    /visitor registrar must be able to read canonical Build 040/u,
+  );
   assert.match(sql, /security template must receive visitor\.register/u);
-  assert.match(sql, /campground manager template must receive visitor\.register/u);
+  assert.match(
+    sql,
+    /campground manager template must receive visitor\.register/u,
+  );
   assert.match(
     sql,
     /anon direct visitor-registration access must remain denied/u,
@@ -205,10 +211,7 @@ test("Build 055 service serializes capacity, uses canonical fees and activates a
   assert.match(source, /payment_captured/u);
   assert.match(source, /provider\.createPayment/u);
   assert.match(source, /provider\.capturePayment/u);
-  assert.match(
-    source,
-    /visitor_registration_payment_provider_events/u,
-  );
+  assert.match(source, /visitor_registration_payment_provider_events/u);
   assert.match(source, /appendAuditEvent/u);
   assert.match(source, /governmentIdNumberStored: false/u);
   assert.match(source, /credentialBoundary: "Build 056\/062\/063"/u);
@@ -235,9 +238,6 @@ test("Build 055 exposes visitor desk, help, parity and cross-navigation", async 
   assert.match(page, /Build 060/u);
   assert.match(help, /"visitor\.registration"/u);
   assert.match(parity, /id: "visitor\.register"/u);
-  assert.match(
-    parity,
-    /secureLinkPurpose: "visitor-registration-payment"/u,
-  );
+  assert.match(parity, /secureLinkPurpose: "visitor-registration-payment"/u);
   assert.match(vehiclePage, /Open Visitor Registration & Limits/u);
 });
