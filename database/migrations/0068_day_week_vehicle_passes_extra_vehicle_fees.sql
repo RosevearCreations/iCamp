@@ -623,6 +623,18 @@ using (
   or icamp_private.has_campground_permission(campground_id, 'vehicle.pass.issue')
 );
 
+drop policy if exists road_vehicle_registrations_read
+on public.road_vehicle_registrations;
+create policy road_vehicle_registrations_read
+on public.road_vehicle_registrations
+for select
+to icamp_app
+using (
+  icamp_private.has_campground_permission(campground_id,'vehicle.read')
+  or icamp_private.has_campground_permission(campground_id,'vehicle.register')
+  or icamp_private.has_campground_permission(campground_id,'vehicle.pass.issue')
+);
+
 create policy campground_vehicle_pass_policies_read
 on public.campground_vehicle_pass_policies
 for select
