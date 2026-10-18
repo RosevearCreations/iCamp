@@ -106,5 +106,8 @@ test("Build 056 reports scheduled, active, expired and revoked states", () => {
 
 test("Build 056 helper output is bounded", () => {
   assert.ok(generateCredentialSecret().length >= 22);
-  assert.equal(\n    normalizeCredentialRevocationReason("lost wristband"),\n    "lost wristband",\n  );
+  assert.equal(
+    normalizeCredentialRevocationReason("lost wristband"),
+    "lost wristband",
+  );
 });
