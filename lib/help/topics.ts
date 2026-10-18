@@ -413,7 +413,6 @@ export const helpTopics = {
     audience: "privileged",
   },
 
-
   "access.credentials": {
     id: "access.credentials",
     slug: "access-credential-abstraction",
@@ -430,7 +429,7 @@ export const helpTopics = {
     audience: "privileged",
     related: ["visitor.registration", "vehicle.registration"],
   },
-"customer.input": {
+  "customer.input": {
     id: "customer.input",
     slug: "customer-input-guidance",
     title: "Customer input guidance",
