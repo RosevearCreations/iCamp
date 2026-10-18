@@ -1,7 +1,7 @@
 # Build 061 — Passes, Wristbands & QR Codes
 
 ## Status
-**IMPLEMENTED — promotion verification in progress.**
+**FULLY PROMOTED — `main` GREEN.**
 
 ## Queue authority
 The active delivery queue intentionally assigns **Passes, Wristbands & QR Codes** to Build 061. The older roadmap labels the same functional scope as Build 062. This build follows the active queue requested for production delivery.
@@ -93,5 +93,21 @@ Migration `0080_access_passes_wristbands_qr.sql` adds:
 ## Cost / portability
 No paid provider, new secret, hosted service or QR SaaS is required. The model uses PostgreSQL plus Node cryptography and can be rendered by any later local/client QR library.
 
+## Hosted production verification
+Supabase project `iCamp` received:
+- `20261018205024 / access_passes_wristbands_qr`.
+
+The exact Build 061 verification SQL passed against hosted PostgreSQL. Supabase Security Advisor returned zero findings. The final Performance Advisor has no Build 061 warning-level, multiple-permissive-policy, or unindexed-foreign-key regression. Remaining Build 061 index findings are expected INFO-level unused-index notices on newly created indexes.
+
+## Promotion evidence
+- feature PR #227;
+- final feature head `84be1df1974db1b3a40dafe8fc728f3cdd59c5c7` passed Verify, Browser E2E, database migrations/lifecycle/idempotence, CodeQL/JavaScript & TypeScript analysis and Gitleaks;
+- exact `dev` merge SHA `3a0defceb9caae2be1964bbaf3f2e504f3dd2db3` passed the complete independent push gate set;
+- production PR #228 passed its independent pull-request gate set;
+- production feature `main` SHA `222bec157754e99de2e8d7eb71cd3af745d95e57` passed Verify, Browser E2E, database migrations/lifecycle/idempotence, CodeQL/JavaScript & TypeScript analysis and Gitleaks.
+
 ## Manual action
-**None required for source implementation.**
+**None required.**
+
+## Next build
+No build after 061 is currently assigned in the active delivery queue. The older roadmap is retained as planning input, but it is not being renumbered or advanced implicitly.
