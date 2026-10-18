@@ -65,6 +65,7 @@ At minimum:
 - access.credential.revoke
 - access.events.read
 - access.events.record
+- access.rules.manage
 - gate.state.read
 - gate.override.open
 - gate.override.close
@@ -118,6 +119,10 @@ At minimum:
 - sms.preference.manage
 - emergency.broadcast
 - system.admin
+
+## Access policy enforcement
+
+Build 060 access zones, schedules and rules are server-authoritative policy. Configuration requires `access.rules.manage`; evaluation fails closed, uses campground-local time supplied by trusted server code, and never treats a descriptive hardware zone label, caller ID, SMS sender or raw credential payload as authorization.
 
 ## Manual gate overrides
 
