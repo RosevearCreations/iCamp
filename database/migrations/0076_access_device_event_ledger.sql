@@ -169,7 +169,7 @@ create table public.access_events (
     references public.road_vehicle_registrations(organization_id,campground_id,id)
     on update cascade
     on delete restrict,
-  constraint access_events_denied_reason_check
+  constraint access_events_denied_outcome_shape_check
     check (
       (outcome='denied' and denied_reason is not null)
       or
