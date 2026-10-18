@@ -120,6 +120,10 @@ At minimum:
 - emergency.broadcast
 - system.admin
 
+## Access pass bearer secrets
+
+Build 061 QR, printed and wristband validation identifiers are bearer credentials. iCamp generates them with cryptographically secure randomness, stores only SHA-256 fingerprints plus masked hints, never writes the raw token to PostgreSQL/audit metadata, and does not expose the pass tables directly to `anon` or `authenticated` Data API roles. Validation is server-side and does not itself authorize a gate opening; Build 060 policy and the device-control path remain separate required decisions.
+
 ## Access policy enforcement
 
 Build 060 access zones, schedules and rules are server-authoritative policy. Configuration requires `access.rules.manage`; evaluation fails closed, uses campground-local time supplied by trusted server code, and never treats a descriptive hardware zone label, caller ID, SMS sender or raw credential payload as authorization.
