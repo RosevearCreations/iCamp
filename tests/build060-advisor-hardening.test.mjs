@@ -4,7 +4,10 @@ import fs from "node:fs";
 
 test("Build 060 advisor hardening keeps one SELECT policy per access-policy table", () => {
   const migration = fs.readFileSync(
-    new URL("../database/migrations/0079_access_rules_policy_hardening.sql", import.meta.url),
+    new URL(
+      "../database/migrations/0079_access_rules_policy_hardening.sql",
+      import.meta.url,
+    ),
     "utf8",
   );
 
