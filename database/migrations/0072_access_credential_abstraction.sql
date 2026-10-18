@@ -66,6 +66,8 @@ create table public.access_credentials (
   row_version bigint not null default 1 check (row_version >= 1),
   constraint access_credentials_scope_number_unique
     unique (organization_id,campground_id,credential_number),
+  constraint access_credentials_scope_id_unique
+    unique (organization_id,campground_id,id),
   constraint access_credentials_campground_fk
     foreign key (organization_id,campground_id)
     references public.campgrounds(organization_id,id)
