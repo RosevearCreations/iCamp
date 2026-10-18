@@ -886,7 +886,7 @@ Promotion evidence:
 ## Current active build
 **Build 060 — Access Zones, Schedules & Rules**
 
-Status: **QUEUED**
+Status: **IMPLEMENTED — promotion verification in progress.**
 
 ## Next after Build 060 reaches GREEN
 **Build 061 — Passes, Wristbands & QR Codes**
