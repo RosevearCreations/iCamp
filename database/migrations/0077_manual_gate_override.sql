@@ -47,6 +47,8 @@ create table public.gate_override_requests (
     on delete restrict,
   constraint gate_override_requests_scope_request_unique
     unique (campground_id,request_id),
+  constraint gate_override_requests_scope_id_unique
+    unique (organization_id,campground_id,id),
   constraint gate_override_requests_provider_pair_check
     check (
       (provider_code is null and provider_device_reference is null)
@@ -104,9 +106,6 @@ create table public.gate_override_outcomes (
     on delete restrict
 );
 
-alter table public.gate_override_requests
-  add constraint gate_override_requests_scope_id_unique
-  unique (organization_id,campground_id,id);
 
 create index gate_override_outcomes_scope_request_fk_idx
   on public.gate_override_outcomes(
