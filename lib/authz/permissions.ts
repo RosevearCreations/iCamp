@@ -34,6 +34,7 @@ export const permissions = [
   "access.credential.revoke",
   "access.events.read",
   "access.events.record",
+  "access.rules.manage",
   "gate.state.read",
   "gate.override.open",
   "gate.override.close",
