@@ -1,7 +1,7 @@
 # Build 060 — Access Zones, Schedules & Rules
 
 ## Status
-**IMPLEMENTED — promotion verification in progress.**
+**FULLY PROMOTED — `main` GREEN.**
 
 ## Roadmap scope
 Build 060 provides enforceable access policy for:
@@ -79,8 +79,25 @@ Rules may include a bounded `event_reference`. This allows event-specific access
 - **Build 060 owns enforceable authorization policy.**
 - **Build 061 owns Passes, Wristbands & QR Codes per the active delivery queue.**
 
+## Hosted production verification
+Supabase project `iCamp` received:
+- `20261018145114 / access_zones_schedules_rules`;
+- `20261018145759 / access_rules_policy_hardening`.
+
+The exact Build 060 verification SQL and advisor-hardening verification SQL passed against hosted PostgreSQL. Supabase Security Advisor returned zero findings. The initial four warning-level multiple-permissive-policy findings were corrected by the hardening migration; the final Performance Advisor has no Build 060 warning-level or unindexed-foreign-key regression. Remaining Build 060 index findings are expected INFO-level unused-index notices on newly created indexes.
+
+## Promotion evidence
+- feature PR #223;
+- final feature head `a8a59a1a188aeaa330f450fbb5884cf563a31b41` passed Verify, Browser E2E, database migrations/lifecycle/idempotence, CodeQL/JavaScript & TypeScript analysis and Gitleaks;
+- first exact `dev` merge SHA `410f97c0c1298ada825cc2999ea3df079a0c56b1` passed the complete push gate set;
+- advisor-hardening PR #224;
+- final hardening head `26e86620e872e180086bfc4816d9caddaa94e66a` passed the complete feature gate set;
+- final production candidate `dev` SHA `915e476707bd0c14e4fdb13436dd9f7acc0dc11a` passed both push and production pull-request gate sets;
+- production PR #225;
+- production feature `main` SHA `5bb52fd05929a4277e7e712f069ec394e4726bf1` passed Verify, Browser E2E, database migrations/lifecycle/idempotence, CodeQL/JavaScript & TypeScript analysis and Gitleaks.
+
 ## Manual action
-**None required for source implementation.**
+**None required.**
 
 ## Next build
 **Build 061 — Passes, Wristbands & QR Codes**
