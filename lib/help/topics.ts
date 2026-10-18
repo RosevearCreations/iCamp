@@ -461,6 +461,23 @@ export const helpTopics = {
     audience: "privileged",
     related: ["access.credentials", "access.device.registry"],
   },
+  "access.rules": {
+    id: "access.rules",
+    slug: "access-zones-schedules-rules",
+    title: "Access zones, schedules and rules",
+    summary:
+      "Build 060 defines enforceable zone, time and subject access policy for guests, visitors, staff, contractors, campers and events.",
+    details: [
+      "Access policy fails closed: an inactive zone, unmet camper/event requirement or absence of a matching allow rule results in denial.",
+      "Rules can target guest, visitor, staff, contractor, camper, event or any subject context and may require an active stay or a specific event reference.",
+      "Reusable schedules support weekday restrictions, optional date windows, ordinary daytime windows and overnight windows in campground-local time.",
+      "A device may belong to multiple enforceable zones. Every bound zone must allow access for the aggregate device decision to allow.",
+      "Build 057 zone_reference remains a descriptive hardware location label; Build 060 access zones are the enforceable authorization model.",
+      "Web/PWA is the full management surface. Telephone/SMS may provide verified summaries or secure handoff but do not bypass the canonical rule evaluator.",
+    ],
+    audience: "privileged",
+    related: ["access.device.registry", "access.events", "gate.override"],
+  },
   "gate.override": {
     id: "gate.override",
     slug: "manual-gate-open-close-override",
