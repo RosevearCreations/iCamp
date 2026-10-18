@@ -1,7 +1,7 @@
 # Build 057 — Gate, Barrier & Access Device Registry
 
 ## Status
-**IMPLEMENTED — promotion verification in progress.**
+**FULLY PROMOTED — `main` GREEN.**
 
 ## Roadmap scope
 Build 057 introduces the provider-neutral physical access-device registry for:
@@ -56,8 +56,21 @@ An administrative `zone_reference` is descriptive configuration only. It is not 
 ## Cost and portability
 No paid provider is required. The registry is ordinary provider-portable PostgreSQL and can map to future commercial gate/controller integrations without making one vendor authoritative.
 
+## Hosted production verification
+Supabase project `iCamp` received:
+- `20261018035652 / access_device_registry`.
+
+The Build 057 verification SQL passed against hosted PostgreSQL 17. Supabase Security Advisor returned zero findings. Supabase Performance Advisor returned no Build 057 warning-level or unindexed-foreign-key finding; the newly created access-device indexes appear only in the expected INFO-level unused-index list until production traffic uses them.
+
+## Promotion evidence
+- feature PR #214;
+- final feature head `42e35d898eded12f3bd9e16731f8821017d4340b` passed Verify, Browser E2E, database migrations/lifecycle/idempotence, CodeQL and Gitleaks;
+- exact `dev` merge SHA `4e135790d2faf897565a70d7e971bbea8037feae` passed the same complete gate set;
+- production PR #215 passed its independent pull-request gate set;
+- production feature `main` SHA `966c7f117df23b2f44dceffeb71753e9d05c5f61` passed Verify, Browser E2E, database migrations/lifecycle/idempotence, CodeQL and Gitleaks.
+
 ## Manual action
-**None required for source implementation.** Provider-specific credentials remain outside this registry and will only be introduced through a secure integration-secret boundary when a real provider is connected.
+**None required.** Provider-specific credentials remain outside this registry and will only be introduced through a secure integration-secret boundary when a real provider is connected.
 
 ## Next build
 **Build 058 — Access Event & Device Event Ledger**
