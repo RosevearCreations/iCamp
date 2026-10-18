@@ -67,6 +67,9 @@ create index gate_override_requests_actor_rate_idx
     campground_id,device_id,actor_user_id,requested_at desc
   );
 
+create index gate_override_requests_actor_idx
+  on public.gate_override_requests(actor_user_id);
+
 create index gate_override_requests_session_idx
   on public.gate_override_requests(actor_session_id);
 
