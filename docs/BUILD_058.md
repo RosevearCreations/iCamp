@@ -1,7 +1,7 @@
 # Build 058 — Access Event & Device Event Ledger
 
 ## Status
-**IMPLEMENTED — promotion verification in progress.**
+**FULLY PROMOTED — `main` GREEN.**
 
 ## Roadmap scope
 Build 058 adds monitoring evidence for:
@@ -54,8 +54,21 @@ Build 058 stores no raw keypad PINs, QR payloads, provider API credentials or co
 ## Cost and portability
 No paid provider is required. The event model is provider-neutral PostgreSQL and can receive normalized events from future gate/access vendors.
 
+## Hosted production verification
+Supabase project `iCamp` received:
+- `20261018050416 / access_device_event_ledger`.
+
+Hosted Build 058 verification SQL passed against PostgreSQL 17. Supabase Security Advisor returned zero findings. Supabase Performance Advisor reported only expected INFO-level unused-index notices for the new access/device-event indexes; there is no Build 058 warning-level or unindexed-foreign-key regression.
+
+## Promotion evidence
+- feature PR #217;
+- final feature head `0e48f6436911ac035aa360a3ae1c14f583551fec` passed Verify, Browser E2E, database migrations/lifecycle/idempotence, CodeQL/JavaScript & TypeScript analysis and Gitleaks;
+- exact `dev` merge SHA `d8a3aac92fecaa9d7e7b94905f364277543e6e34` passed the same complete gate set;
+- production PR #218 passed its independent pull-request gate set;
+- production feature `main` SHA `85845e4fd595119ac5df89a8b8782f014458cf43` passed Verify, Browser E2E, database migrations/lifecycle/idempotence, CodeQL/JavaScript & TypeScript analysis and Gitleaks.
+
 ## Manual action
-**None required for source implementation.**
+**None required.**
 
 ## Next build
 **Build 059 — Manual Gate Open/Close Override**
