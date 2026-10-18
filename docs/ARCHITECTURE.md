@@ -210,6 +210,8 @@ Customer-facing gallery rules:
 - visitor_vehicles
 - access_credentials
 - access_credential_events
+- access_passes
+- access_pass_events
 - access_zones
 - access_rules
 
