@@ -820,13 +820,29 @@ Promotion evidence:
 - Verify, Browser E2E, database/lifecycle/idempotence, production build and dependency audit GREEN;
 - `dev` synchronized to the same production SHA and independently passed CI run #39055566951, CodeQL run #39055566940 and Secret Scan run #39055566950.
 
+### Build 055 — Visitor Registration & Site-Specific Limits
+Status: **FULLY PROMOTED — `main` GREEN.**
+
+Promotion evidence:
+- feature PR #206 and production PR #207;
+- hosted migrations `20261017232511 / visitor_registration_site_specific_limits` and `20261017232536 / build055_advisor_hardening`;
+- hosted verification SQL passed for both Build 055 migrations;
+- Supabase Security Advisor: zero findings;
+- the initial Build-055 composite host-accommodation foreign-key advisory was resolved by migration 0071; post-hardening performance output has no Build-055 unindexed-FK finding;
+- exact final feature SHA `98e7b6d4a7d283a0041f77950150db09810e1fed` passed CI run #39079187569, CodeQL run #39079187553 and Secret Scan run #39079187550;
+- exact `dev` merge SHA `87ebb7d7ef2f0d9aa3449e881d38160cc3d382bf` passed CI run #39079341256, CodeQL run #39079341275 and Secret Scan run #39079341258;
+- production PR gates passed CI run #39079474315, CodeQL run #39079474394 and Secret Scan run #39079474366;
+- production feature `main` SHA `d0bc9de1db61c3bb9d367e94a8a056f0642f5f0f` passed CI run #39079623126, CodeQL run #39079623161 and Secret Scan run #39079623125;
+- `dev` synchronized to the same production feature SHA and independently passed CI run #39079764819, CodeQL run #39079764826 and Secret Scan run #39079764798;
+- Verify, Browser E2E, database/lifecycle/idempotence, production build and dependency audit GREEN.
+
 ## Current active build
-**Build 055 — Visitor Registration & Site-Specific Limits**
+**Build 056 — Access Credential Abstraction**
 
 Status: **QUEUED**
 
-## Next after Build 055 reaches GREEN
-**Build 056 — Access Credential Abstraction**
+## Next after Build 056 reaches GREEN
+**Build 057 — Gate, Barrier & Access Device Registry**
 
 ## Operating rule
 - Work primarily on `dev`.

@@ -1,6 +1,6 @@
 # Build 055 — Visitor Registration & Site-Specific Limits
 
-Status: **IMPLEMENTED ON FEATURE BRANCH — promotion verification in progress.**
+Status: **FULLY PROMOTED — `main` GREEN.**
 
 ## Purpose
 
@@ -130,10 +130,23 @@ It reuses:
 
 ## Promotion
 
-Promotion evidence will be filled in only after the exact feature, dev, main and synchronized closeout SHAs pass their applicable gates.
+Promotion evidence:
+- feature PR #206 merged to dev;
+- production PR #207 merged to main;
+- exact final feature SHA `98e7b6d4a7d283a0041f77950150db09810e1fed`: CI #39079187569, CodeQL #39079187553 and Secret Scan #39079187550 GREEN;
+- exact dev merge SHA `87ebb7d7ef2f0d9aa3449e881d38160cc3d382bf`: CI #39079341256, CodeQL #39079341275 and Secret Scan #39079341258 GREEN;
+- production PR-event gates: CI #39079474315, CodeQL #39079474394 and Secret Scan #39079474366 GREEN;
+- production feature main SHA `d0bc9de1db61c3bb9d367e94a8a056f0642f5f0f`: CI #39079623126, CodeQL #39079623161 and Secret Scan #39079623125 GREEN;
+- dev synchronized to the same production feature SHA and independently passed CI #39079764819, CodeQL #39079764826 and Secret Scan #39079764798;
+- Verify includes formatter, lint, typecheck, tests, telephone/SMS workflow parity, production build and dependency audit;
+- Browser end-to-end and Database migrations/lifecycle/idempotence gates passed independently.
 
 ## Next build
 
-After Build 055 is fully GREEN:
+Current queued build:
 
 **Build 056 — Access Credential Abstraction**
+
+Following Build 056:
+
+**Build 057 — Gate, Barrier & Access Device Registry**
