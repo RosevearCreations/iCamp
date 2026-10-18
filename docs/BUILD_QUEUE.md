@@ -861,13 +861,24 @@ Promotion evidence:
 - no Build 057 warning-level or unindexed-foreign-key Performance Advisor finding;
 - final feature head `42e35d898eded12f3bd9e16731f8821017d4340b`, exact `dev` merge SHA `4e135790d2faf897565a70d7e971bbea8037feae`, and production feature `main` SHA `966c7f117df23b2f44dceffeb71753e9d05c5f61` passed the required GREEN gates.
 
+### Build 058 — Access Event & Device Event Ledger
+Status: **FULLY PROMOTED — `main` GREEN.**
+
+Promotion evidence:
+- feature PR #217 and production PR #218;
+- hosted migration `20261018050416 / access_device_event_ledger`;
+- hosted Build 058 verification SQL passed;
+- Supabase Security Advisor: zero findings;
+- Build 058 Performance Advisor findings are only expected INFO-level unused-index notices, with no warning-level or unindexed-FK regression;
+- final feature head `0e48f6436911ac035aa360a3ae1c14f583551fec`, exact `dev` merge SHA `d8a3aac92fecaa9d7e7b94905f364277543e6e34`, and production feature `main` SHA `85845e4fd595119ac5df89a8b8782f014458cf43` passed the required GREEN gates.
+
 ## Current active build
-**Build 058 — Access Event & Device Event Ledger**
-
-Status: **IMPLEMENTED — promotion verification in progress.**
-
-## Next after Build 058 reaches GREEN
 **Build 059 — Manual Gate Open/Close Override**
+
+Status: **QUEUED**
+
+## Next after Build 059 reaches GREEN
+**Build 060 — Access Zones, Schedules & Rules**
 
 ## Operating rule
 - Work primarily on `dev`.
