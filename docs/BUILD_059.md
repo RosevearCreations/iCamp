@@ -1,7 +1,7 @@
 # Build 059 — Manual Gate Open/Close Override
 
 ## Status
-**IMPLEMENTED — promotion verification in progress.**
+**FULLY PROMOTED — `main` GREEN.**
 
 ## Roadmap scope
 Build 059 adds the high-risk server command path for manual gate/barrier open and close overrides:
@@ -65,8 +65,21 @@ If no gate provider is configured, iCamp records an `unsupported` provider outco
 ## Cost and portability
 No paid gate provider is required. A provider-neutral adapter boundary permits free/mock testing now and future commercial controller integrations later.
 
+## Hosted production verification
+Supabase project `iCamp` received:
+- `20261018140800 / manual_gate_override`.
+
+Hosted Build 059 verification SQL passed against PostgreSQL 17. Supabase Security Advisor returned zero findings. Supabase Performance Advisor reported only expected INFO-level unused-index notices for the new gate-override indexes; there is no Build 059 warning-level or unindexed-foreign-key regression.
+
+## Promotion evidence
+- feature PR #220;
+- final feature head `5f02772863e47a022d92f82237a8bc6cdea41831` passed Verify, Browser E2E, database migrations/lifecycle/idempotence, CodeQL/JavaScript & TypeScript analysis and Gitleaks;
+- exact `dev` merge SHA `78526d41cee9428adf015c6e40ef4d4cbbd04bd8` passed the same complete gate set;
+- production PR #221 passed its independent pull-request gate set;
+- production feature `main` SHA `1835ec6d42fc3417866fcfd25f55108a6db2c238` passed Verify, Browser E2E, database migrations/lifecycle/idempotence, CodeQL/JavaScript & TypeScript analysis and Gitleaks.
+
 ## Manual action
-**None required for source implementation.**
+**None required.**
 
 ## Next build
 **Build 060 — Access Zones, Schedules & Rules**
