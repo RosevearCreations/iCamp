@@ -875,7 +875,7 @@ Promotion evidence:
 ## Current active build
 **Build 059 — Manual Gate Open/Close Override**
 
-Status: **QUEUED**
+Status: **IMPLEMENTED — promotion verification in progress.**
 
 ## Next after Build 059 reaches GREEN
 **Build 060 — Access Zones, Schedules & Rules**

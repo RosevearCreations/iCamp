@@ -119,6 +119,10 @@ At minimum:
 - emergency.broadcast
 - system.admin
 
+## Manual gate overrides
+
+Build 059 gate open/close overrides are high-risk server-only commands. They require the command-specific permission, an explicit reason, recent re-authentication, device capability validation, a database rate limit, append-only request/provider evidence and privileged audit evidence. They must never bypass physical life-safety controls or store provider/controller secrets.
+
 ## 4. High-risk operations
 
 Require explicit permission, reason capture and audit. Some may additionally require recent re-authentication or second approval:
