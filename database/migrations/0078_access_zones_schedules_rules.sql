@@ -53,6 +53,9 @@ create table public.access_zones (
     on delete restrict
 );
 
+create index access_zones_scope_campground_fk_idx
+  on public.access_zones(organization_id,campground_id);
+
 create index access_zones_kind_active_idx
   on public.access_zones(campground_id,zone_kind,is_active);
 
@@ -114,6 +117,9 @@ create table public.access_schedules (
   constraint access_schedules_date_window_check
     check (valid_until is null or valid_from is null or valid_until >= valid_from)
 );
+
+create index access_schedules_scope_campground_fk_idx
+  on public.access_schedules(organization_id,campground_id);
 
 create index access_schedules_active_idx
   on public.access_schedules(campground_id,is_active,valid_from,valid_until);
