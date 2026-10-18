@@ -461,6 +461,23 @@ export const helpTopics = {
     audience: "privileged",
     related: ["access.credentials", "access.device.registry"],
   },
+  "gate.override": {
+    id: "gate.override",
+    slug: "manual-gate-open-close-override",
+    title: "Manual gate open/close override",
+    summary:
+      "Build 059 provides a high-risk, auditable server command for authorized staff to manually open or close a capable access device.",
+    details: [
+      "Open and close use separate high-risk permissions and always require an explicit operational reason plus recent re-authentication.",
+      "The target device must be active and declare the corresponding remote_open or remote_close capability before a request is accepted.",
+      "Manual requests are rate limited to three accepted commands per actor/device in sixty seconds, and duplicate request IDs are not intentionally reissued.",
+      "Every accepted request and normalized provider result is preserved as append-only evidence alongside the privileged audit trail.",
+      "iCamp never bypasses fire/life-safety egress, physical emergency releases, legally required manual controls or hardware safety interlocks.",
+      "Web/PWA is the full privileged surface. IVR/SMS must use strong staff verification and the same canonical server command, or hand off securely.",
+    ],
+    audience: "privileged",
+    related: ["access.device.registry", "access.events"],
+  },
   "customer.input": {
     id: "customer.input",
     slug: "customer-input-guidance",
