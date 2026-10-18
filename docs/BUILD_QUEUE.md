@@ -872,13 +872,24 @@ Promotion evidence:
 - Build 058 Performance Advisor findings are only expected INFO-level unused-index notices, with no warning-level or unindexed-FK regression;
 - final feature head `0e48f6436911ac035aa360a3ae1c14f583551fec`, exact `dev` merge SHA `d8a3aac92fecaa9d7e7b94905f364277543e6e34`, and production feature `main` SHA `85845e4fd595119ac5df89a8b8782f014458cf43` passed the required GREEN gates.
 
+### Build 059 — Manual Gate Open/Close Override
+Status: **FULLY PROMOTED — `main` GREEN.**
+
+Promotion evidence:
+- feature PR #220 and production PR #221;
+- hosted migration `20261018140800 / manual_gate_override`;
+- hosted Build 059 verification SQL passed;
+- Supabase Security Advisor: zero findings;
+- Build 059 Performance Advisor findings are only expected INFO-level unused-index notices, with no warning-level or unindexed-FK regression;
+- final feature head `5f02772863e47a022d92f82237a8bc6cdea41831`, exact `dev` merge SHA `78526d41cee9428adf015c6e40ef4d4cbbd04bd8`, and production feature `main` SHA `1835ec6d42fc3417866fcfd25f55108a6db2c238` passed the required GREEN gates.
+
 ## Current active build
-**Build 059 — Manual Gate Open/Close Override**
-
-Status: **IMPLEMENTED — promotion verification in progress.**
-
-## Next after Build 059 reaches GREEN
 **Build 060 — Access Zones, Schedules & Rules**
+
+Status: **QUEUED**
+
+## Next after Build 060 reaches GREEN
+**Build 061 — Passes, Wristbands & QR Codes**
 
 ## Operating rule
 - Work primarily on `dev`.
