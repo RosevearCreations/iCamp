@@ -445,6 +445,22 @@ export const helpTopics = {
     audience: "privileged",
     related: ["access.credentials"],
   },
+  "access.events": {
+    id: "access.events",
+    slug: "access-device-event-ledger",
+    title: "Access and device event monitoring",
+    summary:
+      "Build 058 keeps append-only evidence for gate/device observations and access attempts without turning monitoring into a control channel.",
+    details: [
+      "Open, closed and unknown gate-state observations are recorded as history and the latest state is derived from that history rather than overwriting prior evidence.",
+      "Access attempts can link the Build 056 credential plus canonical guest, visitor, staff and road-vehicle records when known; unknown attempts remain representable without inventing identity.",
+      "Denied access requires an explicit reason. Granted, error and unknown outcomes cannot carry a denial reason.",
+      "Provider event references support duplicate-safe ingestion, while direct anonymous and authenticated Data API access remains denied.",
+      "Build 059 owns manual open/close commands and command outcomes. Build 060 owns enforceable zones, schedules and access rules.",
+    ],
+    audience: "privileged",
+    related: ["access.credentials", "access.device.registry"],
+  },
   "customer.input": {
     id: "customer.input",
     slug: "customer-input-guidance",

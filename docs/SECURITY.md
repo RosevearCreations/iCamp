@@ -64,6 +64,7 @@ At minimum:
 - access.credential.issue
 - access.credential.revoke
 - access.events.read
+- access.events.record
 - gate.state.read
 - gate.override.open
 - gate.override.close

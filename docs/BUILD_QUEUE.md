@@ -864,7 +864,7 @@ Promotion evidence:
 ## Current active build
 **Build 058 — Access Event & Device Event Ledger**
 
-Status: **QUEUED**
+Status: **IMPLEMENTED — promotion verification in progress.**
 
 ## Next after Build 058 reaches GREEN
 **Build 059 — Manual Gate Open/Close Override**
