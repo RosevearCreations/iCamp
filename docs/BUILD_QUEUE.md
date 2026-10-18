@@ -836,13 +836,27 @@ Promotion evidence:
 - `dev` synchronized to the same production feature SHA and independently passed CI run #39079764819, CodeQL run #39079764826 and Secret Scan run #39079764798;
 - Verify, Browser E2E, database/lifecycle/idempotence, production build and dependency audit GREEN.
 
+### Build 056 — Access Credential Abstraction
+Status: **FULLY PROMOTED — `main` GREEN.**
+
+Promotion evidence:
+- feature PR #209, production feature PR #210 and production hardening PR #212;
+- hosted migrations `20261018022823 / access_credential_abstraction`, `20261018022837 / build056_data_api_hardening` and `20261018022851 / build056_fk_index_hardening`;
+- hosted Build 056 verification SQL passed;
+- Supabase Security Advisor: zero findings;
+- Supabase Performance Advisor: zero non-unused-index findings after the scoped credential-event FK index hardening;
+- hardened `dev` SHA `0d61a6415851dbc929e39e550d7a8b3aa5453c70` passed CI run #39090480678, CodeQL run #39090480576 and Secret Scan run #39090480656;
+- production PR gates passed CI run #39090619658, CodeQL run #39090619678 and Secret Scan run #39090619759;
+- hardened production `main` SHA `d87212e4df1fb1a55575466828b0f5df59b9aa13` passed CI run #39090737063, CodeQL run #39090737113 and Secret Scan run #39090737111;
+- Verify, Browser E2E, database/lifecycle/idempotence, production build and dependency audit GREEN.
+
 ## Current active build
-**Build 056 — Access Credential Abstraction**
-
-Status: **IMPLEMENTED — promotion gates pending**
-
-## Next after Build 056 reaches GREEN
 **Build 057 — Gate, Barrier & Access Device Registry**
+
+Status: **QUEUED**
+
+## Next after Build 057 reaches GREEN
+**Build 058 — Access Event & Device Event Ledger**
 
 ## Operating rule
 - Work primarily on `dev`.
