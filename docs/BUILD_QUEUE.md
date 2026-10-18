@@ -850,13 +850,24 @@ Promotion evidence:
 - hardened production `main` SHA `d87212e4df1fb1a55575466828b0f5df59b9aa13` passed CI run #39090737063, CodeQL run #39090737113 and Secret Scan run #39090737111;
 - Verify, Browser E2E, database/lifecycle/idempotence, production build and dependency audit GREEN.
 
+### Build 057 — Gate, Barrier & Access Device Registry
+Status: **FULLY PROMOTED — `main` GREEN.**
+
+Promotion evidence:
+- feature PR #214 and production PR #215;
+- hosted migration `20261018035652 / access_device_registry`;
+- hosted Build 057 verification SQL passed;
+- Supabase Security Advisor: zero findings;
+- no Build 057 warning-level or unindexed-foreign-key Performance Advisor finding;
+- final feature head `42e35d898eded12f3bd9e16731f8821017d4340b`, exact `dev` merge SHA `4e135790d2faf897565a70d7e971bbea8037feae`, and production feature `main` SHA `966c7f117df23b2f44dceffeb71753e9d05c5f61` passed the required GREEN gates.
+
 ## Current active build
-**Build 057 — Gate, Barrier & Access Device Registry**
-
-Status: **IMPLEMENTED — promotion verification in progress.**
-
-## Next after Build 057 reaches GREEN
 **Build 058 — Access Event & Device Event Ledger**
+
+Status: **QUEUED**
+
+## Next after Build 058 reaches GREEN
+**Build 059 — Manual Gate Open/Close Override**
 
 ## Operating rule
 - Work primarily on `dev`.
