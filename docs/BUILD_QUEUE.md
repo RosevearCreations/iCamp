@@ -883,13 +883,21 @@ Promotion evidence:
 - Build 059 Performance Advisor findings are only expected INFO-level unused-index notices, with no warning-level or unindexed-FK regression;
 - final feature head `5f02772863e47a022d92f82237a8bc6cdea41831`, exact `dev` merge SHA `78526d41cee9428adf015c6e40ef4d4cbbd04bd8`, and production feature `main` SHA `1835ec6d42fc3417866fcfd25f55108a6db2c238` passed the required GREEN gates.
 
+### Build 060 — Access Zones, Schedules & Rules
+Status: **FULLY PROMOTED — `main` GREEN.**
+
+Promotion evidence:
+- feature PR #223, advisor-hardening PR #224 and production PR #225;
+- hosted migrations `20261018145114 / access_zones_schedules_rules` and `20261018145759 / access_rules_policy_hardening`;
+- hosted Build 060 and hardening verification SQL passed;
+- Supabase Security Advisor: zero findings;
+- the initial four Build 060 multiple-permissive-policy warnings were corrected; final Performance Advisor has no Build 060 warning-level or unindexed-FK regression;
+- final feature head `a8a59a1a188aeaa330f450fbb5884cf563a31b41`, final hardening head `26e86620e872e180086bfc4816d9caddaa94e66a`, exact production-candidate `dev` SHA `915e476707bd0c14e4fdb13436dd9f7acc0dc11a`, and production feature `main` SHA `5bb52fd05929a4277e7e712f069ec394e4726bf1` passed the required GREEN gates.
+
 ## Current active build
-**Build 060 — Access Zones, Schedules & Rules**
-
-Status: **IMPLEMENTED — promotion verification in progress.**
-
-## Next after Build 060 reaches GREEN
 **Build 061 — Passes, Wristbands & QR Codes**
+
+Status: **QUEUED**
 
 ## Operating rule
 - Work primarily on `dev`.
