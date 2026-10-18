@@ -413,7 +413,24 @@ export const helpTopics = {
     audience: "privileged",
   },
 
-  "customer.input": {
+
+  "access.credentials": {
+    id: "access.credentials",
+    slug: "access-credential-abstraction",
+    title: "Access credentials",
+    summary:
+      "Build 056 provides one provider-neutral credential record for key cards, fobs, keypad PINs, QR/printed passes, wristbands and external access-provider references.",
+    details: [
+      "Raw keypad PINs and QR payloads are never stored; digital credentials keep only a one-way fingerprint plus an optional masked display hint.",
+      "Credential validity is independent from physical gate control: Build 057+ owns device mapping and Build 060 owns enforceable access zones and schedules.",
+      "A credential may be scheduled, active, expired by time, or explicitly revoked. Revoked credentials cannot be silently reactivated.",
+      "Provider integrations store bounded provider identifiers and credential references, never provider API secrets.",
+      "Build 062 owns pass validation and Build 063 owns replacement, return and checkout lifecycle.",
+    ],
+    audience: "privileged",
+    related: ["visitor.registration", "vehicle.registration"],
+  },
+"customer.input": {
     id: "customer.input",
     slug: "customer-input-guidance",
     title: "Customer input guidance",
