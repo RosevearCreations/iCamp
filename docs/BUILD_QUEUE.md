@@ -839,7 +839,7 @@ Promotion evidence:
 ## Current active build
 **Build 056 — Access Credential Abstraction**
 
-Status: **QUEUED**
+Status: **IMPLEMENTED — promotion gates pending**
 
 ## Next after Build 056 reaches GREEN
 **Build 057 — Gate, Barrier & Access Device Registry**
