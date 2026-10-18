@@ -853,7 +853,7 @@ Promotion evidence:
 ## Current active build
 **Build 057 — Gate, Barrier & Access Device Registry**
 
-Status: **QUEUED**
+Status: **IMPLEMENTED — promotion verification in progress.**
 
 ## Next after Build 057 reaches GREEN
 **Build 058 — Access Event & Device Event Ledger**
