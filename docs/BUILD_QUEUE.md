@@ -897,7 +897,7 @@ Promotion evidence:
 ## Current active build
 **Build 061 — Passes, Wristbands & QR Codes**
 
-Status: **QUEUED**
+Status: **IMPLEMENTED — promotion verification in progress.**
 
 ## Operating rule
 - Work primarily on `dev`.

@@ -461,6 +461,23 @@ export const helpTopics = {
     audience: "privileged",
     related: ["access.credentials", "access.device.registry"],
   },
+  "access.passes": {
+    id: "access.passes",
+    slug: "passes-wristbands-qr-codes",
+    title: "Passes, wristbands and QR codes",
+    summary:
+      "Build 061 issues and validates secure QR, printed and wristband bearer presentations over the canonical Build 056 access credential.",
+    details: [
+      "The raw bearer validation token is generated with secure randomness, returned only during first issuance and never stored in PostgreSQL or audit metadata.",
+      "QR presentations use the versioned icamp-pass:v1 payload. Printed passes and wristbands use the same server validation contract without weakening token entropy.",
+      "Visitor-linked passes require an active Build 055 registration, and vehicle-linked access presentations require an active Build 054 vehicle pass. Their validity must stay inside the source validity window.",
+      "Event and day-use links remain bounded provider-neutral references until those later canonical domains arrive.",
+      "Validation fails closed for unknown, early, expired, revoked or source-inactive passes. A valid pass still requires the Build 060 zone/schedule/rule decision before physical access.",
+      "Web/PWA is the full issuance/revocation surface. IVR and SMS use verified staff, secure-link or visual handoff because bearer secrets and QR graphics must not be casually echoed.",
+    ],
+    audience: "privileged",
+    related: ["access.rules", "visitor.registration", "vehicle.passes"],
+  },
   "access.rules": {
     id: "access.rules",
     slug: "access-zones-schedules-rules",
