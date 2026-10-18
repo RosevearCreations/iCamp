@@ -894,10 +894,23 @@ Promotion evidence:
 - the initial four Build 060 multiple-permissive-policy warnings were corrected; final Performance Advisor has no Build 060 warning-level or unindexed-FK regression;
 - final feature head `a8a59a1a188aeaa330f450fbb5884cf563a31b41`, final hardening head `26e86620e872e180086bfc4816d9caddaa94e66a`, exact production-candidate `dev` SHA `915e476707bd0c14e4fdb13436dd9f7acc0dc11a`, and production feature `main` SHA `5bb52fd05929a4277e7e712f069ec394e4726bf1` passed the required GREEN gates.
 
-## Current active build
-**Build 061 — Passes, Wristbands & QR Codes**
+### Build 061 — Passes, Wristbands & QR Codes
+Status: **FULLY PROMOTED — `main` GREEN.**
 
-Status: **IMPLEMENTED — promotion verification in progress.**
+Promotion evidence:
+- feature PR #227 and production PR #228;
+- hosted migration `20261018205024 / access_passes_wristbands_qr`;
+- hosted Build 061 verification SQL passed;
+- Supabase Security Advisor: zero findings;
+- final Performance Advisor has no Build 061 warning-level, multiple-permissive-policy or unindexed-FK regression;
+- final feature head `84be1df1974db1b3a40dafe8fc728f3cdd59c5c7`, exact `dev` merge SHA `3a0defceb9caae2be1964bbaf3f2e504f3dd2db3`, and production feature `main` SHA `222bec157754e99de2e8d7eb71cd3af745d95e57` passed the required GREEN gates.
+
+## Current active build
+**Not assigned**
+
+Status: **AWAITING NEXT ACTIVE-QUEUE ASSIGNMENT**
+
+The historical roadmap remains available as planning input, but no post-061 build is inferred or renumbered automatically.
 
 ## Operating rule
 - Work primarily on `dev`.
