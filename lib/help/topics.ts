@@ -429,6 +429,22 @@ export const helpTopics = {
     audience: "privileged",
     related: ["visitor.registration", "vehicle.registration"],
   },
+  "access.device.registry": {
+    id: "access.device.registry",
+    slug: "access-device-registry",
+    title: "Gate, barrier and access devices",
+    summary:
+      "Build 057 registers campground gates, doors, vehicle barriers, controllers, readers, keypads and related access hardware without binding iCamp to one vendor.",
+    details: [
+      "Use the registry for physical-device identity, location, controller topology, hardware details, provider mapping, capabilities and the latest health snapshot.",
+      "Provider mappings store only provider/device identifiers. API tokens, passwords, controller secrets and raw access credentials do not belong in this registry.",
+      "The zone reference in Build 057 is an administrative location label only. Build 060 owns enforceable access zones, schedules and subject rules.",
+      "Build 058 owns open/closed observations plus access and device event history. Build 059 owns manual open/close commands and provider outcomes.",
+      "Web/PWA is the full management surface; telephone and SMS use verified summaries, secure links or staff-assisted handoff instead of collecting hardware/provider configuration through unsafe text or keypad flows.",
+    ],
+    audience: "privileged",
+    related: ["access.credentials"],
+  },
   "customer.input": {
     id: "customer.input",
     slug: "customer-input-guidance",
