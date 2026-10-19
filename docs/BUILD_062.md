@@ -63,6 +63,8 @@ Lost/replacement:
 5. links the new assignment to the old assignment;
 6. records replacement evidence.
 
+If replacement issuance fails after the lost credential has been safely revoked, the workflow is retry-safe: the old assignment remains `replaced` and the same replacement idempotency key can finish issuance without reactivating the lost credential.
+
 Ended assignments cannot be reopened.
 
 ## Security
