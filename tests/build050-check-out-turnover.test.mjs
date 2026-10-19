@@ -76,7 +76,7 @@ test("Build 050 service completes reservations and triggers safe turnover", asyn
   assert.match(source, /cottage_configuration_required/u);
   assert.match(source, /financialFollowUpAcknowledged/u);
   assert.match(source, /Build 074/u);
-  assert.match(source, /Build 063/u);
+  assert.match(source, /Build 062/u);
   assert.match(source, /appendAuditEvent/u);
 });
 
@@ -88,6 +88,6 @@ test("Build 050 Web/PWA surface declares safe phone and SMS fallback", async () 
   assert.match(page, /SMS\/MMS/u);
   assert.match(page, /raw payment-card data/iu);
   assert.match(page, /Build\s+027/u);
-  assert.match(page, /Build\s+063/u);
+  assert.match(page, /Build\s+062/u);
   assert.match(page, /Build\s+074/u);
 });

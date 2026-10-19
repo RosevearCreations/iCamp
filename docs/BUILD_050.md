@@ -34,7 +34,7 @@ No raw payment-card details are collected or stored.
 Build 050 captures operational return status for rentals, physical keys and access credentials. If Build 049 recorded rental or credential handoffs, checkout cannot mark that category `not_applicable`.
 
 These return states are departure evidence only:
-- Build 063 remains the authority for canonical credential revocation/expiry/lost-replacement lifecycle.
+- Build 062 remains the authority for canonical credential revocation/expiry/lost-replacement lifecycle.
 - later rental/POS domain builds remain the authority for canonical rental inventory, charges and loss/damage settlement.
 
 ## Turnover behavior

@@ -492,7 +492,7 @@ export default async function FrontDeskCheckInPage({
                   />
                   <span className={styles.hint}>
                     Records a provisioning handoff only. Actual credential
-                    issuance/revocation remains Build 056/063.
+                    issuance/revocation remains Build 056/061/062.
                   </span>
                 </label>
 
@@ -607,7 +607,7 @@ export default async function FrontDeskCheckInPage({
             plate/jurisdiction registration remains <strong>Build 053</strong>.
             Formal visitor registration remains <strong>Build 055</strong>.
             Access credential issuance/lifecycle remains{" "}
-            <strong>Build 056/063</strong>. Rental and store requests are
+            <strong>Build 056/061/062</strong>. Rental and store requests are
             handoffs only until their canonical rental/POS builds fulfill them.
           </p>
         </section>
