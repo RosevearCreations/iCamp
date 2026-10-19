@@ -124,6 +124,14 @@ At minimum:
 
 Build 062 binds stay-managed credentials to canonical reservation/check-in evidence. Active assignments are stay-synchronized, ended assignments cannot be reopened, checkout/cancellation revoke active credentials, and lost/replacement issues a new credential identity rather than reusing a lost secret. Public lifecycle tables FORCE RLS and deny direct `anon`/`authenticated` Data API access.
 
+## Security & Access Operations Dashboard
+
+Build 063 is a privileged read-only operational projection over the canonical access domains. It requires campground-scoped gate-state, access-event and credential visibility and continues to rely on database RLS.
+
+The dashboard must never expose raw PINs, QR/pass bearer tokens, credential/pass fingerprints, controller secrets or provider credentials. Manual gate commands remain on the separate Build 059 high-risk command path.
+
+Because the active queue did not deliver the historical standalone incident-management build, Build 063 may surface fault/denial/override-failure **signals** but must not fabricate canonical incident cases, assignment, escalation or resolution evidence.
+
 ## Access pass bearer secrets
 
 Build 061 QR, printed and wristband validation identifiers are bearer credentials. iCamp generates them with cryptographically secure randomness, stores only SHA-256 fingerprints plus masked hints, never writes the raw token to PostgreSQL/audit metadata, and does not expose the pass tables directly to `anon` or `authenticated` Data API roles. Validation is server-side and does not itself authorize a gate opening; Build 060 policy and the device-control path remain separate required decisions.

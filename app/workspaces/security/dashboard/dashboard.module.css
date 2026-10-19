@@ -1,0 +1,92 @@
+.scopeForm {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  align-items: end;
+}
+
+.scopeForm label {
+  display: grid;
+  gap: 0.35rem;
+  min-width: min(24rem, 100%);
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.scopeForm select {
+  min-height: 2.9rem;
+  padding: 0.65rem 0.8rem;
+  border: 1px solid var(--line);
+  border-radius: 0.72rem;
+  background: #fff;
+  color: var(--ink);
+  font: inherit;
+}
+
+.tableWrap {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.tableWrap table {
+  width: 100%;
+  min-width: 48rem;
+  border-collapse: collapse;
+}
+
+.tableWrap th,
+.tableWrap td {
+  padding: 0.8rem;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  vertical-align: top;
+}
+
+.tableWrap th {
+  color: var(--muted);
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.tableWrap td {
+  line-height: 1.45;
+}
+
+.status {
+  display: inline-flex;
+  align-items: center;
+  min-height: 1.8rem;
+  padding: 0.25rem 0.55rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface-soft);
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.attention {
+  border-color: #c58a3d;
+  background: #fff5dc;
+  color: #62420d;
+}
+
+.danger {
+  border-color: #c97b6e;
+  background: #fff1ee;
+  color: #6d2b20;
+}
+
+.note {
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--line);
+  border-radius: 0.85rem;
+  background: var(--surface-soft);
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.empty {
+  color: var(--muted);
+  font-style: italic;
+}

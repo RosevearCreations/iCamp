@@ -919,9 +919,21 @@ Promotion evidence:
 ## Current active build
 **Build 063 — Security & Access Operations Dashboard**
 
-Status: **QUEUED**
+Status: **IMPLEMENTED — PROMOTION PENDING**
 
-Build 061 consumed the older roadmap's pass scope and Build 062 consumed its credential-lifecycle scope. The active queue now advances to the next non-duplicative roadmap capability: gate/device status, active credentials, recent denied access, manual overrides, expiring passes and security incidents.
+Implemented on the feature branch:
+- protected campground-scoped Security & Access Operations Dashboard;
+- gate/device status with latest observed gate state and health attention summary;
+- active credential visibility without bearer-secret or fingerprint exposure;
+- recent denied-access evidence and denial reasons;
+- manual override request/outcome visibility;
+- 48-hour expiring pass watch;
+- 24-hour security signal triage from device faults, denied access and unsuccessful overrides;
+- existing icamp_app RLS identity preserved for every dashboard query;
+- no new database migration, provider, secret or paid service;
+- explicit boundary that security signals are not fabricated incident cases.
+
+Promotion evidence remains pending until feature, dev, production PR and final main gates are GREEN.
 
 ## Operating rule
 - Work primarily on `dev`.
