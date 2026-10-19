@@ -916,24 +916,29 @@ Promotion evidence:
 - final Performance Advisor has no Build 062 warning-level, multiple-permissive-policy or unindexed-FK regression;
 - final feature head `b0855d68ee02aa2bfa629426667cf3d7e9d28432`, exact `dev` merge SHA `36846168730f380601441f50ee18db453c7983a1`, and production feature `main` SHA `fb118fe89764d8cb0608320d3156c951e37faa5d` passed the required GREEN gates.
 
+### Build 063 — Security & Access Operations Dashboard
+Status: **FULLY PROMOTED — `main` GREEN.**
+
+Promotion evidence:
+- feature PR #235 and production PR #236;
+- no database migration was required because Build 063 is a read-only aggregation over the existing Build 056–062 access domains;
+- final feature head `331526fb2713d475cbaab481abd69f65ffc2ce02`;
+- exact `dev` merge SHA `6ed8fb82fe74cb452e03f684b4fda7a87409363a`;
+- production feature `main` SHA `e6d337c8b117337e546a516525b600f782815a6b`;
+- feature, `dev`, production PR and production `main` gates all passed Verify, Browser E2E, database compatibility, CodeQL/TypeScript analysis and Secret Scan;
+- full Web/PWA security operations dashboard delivered with documented IVR/DTMF and SMS secure/verified fallback boundaries;
+- no raw PIN, QR bearer token, credential/pass fingerprint, controller secret or provider credential is exposed;
+- security fault/denial/override-failure signals are surfaced without fabricating canonical incident cases.
+
 ## Current active build
-**Build 063 — Security & Access Operations Dashboard**
+**Build 064 — Maintenance Taxonomy & Priority Model**
 
-Status: **IMPLEMENTED — PROMOTION PENDING**
+Status: **QUEUED**
 
-Implemented on the feature branch:
-- protected campground-scoped Security & Access Operations Dashboard;
-- gate/device status with latest observed gate state and health attention summary;
-- active credential visibility without bearer-secret or fingerprint exposure;
-- recent denied-access evidence and denial reasons;
-- manual override request/outcome visibility;
-- 48-hour expiring pass watch;
-- 24-hour security signal triage from device faults, denied access and unsuccessful overrides;
-- existing icamp_app RLS identity preserved for every dashboard query;
-- no new database migration, provider, secret or paid service;
-- explicit boundary that security signals are not fabricated incident cases.
-
-Promotion evidence remains pending until feature, dev, production PR and final main gates are GREEN.
+The active queue advances to the next non-duplicative historical roadmap capability (historical Build 065):
+- maintenance categories for garbage, fire, septic, water, electrical, grounds, building and extensible service types;
+- Emergency / Urgent / Normal / Preventive priority model;
+- campground-configurable response and completion targets.
 
 ## Operating rule
 - Work primarily on `dev`.

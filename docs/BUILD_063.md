@@ -1,7 +1,7 @@
 # Build 063 — Security & Access Operations Dashboard
 
 ## Status
-**IMPLEMENTED — PROMOTION PENDING.**
+**FULLY PROMOTED — `main` GREEN.**
 
 ## Queue authority
 Build 061 consumed the historical roadmap's pass/wristband/QR scope and Build 062 consumed its credential-lifecycle scope. The active delivery queue therefore assigns the historical Build 064 dashboard capability to **active Build 063**.
@@ -52,10 +52,20 @@ Assignment, notes, escalation and resolution for canonical security incidents re
 No paid provider, new hosted service or new database object is required. The implementation uses the existing PostgreSQL access domains and the current Next.js application.
 
 ## Promotion evidence
-Pending feature, dev, production PR and final main GREEN evidence.
+- feature PR #235;
+- final feature head `331526fb2713d475cbaab481abd69f65ffc2ce02`;
+- exact `dev` merge SHA `6ed8fb82fe74cb452e03f684b4fda7a87409363a`;
+- production PR #236;
+- production feature `main` SHA `e6d337c8b117337e546a516525b600f782815a6b`;
+- final feature PR gates GREEN: CI #39191561741, CodeQL #39191561758 and Secret Scan #39191561751;
+- exact `dev` push gates GREEN: CI #39191724165, CodeQL #39191724087 and Secret Scan #39191724127;
+- production PR gates GREEN: CI #39191889545, CodeQL #39191889615 and Secret Scan #39191889577;
+- production `main` push gates GREEN: CI #39192075151, CodeQL #39192075153 and Secret Scan #39192075155;
+- Verify, Browser E2E, database compatibility, production build, TypeScript analysis and secret scanning GREEN;
+- no database migration was required for this read-only aggregation build.
 
 ## Manual action
 **None expected.**
 
-## Next build after successful promotion
-**Build 064 — Maintenance Taxonomy & Priority Model**, advancing to the next non-duplicative historical roadmap capability.
+## Next build
+**Build 064 — Maintenance Taxonomy & Priority Model**, advancing to the next non-duplicative historical roadmap capability (historical Build 065).
