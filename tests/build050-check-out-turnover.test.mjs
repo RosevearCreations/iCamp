@@ -88,6 +88,6 @@ test("Build 050 Web/PWA surface declares safe phone and SMS fallback", async () 
   assert.match(page, /SMS\/MMS/u);
   assert.match(page, /raw payment-card data/iu);
   assert.match(page, /Build\s+027/u);
-  assert.match(page, /Build\s+063/u);
+  assert.match(page, /Build\s+062/u);
   assert.match(page, /Build\s+074/u);
 });
