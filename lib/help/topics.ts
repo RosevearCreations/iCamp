@@ -461,6 +461,23 @@ export const helpTopics = {
     audience: "privileged",
     related: ["access.credentials", "access.device.registry"],
   },
+  "access.credential.lifecycle": {
+    id: "access.credential.lifecycle",
+    slug: "credential-lifecycle-check-in-check-out",
+    title: "Credential lifecycle at check-in and check-out",
+    summary:
+      "Build 062 keeps reservation access credentials aligned with arrival, stay dates, departure, cancellation and lost/replacement events.",
+    details: [
+      "Reservation credentials are provisioned only after canonical front-desk check-in and remain linked to the reservation and check-in evidence.",
+      "Campground-local checkout time plus a bounded grace period determines stay-managed credential expiry.",
+      "Checked-in stay extensions and shortenings automatically synchronize active managed credential validity and append lifecycle evidence.",
+      "Checkout and cancellation revoke active managed reservation credentials in the same canonical workflow.",
+      "Lost/replacement revokes the single lost credential, links the replacement assignment and never reuses the old credential secret.",
+      "Raw QR/PIN bearer material remains one-time output only and is never stored or written to audit metadata.",
+    ],
+    audience: "privileged",
+    related: ["access.passes"],
+  },
   "access.passes": {
     id: "access.passes",
     slug: "passes-wristbands-qr-codes",

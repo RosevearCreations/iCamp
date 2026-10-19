@@ -529,7 +529,7 @@ export default async function FrontDeskCheckOutPage({
           </p>
           <p>
             Build 027 remains the canonical cottage housekeeping engine. Build
-            063 remains the authority for actual credential revocation/lifecycle
+            062 remains the authority for actual credential revocation/lifecycle
             and Build 074 remains the authority for campsite-specific
             post-departure cleanup tasks.
           </p>

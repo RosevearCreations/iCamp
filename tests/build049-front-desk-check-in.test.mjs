@@ -109,7 +109,7 @@ test("Build 049 service revalidates live balance, capacity and manager override"
   assert.match(source, /appendAuditEvent/u);
   assert.match(source, /Build 053/u);
   assert.match(source, /Build 055/u);
-  assert.match(source, /Build 056\/063/u);
+  assert.match(source, /Build 056\/061\/062/u);
 });
 
 test("Build 049 exposes Web/PWA check-in and safe phone/SMS fallbacks", async () => {
@@ -121,5 +121,5 @@ test("Build 049 exposes Web/PWA check-in and safe phone/SMS fallbacks", async ()
   assert.match(page, /raw\s+card\s+data/iu);
   assert.match(page, /Build 053/u);
   assert.match(page, /Build 055/u);
-  assert.match(page, /Build 056\/063/u);
+  assert.match(page, /Build 056\/061\/062/u);
 });

@@ -19,7 +19,7 @@ Digital credentials store only:
 - an optional masked display hint safe for staff screens;
 - a provider reference when an external access platform owns the credential.
 
-Build 056 does not unlock gates or doors. Build 057 introduces the physical access-device registry, Build 058 records device/access events, Build 060 owns enforceable zones/schedules, Build 062 owns wristband/QR/pass validation and Build 063 owns the full arrival/departure credential lifecycle.
+Build 056 does not unlock gates or doors. Build 057 introduces the physical access-device registry, Build 058 records device/access events, Build 060 owns enforceable zones/schedules, Build 061 owns wristband/QR/pass validation and Build 062 owns the full arrival/departure credential lifecycle.
 
 ## Database
 Migration `0072_access_credential_abstraction.sql` adds:

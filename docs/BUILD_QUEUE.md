@@ -906,11 +906,11 @@ Promotion evidence:
 - final feature head `84be1df1974db1b3a40dafe8fc728f3cdd59c5c7`, exact `dev` merge SHA `3a0defceb9caae2be1964bbaf3f2e504f3dd2db3`, and production feature `main` SHA `222bec157754e99de2e8d7eb71cd3af745d95e57` passed the required GREEN gates.
 
 ## Current active build
-**Not assigned**
+**Build 062 — Credential Lifecycle at Check-In/Check-Out**
 
-Status: **AWAITING NEXT ACTIVE-QUEUE ASSIGNMENT**
+Status: **IMPLEMENTED — promotion verification in progress.**
 
-The historical roadmap remains available as planning input, but no post-061 build is inferred or renumbered automatically.
+Build 061 consumed the older roadmap's wristband/QR/pass scope. The active queue now advances to the next non-duplicative roadmap capability: reservation credential lifecycle.
 
 ## Operating rule
 - Work primarily on `dev`.

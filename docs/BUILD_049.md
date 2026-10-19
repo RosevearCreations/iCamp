@@ -29,7 +29,7 @@ Build 049 verifies and snapshots only what is needed to complete arrival safely:
 
 - **Build 053** remains the authority for road-vehicle plate/jurisdiction registration.
 - **Build 055** remains the authority for formal visitor registration and site-specific visitor records.
-- **Build 056/063** remain the authority for access credential issuance, activation, revocation and checkout return.
+- **Build 056/062** remain the authority for access credential issuance, activation, revocation and checkout return.
 - rental/store items are recorded as requested handoffs only; they are not charged, issued or fulfilled by Build 049.
 - Build 050 owns checkout and accommodation-turnover triggering.
 
