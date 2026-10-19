@@ -1,7 +1,7 @@
 # Build 062 — Credential Lifecycle at Check-In/Check-Out
 
 ## Status
-**IMPLEMENTED — promotion verification in progress.**
+**FULLY PROMOTED — `main` GREEN.**
 
 ## Queue authority
 Build 061 consumed the older roadmap's wristband/QR/pass scope. The user then requested the next queued build, so the active delivery queue advances to the next non-duplicative roadmap capability as **Build 062 — Credential Lifecycle at Check-In/Check-Out**.
@@ -94,5 +94,23 @@ Ended assignments cannot be reopened.
 ## Cost / portability
 No paid access provider, new hosted service or new secret is required.
 
+## Hosted production verification
+Supabase project `iCamp` received:
+- `20261019013014 / credential_lifecycle_checkin_checkout`.
+
+The exact Build 062 verification SQL passed against hosted PostgreSQL. Supabase Security Advisor returned zero findings. The final Performance Advisor has no Build 062 warning-level, multiple-permissive-policy or unindexed-foreign-key regression; remaining Build 062 index observations are expected INFO-level unused-index notices on newly created indexes.
+
+## Promotion evidence
+- feature PR #232;
+- final feature head `b0855d68ee02aa2bfa629426667cf3d7e9d28432` passed Verify, Browser E2E, database migrations/lifecycle/idempotence, CodeQL/JavaScript & TypeScript analysis and Gitleaks;
+- exact `dev` merge SHA `36846168730f380601441f50ee18db453c7983a1` passed the complete independent push gate set;
+- production PR #233 passed its independent pull-request gate set;
+- production feature `main` SHA `fb118fe89764d8cb0608320d3156c951e37faa5d` passed Verify, Browser E2E, database migrations/lifecycle/idempotence, CodeQL/JavaScript & TypeScript analysis and Gitleaks.
+
 ## Manual action
-**None required for source implementation.**
+**None required.**
+
+## Next build
+**Build 063 — Security & Access Operations Dashboard**
+
+Build 061 consumed the older roadmap's Build 062 pass scope and Build 062 consumed the older roadmap's Build 063 credential-lifecycle scope. The next non-duplicative roadmap capability is the older Build 064 security/access operations dashboard, advanced in the active queue as Build 063.

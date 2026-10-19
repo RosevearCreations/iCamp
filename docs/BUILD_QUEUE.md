@@ -905,12 +905,23 @@ Promotion evidence:
 - final Performance Advisor has no Build 061 warning-level, multiple-permissive-policy or unindexed-FK regression;
 - final feature head `84be1df1974db1b3a40dafe8fc728f3cdd59c5c7`, exact `dev` merge SHA `3a0defceb9caae2be1964bbaf3f2e504f3dd2db3`, and production feature `main` SHA `222bec157754e99de2e8d7eb71cd3af745d95e57` passed the required GREEN gates.
 
+### Build 062 — Credential Lifecycle at Check-In/Check-Out
+Status: **FULLY PROMOTED — `main` GREEN.**
+
+Promotion evidence:
+- feature PR #232 and production PR #233;
+- hosted migration `20261019013014 / credential_lifecycle_checkin_checkout`;
+- hosted Build 062 verification SQL passed;
+- Supabase Security Advisor: zero findings;
+- final Performance Advisor has no Build 062 warning-level, multiple-permissive-policy or unindexed-FK regression;
+- final feature head `b0855d68ee02aa2bfa629426667cf3d7e9d28432`, exact `dev` merge SHA `36846168730f380601441f50ee18db453c7983a1`, and production feature `main` SHA `fb118fe89764d8cb0608320d3156c951e37faa5d` passed the required GREEN gates.
+
 ## Current active build
-**Build 062 — Credential Lifecycle at Check-In/Check-Out**
+**Build 063 — Security & Access Operations Dashboard**
 
-Status: **IMPLEMENTED — promotion verification in progress.**
+Status: **QUEUED**
 
-Build 061 consumed the older roadmap's wristband/QR/pass scope. The active queue now advances to the next non-duplicative roadmap capability: reservation credential lifecycle.
+Build 061 consumed the older roadmap's pass scope and Build 062 consumed its credential-lifecycle scope. The active queue now advances to the next non-duplicative roadmap capability: gate/device status, active credentials, recent denied access, manual overrides, expiring passes and security incidents.
 
 ## Operating rule
 - Work primarily on `dev`.
