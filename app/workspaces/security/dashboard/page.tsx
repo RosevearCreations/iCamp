@@ -223,7 +223,9 @@ export default async function SecurityAccessDashboardPage({
                     </td>
                     <td>
                       <span className={deviceStatusClass(device.healthState)}>
-                        {device.isActive ? label(device.healthState) : "inactive"}
+                        {device.isActive
+                          ? label(device.healthState)
+                          : "inactive"}
                       </span>
                     </td>
                     <td>
@@ -262,7 +264,9 @@ export default async function SecurityAccessDashboardPage({
               <tbody>
                 {data.activeCredentials.map((credential) => (
                   <tr key={credential.id}>
-                    <td><strong>{credential.credentialNumber}</strong></td>
+                    <td>
+                      <strong>{credential.credentialNumber}</strong>
+                    </td>
                     <td>{label(credential.credentialType)}</td>
                     <td>
                       {credential.subjectLabel}
@@ -324,7 +328,9 @@ export default async function SecurityAccessDashboardPage({
             </table>
           </div>
           {data.deniedAccess.length === 0 ? (
-            <p className={styles.empty}>No denied access events are recorded.</p>
+            <p className={styles.empty}>
+              No denied access events are recorded.
+            </p>
           ) : null}
         </section>
 
@@ -359,9 +365,12 @@ export default async function SecurityAccessDashboardPage({
                     <td>
                       <span
                         className={
-                          ["failed", "rejected", "timeout", "unsupported"].includes(
-                            override.outcome,
-                          )
+                          [
+                            "failed",
+                            "rejected",
+                            "timeout",
+                            "unsupported",
+                          ].includes(override.outcome)
                             ? styles.status + " " + styles.danger
                             : styles.status
                         }
@@ -383,7 +392,9 @@ export default async function SecurityAccessDashboardPage({
         <section className="content-panel">
           <SectionHeading
             eyebrow="Expiry watch"
-            title={"Passes expiring within " + data.windows.expiringHours + " hours"}
+            title={
+              "Passes expiring within " + data.windows.expiringHours + " hours"
+            }
             id="security-dashboard-expiring"
             helpTopic="access.passes"
           />
@@ -401,7 +412,9 @@ export default async function SecurityAccessDashboardPage({
               <tbody>
                 {data.expiringPasses.map((pass) => (
                   <tr key={pass.id}>
-                    <td><strong>{pass.passNumber}</strong></td>
+                    <td>
+                      <strong>{pass.passNumber}</strong>
+                    </td>
                     <td>{label(pass.presentationKind)}</td>
                     <td>{label(pass.linkKind)}</td>
                     <td>{pass.subjectLabel}</td>
