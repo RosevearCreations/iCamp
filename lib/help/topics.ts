@@ -461,6 +461,29 @@ export const helpTopics = {
     audience: "privileged",
     related: ["access.credentials", "access.device.registry"],
   },
+  "security.access.dashboard": {
+    id: "security.access.dashboard",
+    slug: "security-access-operations-dashboard",
+    title: "Security and access operations dashboard",
+    summary:
+      "Build 063 brings device state, credentials, denied access, overrides, expiring passes and recent security signals into one protected campground view.",
+    details: [
+      "The dashboard is read-only aggregation over the existing Build 056-062 access domains; it does not create a second authorization or device-control system.",
+      "Gate/device state comes from the registry plus append-only device observations. Denied access and override outcomes remain their canonical ledger evidence.",
+      "Active credentials and expiring passes never expose raw PINs, QR bearer tokens, fingerprints, provider credentials or controller secrets.",
+      "Recent security signals are derived from device faults, denied access and unsuccessful overrides. They are not fabricated incident cases.",
+      "Manual gate commands remain the separate high-risk Build 059 path with permission, reason, recent re-authentication, rate limiting and audit.",
+      "Web/PWA is the full dashboard. IVR and SMS use verified concise summaries or secure/staff handoff for visual review.",
+    ],
+    audience: "privileged",
+    related: [
+      "access.device.registry",
+      "access.events",
+      "gate.override",
+      "access.credential.lifecycle",
+      "access.passes",
+    ],
+  },
   "access.credential.lifecycle": {
     id: "access.credential.lifecycle",
     slug: "credential-lifecycle-check-in-check-out",

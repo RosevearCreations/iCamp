@@ -58,7 +58,8 @@ This matrix cross-checks the complete iCamp vision against the restarted active 
 | Gate/barrier registry and live state | 057-058 |
 | Manual gate open/close override | 059 |
 | Access zones/schedules/rules | 060 |
-| Security incidents/dashboard | 061, 064 |
+| Security/access operations dashboard (device state, credentials, denied access, overrides, expiring passes, incident signals) | 063 active (historical 064) |
+| Canonical security incident case management | future queue assignment required |
 | Maintenance categories/work orders/roles | 065-067 |
 | Hourly/daily/weekly/monthly/seasonal maintenance | 068 |
 | Inspection templates/sign-offs | 069 |

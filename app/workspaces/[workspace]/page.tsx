@@ -153,6 +153,32 @@ export default async function WorkspacePage({
           </section>
         ) : null}
 
+        {workspace.slug === "security" ? (
+          <section
+            className="content-panel"
+            aria-labelledby="security-dashboard-heading"
+          >
+            <SectionHeading
+              eyebrow="Security operations"
+              title="Security & access operations dashboard"
+              id="security-dashboard-heading"
+              helpTopic="security.access.dashboard"
+              trailing={<span className="build-chip">Build 063</span>}
+            />
+            <p>
+              Review gate/device posture, active credentials, denied access,
+              manual overrides, expiring passes and recent security signals in
+              one campground-scoped operational view.
+            </p>
+            <Link
+              className="primary-link primary-link--dark"
+              href="/workspaces/security/dashboard"
+            >
+              Open security dashboard
+            </Link>
+          </section>
+        ) : null}
+
         <section className="content-panel" aria-labelledby="future-heading">
           <SectionHeading
             eyebrow="Purpose of this workspace"
