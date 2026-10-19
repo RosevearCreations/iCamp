@@ -120,6 +120,10 @@ At minimum:
 - emergency.broadcast
 - system.admin
 
+## Reservation credential lifecycle
+
+Build 062 binds stay-managed credentials to canonical reservation/check-in evidence. Active assignments are stay-synchronized, ended assignments cannot be reopened, checkout/cancellation revoke active credentials, and lost/replacement issues a new credential identity rather than reusing a lost secret. Public lifecycle tables FORCE RLS and deny direct `anon`/`authenticated` Data API access.
+
 ## Access pass bearer secrets
 
 Build 061 QR, printed and wristband validation identifiers are bearer credentials. iCamp generates them with cryptographically secure randomness, stores only SHA-256 fingerprints plus masked hints, never writes the raw token to PostgreSQL/audit metadata, and does not expose the pass tables directly to `anon` or `authenticated` Data API roles. Validation is server-side and does not itself authorize a gate opening; Build 060 policy and the device-control path remain separate required decisions.
