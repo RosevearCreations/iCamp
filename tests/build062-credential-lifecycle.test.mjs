@@ -106,3 +106,27 @@ test("Build 062 schema and service preserve canonical lifecycle boundaries", () 
   assert.match(service, /replaceLostReservationCredential/u);
   assert.match(service, /generatedSecretStored:\s*false/u);
 });
+
+
+test("Build 062 hooks canonical reservation workflows", () => {
+  const checkIn = fs.readFileSync(
+    new URL("../lib/front-desk-check-in/postgres.mjs", import.meta.url),
+    "utf8",
+  );
+  const checkOut = fs.readFileSync(
+    new URL("../lib/front-desk-check-out/postgres.mjs", import.meta.url),
+    "utf8",
+  );
+  const management = fs.readFileSync(
+    new URL("../lib/reservation-management/postgres.mjs", import.meta.url),
+    "utf8",
+  );
+
+  assert.match(checkIn, /provisionCheckedInReservationCredential/u);
+  assert.match(checkOut, /revokeReservationCredentialsWithClient/u);
+  assert.match(checkOut, /credentialLifecycleRevokedCount/u);
+  assert.match(management, /syncReservationCredentialValidityWithClient/u);
+  assert.match(management, /credentialLifecycleExtended/u);
+  assert.match(management, /credentialLifecycleShortened/u);
+  assert.match(management, /credentialLifecycleRevokedCount/u);
+});
