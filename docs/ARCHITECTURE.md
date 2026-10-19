@@ -210,6 +210,8 @@ Customer-facing gallery rules:
 - visitor_vehicles
 - access_credentials
 - access_credential_events
+- reservation_access_credential_assignments
+- campground_credential_lifecycle_policies
 - access_passes
 - access_pass_events
 - access_zones
