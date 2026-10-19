@@ -2,9 +2,7 @@ export const SECURITY_DASHBOARD_EXPIRY_HOURS: number;
 export const SECURITY_DASHBOARD_RECENT_HOURS: number;
 
 export type SecurityIncidentSignalKind =
-  | "device_fault"
-  | "denied_access"
-  | "override_failure";
+  "device_fault" | "denied_access" | "override_failure";
 
 export function normalizeSecurityDashboardLimit(
   value: unknown,
