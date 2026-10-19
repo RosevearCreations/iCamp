@@ -107,7 +107,6 @@ test("Build 062 schema and service preserve canonical lifecycle boundaries", () 
   assert.match(service, /generatedSecretStored:\s*false/u);
 });
 
-
 test("Build 062 hooks canonical reservation workflows", () => {
   const checkIn = fs.readFileSync(
     new URL("../lib/front-desk-check-in/postgres.mjs", import.meta.url),
