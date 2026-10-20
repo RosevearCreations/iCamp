@@ -45,7 +45,10 @@ export default async function MaintenanceTaxonomyPage({
 }: Readonly<{ searchParams: SearchParams }>) {
   const params = await searchParams;
   const path = "/workspaces/maintenance/taxonomy";
-  const session = await requireAnyCampgroundPermission("maintenance.read", path);
+  const session = await requireAnyCampgroundPermission(
+    "maintenance.read",
+    path,
+  );
   const assigned = await listAssignedCampgrounds(session.user.id);
   const allowed = await Promise.all(
     assigned.map(async (campground) => ({
@@ -153,7 +156,10 @@ export default async function MaintenanceTaxonomyPage({
             <div>
               <span>Standard categories</span>
               <strong>
-                {snapshot.categories.filter((category) => category.isStandard).length}
+                {
+                  snapshot.categories.filter((category) => category.isStandard)
+                    .length
+                }
               </strong>
             </div>
             <div>
@@ -193,7 +199,8 @@ export default async function MaintenanceTaxonomyPage({
                 </header>
                 <div className={styles.targetLine}>
                   <strong>
-                    Respond: {formatTargetMinutes(priority.targetResponseMinutes)}
+                    Respond:{" "}
+                    {formatTargetMinutes(priority.targetResponseMinutes)}
                   </strong>
                   <span>
                     Complete:{" "}
@@ -282,7 +289,8 @@ export default async function MaintenanceTaxonomyPage({
                 <header>
                   <div>
                     <p className={styles.kicker}>
-                      {category.isStandard ? "Standard" : "Custom"} · {category.code}
+                      {category.isStandard ? "Standard" : "Custom"} ·{" "}
+                      {category.code}
                     </p>
                     <h3>{category.name}</h3>
                   </div>
@@ -298,7 +306,11 @@ export default async function MaintenanceTaxonomyPage({
                       name="campgroundId"
                       value={selected.campgroundId}
                     />
-                    <input type="hidden" name="categoryId" value={category.id} />
+                    <input
+                      type="hidden"
+                      name="categoryId"
+                      value={category.id}
+                    />
                     <input
                       type="hidden"
                       name="rowVersion"
@@ -327,7 +339,10 @@ export default async function MaintenanceTaxonomyPage({
               id="custom-heading"
               helpTopic="shell.overview"
             />
-            <form action={createMaintenanceCategoryAction} className={styles.formGrid}>
+            <form
+              action={createMaintenanceCategoryAction}
+              className={styles.formGrid}
+            >
               <input
                 type="hidden"
                 name="campgroundId"
