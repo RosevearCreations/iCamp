@@ -1,8 +1,5 @@
 export type MaintenancePriorityKey =
-  | "emergency"
-  | "urgent"
-  | "normal"
-  | "preventive";
+  "emergency" | "urgent" | "normal" | "preventive";
 
 export interface MaintenanceCategoryInput {
   code: string;
