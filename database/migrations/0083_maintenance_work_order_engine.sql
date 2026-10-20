@@ -389,6 +389,11 @@ begin
     raise exception 'Build 065 work-order classification and creation evidence is immutable';
   end if;
 
+  if old.status in ('completed','cancelled')
+     and old.assigned_to_user_id is distinct from new.assigned_to_user_id then
+    raise exception 'Closed maintenance work orders cannot be reassigned';
+  end if;
+
   if new.assigned_to_user_id is not null then
     select exists (
       select 1
@@ -564,39 +569,105 @@ using (
   or icamp_private.has_campground_permission(campground_id,'maintenance.complete')
 );
 
-do $child_policies$
-declare
-  table_name text;
-begin
-  foreach table_name in array array[
-    'maintenance_work_order_notes',
-    'maintenance_work_order_media',
-    'maintenance_work_order_materials',
-    'maintenance_work_order_labor'
-  ]
-  loop
-    execute format(
-      'create policy %I_read on public.%I for select to icamp_app using (
-        icamp_private.has_campground_permission(campground_id,''maintenance.read'')
-        or icamp_private.has_campground_permission(campground_id,''maintenance.create'')
-        or icamp_private.has_campground_permission(campground_id,''maintenance.assign'')
-        or icamp_private.has_campground_permission(campground_id,''maintenance.complete'')
-      )',
-      table_name,
-      table_name
-    );
-    execute format(
-      'create policy %I_insert on public.%I for insert to icamp_app with check (
-        icamp_private.has_campground_permission(campground_id,''maintenance.create'')
-        or icamp_private.has_campground_permission(campground_id,''maintenance.assign'')
-        or icamp_private.has_campground_permission(campground_id,''maintenance.complete'')
-      )',
-      table_name,
-      table_name
-    );
-  end loop;
-end
-$child_policies$;
+create policy maintenance_work_order_notes_read
+on public.maintenance_work_order_notes
+for select
+to icamp_app
+using (
+  icamp_private.has_campground_permission(campground_id,'maintenance.read')
+  or icamp_private.has_campground_permission(campground_id,'maintenance.create')
+  or icamp_private.has_campground_permission(campground_id,'maintenance.assign')
+  or icamp_private.has_campground_permission(campground_id,'maintenance.complete')
+);
+
+create policy maintenance_work_order_notes_insert
+on public.maintenance_work_order_notes
+for insert
+to icamp_app
+with check (
+  (
+    icamp_private.has_campground_permission(campground_id,'maintenance.create')
+    or icamp_private.has_campground_permission(campground_id,'maintenance.assign')
+    or icamp_private.has_campground_permission(campground_id,'maintenance.complete')
+  )
+  and created_by_user_id =
+    nullif((select current_setting('icamp.user_id',true)),'')::uuid
+);
+
+create policy maintenance_work_order_media_read
+on public.maintenance_work_order_media
+for select
+to icamp_app
+using (
+  icamp_private.has_campground_permission(campground_id,'maintenance.read')
+  or icamp_private.has_campground_permission(campground_id,'maintenance.create')
+  or icamp_private.has_campground_permission(campground_id,'maintenance.assign')
+  or icamp_private.has_campground_permission(campground_id,'maintenance.complete')
+);
+
+create policy maintenance_work_order_media_insert
+on public.maintenance_work_order_media
+for insert
+to icamp_app
+with check (
+  (
+    icamp_private.has_campground_permission(campground_id,'maintenance.create')
+    or icamp_private.has_campground_permission(campground_id,'maintenance.assign')
+    or icamp_private.has_campground_permission(campground_id,'maintenance.complete')
+  )
+  and created_by_user_id =
+    nullif((select current_setting('icamp.user_id',true)),'')::uuid
+);
+
+create policy maintenance_work_order_materials_read
+on public.maintenance_work_order_materials
+for select
+to icamp_app
+using (
+  icamp_private.has_campground_permission(campground_id,'maintenance.read')
+  or icamp_private.has_campground_permission(campground_id,'maintenance.create')
+  or icamp_private.has_campground_permission(campground_id,'maintenance.assign')
+  or icamp_private.has_campground_permission(campground_id,'maintenance.complete')
+);
+
+create policy maintenance_work_order_materials_insert
+on public.maintenance_work_order_materials
+for insert
+to icamp_app
+with check (
+  (
+    icamp_private.has_campground_permission(campground_id,'maintenance.create')
+    or icamp_private.has_campground_permission(campground_id,'maintenance.assign')
+    or icamp_private.has_campground_permission(campground_id,'maintenance.complete')
+  )
+  and recorded_by_user_id =
+    nullif((select current_setting('icamp.user_id',true)),'')::uuid
+);
+
+create policy maintenance_work_order_labor_read
+on public.maintenance_work_order_labor
+for select
+to icamp_app
+using (
+  icamp_private.has_campground_permission(campground_id,'maintenance.read')
+  or icamp_private.has_campground_permission(campground_id,'maintenance.create')
+  or icamp_private.has_campground_permission(campground_id,'maintenance.assign')
+  or icamp_private.has_campground_permission(campground_id,'maintenance.complete')
+);
+
+create policy maintenance_work_order_labor_insert
+on public.maintenance_work_order_labor
+for insert
+to icamp_app
+with check (
+  (
+    icamp_private.has_campground_permission(campground_id,'maintenance.create')
+    or icamp_private.has_campground_permission(campground_id,'maintenance.assign')
+    or icamp_private.has_campground_permission(campground_id,'maintenance.complete')
+  )
+  and recorded_by_user_id =
+    nullif((select current_setting('icamp.user_id',true)),'')::uuid
+);
 
 comment on table public.maintenance_work_orders is
   'Build 065 canonical campground maintenance work orders reusing Build 064 category and priority authorities.';
