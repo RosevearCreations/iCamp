@@ -72,7 +72,9 @@ export async function setMaintenanceCategoryActiveAction(formData: FormData) {
   finish(campgroundId, "Maintenance category status updated.");
 }
 
-export async function updateMaintenancePriorityPolicyAction(formData: FormData) {
+export async function updateMaintenancePriorityPolicyAction(
+  formData: FormData,
+) {
   const campgroundId = field(formData, "campgroundId");
   const session = await requireCampgroundPermission(
     campgroundId,
