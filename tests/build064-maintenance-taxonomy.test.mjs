@@ -104,7 +104,10 @@ test("Build 064 schema preserves RLS, canonical seeds and no-delete posture", ()
   );
 
   assert.match(migration, /create table public\.maintenance_categories/u);
-  assert.match(migration, /create table public\.maintenance_priority_policies/u);
+  assert.match(
+    migration,
+    /create table public\.maintenance_priority_policies/u,
+  );
   assert.match(migration, /force row level security/iu);
   assert.match(migration, /campgrounds_seed_maintenance_taxonomy/u);
   assert.match(migration, /'garbage'/u);
