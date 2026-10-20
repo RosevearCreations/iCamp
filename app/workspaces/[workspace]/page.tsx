@@ -153,6 +153,32 @@ export default async function WorkspacePage({
           </section>
         ) : null}
 
+        {workspace.slug === "maintenance" ? (
+          <section
+            className="content-panel"
+            aria-labelledby="maintenance-taxonomy-heading"
+          >
+            <SectionHeading
+              eyebrow="Maintenance foundation"
+              title="Taxonomy & priority targets"
+              id="maintenance-taxonomy-heading"
+              helpTopic="shell.overview"
+              trailing={<span className="build-chip">Build 064</span>}
+            />
+            <p>
+              Configure standard and custom maintenance categories plus
+              Emergency, Urgent, Normal and Preventive response/completion
+              planning targets for this campground.
+            </p>
+            <Link
+              className="primary-link primary-link--dark"
+              href="/workspaces/maintenance/taxonomy"
+            >
+              Open maintenance taxonomy
+            </Link>
+          </section>
+        ) : null}
+
         {workspace.slug === "security" ? (
           <section
             className="content-panel"
