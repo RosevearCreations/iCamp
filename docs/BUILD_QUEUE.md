@@ -930,15 +930,31 @@ Promotion evidence:
 - no raw PIN, QR bearer token, credential/pass fingerprint, controller secret or provider credential is exposed;
 - security fault/denial/override-failure signals are surfaced without fabricating canonical incident cases.
 
+### Build 064 — Maintenance Taxonomy & Priority Model
+Status: **FULLY PROMOTED — `main` GREEN.**
+
+Promotion evidence:
+- feature PR #239 and production PR #240;
+- final feature head `ebeed8af1d95b99d454f2c444a0847108147d94a`;
+- exact `dev` merge SHA `ccf41c424a9d1594bb8da1ed8b2ac42ead907e64`;
+- production feature `main` SHA `dbebcdb8d8a02306a8be72ffe486c9ed2a36e4c6`;
+- hosted migration `20261020163500 / maintenance_taxonomy_priority_model`;
+- hosted Build 064 verification SQL passed;
+- Supabase Security Advisor: zero findings;
+- Performance Advisor: no Build 064 warning/error regression; only expected INFO-level unused-index notices;
+- feature, `dev`, production PR and production `main` gates passed Verify, Browser E2E, database lifecycle/idempotence, CodeQL/TypeScript analysis and Gitleaks.
+
 ## Current active build
-**Build 064 — Maintenance Taxonomy & Priority Model**
+**Build 065 — Work Order Engine**
 
 Status: **QUEUED**
 
-The active queue advances to the next non-duplicative historical roadmap capability (historical Build 065):
-- maintenance categories for garbage, fire, septic, water, electrical, grounds, building and extensible service types;
-- Emergency / Urgent / Normal / Preventive priority model;
-- campground-configurable response and completion targets.
+The active queue advances to the next non-duplicative historical roadmap capability (historical Build 066):
+- canonical maintenance work orders linked to location, operational asset and/or accommodation;
+- assignment and status lifecycle;
+- notes and secure media evidence;
+- material and labour tracking;
+- completion evidence that reuses the Build 064 category and priority authorities.
 
 ## Operating rule
 - Work primarily on `dev`.

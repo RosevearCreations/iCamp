@@ -1,7 +1,7 @@
 # Build 064 — Maintenance Taxonomy & Priority Model
 
 ## Status
-**IMPLEMENTED — PROMOTION PENDING.**
+**FULLY PROMOTED — `main` GREEN.**
 
 ## Queue authority
 Active Build 064 advances to the next non-duplicative roadmap capability after the Build 063 security dashboard. It implements the historical roadmap's Build 065 maintenance taxonomy and priority foundation.
@@ -63,10 +63,24 @@ No paid service, new hosted project, external provider, secret or runtime depend
 ## Verification
 - unit/static tests cover required standard categories, custom-code validation, priority ordering, target validation and no-delete/RLS migration posture;
 - migration verification checks both tables, forced RLS, Data API denial, canonical seed function/trigger and required policies;
-- promotion evidence will be recorded after feature, `dev`, production PR and final `main` gates are GREEN.
+- hosted Supabase migration `20261020163500 / maintenance_taxonomy_priority_model` applied successfully;
+- hosted Build 064 verification SQL passed;
+- Supabase Security Advisor returned zero findings;
+- final Performance Advisor had no Build 064 warning/error regression; only expected INFO-level unused-index notices were present.
+
+## Promotion evidence
+- feature PR #239;
+- final feature head `ebeed8af1d95b99d454f2c444a0847108147d94a`;
+- final feature gates GREEN: CI #39453292313, CodeQL #39453292372 and Secret Scan #39453292336;
+- exact `dev` merge SHA `ccf41c424a9d1594bb8da1ed8b2ac42ead907e64`;
+- independent `dev` push gates GREEN: CI #39458393757, CodeQL #39458393802 and Secret Scan #39458393888;
+- production PR #240 gates GREEN: CI #39458796579, CodeQL #39458796491 and Secret Scan #39458796841;
+- production feature `main` SHA `dbebcdb8d8a02306a8be72ffe486c9ed2a36e4c6`;
+- independent production `main` push gates GREEN: CI #39459097310, CodeQL #39459097363 and Secret Scan #39459097263;
+- Verify, Browser E2E, database migrations/lifecycle/idempotence, production build, dependency audit, CodeQL/TypeScript analysis and Gitleaks all GREEN.
 
 ## Manual action
-**None expected.**
+**None required.**
 
-## Next build after successful promotion
+## Next build
 **Build 065 — Work Order Engine**, advancing the historical roadmap's Build 066 capability.
