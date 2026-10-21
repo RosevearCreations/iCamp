@@ -80,6 +80,9 @@ At minimum:
 - inspection.perform
 - inspection.signoff
 - inspection.template.manage
+- aquatics.read
+- aquatics.manage
+- aquatics.reopen
 - seasonal.manage
 - winterization.signoff
 - permanent_unit.manage
