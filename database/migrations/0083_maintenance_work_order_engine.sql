@@ -161,6 +161,10 @@ create table public.maintenance_work_orders (
     )
 );
 
+alter table public.maintenance_work_orders
+  add constraint maintenance_work_orders_scope_id_unique
+  unique (organization_id, campground_id, id);
+
 create table public.maintenance_work_order_status_events (
   id uuid primary key default gen_random_uuid(),
   organization_id uuid not null,
@@ -289,10 +293,6 @@ create table public.maintenance_work_order_labor (
     on update cascade
     on delete restrict
 );
-
-alter table public.maintenance_work_orders
-  add constraint maintenance_work_orders_scope_id_unique
-  unique (organization_id, campground_id, id);
 
 create index maintenance_work_orders_scope_status_priority_idx
   on public.maintenance_work_orders(
