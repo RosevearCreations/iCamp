@@ -115,3 +115,18 @@ export function processMaintenanceScheduleJob(
   workOrderId: string | null;
   duplicate: boolean;
 }>;
+
+export function runMaintenanceSchedulerCycle(input: {
+  schedulerId: string;
+  workerId: string;
+  scheduleLimit?: number;
+  jobLimit?: number;
+}): Promise<{
+  schedulerId: string;
+  workerId: string;
+  dueSchedulesFound: number;
+  jobsEnqueued: number;
+  jobsClaimed: number;
+  jobsCompleted: number;
+  jobsFailed: number;
+}>;
