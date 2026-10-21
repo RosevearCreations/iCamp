@@ -157,6 +157,29 @@ export default async function WorkspacePage({
           <>
             <section
               className="content-panel"
+              aria-labelledby="maintenance-foreman-heading"
+            >
+              <SectionHeading
+                eyebrow="Maintenance leadership"
+                title="Foreman queue & escalation"
+                id="maintenance-foreman-heading"
+                helpTopic="shell.overview"
+                trailing={<span className="build-chip">Build 066</span>}
+              />
+              <p>
+                Triage active work, assign within crew/foreman responsibility
+                boundaries, and manage blocked, overdue and high-priority
+                escalation.
+              </p>
+              <Link
+                className="primary-link primary-link--dark"
+                href="/workspaces/maintenance/foreman"
+              >
+                Open foreman queue
+              </Link>
+            </section>
+            <section
+              className="content-panel"
               aria-labelledby="maintenance-work-orders-heading"
             >
               <SectionHeading
