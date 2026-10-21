@@ -407,7 +407,12 @@ security definer
 set search_path = ''
 as $$
 declare
-  s public.maintenance_schedules%rowtype;
+  recurrence_kind_value text;
+  interval_value_value integer;
+  month_day_value smallint;
+  season_month_value smallint;
+  season_day_value smallint;
+  first_occurrence_local_value timestamp without time zone;
   timezone_name text;
   local_after timestamp without time zone;
   local_clock time without time zone;
@@ -417,8 +422,22 @@ declare
   next_year integer;
   season_start date;
 begin
-  select ms, c.timezone
-    into s, timezone_name
+  select
+    ms.recurrence_kind,
+    ms.interval_value,
+    ms.month_day,
+    ms.season_month,
+    ms.season_day,
+    ms.first_occurrence_local,
+    c.timezone
+  into
+    recurrence_kind_value,
+    interval_value_value,
+    month_day_value,
+    season_month_value,
+    season_day_value,
+    first_occurrence_local_value,
+    timezone_name
   from public.maintenance_schedules ms
   join public.campgrounds c
     on c.id = ms.campground_id
@@ -430,13 +449,14 @@ begin
   end if;
 
   local_after := p_after at time zone timezone_name;
-  local_clock := s.first_occurrence_local::time;
+  local_clock := first_occurrence_local_value::time;
 
-  case s.recurrence_kind
+  case recurrence_kind_value
     when 'hourly' then
       candidate_local := local_after + interval '1 hour';
     when 'every_n_hours' then
-      candidate_local := local_after + make_interval(hours => s.interval_value);
+      candidate_local :=
+        local_after + make_interval(hours => interval_value_value);
     when 'daily' then
       candidate_local := (local_after::date + 1) + local_clock;
     when 'weekly' then
@@ -448,21 +468,21 @@ begin
       )::integer;
       candidate_local :=
         next_month::date
-        + (least(s.month_day::integer, last_day) - 1)
+        + (least(month_day_value::integer, last_day) - 1)
         + local_clock;
     when 'seasonal' then
       next_year := extract(year from local_after)::integer + 1;
-      season_start := make_date(next_year, s.season_month::integer, 1);
+      season_start := make_date(next_year, season_month_value::integer, 1);
       last_day := extract(
         day from date_trunc('month', season_start::timestamp)
           + interval '1 month - 1 day'
       )::integer;
       candidate_local :=
         season_start
-        + (least(s.season_day::integer, last_day) - 1)
+        + (least(season_day_value::integer, last_day) - 1)
         + local_clock;
     when 'custom' then
-      return p_after + make_interval(mins => s.interval_value);
+      return p_after + make_interval(mins => interval_value_value);
     else
       raise exception 'Unsupported maintenance recurrence kind';
   end case;
