@@ -141,7 +141,9 @@ export async function addMaintenanceWorkOrderNoteAction(formData: FormData) {
   finish(campgroundId, "Maintenance note added.");
 }
 
-export async function attachMaintenanceWorkOrderMediaAction(formData: FormData) {
+export async function attachMaintenanceWorkOrderMediaAction(
+  formData: FormData,
+) {
   const campgroundId = field(formData, "campgroundId");
   const session = await requireEvidencePermission(campgroundId);
 
@@ -157,7 +159,9 @@ export async function attachMaintenanceWorkOrderMediaAction(formData: FormData) 
   finish(campgroundId, "Secure media evidence attached.");
 }
 
-export async function addMaintenanceWorkOrderMaterialAction(formData: FormData) {
+export async function addMaintenanceWorkOrderMaterialAction(
+  formData: FormData,
+) {
   const campgroundId = field(formData, "campgroundId");
   const session = await requireEvidencePermission(campgroundId);
   const unitCost = optionalField(formData, "unitCostCents");
