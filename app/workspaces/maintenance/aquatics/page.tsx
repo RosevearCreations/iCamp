@@ -237,11 +237,11 @@ export default async function AquaticsPage({
             helpTopic="shell.overview"
           />
           <p className={styles.boundary}>
-            Each program binds one Pool/Water-Park asset to one active Build
-            067 recurring maintenance schedule and one active Build 068
-            inspection template whose current version requires independent
-            sign-off. No second scheduler, checklist engine or operating-state
-            model is created here.
+            Each program binds one Pool/Water-Park asset to one active Build 067
+            recurring maintenance schedule and one active Build 068 inspection
+            template whose current version requires independent sign-off. No
+            second scheduler, checklist engine or operating-state model is
+            created here.
           </p>
 
           {workspace.facilities.length === 0 ? (
@@ -388,9 +388,9 @@ export default async function AquaticsPage({
                         <strong>Configuration prerequisite</strong>
                         <p>
                           This facility needs an active independent-signoff
-                          inspection template and an active recurring maintenance
-                          schedule before an aquatic operating program can be
-                          activated.
+                          inspection template and an active recurring
+                          maintenance schedule before an aquatic operating
+                          program can be activated.
                         </p>
                         <div className={styles.actions}>
                           <Link
@@ -448,12 +448,14 @@ export default async function AquaticsPage({
                   </div>
 
                   <p>
-                    Inspection: <strong>{program.inspectionTemplateName}</strong>{" "}
-                    v{program.inspectionVersionNumber}
+                    Inspection:{" "}
+                    <strong>{program.inspectionTemplateName}</strong> v
+                    {program.inspectionVersionNumber}
                   </p>
                   <p>
-                    Schedule: <strong>{program.maintenanceScheduleTitle}</strong>{" "}
-                    · {titleCase(program.recurrenceKind)}
+                    Schedule:{" "}
+                    <strong>{program.maintenanceScheduleTitle}</strong> ·{" "}
+                    {titleCase(program.recurrenceKind)}
                   </p>
                   <p>
                     Next check:{" "}
