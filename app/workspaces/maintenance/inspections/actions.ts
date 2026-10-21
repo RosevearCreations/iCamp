@@ -109,7 +109,9 @@ export async function setInspectionTemplateActiveAction(formData: FormData) {
 
   finish(
     campgroundId,
-    isActive ? "Inspection template activated." : "Inspection template deactivated.",
+    isActive
+      ? "Inspection template activated."
+      : "Inspection template deactivated.",
   );
 }
 
