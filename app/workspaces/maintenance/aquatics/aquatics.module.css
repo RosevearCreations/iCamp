@@ -1,0 +1,159 @@
+.notice {
+  border: 1px solid var(--border-strong);
+  border-radius: 0.9rem;
+  padding: 0.9rem 1rem;
+  background: var(--surface-soft);
+}
+
+.selector,
+.formGrid,
+.decisionGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.field {
+  display: grid;
+  gap: 0.4rem;
+  min-width: 0;
+}
+
+.field span {
+  font-weight: 700;
+}
+
+.field input,
+.field select,
+.field textarea,
+.selector select {
+  width: 100%;
+}
+
+.field textarea {
+  min-height: 5.5rem;
+  resize: vertical;
+}
+
+.full {
+  grid-column: 1 / -1;
+}
+
+.actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  align-items: end;
+}
+
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+  gap: 0.9rem;
+}
+
+.metrics div,
+.facilityCard,
+.programCard,
+.evidenceRow,
+.decisionRow,
+.callout {
+  border: 1px solid var(--border);
+  border-radius: 0.9rem;
+  padding: 0.9rem;
+}
+
+.metrics div {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.metrics span,
+.kicker {
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.facilityGrid,
+.programGrid,
+.history {
+  display: grid;
+  gap: 1rem;
+}
+
+.facilityGrid,
+.programGrid {
+  grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
+}
+
+.facilityCard,
+.programCard,
+.evidenceRow,
+.decisionRow,
+.callout {
+  display: grid;
+  gap: 0.75rem;
+  align-content: start;
+}
+
+.cardHeader,
+.evidenceRow,
+.decisionRow {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: start;
+}
+
+.cardHeader h3,
+.cardHeader p,
+.programCard p,
+.evidenceRow p,
+.decisionRow p,
+.callout p {
+  margin: 0;
+}
+
+.state {
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 0.25rem 0.55rem;
+  white-space: nowrap;
+  font-size: 0.82rem;
+}
+
+.boundary {
+  max-width: 84ch;
+}
+
+.help,
+.empty {
+  opacity: 0.78;
+}
+
+.help {
+  font-size: 0.9rem;
+}
+
+.warning {
+  font-weight: 700;
+}
+
+@media (max-width: 760px) {
+  .selector,
+  .formGrid,
+  .decisionGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .full {
+    grid-column: auto;
+  }
+
+  .cardHeader,
+  .evidenceRow,
+  .decisionRow {
+    flex-direction: column;
+  }
+}
