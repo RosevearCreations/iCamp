@@ -94,10 +94,7 @@ test("Build 067 migration reuses Build 007 and Build 065 authorities", () => {
 
 test("Build 067 service provides durable occurrence materialization and worker orchestration", () => {
   const service = fs.readFileSync(
-    new URL(
-      "../lib/maintenance-scheduler/postgres.mjs",
-      import.meta.url,
-    ),
+    new URL("../lib/maintenance-scheduler/postgres.mjs", import.meta.url),
     "utf8",
   );
 
@@ -109,7 +106,10 @@ test("Build 067 service provides durable occurrence materialization and worker o
   assert.match(service, /maintenance_work_orders/u);
   assert.match(service, /schedule\.missed_window/u);
   assert.match(service, /schedule\.stale_occurrence/u);
-  assert.match(service, /earlier recurring-maintenance occurrence is still pending/iu);
+  assert.match(
+    service,
+    /earlier recurring-maintenance occurrence is still pending/iu,
+  );
   assert.match(service, /runMaintenanceSchedulerCycle/u);
 });
 
