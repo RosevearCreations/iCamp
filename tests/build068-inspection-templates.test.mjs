@@ -12,11 +12,7 @@ import {
 
 test("Build 068 exposes asset, site and cottage inspection targets", () => {
   assert.deepEqual(inspectionTargetKinds, ["asset", "site", "cottage"]);
-  assert.deepEqual(inspectionResultValues, [
-    "pass",
-    "fail",
-    "not_applicable",
-  ]);
+  assert.deepEqual(inspectionResultValues, ["pass", "fail", "not_applicable"]);
 });
 
 test("Build 068 checklist parsing produces stable unique item keys", () => {
@@ -97,14 +93,14 @@ test("Build 068 schema enforces immutable versions and independent sign-off", ()
   }
 
   assert.match(migration, /inspection\.template\.manage/u);
-  assert.match(migration, /Published inspection template versions are immutable/u);
+  assert.match(
+    migration,
+    /Published inspection template versions are immutable/u,
+  );
   assert.match(migration, /Inspector cannot sign off their own inspection/u);
   assert.match(migration, /force row level security/iu);
   assert.match(migration, /references public\.maintenance_work_orders/iu);
-  assert.doesNotMatch(
-    migration,
-    /grant[^;]*delete[^;]*inspection_/iu,
-  );
+  assert.doesNotMatch(migration, /grant[^;]*delete[^;]*inspection_/iu);
   assert.match(migration, /inspection_corrective_actions_work_order_fk/u);
 });
 
