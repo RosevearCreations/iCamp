@@ -1,7 +1,7 @@
 # Build 068 — Versioned Inspection Templates & Sign-Off
 
 ## Status
-**IMPLEMENTED — PROMOTION PENDING.**
+**FULLY PROMOTED — `main` GREEN.**
 
 ## Queue authority
 Build 068 advances the active maintenance roadmap after Build 067 and implements the historical roadmap's Build 069 versioned-inspection capability.
@@ -116,7 +116,19 @@ Build 068 does **not** create:
 - PostgreSQL verification checks all Build 068 tables, forced RLS, no-delete posture, append-only evidence and lifecycle guards;
 - CI applies migration history on PostgreSQL 17 and performs idempotent replay;
 - Browser E2E, formatter, lint, TypeScript, tests, production build, dependency audit, CodeQL and Gitleaks must be GREEN before promotion;
-- hosted Supabase migration/verification and Security/Performance Advisors will be checked before `main`.
+- final feature head `ac9325e626d75b630de2a2bf438a097167dd4f1b` passed CI #39539231528, CodeQL #39539231510 and Secret Scan #39539231518;
+- feature PR #252 merged to `dev` at `9e550303fa044529e11737dff97cba73f520f02a`;
+- independent feature `dev` push passed CI #39539536456, CodeQL #39539536457 and Secret Scan #39539536473;
+- hosted migration `20261021033954 / versioned_inspection_templates_signoff` applied successfully and exact Build 068 verification SQL passed;
+- Supabase Security Advisor returned zero findings;
+- the initial Build 068 INFO-level unindexed-FK finding on `inspection_signoffs` was corrected by advisor-hardening PR #253;
+- advisor-hardening head `f0ada7dbcae3f7f4a3b731eed267ac667ff41c3d` passed CI #39539868092, CodeQL #39539868193 and Secret Scan #39539868184;
+- hardened `dev` candidate `db823f7efd33a7de75594752eecd15bcaf3d57df` passed independent CI #39540094205, CodeQL #39540094233 and Secret Scan #39540094215;
+- hosted hardening migration `20261021034526 / build068_advisor_hardening` and its exact verification SQL passed;
+- post-hardening Supabase Security Advisor remained at zero findings and Build 068 unindexed-foreign-key findings were reduced to zero; only project-wide INFO-level unused-index notices remained;
+- production PR #254 passed CI #39540351126, CodeQL #39540351165 and Secret Scan #39540351220;
+- production feature `main` SHA `b473656d6d9419ac7b9777a22d05fcc640309d31` independently passed CI #39540567345, CodeQL #39540567377 and Secret Scan #39540567402;
+- Verify, Browser E2E, PostgreSQL migration/lifecycle/idempotence, production build, dependency audit, CodeQL and Gitleaks were GREEN at the production feature checkpoint.
 
 ## Cost / infrastructure
 No paid service, new hosted project, provider, secret, Worker, D1 database, R2 bucket or Vercel project is required.
