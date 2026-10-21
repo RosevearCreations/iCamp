@@ -1,7 +1,7 @@
 # Build 069 — Pool & Water-Park Maintenance Operations
 
 ## Status
-**IMPLEMENTED — PROMOTION PENDING.**
+**FULLY PROMOTED — `main` GREEN.**
 
 ## Queue authority
 Build 069 advances the active maintenance roadmap after Build 068 and implements the historical roadmap's Build 070 pool/water-park operational capability.
@@ -127,8 +127,15 @@ Build 069 does **not** create:
 - core tests cover Pool/Water-Park types, public-state mapping, program validation and operating-decision reason rules;
 - static tests verify reuse of Build 030/065/067/068 authorities and safety guards;
 - PostgreSQL verification checks forced RLS, high-risk reopening permission, no-delete posture and append-only evidence;
-- CI must pass formatter, lint, TypeScript, tests, production build, dependency audit, Browser E2E, PostgreSQL migration history/idempotence, CodeQL and Gitleaks;
-- hosted Supabase migration, exact verification SQL and Security/Performance Advisor checks are required before production promotion.
+- final feature head `145b879c44322ec6e676c206df601851bd8e61ec` passed CI #39599664955, CodeQL #39599665076 and Secret Scan #39599664924;
+- feature PR #256 merged to `dev` at `6231e7eafa29913647e3dedd9ba241c714838be1`;
+- independent `dev` push passed CI #39599993034, CodeQL #39599992990 and Secret Scan #39599992980;
+- hosted migration `20261021123137 / pool_waterpark_maintenance_operations` applied successfully and exact Build 069 verification SQL passed;
+- Supabase Security Advisor returned zero findings;
+- Build 069 had zero unindexed-foreign-key findings; Performance Advisor reported only expected INFO-level unused-index notices on newly created aquatic indexes;
+- production PR #257 passed CI #39600377554, CodeQL #39600377505 and Secret Scan #39600377755;
+- production feature `main` SHA `94856870eb9139f5a9fc2fb400b6451ed1a82783` independently passed CI #39600722731, CodeQL #39600723132 and Secret Scan #39600722794;
+- Verify, Browser E2E, PostgreSQL migration/lifecycle/idempotence, production build, dependency audit, CodeQL and Gitleaks were GREEN at the production feature checkpoint.
 
 ## Cost / infrastructure
 No paid service, new hosted project, queue provider, Worker, D1 database, R2 bucket, Vercel project or new secret is required.

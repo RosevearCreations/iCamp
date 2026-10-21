@@ -1004,17 +1004,32 @@ Promotion evidence:
 - Verify, Browser E2E, database lifecycle/idempotence, production build and dependency audit GREEN;
 - future graphical/style work is explicitly gated on the documented standard multi-theme semantic-token ruleset.
 
+### Build 069 — Pool & Water-Park Maintenance Operations
+Status: **FULLY PROMOTED — `main` GREEN.**
+
+Promotion evidence:
+- feature PR #256 and production PR #257;
+- hosted migration `20261021123137 / pool_waterpark_maintenance_operations`;
+- hosted Build 069 verification SQL passed;
+- Supabase Security Advisor: zero findings;
+- Build 069 unindexed-foreign-key findings: zero; only expected INFO-level unused-index notices remain;
+- final feature head `145b879c44322ec6e676c206df601851bd8e61ec`;
+- exact production-candidate `dev` SHA `6231e7eafa29913647e3dedd9ba241c714838be1`;
+- production feature `main` SHA `94856870eb9139f5a9fc2fb400b6451ed1a82783`;
+- production `main` independently passed CI #39600722731, CodeQL #39600723132 and Secret Scan #39600722794;
+- Verify, Browser E2E, database lifecycle/idempotence, production build and dependency audit GREEN;
+- the future multi-theme graphical/style prerequisite remains unchanged and binding.
+
 ## Current active build
-**Build 069 — Pool & Water-Park Maintenance Operations**
+**Build 070 — Washroom, Shower & Laundry Upkeep**
 
 Status: **QUEUED**
 
-The active queue advances to the next non-duplicative maintenance capability (historical Build 070):
-- recurring pool and water-park operational checks;
-- operating/open/limited/closed state and management visibility;
-- inspection and maintenance evidence;
-- safety-sensitive sign-off and closure/reopen hooks;
-- reuse of Build 065 work orders, Build 066 responsibility/escalation, Build 067 scheduling and Build 068 versioned inspections rather than creating duplicate authorities.
+The active queue advances to the next non-duplicative maintenance capability (historical Build 071):
+- scheduled washroom, shower and laundry cleaning/inspection;
+- supply and operating-status visibility;
+- issue escalation and corrective closure;
+- reuse of Build 065 work orders, Build 066 foreman/escalation, Build 067 scheduling, Build 068 inspections and Build 030 asset status rather than creating duplicate authorities.
 
 ## Operating rule
 - Work primarily on `dev`.
