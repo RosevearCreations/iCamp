@@ -43,6 +43,7 @@ export interface MaintenanceWorkOrderBoard {
     completionSummary: string | null;
     cancelledAt: string | null;
     cancellationReason: string | null;
+    isPastCompletionTarget: boolean;
     rowVersion: number;
     createdAt: string;
     updatedAt: string;
