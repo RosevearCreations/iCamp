@@ -959,17 +959,32 @@ Promotion evidence:
 - production `main` independently passed CI #39520285693, CodeQL #39520285652 and Secret Scan #39520285684;
 - Verify, Browser E2E, database lifecycle/idempotence, production build and dependency audit GREEN.
 
+### Build 066 — Maintenance Roles, Foreman Queue & Escalation
+Status: **FULLY PROMOTED — `main` GREEN.**
+
+Promotion evidence:
+- feature PR #246 and production PR #247;
+- hosted migration `20261021005246 / maintenance_roles_foreman_escalation`;
+- hosted Build 066 verification SQL passed;
+- Supabase Security Advisor: zero findings;
+- Build 066 unindexed-foreign-key findings: zero; only expected INFO-level unused-index notices remain;
+- final feature head `06fabfb2a9d6066eecf82b973d7b8931d96f7cbc`;
+- exact production-candidate `dev` SHA `39e635dcb2a4261e945c7576e98e406e75569a69`;
+- production feature `main` SHA `5e43374ce4b25aeb42908e2c587330caccb5fb7b`;
+- production `main` independently passed CI #39524236466, CodeQL #39524236470 and Secret Scan #39524236488;
+- Verify, Browser E2E, database lifecycle/idempotence, production build and dependency audit GREEN.
+
 ## Current active build
-**Build 066 — Maintenance Roles, Foreman Queue & Escalation**
+**Build 067 — Recurring Maintenance Scheduler**
 
 Status: **QUEUED**
 
-The active queue advances to the next non-duplicative maintenance capability (historical Build 067):
-- maintenance crew, foreman, main-foreman and management responsibility model over existing authorization;
-- foreman work-order queue and triage views;
-- assignment authority boundaries and escalation rules;
-- overdue, blocked and high-priority escalation handling;
-- reuse of the Build 065 canonical work-order engine without creating duplicate work-order or maintenance-taxonomy authorities.
+The active queue advances to the next non-duplicative maintenance capability (historical Build 068):
+- recurring hourly, every-N-hours, daily, weekly, monthly, seasonal and custom maintenance schedules;
+- reuse of the Build 007 scheduler/background-job authority;
+- discrete maintenance occurrence history tied to canonical Build 065 work orders;
+- overdue and missed occurrence handling;
+- no duplicate scheduler, taxonomy, work-order or foreman/escalation authority.
 
 ## Operating rule
 - Work primarily on `dev`.
