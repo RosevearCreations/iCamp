@@ -107,9 +107,7 @@ export function materializeMaintenanceOccurrence(input: {
   duplicate: boolean;
 }>;
 
-export function processMaintenanceScheduleJob(
-  job: BackgroundJob,
-): Promise<{
+export function processMaintenanceScheduleJob(job: BackgroundJob): Promise<{
   occurrenceId: string;
   state: string;
   workOrderId: string | null;
