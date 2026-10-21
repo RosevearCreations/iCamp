@@ -126,9 +126,8 @@ export default async function MaintenanceWorkOrdersPage({
     (workOrder) =>
       workOrder.status !== "completed" && workOrder.status !== "cancelled",
   );
-  const now = Date.now();
   const overdueOrders = activeOrders.filter(
-    (workOrder) => new Date(workOrder.completionDueAt).getTime() < now,
+    (workOrder) => workOrder.isPastCompletionTarget,
   );
   const highPriorityOrders = activeOrders.filter((workOrder) =>
     ["emergency", "urgent"].includes(workOrder.priorityKey),
@@ -341,9 +340,7 @@ export default async function MaintenanceWorkOrdersPage({
                 const closed = ["completed", "cancelled"].includes(
                   workOrder.status,
                 );
-                const overdue =
-                  !closed &&
-                  new Date(workOrder.completionDueAt).getTime() < now;
+                const overdue = workOrder.isPastCompletionTarget;
                 return (
                   <article className={styles.card} key={workOrder.id}>
                     <header>
