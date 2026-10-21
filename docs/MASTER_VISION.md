@@ -108,7 +108,7 @@ Themes may change presentation tokens such as palette, typography, spacing, surf
 - weaken required contrast or reduced-motion support;
 - fork page markup into theme-specific copies.
 
-Future graphical/style work must consume reusable semantic tokens and component primitives so campground tenants can eventually select from multiple themes without redesigning the application.
+Future graphical/style work must consume reusable semantic tokens and component primitives so campground tenants can eventually select from multiple themes without redesigning the application. Business/domain markup must remain theme-independent.
 
 ## 5. Campsites, cottages and accommodation inventory
 
