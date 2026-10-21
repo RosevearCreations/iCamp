@@ -4,9 +4,7 @@ export type AquaticPublicState = "open" | "limited" | "closed";
 export const aquaticFacilityTypes: readonly AquaticFacilityType[];
 export const aquaticPublicStates: readonly AquaticPublicState[];
 
-export function validateAquaticFacilityType(
-  value: string,
-): AquaticFacilityType;
+export function validateAquaticFacilityType(value: string): AquaticFacilityType;
 
 export function validateAquaticPublicState(value: string): AquaticPublicState;
 
