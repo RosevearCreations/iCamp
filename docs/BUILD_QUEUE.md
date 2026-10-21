@@ -944,17 +944,32 @@ Promotion evidence:
 - Performance Advisor: no Build 064 warning/error regression; only expected INFO-level unused-index notices;
 - feature, `dev`, production PR and production `main` gates passed Verify, Browser E2E, database lifecycle/idempotence, CodeQL/TypeScript analysis and Gitleaks.
 
+### Build 065 — Work Order Engine
+Status: **FULLY PROMOTED — `main` GREEN.**
+
+Promotion evidence:
+- feature PR #242 and advisor-hardening PR #243;
+- hosted migrations `20261021000714 / maintenance_work_order_engine` and `20261021001253 / build065_advisor_hardening`;
+- hosted Build 065 and advisor-hardening verification SQL passed;
+- Supabase Security Advisor: zero findings;
+- the initial 11 Build 065 unindexed scoped foreign-key INFO findings were resolved; final Build 065 unindexed-FK findings: zero;
+- final production candidate `dev` SHA `32e5b32b209a929765ff34caff3a8726b415dbe8`;
+- production PR #244;
+- production feature `main` SHA `3cdbcf01b1591f2da7b3f3db1f83026dab4b5bc2`;
+- production `main` independently passed CI #39520285693, CodeQL #39520285652 and Secret Scan #39520285684;
+- Verify, Browser E2E, database lifecycle/idempotence, production build and dependency audit GREEN.
+
 ## Current active build
-**Build 065 — Work Order Engine**
+**Build 066 — Maintenance Roles, Foreman Queue & Escalation**
 
 Status: **QUEUED**
 
-The active queue advances to the next non-duplicative historical roadmap capability (historical Build 066):
-- canonical maintenance work orders linked to location, operational asset and/or accommodation;
-- assignment and status lifecycle;
-- notes and secure media evidence;
-- material and labour tracking;
-- completion evidence that reuses the Build 064 category and priority authorities.
+The active queue advances to the next non-duplicative maintenance capability (historical Build 067):
+- maintenance crew, foreman, main-foreman and management responsibility model over existing authorization;
+- foreman work-order queue and triage views;
+- assignment authority boundaries and escalation rules;
+- overdue, blocked and high-priority escalation handling;
+- reuse of the Build 065 canonical work-order engine without creating duplicate work-order or maintenance-taxonomy authorities.
 
 ## Operating rule
 - Work primarily on `dev`.
