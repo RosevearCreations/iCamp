@@ -157,6 +157,29 @@ export default async function WorkspacePage({
           <>
             <section
               className="content-panel"
+              aria-labelledby="maintenance-schedules-heading"
+            >
+              <SectionHeading
+                eyebrow="Maintenance automation"
+                title="Recurring Maintenance Scheduler"
+                id="maintenance-schedules-heading"
+                helpTopic="shell.overview"
+                trailing={<span className="build-chip">Build 067</span>}
+              />
+              <p>
+                Create hourly, every-N-hours, daily, weekly, monthly, seasonal
+                and custom maintenance schedules with discrete occurrence
+                history and missed-task handling.
+              </p>
+              <Link
+                className="primary-link primary-link--dark"
+                href="/workspaces/maintenance/schedules"
+              >
+                Open recurring maintenance
+              </Link>
+            </section>
+            <section
+              className="content-panel"
               aria-labelledby="maintenance-foreman-heading"
             >
               <SectionHeading
