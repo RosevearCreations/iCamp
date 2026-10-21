@@ -9,7 +9,7 @@ import {
   hasCampgroundPermission,
   listAssignedCampgrounds,
 } from "@/lib/authz/postgres.mjs";
-import { requireAnyCampgroundPermission } from "@/lib/authz/current-user";
+import { requireStaff } from "@/lib/auth/current-session";
 import {
   formatInspectionStatus,
   formatInspectionTargetKind,
@@ -69,10 +69,7 @@ export default async function InspectionWorkspacePage({
 }: Readonly<{ searchParams: SearchParams }>) {
   const params = await searchParams;
   const path = "/workspaces/maintenance/inspections";
-  const session = await requireAnyCampgroundPermission(
-    "inspection.perform",
-    path,
-  );
+  const session = await requireStaff(path);
   const assigned = await listAssignedCampgrounds(session.user.id);
   const checked = await Promise.all(
     assigned.map(async (campground) => {
@@ -333,7 +330,9 @@ export default async function InspectionWorkspacePage({
                     name="itemsText"
                     minLength={1}
                     required
-                    placeholder={"Check enclosure condition\nCheck electrical connection\nCheck safety signage"}
+                    placeholder={
+                      "Check enclosure condition\nCheck electrical connection\nCheck safety signage"
+                    }
                   />
                 </label>
                 <label>
@@ -517,13 +516,14 @@ export default async function InspectionWorkspacePage({
                     <ul className={styles.historyList}>
                       {template.versions.map((version) => (
                         <li key={version.id}>
-                          v{version.versionNumber} · {version.items.length} items
-                          ·{" "}
+                          v{version.versionNumber} · {version.items.length}{" "}
+                          items ·{" "}
                           {version.signoffRequired
                             ? "sign-off required"
                             : "inspector finalizes"}{" "}
-                          · corrective {version.failureCategoryName ?? "category"}
-                          /{titleCase(version.failurePriorityKey ?? "priority")}
+                          · corrective{" "}
+                          {version.failureCategoryName ?? "category"}/
+                          {titleCase(version.failurePriorityKey ?? "priority")}
                         </li>
                       ))}
                     </ul>
@@ -534,7 +534,10 @@ export default async function InspectionWorkspacePage({
           )}
         </section>
 
-        <section className="content-panel" aria-labelledby="occurrences-heading">
+        <section
+          className="content-panel"
+          aria-labelledby="occurrences-heading"
+        >
           <SectionHeading
             eyebrow="Inspection execution"
             title="Inspection occurrences"
@@ -542,7 +545,9 @@ export default async function InspectionWorkspacePage({
             helpTopic="shell.overview"
           />
           {workspace.occurrences.length === 0 ? (
-            <p className={styles.empty}>No inspections have been started yet.</p>
+            <p className={styles.empty}>
+              No inspections have been started yet.
+            </p>
           ) : (
             <div className={styles.occurrences}>
               {workspace.occurrences.map((occurrence) => {
@@ -645,7 +650,9 @@ export default async function InspectionWorkspacePage({
                               <div>
                                 <p>
                                   Result:{" "}
-                                  <strong>{titleCase(result.resultValue)}</strong>
+                                  <strong>
+                                    {titleCase(result.resultValue)}
+                                  </strong>
                                 </p>
                                 {result.note ? <p>{result.note}</p> : null}
                                 {result.correctiveAction ? (
@@ -655,7 +662,9 @@ export default async function InspectionWorkspacePage({
                                 ) : null}
                               </div>
                             ) : (
-                              <p className={styles.empty}>No result recorded.</p>
+                              <p className={styles.empty}>
+                                No result recorded.
+                              </p>
                             )}
                           </article>
                         );
@@ -728,7 +737,9 @@ export default async function InspectionWorkspacePage({
                     {occurrence.signoff ? (
                       <p>
                         Sign-off:{" "}
-                        <strong>{titleCase(occurrence.signoff.decision)}</strong>
+                        <strong>
+                          {titleCase(occurrence.signoff.decision)}
+                        </strong>
                         {" · "}
                         {formatDate(
                           occurrence.signoff.signedAt,
@@ -768,13 +779,13 @@ export default async function InspectionWorkspacePage({
           />
           <p className={styles.boundary}>
             Web/PWA provides full template/version management, checklist review,
-            corrective-work visibility and sign-off. Guided IVR/DTMF and SMS
-            may complete structured checklist answers or report a defect through
-            the same permission-checked inspection commands, while template
-            editing, long evidence and independent sign-off review use a secure
-            link or staff-assisted handoff. Future graphical/style work is
-            separately governed by the standard multi-theme token ruleset now
-            recorded in the roadmap; inspection business markup must remain
+            corrective-work visibility and sign-off. Guided IVR/DTMF and SMS may
+            complete structured checklist answers or report a defect through the
+            same permission-checked inspection commands, while template editing,
+            long evidence and independent sign-off review use a secure link or
+            staff-assisted handoff. Future graphical/style work is separately
+            governed by the standard multi-theme token ruleset now recorded in
+            the roadmap; inspection business markup must remain
             theme-independent.
           </p>
         </section>
