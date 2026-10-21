@@ -417,7 +417,7 @@ declare
   next_year integer;
   season_start date;
 begin
-  select ms.*, c.timezone
+  select ms, c.timezone
     into s, timezone_name
   from public.maintenance_schedules ms
   join public.campgrounds c
