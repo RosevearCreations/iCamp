@@ -157,6 +157,29 @@ export default async function WorkspacePage({
           <>
             <section
               className="content-panel"
+              aria-labelledby="maintenance-aquatics-heading"
+            >
+              <SectionHeading
+                eyebrow="Aquatic operations"
+                title="Pool & Water-Park Maintenance Operations"
+                id="maintenance-aquatics-heading"
+                helpTopic="shell.overview"
+                trailing={<span className="build-chip">Build 069</span>}
+              />
+              <p>
+                Bind pools and water parks to recurring maintenance and signed
+                inspection evidence, then manage limited/closed/reopen state
+                through the canonical asset-status engine.
+              </p>
+              <Link
+                className="primary-link primary-link--dark"
+                href="/workspaces/maintenance/aquatics"
+              >
+                Open aquatic operations
+              </Link>
+            </section>
+            <section
+              className="content-panel"
               aria-labelledby="maintenance-inspections-heading"
             >
               <SectionHeading
