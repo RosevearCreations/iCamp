@@ -851,8 +851,8 @@ export default async function MaintenanceWorkOrdersPage({
             Web/PWA provides the full visual workbench. Voice/DTMF and SMS/MMS
             must invoke the same server-authorized work-order commands; visual
             media selection uses a secure-link or staff-assisted handoff rather
-            than pretending a keypad can perform a graphical task. Build 066
-            now provides the foreman queue and escalation layer over these work
+            than pretending a keypad can perform a graphical task. Build 066 now
+            provides the foreman queue and escalation layer over these work
             orders. Recurring schedules remain later scope and will reuse the
             Build 007 scheduler.
           </p>
