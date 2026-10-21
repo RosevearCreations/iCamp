@@ -255,12 +255,15 @@ export default async function AquaticsPage({
                 const templates = workspace.templates.filter(
                   (template) =>
                     template.assetId === facility.id &&
-                    template.isActive &&
-                    template.signoffRequired,
+                    template.signoffRequired &&
+                    (template.isActive ||
+                      template.id === program?.inspectionTemplateId),
                 );
                 const schedules = workspace.schedules.filter(
                   (schedule) =>
-                    schedule.assetId === facility.id && schedule.isActive,
+                    schedule.assetId === facility.id &&
+                    (schedule.isActive ||
+                      schedule.id === program?.maintenanceScheduleId),
                 );
                 const canConfigure =
                   canManage && templates.length > 0 && schedules.length > 0;
