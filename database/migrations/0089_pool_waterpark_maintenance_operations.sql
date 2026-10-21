@@ -282,7 +282,7 @@ for each row execute function icamp_private.touch_row();
 create or replace function icamp_private.validate_aquatic_program()
 returns trigger
 language plpgsql
-security invoker
+security definer
 set search_path = ''
 as $$
 declare
@@ -307,7 +307,8 @@ begin
     and a.organization_id=new.organization_id
     and a.campground_id=new.campground_id;
 
-  if facility_type_value not in ('pool','water_park')
+  if facility_type_value is null
+     or facility_type_value not in ('pool','water_park')
      or asset_state='archived' then
     raise exception 'Aquatic program requires an active pool or water-park asset';
   end if;
@@ -371,7 +372,7 @@ for each row execute function icamp_private.validate_aquatic_program();
 create or replace function icamp_private.validate_aquatic_inspection_evidence()
 returns trigger
 language plpgsql
-security invoker
+security definer
 set search_path = ''
 as $$
 declare
@@ -435,7 +436,7 @@ for each row execute function icamp_private.validate_aquatic_inspection_evidence
 create or replace function icamp_private.validate_aquatic_operation_decision()
 returns trigger
 language plpgsql
-security invoker
+security definer
 set search_path = ''
 as $$
 declare
@@ -468,7 +469,8 @@ begin
     and a.organization_id=new.organization_id
     and a.campground_id=new.campground_id;
 
-  if facility_type_value not in ('pool','water_park') then
+  if facility_type_value is null
+     or facility_type_value not in ('pool','water_park') then
     raise exception 'Aquatic operating decisions require a pool or water-park asset';
   end if;
 
