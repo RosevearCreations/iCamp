@@ -974,17 +974,32 @@ Promotion evidence:
 - production `main` independently passed CI #39524236466, CodeQL #39524236470 and Secret Scan #39524236488;
 - Verify, Browser E2E, database lifecycle/idempotence, production build and dependency audit GREEN.
 
+### Build 067 — Recurring Maintenance Scheduler
+Status: **FULLY PROMOTED — `main` GREEN.**
+
+Promotion evidence:
+- feature PR #249 and production PR #250;
+- hosted migration `20261021014030 / recurring_maintenance_scheduler`;
+- hosted Build 067 verification SQL passed;
+- Supabase Security Advisor: zero findings;
+- Build 067 unindexed-foreign-key findings: zero; only expected INFO-level unused-index notices remain;
+- final feature head `205bc63e3c9d75a5cf29ac2c24a6946563ef5989`;
+- exact production-candidate `dev` SHA `9f675498f2443511b5d5f728884c69f68ae7c7b8`;
+- production feature `main` SHA `5787f35d9e1a50080b291299964bb213b5288a68`;
+- production `main` independently passed CI #39528974035, CodeQL #39528973978 and Secret Scan #39528974075;
+- Verify, Browser E2E, database lifecycle/idempotence, production build and dependency audit GREEN.
+
 ## Current active build
-**Build 067 — Recurring Maintenance Scheduler**
+**Build 068 — Versioned Inspection Templates & Sign-Off**
 
 Status: **QUEUED**
 
-The active queue advances to the next non-duplicative maintenance capability (historical Build 068):
-- recurring hourly, every-N-hours, daily, weekly, monthly, seasonal and custom maintenance schedules;
-- reuse of the Build 007 scheduler/background-job authority;
-- discrete maintenance occurrence history tied to canonical Build 065 work orders;
-- overdue and missed occurrence handling;
-- no duplicate scheduler, taxonomy, work-order or foreman/escalation authority.
+The active queue advances to the next non-duplicative maintenance capability (historical Build 069):
+- versioned inspection/checklist templates by asset, site and cottage;
+- immutable template-version history;
+- inspector and sign-off responsibility controls;
+- failed-item corrective-action linkage;
+- reuse of Build 065 work orders, Build 066 responsibility authority and Build 067 scheduler where recurring inspections are later scheduled.
 
 ## Operating rule
 - Work primarily on `dev`.
