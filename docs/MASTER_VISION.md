@@ -98,6 +98,18 @@ Additional states may include held, reserved, arriving today, departing today, c
 
 Colours are derived from authoritative operational state, not manually painted.
 
+### Theme architecture
+iCamp may support several visual themes, but themes must be implemented **after** a standard semantic theme ruleset/token layer exists. The default theme and every alternative theme must share the same semantic component and operational-state contract.
+
+Themes may change presentation tokens such as palette, typography, spacing, surface treatment, border/radius and elevation, but they must not:
+- change business/domain behavior;
+- encode operational meaning differently from the canonical semantic status tokens;
+- remove keyboard/focus behavior;
+- weaken required contrast or reduced-motion support;
+- fork page markup into theme-specific copies.
+
+Future graphical/style work must consume reusable semantic tokens and component primitives so campground tenants can eventually select from multiple themes without redesigning the application. Business/domain markup must remain theme-independent.
+
 ## 5. Campsites, cottages and accommodation inventory
 
 iCamp supports distinct accommodation/site types, including:

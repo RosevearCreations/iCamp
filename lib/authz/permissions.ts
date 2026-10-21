@@ -48,6 +48,7 @@ export const permissions = [
   "maintenance.schedule",
   "inspection.perform",
   "inspection.signoff",
+  "inspection.template.manage",
   "seasonal.manage",
   "winterization.signoff",
   "permanent_unit.manage",
