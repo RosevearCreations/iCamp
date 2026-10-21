@@ -989,17 +989,32 @@ Promotion evidence:
 - production `main` independently passed CI #39528974035, CodeQL #39528973978 and Secret Scan #39528974075;
 - Verify, Browser E2E, database lifecycle/idempotence, production build and dependency audit GREEN.
 
+### Build 068 — Versioned Inspection Templates & Sign-Off
+Status: **FULLY PROMOTED — `main` GREEN.**
+
+Promotion evidence:
+- feature PR #252, advisor-hardening PR #253 and production PR #254;
+- hosted migrations `20261021033954 / versioned_inspection_templates_signoff` and `20261021034526 / build068_advisor_hardening`;
+- hosted Build 068 and hardening verification SQL passed;
+- Supabase Security Advisor: zero findings;
+- final Build 068 unindexed-foreign-key findings: zero; only expected INFO-level unused-index notices remain;
+- exact hardened production-candidate `dev` SHA `db823f7efd33a7de75594752eecd15bcaf3d57df`;
+- production feature `main` SHA `b473656d6d9419ac7b9777a22d05fcc640309d31`;
+- production `main` independently passed CI #39540567345, CodeQL #39540567377 and Secret Scan #39540567402;
+- Verify, Browser E2E, database lifecycle/idempotence, production build and dependency audit GREEN;
+- future graphical/style work is explicitly gated on the documented standard multi-theme semantic-token ruleset.
+
 ## Current active build
-**Build 068 — Versioned Inspection Templates & Sign-Off**
+**Build 069 — Pool & Water-Park Maintenance Operations**
 
 Status: **QUEUED**
 
-The active queue advances to the next non-duplicative maintenance capability (historical Build 069):
-- versioned inspection/checklist templates by asset, site and cottage;
-- immutable template-version history;
-- inspector and sign-off responsibility controls;
-- failed-item corrective-action linkage;
-- reuse of Build 065 work orders, Build 066 responsibility authority and Build 067 scheduler where recurring inspections are later scheduled.
+The active queue advances to the next non-duplicative maintenance capability (historical Build 070):
+- recurring pool and water-park operational checks;
+- operating/open/limited/closed state and management visibility;
+- inspection and maintenance evidence;
+- safety-sensitive sign-off and closure/reopen hooks;
+- reuse of Build 065 work orders, Build 066 responsibility/escalation, Build 067 scheduling and Build 068 versioned inspections rather than creating duplicate authorities.
 
 ## Operating rule
 - Work primarily on `dev`.
