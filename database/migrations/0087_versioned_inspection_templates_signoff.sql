@@ -205,6 +205,7 @@ create table public.inspection_occurrences (
     references icamp_private.user_accounts(id)
     on update cascade
     on delete set null,
+  updated_at timestamptz not null default statement_timestamp(),
   row_version bigint not null default 1 check (row_version >= 1),
   constraint inspection_occurrences_scope_id_unique
     unique (organization_id, campground_id, id),
@@ -445,6 +446,10 @@ create index inspection_corrective_actions_created_by_idx
 
 create trigger inspection_templates_touch
 before update on public.inspection_templates
+for each row execute function icamp_private.touch_row();
+
+create trigger inspection_occurrences_touch
+before update on public.inspection_occurrences
 for each row execute function icamp_private.touch_row();
 
 create trigger inspection_results_touch
@@ -741,6 +746,17 @@ declare
   actor_id uuid;
 begin
   actor_id := nullif(current_setting('icamp.user_id',true),'')::uuid;
+
+  if tg_op='UPDATE'
+     and (
+       old.organization_id is distinct from new.organization_id
+       or old.campground_id is distinct from new.campground_id
+       or old.occurrence_id is distinct from new.occurrence_id
+       or old.template_item_id is distinct from new.template_item_id
+       or old.created_at is distinct from new.created_at
+     ) then
+    raise exception 'Inspection result identity is immutable';
+  end if;
 
   select o.template_version_id,o.status,o.inspector_user_id
     into occurrence_version_id,occurrence_status,occurrence_inspector_id
