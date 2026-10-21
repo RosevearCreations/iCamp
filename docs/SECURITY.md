@@ -76,6 +76,7 @@ At minimum:
 - maintenance.complete
 - maintenance.triage
 - maintenance.escalate
+- maintenance.schedule
 - inspection.perform
 - inspection.signoff
 - seasonal.manage
