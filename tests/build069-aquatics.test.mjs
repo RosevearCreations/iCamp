@@ -97,10 +97,7 @@ test("Build 069 service links due recurring work to signed inspection evidence",
 
 test("Build 069 Web/PWA exposes program, inspection and safety-state controls", () => {
   const page = fs.readFileSync(
-    new URL(
-      "../app/workspaces/maintenance/aquatics/page.tsx",
-      import.meta.url,
-    ),
+    new URL("../app/workspaces/maintenance/aquatics/page.tsx", import.meta.url),
     "utf8",
   );
 
