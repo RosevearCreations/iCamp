@@ -1,0 +1,172 @@
+.notice {
+  border: 1px solid var(--border-strong);
+  border-radius: 0.9rem;
+  padding: 0.9rem 1rem;
+  background: var(--surface-soft);
+}
+
+.selector,
+.formGrid,
+.policyGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.field {
+  display: grid;
+  gap: 0.4rem;
+  min-width: 0;
+}
+
+.field span {
+  font-weight: 700;
+}
+
+.field input,
+.field select,
+.field textarea,
+.selector select {
+  width: 100%;
+}
+
+.field textarea {
+  min-height: 5rem;
+  resize: vertical;
+}
+
+.actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  align-items: end;
+}
+
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+  gap: 0.9rem;
+}
+
+.metrics div,
+.rosterCard,
+.queueCard,
+.policyCard,
+.escalationCard {
+  border: 1px solid var(--border);
+  border-radius: 0.9rem;
+  padding: 0.9rem;
+}
+
+.metrics div {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.metrics span,
+.kicker {
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.metrics strong {
+  font-size: 1.08rem;
+}
+
+.roster {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+  gap: 0.8rem;
+}
+
+.rosterCard,
+.queueCard,
+.policyCard,
+.escalationCard {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.rosterCard p,
+.queueCard p,
+.policyCard p,
+.escalationCard p,
+.queueCard h3,
+.policyCard h3,
+.escalationCard h4 {
+  margin: 0;
+}
+
+.queue {
+  display: grid;
+  gap: 1rem;
+}
+
+.queueCard header {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: start;
+}
+
+.state {
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 0.25rem 0.55rem;
+  white-space: nowrap;
+  font-size: 0.82rem;
+  text-transform: capitalize;
+}
+
+.signalRow {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.signal {
+  border: 1px solid var(--border-strong);
+  border-radius: 999px;
+  padding: 0.3rem 0.6rem;
+  font-size: 0.82rem;
+}
+
+.policyGrid {
+  align-items: start;
+}
+
+.policyCard {
+  align-content: start;
+}
+
+.escalations {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.escalationActions {
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+}
+
+.boundary {
+  max-width: 82ch;
+}
+
+.empty {
+  opacity: 0.78;
+}
+
+@media (max-width: 760px) {
+  .selector,
+  .formGrid,
+  .policyGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .queueCard header {
+    flex-direction: column;
+  }
+}
