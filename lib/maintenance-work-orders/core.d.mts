@@ -1,10 +1,5 @@
 export type MaintenanceWorkOrderStatus =
-  | "open"
-  | "assigned"
-  | "in_progress"
-  | "blocked"
-  | "completed"
-  | "cancelled";
+  "open" | "assigned" | "in_progress" | "blocked" | "completed" | "cancelled";
 
 export interface MaintenanceWorkOrderInput {
   title: string;
