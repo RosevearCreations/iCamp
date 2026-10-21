@@ -504,7 +504,9 @@ export default async function MaintenanceWorkOrdersPage({
                       </div>
                     ) : null}
 
-                    {!closed && canComplete && workOrder.status === "in_progress" ? (
+                    {!closed &&
+                    canComplete &&
+                    workOrder.status === "in_progress" ? (
                       <form
                         action={transitionMaintenanceWorkOrderAction}
                         className={styles.formGrid}
@@ -574,7 +576,12 @@ export default async function MaintenanceWorkOrdersPage({
                         />
                         <label className={styles.field + " " + styles.full}>
                           <span>Cancellation reason</span>
-                          <input name="note" minLength={3} maxLength={1000} required />
+                          <input
+                            name="note"
+                            minLength={3}
+                            maxLength={1000}
+                            required
+                          />
                         </label>
                         <div className={styles.actions}>
                           <button className="primary-button" type="submit">
