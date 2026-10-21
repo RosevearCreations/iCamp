@@ -79,7 +79,7 @@ Build 007 does not add an automatic replay button. Future replay/remediation con
 
 `runDueSchedules()` locks due schedules, enqueues one idempotent occurrence per due schedule, advances its next occurrence by one cadence, and records a scheduler heartbeat. Repeated ticks catch up missed occurrences without collapsing history into one row.
 
-Build 068 adds the richer maintenance recurrence model. It will emit work through this Build 007 foundation rather than creating a second background engine.
+Build 067 now supplies the richer maintenance recurrence model. It emits `maintenance.schedule.materialize` work through this Build 007 foundation rather than creating a second background engine. The maintenance domain recalculates timezone-aware monthly/seasonal next occurrences and synchronizes the next run back into the durable schedule after each processed occurrence.
 
 ## Worker and scheduler heartbeats
 
