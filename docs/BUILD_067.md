@@ -1,7 +1,7 @@
 # Build 067 — Recurring Maintenance Scheduler
 
 ## Status
-**IMPLEMENTED — PROMOTION PENDING.**
+**FULLY PROMOTED — `main` GREEN.**
 
 ## Queue authority
 Build 067 advances the maintenance roadmap after Build 066 and implements the historical roadmap's Build 068 recurring-maintenance capability.
@@ -114,7 +114,15 @@ Build 067 does **not** create:
 - database verification checks permission grants, forced RLS, append-only occurrence posture and Build 007 synchronization trigger;
 - CI applies PostgreSQL 17 migration history and idempotent replay;
 - Browser E2E, TypeScript, lint, production build, dependency audit, CodeQL and Gitleaks must be GREEN before promotion;
-- hosted Supabase migration/verification and advisors will be checked before `main`.
+- final feature head `205bc63e3c9d75a5cf29ac2c24a6946563ef5989` passed CI #39528268560, CodeQL #39528268512 and Secret Scan #39528268625;
+- feature PR #249 merged to `dev` at `9f675498f2443511b5d5f728884c69f68ae7c7b8`;
+- independent `dev` push passed CI #39528481047, CodeQL #39528481046 and Secret Scan #39528481057;
+- hosted migration `20261021014030 / recurring_maintenance_scheduler` applied successfully and exact Build 067 verification SQL passed;
+- Supabase Security Advisor returned zero findings;
+- Supabase Performance Advisor returned zero Build 067 unindexed-foreign-key findings; only expected INFO-level unused-index notices remained;
+- production PR #250 passed CI #39528753205, CodeQL #39528753198 and Secret Scan #39528753229;
+- production feature `main` SHA `5787f35d9e1a50080b291299964bb213b5288a68` independently passed CI #39528974035, CodeQL #39528973978 and Secret Scan #39528974075;
+- Verify, Browser E2E, PostgreSQL migration/lifecycle/idempotence, production build, dependency audit, CodeQL and Gitleaks were GREEN at the production feature checkpoint.
 
 ## Cost / infrastructure
 No paid service, new hosted project, queue provider, Worker, D1 database, R2 bucket, Vercel project or new secret is required.
