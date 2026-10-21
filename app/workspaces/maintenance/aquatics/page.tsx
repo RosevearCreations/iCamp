@@ -511,15 +511,15 @@ export default async function AquaticsPage({
                         <span>Operating decision</span>
                         <select name="publicState" required>
                           <option value="">Choose action</option>
-                          {canManage ? (
-                            <>
-                              <option value="limited">
-                                Move to limited operation
-                              </option>
-                              <option value="closed">Close facility</option>
-                            </>
+                          {canManage && program.publicState === "open" ? (
+                            <option value="limited">
+                              Move to limited operation
+                            </option>
                           ) : null}
-                          {canReopen ? (
+                          {canManage && program.publicState !== "closed" ? (
+                            <option value="closed">Close facility</option>
+                          ) : null}
+                          {canReopen && program.publicState !== "open" ? (
                             <option value="open">
                               Reopen from signed inspection
                             </option>
