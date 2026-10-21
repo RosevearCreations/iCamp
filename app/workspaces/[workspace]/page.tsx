@@ -157,6 +157,29 @@ export default async function WorkspacePage({
           <>
             <section
               className="content-panel"
+              aria-labelledby="maintenance-inspections-heading"
+            >
+              <SectionHeading
+                eyebrow="Inspection governance"
+                title="Versioned Inspection Templates & Sign-Off"
+                id="maintenance-inspections-heading"
+                helpTopic="shell.overview"
+                trailing={<span className="build-chip">Build 068</span>}
+              />
+              <p>
+                Publish immutable asset/site/cottage checklists, execute
+                inspections, create corrective maintenance from failures, and
+                require independent sign-off where configured.
+              </p>
+              <Link
+                className="primary-link primary-link--dark"
+                href="/workspaces/maintenance/inspections"
+              >
+                Open inspections
+              </Link>
+            </section>
+            <section
+              className="content-panel"
               aria-labelledby="maintenance-schedules-heading"
             >
               <SectionHeading

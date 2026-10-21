@@ -8,6 +8,22 @@ The active iCamp2027 product roadmap restarts here at **Build 001**.
 
 No active product build should begin until this roadmap reset is accepted as the source of truth.
 
+## Visual/theme prerequisite
+Before any dedicated graphical redesign, visual-polish or theme-specific styling build begins, iCamp must first establish a **standard theme ruleset and token contract**. Later visual work must consume that contract rather than hard-code one appearance into page/component CSS.
+
+The prerequisite must define at minimum:
+- semantic color/state tokens, including operational map/status colors that remain meaning-driven;
+- typography scale, spacing, radii, elevation, borders and density tokens;
+- component-state rules for default/hover/focus/disabled/error/success/warning;
+- responsive breakpoints and layout primitives;
+- accessibility contrast/focus/reduced-motion requirements;
+- public/guest/staff/admin surface rules;
+- theme metadata/versioning and a default canonical theme;
+- a mechanism for multiple selectable themes to override tokens without changing business/domain markup;
+- tests preventing theme overrides from changing semantic status meaning or weakening accessibility.
+
+No future visual/style build should bypass this prerequisite.
+
 ---
 
 # Phase 1 — Application, Data and Security Foundation
