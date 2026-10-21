@@ -54,15 +54,12 @@ test("Build 066 derives high-priority, blocked and overdue escalation signals", 
     policies,
     "2026-10-20T13:00:00.000Z",
   );
-  assert.deepEqual(
-    signals.map((signal) => signal.triggerKey).sort(),
-    [
-      "blocked",
-      "completion_overdue",
-      "response_overdue",
-      "urgent_priority",
-    ],
-  );
+  assert.deepEqual(signals.map((signal) => signal.triggerKey).sort(), [
+    "blocked",
+    "completion_overdue",
+    "response_overdue",
+    "urgent_priority",
+  ]);
   assert.equal(formatEscalationTrigger("response_overdue"), "Response Overdue");
 });
 
@@ -93,10 +90,7 @@ test("Build 066 schema reuses Build 065 and enforces hierarchy in PostgreSQL", (
   assert.match(migration, /maintenance_foreman/u);
   assert.match(migration, /maintenance_main_foreman/u);
   assert.match(migration, /maintenance_responsibility_rank/iu);
-  assert.match(
-    migration,
-    /references public\.maintenance_work_orders/iu,
-  );
+  assert.match(migration, /references public\.maintenance_work_orders/iu);
   assert.match(migration, /force row level security/iu);
   assert.doesNotMatch(
     migration,
@@ -106,18 +100,12 @@ test("Build 066 schema reuses Build 065 and enforces hierarchy in PostgreSQL", (
     migration,
     /Maintenance assignment cannot target an equal or higher responsibility level/u,
   );
-  assert.match(
-    migration,
-    /Resolved maintenance escalations are terminal/u,
-  );
+  assert.match(migration, /Resolved maintenance escalations are terminal/u);
 });
 
 test("Build 066 foreman workspace exposes triage, assignment and escalation controls", () => {
   const page = fs.readFileSync(
-    new URL(
-      "../app/workspaces/maintenance/foreman/page.tsx",
-      import.meta.url,
-    ),
+    new URL("../app/workspaces/maintenance/foreman/page.tsx", import.meta.url),
     "utf8",
   );
   const actions = fs.readFileSync(
