@@ -130,17 +130,17 @@ test("Build 065 schema reuses Build 064 authorities and Build 008 secure media",
   }
 
   assert.match(migration, /references public\.maintenance_categories/iu);
-  assert.match(
-    migration,
-    /references public\.maintenance_priority_policies/iu,
-  );
+  assert.match(migration, /references public\.maintenance_priority_policies/iu);
   assert.match(migration, /references icamp_private\.media_assets/iu);
   assert.match(migration, /force row level security/iu);
   assert.doesNotMatch(migration, /grant[^;]*delete/iu);
   assert.match(migration, /maintenance\.create/u);
   assert.match(migration, /maintenance\.assign/u);
   assert.match(migration, /maintenance\.complete/u);
-  assert.match(migration, /Closed maintenance work orders cannot be reassigned/u);
+  assert.match(
+    migration,
+    /Closed maintenance work orders cannot be reassigned/u,
+  );
   assert.match(migration, /created_by_user_id =\s*nullif/iu);
   assert.match(migration, /recorded_by_user_id =\s*nullif/iu);
   assert.match(service, /appendAuditEvent/u);
