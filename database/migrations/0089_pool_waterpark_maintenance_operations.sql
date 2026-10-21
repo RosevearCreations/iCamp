@@ -296,6 +296,17 @@ declare
   schedule_asset_id uuid;
   schedule_active boolean;
 begin
+  if tg_op='UPDATE'
+     and (
+       old.organization_id is distinct from new.organization_id
+       or old.campground_id is distinct from new.campground_id
+       or old.asset_id is distinct from new.asset_id
+       or old.created_by_user_id is distinct from new.created_by_user_id
+       or old.created_at is distinct from new.created_at
+     ) then
+    raise exception 'Aquatic program identity is immutable';
+  end if;
+
   select f.facility_type,a.lifecycle_state
     into facility_type_value,asset_state
   from public.operational_assets a
