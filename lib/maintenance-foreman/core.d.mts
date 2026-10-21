@@ -1,8 +1,5 @@
 export type MaintenanceResponsibilityLevel =
-  | "crew"
-  | "foreman"
-  | "main_foreman"
-  | "manager";
+  "crew" | "foreman" | "main_foreman" | "manager";
 
 export type MaintenanceEscalationTrigger =
   | "emergency_priority"
@@ -11,10 +8,7 @@ export type MaintenanceEscalationTrigger =
   | "response_overdue"
   | "completion_overdue";
 
-export type MaintenanceEscalationState =
-  | "open"
-  | "acknowledged"
-  | "resolved";
+export type MaintenanceEscalationState = "open" | "acknowledged" | "resolved";
 
 export const maintenanceResponsibilityLevels: readonly MaintenanceResponsibilityLevel[];
 export const maintenanceEscalationTriggers: readonly MaintenanceEscalationTrigger[];
