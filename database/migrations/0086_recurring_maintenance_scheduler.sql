@@ -233,7 +233,7 @@ create table public.maintenance_schedule_occurrences (
     references public.maintenance_work_orders(organization_id, campground_id, id)
     on update cascade
     on delete restrict,
-  constraint maintenance_schedule_occurrences_state_check
+  constraint maintenance_schedule_occurrences_shape_check
     check (
       (
         state = 'materialized'
