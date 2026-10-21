@@ -213,9 +213,7 @@ export default async function MaintenanceForemanPage({
           <p className={styles.boundary}>
             Your current responsibility level is{" "}
             <strong>
-              {formatMaintenanceResponsibility(
-                queue.actorResponsibilityLevel,
-              )}
+              {formatMaintenanceResponsibility(queue.actorResponsibilityLevel)}
             </strong>
             . Assignment targets are filtered by that hierarchy before the
             database independently enforces the same boundary.
@@ -234,9 +232,7 @@ export default async function MaintenanceForemanPage({
               <article className={styles.rosterCard} key={staff.id}>
                 <strong>{staff.label}</strong>
                 <p>
-                  {formatMaintenanceResponsibility(
-                    staff.responsibilityLevel,
-                  )}
+                  {formatMaintenanceResponsibility(staff.responsibilityLevel)}
                 </p>
                 <p>
                   {staff.assignable
@@ -381,7 +377,10 @@ export default async function MaintenanceForemanPage({
                     {workOrder.signals.length ? (
                       <div className={styles.signalRow}>
                         {workOrder.signals.map((signal) => (
-                          <span className={styles.signal} key={signal.triggerKey}>
+                          <span
+                            className={styles.signal}
+                            key={signal.triggerKey}
+                          >
                             {formatEscalationTrigger(signal.triggerKey)} →{" "}
                             {formatMaintenanceResponsibility(
                               signal.targetLevel,
@@ -443,8 +442,7 @@ export default async function MaintenanceForemanPage({
                     <div className={styles.actions}>
                       {workOrder.signals
                         .filter(
-                          (signal) =>
-                            !activeTriggerKeys.has(signal.triggerKey),
+                          (signal) => !activeTriggerKeys.has(signal.triggerKey),
                         )
                         .map((signal) => (
                           <form
@@ -467,8 +465,7 @@ export default async function MaintenanceForemanPage({
                               value={signal.triggerKey}
                             />
                             <button className="primary-button" type="submit">
-                              Raise{" "}
-                              {formatEscalationTrigger(signal.triggerKey)}
+                              Raise {formatEscalationTrigger(signal.triggerKey)}
                             </button>
                           </form>
                         ))}
