@@ -366,6 +366,10 @@ create index inspection_templates_target_accommodation_idx
   on public.inspection_templates(organization_id,campground_id,accommodation_id)
   where accommodation_id is not null;
 
+create index inspection_templates_current_version_idx
+  on public.inspection_templates(current_version_id)
+  where current_version_id is not null;
+
 create index inspection_templates_created_by_idx
   on public.inspection_templates(created_by_user_id);
 
@@ -409,6 +413,14 @@ create index inspection_occurrences_accommodation_idx
 
 create index inspection_occurrences_inspector_idx
   on public.inspection_occurrences(inspector_user_id);
+
+create index inspection_occurrences_submitted_by_idx
+  on public.inspection_occurrences(submitted_by_user_id)
+  where submitted_by_user_id is not null;
+
+create index inspection_occurrences_finalized_by_idx
+  on public.inspection_occurrences(finalized_by_user_id)
+  where finalized_by_user_id is not null;
 
 create index inspection_results_occurrence_idx
   on public.inspection_results(organization_id,campground_id,occurrence_id);
