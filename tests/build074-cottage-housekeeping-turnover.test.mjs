@@ -11,7 +11,10 @@ test("Build 074 extends Build 027 without duplicating housekeeping state", () =>
     "utf8",
   );
 
-  assert.match(migration, /alter table public\.cottage_housekeeping_templates/u);
+  assert.match(
+    migration,
+    /alter table public\.cottage_housekeeping_templates/u,
+  );
   assert.match(migration, /final_inspection_template_id/u);
   assert.match(migration, /alter table public\.cottage_turnovers/u);
   assert.match(migration, /release_required/u);
@@ -41,10 +44,7 @@ test("Build 074 reuses canonical inspection corrective work and availability", (
   assert.match(service, /open_corrective_work_orders/u);
   assert.match(service, /status_state='available'/u);
   assert.match(service, /Build 074 cottage housekeeping turnover cleared/u);
-  assert.doesNotMatch(
-    service,
-    /insert into public\.maintenance_work_orders/u,
-  );
+  assert.doesNotMatch(service, /insert into public\.maintenance_work_orders/u);
 });
 
 test("Build 074 requires readiness before final inspection and release", () => {
