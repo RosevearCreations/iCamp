@@ -1023,13 +1023,18 @@ Promotion evidence:
 ## Current active build
 **Build 070 — Washroom, Shower & Laundry Upkeep**
 
-Status: **QUEUED**
+Status: **IMPLEMENTED — PROMOTION PENDING.**
 
-The active queue advances to the next non-duplicative maintenance capability (historical Build 071):
-- scheduled washroom, shower and laundry cleaning/inspection;
-- supply and operating-status visibility;
-- issue escalation and corrective closure;
-- reuse of Build 065 work orders, Build 066 foreman/escalation, Build 067 scheduling, Build 068 inspections and Build 030 asset status rather than creating duplicate authorities.
+Delivered:
+- campground-scoped washroom, shower, laundry and combined comfort-station upkeep programs;
+- exact-asset binding to Build 067 recurring schedules and published Build 068 inspection templates;
+- append-only cleanliness, fixture/machine and consumable-supply snapshots;
+- inspection evidence linked to scheduled maintenance occurrences where available;
+- defect and supply escalation into canonical Build 065 maintenance work orders;
+- issue closure derived only from canonical work-order completion/cancellation;
+- forced RLS, same-asset database guards and audited staff actions;
+- Web/PWA maintenance workspace with configuration, inspection, status, issue and history views;
+- no duplicate scheduler, checklist, work-order, asset-state or issue-closure authority.
 
 ## Operating rule
 - Work primarily on `dev`.
