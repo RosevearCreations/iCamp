@@ -3,35 +3,44 @@ import fs from "node:fs";
 import test from "node:test";
 
 import {
-  surfaceStates,
+  amenityStates,
   recreationIssueKinds,
   recreationMaintenanceKinds,
   safetyStates,
-  amenityStates,
+  surfaceStates,
   validateRecreationIssueInput,
-  validateRecreationSnapshotInput,
   validateRecreationMaintenanceProgramInput,
+  validateRecreationSnapshotInput,
 } from "../lib/recreation-maintenance/core.mjs";
 
-test("Build 071 models washroom, shower and laundry upkeep states", () => {
+test("Build 071 models recreation profiles and condition states", () => {
   assert.deepEqual(recreationMaintenanceKinds, [
-    "sports_field",
-    "shower",
-    "laundry",
     "baseball_softball",
+    "sports_field",
+    "playground",
+    "hall",
   ]);
   assert.deepEqual(surfaceStates, [
     "ready",
     "attention",
-    "closed_for_service",
+    "unsafe",
+    "not_applicable",
   ]);
   assert.deepEqual(safetyStates, [
+    "clear",
+    "monitor",
+    "restrict_use",
+    "close_area",
+  ]);
+  assert.deepEqual(amenityStates, [
     "operational",
     "attention",
     "out_of_service",
+    "not_applicable",
   ]);
-  assert.deepEqual(amenityStates, ["operational", "low", "out", "not_applicable"]);
-  assert.ok(recreationIssueKinds.includes("laundry_machine"));
+  assert.ok(recreationIssueKinds.includes("playing_surface"));
+  assert.ok(recreationIssueKinds.includes("playground_equipment"));
+  assert.ok(recreationIssueKinds.includes("hall_fixture"));
 });
 
 test("Build 071 validates programs, snapshots and issue escalation", () => {
@@ -40,36 +49,36 @@ test("Build 071 validates programs, snapshots and issue escalation", () => {
     profileKind: "baseball_softball",
     inspectionTemplateId: "template",
     maintenanceScheduleId: "schedule",
-    notes: "Main comfort station",
+    notes: "Main ball diamond",
   });
   assert.equal(program.profileKind, "baseball_softball");
   assert.equal(program.isActive, true);
 
   const snapshot = validateRecreationSnapshotInput({
     surfaceState: "attention",
-    safetyState: "attention",
-    amenityState: "low",
-    notes: "Paper stock is low.",
+    safetyState: "monitor",
+    amenityState: "operational",
+    notes: "Infield needs grooming before the evening game.",
   });
-  assert.equal(snapshot.amenityState, "low");
+  assert.equal(snapshot.safetyState, "monitor");
 
   const issue = validateRecreationIssueInput({
-    issueKind: "safety",
-    title: "Shower valve leaking",
-    description: "Valve is leaking after shutoff.",
-    categoryId: "building",
+    issueKind: "playing_surface",
+    title: "Infield washout",
+    description: "Standing water near first base after heavy rain.",
+    categoryId: "grounds",
     priorityPolicyId: "normal",
   });
-  assert.equal(issue.issueKind, "safety");
+  assert.equal(issue.issueKind, "playing_surface");
 
   assert.throws(
     () =>
       validateRecreationSnapshotInput({
         surfaceState: "bad",
-        safetyState: "operational",
+        safetyState: "clear",
         amenityState: "operational",
       }),
-    /Cleanliness state is invalid/u,
+    /Surface state is invalid/u,
   );
 });
 
@@ -90,8 +99,14 @@ test("Build 071 schema reuses canonical scheduler, inspection and work orders", 
   assert.match(migration, /references public\.inspection_templates/iu);
   assert.match(migration, /references public\.inspection_occurrences/iu);
   assert.match(migration, /references public\.maintenance_work_orders/iu);
+  assert.match(migration, /sports_field/u);
+  assert.match(migration, /playground/u);
+  assert.match(migration, /hall/u);
   assert.match(migration, /force row level security/iu);
-  assert.doesNotMatch(migration, /grant[^;]*delete[^;]*recreation_maintenance/iu);
+  assert.doesNotMatch(
+    migration,
+    /grant[^;]*delete[^;]*recreation_maintenance/iu,
+  );
   assert.match(
     migration,
     /Work-order status is the sole issue closure authority/u,
@@ -114,10 +129,17 @@ test("Build 071 service creates canonical work orders and links scheduled eviden
   assert.match(service, /completed.*cancelled/u);
 });
 
-test("Build 071 Web/PWA exposes scheduled cleaning, status and corrective work", () => {
+test("Build 071 Web/PWA exposes condition, status and corrective work", () => {
   const page = fs.readFileSync(
     new URL(
       "../app/workspaces/maintenance/recreation/page.tsx",
+      import.meta.url,
+    ),
+    "utf8",
+  );
+  const actions = fs.readFileSync(
+    new URL(
+      "../app/workspaces/maintenance/recreation/actions.ts",
       import.meta.url,
     ),
     "utf8",
@@ -129,7 +151,9 @@ test("Build 071 Web/PWA exposes scheduled cleaning, status and corrective work",
   assert.match(page, /Record recreation condition/u);
   assert.match(page, /Create maintenance work order/u);
   assert.match(page, /Recreation corrective-work register/u);
-  assert.match(page, /does not maintain a second issue-status field/u);
+  assert.match(page, /Canonical operating state/u);
+  assert.match(actions, /transitionOperationalAssetStatus/u);
+  assert.match(actions, /asset\.manage/u);
 });
 
 test("Build 071 preserves the theme prerequisite recorded by Build 068", () => {
