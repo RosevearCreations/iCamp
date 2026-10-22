@@ -157,6 +157,29 @@ export default async function WorkspacePage({
           <>
             <section
               className="content-panel"
+              aria-labelledby="maintenance-facility-upkeep-heading"
+            >
+              <SectionHeading
+                eyebrow="Comfort-facility operations"
+                title="Washroom, Shower & Laundry Upkeep"
+                id="maintenance-facility-upkeep-heading"
+                helpTopic="shell.overview"
+                trailing={<span className="build-chip">Build 070</span>}
+              />
+              <p>
+                Schedule cleaning and inspection, track supply and facility
+                condition, and escalate defects into the canonical maintenance
+                work-order engine.
+              </p>
+              <Link
+                className="primary-link primary-link--dark"
+                href="/workspaces/maintenance/facilities"
+              >
+                Open facility upkeep
+              </Link>
+            </section>
+            <section
+              className="content-panel"
               aria-labelledby="maintenance-aquatics-heading"
             >
               <SectionHeading
