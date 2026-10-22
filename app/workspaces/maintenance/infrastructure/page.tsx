@@ -155,7 +155,7 @@ export default async function InfrastructureMaintenancePage({
       snapshot.safetyState === "restrict_use" ||
       snapshot.safetyState === "close_area",
   ).length;
-  const supplyAttention = [...latestSnapshotByProgram.values()].filter(
+  const serviceAttention = [...latestSnapshotByProgram.values()].filter(
     (snapshot) =>
       snapshot.serviceState === "attention" ||
       snapshot.serviceState === "out_of_service",
@@ -177,10 +177,10 @@ export default async function InfrastructureMaintenancePage({
           <p className="eyebrow">Build 072 · Infrastructure maintenance</p>
           <h1>Roads, Utilities, Garbage & Septic Maintenance</h1>
           <p className="hero-panel__lead">
-            Run recurring condition checks and inspection, record infrastructure
-            condition, and escalate defects into the existing maintenance
-            work-order engine without creating a second scheduler, checklist or
-            issue-closure system.
+            Run recurring condition checks and inspections, record
+            infrastructure condition, and escalate defects into the existing
+            maintenance work-order engine without creating a second scheduler,
+            checklist or issue-closure system.
           </p>
         </section>
 
@@ -264,12 +264,12 @@ export default async function InfrastructureMaintenancePage({
               <strong>{activePrograms}</strong>
             </div>
             <div>
-              <span>Service attention</span>
+              <span>Condition attention</span>
               <strong>{serviceDue}</strong>
             </div>
             <div>
               <span>Service attention</span>
-              <strong>{supplyAttention}</strong>
+              <strong>{serviceAttention}</strong>
             </div>
             <div>
               <span>Open issues</span>
@@ -465,7 +465,7 @@ export default async function InfrastructureMaintenancePage({
 
           {workspace.programs.length === 0 ? (
             <p className={styles.empty}>
-              Configure a infrastructure maintenance program before recording
+              Configure an infrastructure maintenance program before recording
               operational evidence.
             </p>
           ) : (
@@ -708,7 +708,7 @@ export default async function InfrastructureMaintenancePage({
                           value={program.id}
                         />
 
-                        <strong>Escalate a infrastructure defect</strong>
+                        <strong>Escalate an infrastructure defect</strong>
 
                         <label className={styles.field}>
                           <span>Issue type</span>
@@ -944,8 +944,8 @@ export default async function InfrastructureMaintenancePage({
             helpTopic="shell.channels"
           />
           <p className={styles.boundary}>
-            Web/PWA provides the complete visual program, supply, checklist and
-            corrective-work review. Verified IVR/DTMF or SMS workflows may
+            Web/PWA provides the complete visual program, inspection, condition
+            and corrective-work review. Verified IVR/DTMF or SMS workflows may
             report an infrastructure defect or request supported status facts
             through the existing communications and identity controls, while
             rich checklist configuration and evidence review use a secure-link
