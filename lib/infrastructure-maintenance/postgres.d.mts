@@ -45,7 +45,8 @@ export interface InfrastructureMaintenanceWorkspace {
     assetId: string;
     assetName: string;
     facilityType: string;
-    profileKind: "road" | "parking" | "utility" | "garbage_area" | "septic_area";
+    profileKind:
+      "road" | "parking" | "utility" | "garbage_area" | "septic_area";
     operatingState: string;
     inspectionTemplateId: string;
     inspectionTemplateName: string;
@@ -81,7 +82,8 @@ export interface InfrastructureMaintenanceWorkspace {
     programId: string;
     assetId: string;
     assetName: string;
-    profileKind: "road" | "parking" | "utility" | "garbage_area" | "septic_area";
+    profileKind:
+      "road" | "parking" | "utility" | "garbage_area" | "septic_area";
     surfaceState: "ready" | "attention" | "unsafe" | "not_applicable";
     safetyState: "clear" | "monitor" | "restrict_use" | "close_area";
     serviceState:
@@ -98,7 +100,8 @@ export interface InfrastructureMaintenanceWorkspace {
     programId: string;
     assetId: string;
     assetName: string;
-    profileKind: "road" | "parking" | "utility" | "garbage_area" | "septic_area";
+    profileKind:
+      "road" | "parking" | "utility" | "garbage_area" | "septic_area";
     issueKind: string;
     workOrderId: string;
     workOrderTitle: string;
