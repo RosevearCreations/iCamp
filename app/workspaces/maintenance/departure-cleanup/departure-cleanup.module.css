@@ -1,0 +1,148 @@
+.notice {
+  border: 1px solid var(--border-strong);
+  border-radius: 0.9rem;
+  padding: 0.9rem 1rem;
+  background: var(--surface-soft);
+}
+
+.selector,
+.formGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.field {
+  display: grid;
+  gap: 0.4rem;
+  min-width: 0;
+}
+
+.field span {
+  font-weight: 700;
+}
+
+.field input,
+.field select,
+.field textarea,
+.selector select {
+  width: 100%;
+}
+
+.field textarea {
+  min-height: 5.5rem;
+  resize: vertical;
+}
+
+.checkbox {
+  align-self: center;
+}
+
+.actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  align-items: end;
+}
+
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+  gap: 0.9rem;
+}
+
+.metrics div,
+.card,
+.taskCard {
+  border: 1px solid var(--border);
+  border-radius: 0.9rem;
+  padding: 0.9rem;
+}
+
+.metrics div {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.metrics span,
+.kicker {
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
+  gap: 1rem;
+}
+
+.card,
+.taskCard,
+.taskList,
+.taskFacts {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: start;
+}
+
+.cardHeader h3,
+.cardHeader p,
+.card p,
+.taskCard p {
+  margin: 0;
+}
+
+.state {
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 0.25rem 0.55rem;
+  white-space: nowrap;
+  font-size: 0.82rem;
+}
+
+.taskFacts {
+  grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+  background: var(--surface-soft);
+  border-radius: 0.75rem;
+  padding: 0.8rem;
+}
+
+.taskFacts span,
+.taskFacts strong {
+  display: block;
+}
+
+.boundary {
+  max-width: 84ch;
+}
+
+.help,
+.empty {
+  opacity: 0.78;
+}
+
+.help {
+  font-size: 0.9rem;
+}
+
+.warning {
+  font-weight: 700;
+}
+
+@media (max-width: 760px) {
+  .selector,
+  .formGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .cardHeader {
+    flex-direction: column;
+  }
+}
