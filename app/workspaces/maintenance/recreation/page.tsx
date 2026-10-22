@@ -679,7 +679,9 @@ export default async function RecreationMaintenancePage({
                             <option value="out_of_service">
                               Out of service
                             </option>
-                            <option value="not_applicable">Not applicable</option>
+                            <option value="not_applicable">
+                              Not applicable
+                            </option>
                           </select>
                         </label>
 
