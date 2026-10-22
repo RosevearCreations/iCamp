@@ -157,6 +157,30 @@ export default async function WorkspacePage({
           <>
             <section
               className="content-panel"
+              aria-labelledby="maintenance-infrastructure-heading"
+            >
+              <SectionHeading
+                eyebrow="Infrastructure operations"
+                title="Roads, Utilities, Garbage & Septic Maintenance"
+                id="maintenance-infrastructure-heading"
+                helpTopic="shell.overview"
+                trailing={<span className="build-chip">Build 072</span>}
+              />
+              <p>
+                Run recurring road, parking, utility, garbage/recycling and
+                septic checks, manage restrictions through the canonical asset
+                status engine, and escalate defects into canonical maintenance
+                work orders.
+              </p>
+              <Link
+                className="primary-link primary-link--dark"
+                href="/workspaces/maintenance/infrastructure"
+              >
+                Open infrastructure maintenance
+              </Link>
+            </section>
+            <section
+              className="content-panel"
               aria-labelledby="maintenance-recreation-heading"
             >
               <SectionHeading
