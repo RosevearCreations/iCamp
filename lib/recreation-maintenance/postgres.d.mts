@@ -84,7 +84,8 @@ export interface RecreationMaintenanceWorkspace {
     profileKind: "baseball_softball" | "sports_field" | "playground" | "hall";
     surfaceState: "ready" | "attention" | "unsafe" | "not_applicable";
     safetyState: "clear" | "monitor" | "restrict_use" | "close_area";
-    amenityState: "operational" | "attention" | "out_of_service" | "not_applicable";
+    amenityState:
+      "operational" | "attention" | "out_of_service" | "not_applicable";
     notes: string | null;
     scheduledFor: string | null;
     workOrderId: string | null;
