@@ -110,7 +110,10 @@ export default async function CottageHousekeepingTurnoverPage({
   ]);
 
   const openTurnovers = workspace.turnovers.filter(
-    (turnover) => !turnover.releasedAt && turnover.status !== "cancelled",
+    (turnover) =>
+      turnover.releaseRequired &&
+      !turnover.releasedAt &&
+      turnover.status !== "cancelled",
   );
   const configurationRequired = openTurnovers.filter(
     (turnover) => !turnover.finalInspectionTemplateId,
@@ -370,6 +373,7 @@ export default async function CottageHousekeepingTurnoverPage({
                   turnover.openCorrectiveWorkOrders === 0;
                 const canStart =
                   canPerformInspection &&
+                  turnover.releaseRequired &&
                   !turnover.releasedAt &&
                   turnover.status !== "cancelled" &&
                   Boolean(turnover.finalInspectionTemplateId) &&
@@ -379,6 +383,7 @@ export default async function CottageHousekeepingTurnoverPage({
                     turnover.inspectionStatus === "rejected");
                 const canRelease =
                   canManageAccommodation &&
+                  turnover.releaseRequired &&
                   !turnover.releasedAt &&
                   checklistReady &&
                   housekeepingReady &&
@@ -395,9 +400,11 @@ export default async function CottageHousekeepingTurnoverPage({
                         <h3>{turnover.cottageName}</h3>
                       </div>
                       <span className={styles.state}>
-                        {turnover.releasedAt
-                          ? "Released"
-                          : sentence(turnover.status)}
+                        {!turnover.releaseRequired
+                          ? "Legacy complete"
+                          : turnover.releasedAt
+                            ? "Released"
+                            : sentence(turnover.status)}
                       </span>
                     </header>
 
