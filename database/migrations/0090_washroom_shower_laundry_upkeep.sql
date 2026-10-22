@@ -272,7 +272,6 @@ begin
        old.organization_id is distinct from new.organization_id
        or old.campground_id is distinct from new.campground_id
        or old.asset_id is distinct from new.asset_id
-       or old.facility_kind is distinct from new.facility_kind
        or old.created_by_user_id is distinct from new.created_by_user_id
        or old.created_at is distinct from new.created_at
      ) then
