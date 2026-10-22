@@ -157,6 +157,29 @@ export default async function WorkspacePage({
           <>
             <section
               className="content-panel"
+              aria-labelledby="maintenance-cottage-turnover-heading"
+            >
+              <SectionHeading
+                eyebrow="Cottage operations"
+                title="Cottage Housekeeping & Turnover"
+                id="maintenance-cottage-turnover-heading"
+                helpTopic="cottage.housekeeping"
+                trailing={<span className="build-chip">Build 074</span>}
+              />
+              <p>
+                Carry rental-cottage cleaning, linen, inventory and damage
+                readiness through final signed inspection, canonical corrective
+                work and safe return to booking availability.
+              </p>
+              <Link
+                className="primary-link primary-link--dark"
+                href="/workspaces/maintenance/cottage-turnover"
+              >
+                Open cottage housekeeping turnover
+              </Link>
+            </section>
+            <section
+              className="content-panel"
               aria-labelledby="maintenance-departure-cleanup-heading"
             >
               <SectionHeading
