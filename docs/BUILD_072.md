@@ -29,4 +29,10 @@ Build 068 remains binding. Future graphical/style work must continue to use the 
 
 ## Promotion evidence
 
-Pending feature CI, hosted migration verification, Supabase advisor review, `dev` verification and clean `main` production promotion.
+Hosted database evidence already verified:
+- migration `20261022125530 / roads_utilities_garbage_septic_maintenance` applied successfully;
+- exact `database/verify/0092_roads_utilities_garbage_septic_maintenance.sql` passed;
+- Supabase Security Advisor: zero findings;
+- Build 072 Performance Advisor findings are INFO-only newly-created `unused_index` notices; no Build 072 warning/error or unindexed-foreign-key finding.
+
+Pending feature CI completion, `dev` verification and clean `main` production promotion.
