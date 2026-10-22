@@ -1,6 +1,6 @@
 # Build 072 — Roads, Utilities, Garbage & Septic Maintenance
 
-Status: **IMPLEMENTED — PROMOTION PENDING**
+Status: **FULLY PROMOTED — `main` GREEN**
 
 Build 072 advances the historical infrastructure-maintenance roadmap for canonical `road`, `parking`, `utility`, `garbage_area` and `septic_area` operational assets.
 
@@ -29,10 +29,17 @@ Build 068 remains binding. Future graphical/style work must continue to use the 
 
 ## Promotion evidence
 
-Hosted database evidence already verified:
-- migration `20261022125530 / roads_utilities_garbage_septic_maintenance` applied successfully;
-- exact `database/verify/0092_roads_utilities_garbage_septic_maintenance.sql` passed;
+- feature PR #268;
+- final feature head `399549e6132b574f1949926defd24cbff68397b4` passed Verify, Browser E2E, database lifecycle, JavaScript/TypeScript analysis, CodeQL and Gitleaks;
+- feature squash merge to `dev`: `2a82744e39c67d9ab247ddc1e0d503ddea48e4a8`;
+- exact independently verified production-candidate `dev` SHA: `3e03325fd56d91e9f16d9e4b01460b2d7048e373`;
+- hosted migration `20261022125530 / roads_utilities_garbage_septic_maintenance`;
+- exact `database/verify/0092_roads_utilities_garbage_septic_maintenance.sql` passed on hosted Supabase;
 - Supabase Security Advisor: zero findings;
-- Build 072 Performance Advisor findings are INFO-only newly-created `unused_index` notices; no Build 072 warning/error or unindexed-foreign-key finding.
-
-Pending feature CI completion, `dev` verification and clean `main` production promotion.
+- Build 072 Performance Advisor findings are INFO-only newly created `unused_index` notices; no Build 072 warning/error or unindexed-foreign-key finding;
+- clean main-based production PR #270 isolated the 12 Build 072 files/edits and preserved Build 071 closeout history;
+- production feature `main` SHA: `2bd712ab81284ff5ae56ccabe215dd9c2841c233`;
+- production `main` independently passed CI run #39787429477, analysis run #39787429470 and Gitleaks run #39787429430;
+- exact production jobs GREEN: Verify #119854198574, Database migrations #119854198345, Analyze JavaScript and TypeScript #119854198025, Browser end-to-end #119854197784 and Gitleaks #119854197723;
+- Verify includes formatter, lint/typecheck, unit tests, telephone/SMS parity, production build and production dependency audit;
+- database verification includes full migration/lifecycle checks and migration-history idempotence.
