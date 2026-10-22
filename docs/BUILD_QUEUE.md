@@ -1038,15 +1038,19 @@ Promotion evidence:
 ## Current active build
 **Build 071 — Baseball, Sports, Playground & Hall Maintenance**
 
-Status: **QUEUED**
+Status: **IMPLEMENTED — PROMOTION PENDING.**
 
-Planned scope, advancing historical Build 072:
-- baseball/softball fields and other sports/recreation operational assets;
-- recurring condition checks using the existing scheduler and versioned inspection engine;
-- closures/restrictions through canonical operational-asset status rather than duplicate state;
-- corrective work through the canonical maintenance work-order engine;
-- playground and hall/recreation facility maintenance visibility;
-- reuse of Build 065 work orders, Build 066 foreman/escalation, Build 067 scheduling, Build 068 inspections and Build 030 asset status.
+Delivered:
+- baseball/softball, sports-field, playground and hall recreation-maintenance programs;
+- recurring condition checks through the existing Build 067 scheduler and Build 068 inspection engine;
+- append-only surface/floor, safety and amenity/equipment condition evidence;
+- restrictions, closures and return-to-service through canonical Build 030 operational-asset status;
+- corrective defects through canonical Build 065 maintenance work orders with Build 066 foreman/escalation;
+- exact-asset database guards, forced RLS and minimum application-role privileges;
+- Web/PWA recreation workspace with program, inspection, condition, operating-state and corrective-work controls;
+- no duplicate scheduler, checklist, work-order, issue-closure or asset-state authority.
+
+Next after successful promotion: **Build 072 — Roads, Utilities, Garbage & Septic Maintenance.**
 
 ## Operating rule
 - Work primarily on `dev`.
