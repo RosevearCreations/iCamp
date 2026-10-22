@@ -1035,22 +1035,39 @@ Promotion evidence:
 - production `main` independently passed CI #39703764882, CodeQL #39703764911 and Secret Scan #39703764885;
 - Verify, Browser E2E, database lifecycle/idempotence, production build, dependency audit, TypeScript analysis and Gitleaks were GREEN.
 
+### Build 071 — Baseball, Sports, Playground & Hall Maintenance
+Status: **FULLY PROMOTED — `main` GREEN.**
+
+Promotion evidence:
+- feature PR #264;
+- final feature head `7989abe7aad45888a2dc7814ea26bb30d9c413ea`;
+- exact independently verified `dev` SHA `ee92544d139789e428d0c4528b8134078430fbb3`;
+- hosted migration `20261022033418 / baseball_sports_playground_hall_maintenance`;
+- exact hosted Build 071 verification SQL passed;
+- Supabase Security Advisor: zero findings;
+- Build 071 unindexed-foreign-key findings: zero; only expected INFO-level unused-index notices remain;
+- clean production PR #266;
+- production `main` SHA `33e5b201d6cc5c656ed6aed43cbb98e167c91d71`;
+- production `main` independently passed CI #39718176592, CodeQL #39718176621 and Secret Scan #39718176597;
+- Verify, Browser E2E, database lifecycle/idempotence, production build, dependency audit, TypeScript analysis and Gitleaks were GREEN;
+- direct production PR #265 was closed without merge because squash-history divergence made it dirty; the clean main-based promotion preserved Build 070 and isolated the 13 Build 071 changes.
+
 ## Current active build
-**Build 071 — Baseball, Sports, Playground & Hall Maintenance**
+**Build 072 — Roads, Utilities, Garbage & Septic Maintenance**
 
-Status: **IMPLEMENTED — PROMOTION PENDING.**
+Status: **QUEUED**
 
-Delivered:
-- baseball/softball, sports-field, playground and hall recreation-maintenance programs;
-- recurring condition checks through the existing Build 067 scheduler and Build 068 inspection engine;
-- append-only surface/floor, safety and amenity/equipment condition evidence;
-- restrictions, closures and return-to-service through canonical Build 030 operational-asset status;
-- corrective defects through canonical Build 065 maintenance work orders with Build 066 foreman/escalation;
-- exact-asset database guards, forced RLS and minimum application-role privileges;
-- Web/PWA recreation workspace with program, inspection, condition, operating-state and corrective-work controls;
-- no duplicate scheduler, checklist, work-order, issue-closure or asset-state authority.
+Planned scope, advancing historical Build 073:
+- roads and parking operational assets;
+- electrical, water and septic utility assets;
+- garbage and recycling areas;
+- recurring/scheduled maintenance using the existing Build 067 scheduler;
+- inspections and sign-off using the existing Build 068 inspection engine;
+- reactive defects and corrective work through the canonical Build 065 work-order engine and Build 066 foreman/escalation;
+- closures/restrictions through canonical Build 030 operational-asset status rather than duplicate state;
+- reuse of the canonical operational-asset registry rather than introducing a second infrastructure inventory.
 
-Next after successful promotion: **Build 072 — Roads, Utilities, Garbage & Septic Maintenance.**
+Next after Build 072: **Build 073 — Departure Campsite Cleanup**, advancing historical Build 074.
 
 ## Operating rule
 - Work primarily on `dev`.
