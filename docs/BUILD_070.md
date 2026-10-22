@@ -1,7 +1,7 @@
 # Build 070 — Washroom, Shower & Laundry Upkeep
 
 ## Status
-**IMPLEMENTED — PROMOTION PENDING.**
+**FULLY PROMOTED — `main` GREEN.**
 
 ## Queue authority
 Build 070 advances the active maintenance roadmap after Build 069 and implements the historical roadmap's Build 071 washroom/shower/laundry capability.
@@ -100,16 +100,19 @@ iCamp records operational upkeep. It does not replace required public-health, ac
 ## Visual/theme prerequisite
 Build 070 does not add an independent visual system. The standard multi-theme semantic-token prerequisite established by Build 068 remains binding for future graphical/style work.
 
-## Verification required before promotion
-- formatter, lint, TypeScript, unit/static tests and production build GREEN;
-- Browser E2E GREEN;
-- PostgreSQL 17 full migration history and idempotent replay GREEN;
-- exact Build 070 hosted verification SQL GREEN;
-- CodeQL and Gitleaks GREEN;
-- dependency audit GREEN;
-- Supabase Security Advisor with zero findings;
-- no Build 070 unindexed-foreign-key findings;
-- independent `dev` and `main` verification after merges.
+## Verification
+- feature PR #259 passed Verify, Browser E2E, PostgreSQL migration/lifecycle/idempotence, CodeQL and Gitleaks;
+- final feature head `b1563c3ffa3471b2234e8bff19aee163b2d1d7ee`;
+- exact production-candidate `dev` merge SHA `6c9ab06e66cb441d34f825f037af733399daae2b`;
+- independent `dev` push passed CI #39701038305, CodeQL #39701038302 and Secret Scan #39701038309;
+- hosted migration `20261022004203 / washroom_shower_laundry_upkeep` applied successfully;
+- exact Build 070 hosted verification SQL passed;
+- Supabase Security Advisor returned zero findings;
+- Build 070 had zero unindexed-foreign-key findings; Performance Advisor reported only expected INFO-level unused-index notices on the newly created upkeep indexes;
+- production PR #260 passed CI #39701310325, CodeQL #39701310432 and Secret Scan #39701310369;
+- production feature `main` SHA `08795cdf215c15543f851d8427cce0eb68e219f5`;
+- production `main` independently passed CI #39703764882, CodeQL #39703764911 and Secret Scan #39703764885;
+- formatter, lint, TypeScript, unit/static tests, channel-parity verification, production build, dependency audit, Browser E2E and full PostgreSQL 17 migration/idempotence verification were GREEN at the final production checkpoint.
 
 ## Cost / infrastructure
 No paid service, new hosted project, Worker, D1 database, R2 bucket, Vercel project or new secret is required.
