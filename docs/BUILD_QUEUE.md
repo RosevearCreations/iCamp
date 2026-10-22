@@ -1020,21 +1020,33 @@ Promotion evidence:
 - Verify, Browser E2E, database lifecycle/idempotence, production build and dependency audit GREEN;
 - the future multi-theme graphical/style prerequisite remains unchanged and binding.
 
+### Build 070 — Washroom, Shower & Laundry Upkeep
+Status: **FULLY PROMOTED — `main` GREEN.**
+
+Promotion evidence:
+- feature PR #259 and production PR #260;
+- final feature head `b1563c3ffa3471b2234e8bff19aee163b2d1d7ee`;
+- exact production-candidate `dev` SHA `6c9ab06e66cb441d34f825f037af733399daae2b`;
+- production feature `main` SHA `08795cdf215c15543f851d8427cce0eb68e219f5`;
+- hosted migration `20261022004203 / washroom_shower_laundry_upkeep`;
+- exact Build 070 hosted verification SQL passed;
+- Supabase Security Advisor: zero findings;
+- Build 070 unindexed-foreign-key findings: zero; only expected INFO-level unused-index notices remain;
+- production `main` independently passed CI #39703764882, CodeQL #39703764911 and Secret Scan #39703764885;
+- Verify, Browser E2E, database lifecycle/idempotence, production build, dependency audit, TypeScript analysis and Gitleaks were GREEN.
+
 ## Current active build
-**Build 070 — Washroom, Shower & Laundry Upkeep**
+**Build 071 — Baseball, Sports, Playground & Hall Maintenance**
 
-Status: **IMPLEMENTED — PROMOTION PENDING.**
+Status: **QUEUED**
 
-Delivered:
-- campground-scoped washroom, shower, laundry and combined comfort-station upkeep programs;
-- exact-asset binding to Build 067 recurring schedules and published Build 068 inspection templates;
-- append-only cleanliness, fixture/machine and consumable-supply snapshots;
-- inspection evidence linked to scheduled maintenance occurrences where available;
-- defect and supply escalation into canonical Build 065 maintenance work orders;
-- issue closure derived only from canonical work-order completion/cancellation;
-- forced RLS, same-asset database guards and audited staff actions;
-- Web/PWA maintenance workspace with configuration, inspection, status, issue and history views;
-- no duplicate scheduler, checklist, work-order, asset-state or issue-closure authority.
+Planned scope, advancing historical Build 072:
+- baseball/softball fields and other sports/recreation operational assets;
+- recurring condition checks using the existing scheduler and versioned inspection engine;
+- closures/restrictions through canonical operational-asset status rather than duplicate state;
+- corrective work through the canonical maintenance work-order engine;
+- playground and hall/recreation facility maintenance visibility;
+- reuse of Build 065 work orders, Build 066 foreman/escalation, Build 067 scheduling, Build 068 inspections and Build 030 asset status.
 
 ## Operating rule
 - Work primarily on `dev`.
