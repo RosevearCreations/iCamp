@@ -157,6 +157,30 @@ export default async function WorkspacePage({
           <>
             <section
               className="content-panel"
+              aria-labelledby="maintenance-departure-cleanup-heading"
+            >
+              <SectionHeading
+                eyebrow="Departure operations"
+                title="Departure Campsite Cleanup"
+                id="maintenance-departure-cleanup-heading"
+                helpTopic="shell.overview"
+                trailing={<span className="build-chip">Build 073</span>}
+              />
+              <p>
+                Turn campsite checkout into automatic cleanup and site
+                inspection work, keep failed items in canonical maintenance work
+                orders, and release configured rebooking blocks only after
+                clearance.
+              </p>
+              <Link
+                className="primary-link primary-link--dark"
+                href="/workspaces/maintenance/departure-cleanup"
+              >
+                Open departure campsite cleanup
+              </Link>
+            </section>
+            <section
+              className="content-panel"
               aria-labelledby="maintenance-infrastructure-heading"
             >
               <SectionHeading
