@@ -582,7 +582,10 @@ export default async function FacilityUpkeepPage({
 
                         <label className={styles.field}>
                           <span>Fixtures / machines</span>
-                          <select name="fixtureState" defaultValue="operational">
+                          <select
+                            name="fixtureState"
+                            defaultValue="operational"
+                          >
                             <option value="operational">Operational</option>
                             <option value="attention">Needs attention</option>
                             <option value="out_of_service">
@@ -872,8 +875,8 @@ export default async function FacilityUpkeepPage({
             the existing communications and identity controls, while rich
             checklist configuration and evidence review use a secure-link or
             staff-assisted handoff. iCamp records upkeep operations; it does not
-            replace required public-health, accessibility, electrical,
-            plumbing, laundry-equipment or workplace-safety procedures.
+            replace required public-health, accessibility, electrical, plumbing,
+            laundry-equipment or workplace-safety procedures.
           </p>
         </section>
       </div>
