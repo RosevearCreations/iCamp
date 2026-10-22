@@ -51,9 +51,7 @@ async function requireSnapshotPermission(campgroundId: string) {
   return session;
 }
 
-export async function configureFacilityUpkeepProgramAction(
-  formData: FormData,
-) {
+export async function configureFacilityUpkeepProgramAction(formData: FormData) {
   const campgroundId = field(formData, "campgroundId");
   const session = await requireCampgroundPermission(
     campgroundId,
