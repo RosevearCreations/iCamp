@@ -30,12 +30,7 @@ test("Build 070 models washroom, shower and laundry upkeep states", () => {
     "attention",
     "out_of_service",
   ]);
-  assert.deepEqual(supplyStates, [
-    "stocked",
-    "low",
-    "out",
-    "not_applicable",
-  ]);
+  assert.deepEqual(supplyStates, ["stocked", "low", "out", "not_applicable"]);
   assert.ok(facilityIssueKinds.includes("laundry_machine"));
 });
 
@@ -96,10 +91,7 @@ test("Build 070 schema reuses canonical scheduler, inspection and work orders", 
   assert.match(migration, /references public\.inspection_occurrences/iu);
   assert.match(migration, /references public\.maintenance_work_orders/iu);
   assert.match(migration, /force row level security/iu);
-  assert.doesNotMatch(
-    migration,
-    /grant[^;]*delete[^;]*facility_upkeep/iu,
-  );
+  assert.doesNotMatch(migration, /grant[^;]*delete[^;]*facility_upkeep/iu);
   assert.match(
     migration,
     /Work-order status is the sole issue closure authority/u,
