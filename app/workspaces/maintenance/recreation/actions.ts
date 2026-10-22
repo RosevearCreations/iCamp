@@ -52,7 +52,9 @@ async function requireSnapshotPermission(campgroundId: string) {
   return session;
 }
 
-export async function configureRecreationMaintenanceProgramAction(formData: FormData) {
+export async function configureRecreationMaintenanceProgramAction(
+  formData: FormData,
+) {
   const campgroundId = field(formData, "campgroundId");
   const session = await requireCampgroundPermission(
     campgroundId,
@@ -77,7 +79,9 @@ export async function configureRecreationMaintenanceProgramAction(formData: Form
   finish(campgroundId, "Recreation maintenance program saved.");
 }
 
-export async function startRecreationMaintenanceInspectionAction(formData: FormData) {
+export async function startRecreationMaintenanceInspectionAction(
+  formData: FormData,
+) {
   const campgroundId = field(formData, "campgroundId");
   const session = await requireCampgroundPermission(
     campgroundId,
@@ -98,7 +102,9 @@ export async function startRecreationMaintenanceInspectionAction(formData: FormD
   );
 }
 
-export async function recordRecreationMaintenanceSnapshotAction(formData: FormData) {
+export async function recordRecreationMaintenanceSnapshotAction(
+  formData: FormData,
+) {
   const campgroundId = field(formData, "campgroundId");
   const session = await requireSnapshotPermission(campgroundId);
 
@@ -116,7 +122,9 @@ export async function recordRecreationMaintenanceSnapshotAction(formData: FormDa
   finish(campgroundId, "Recreation condition snapshot recorded.");
 }
 
-export async function reportRecreationMaintenanceIssueAction(formData: FormData) {
+export async function reportRecreationMaintenanceIssueAction(
+  formData: FormData,
+) {
   const campgroundId = field(formData, "campgroundId");
   const session = await requireCampgroundPermission(
     campgroundId,
@@ -136,10 +144,15 @@ export async function reportRecreationMaintenanceIssueAction(formData: FormData)
     priorityPolicyId: field(formData, "priorityPolicyId"),
   });
 
-  finish(campgroundId, "Recreation issue escalated to a maintenance work order.");
+  finish(
+    campgroundId,
+    "Recreation issue escalated to a maintenance work order.",
+  );
 }
 
-export async function transitionRecreationAssetStatusAction(formData: FormData) {
+export async function transitionRecreationAssetStatusAction(
+  formData: FormData,
+) {
   const campgroundId = field(formData, "campgroundId");
   const session = await requireCampgroundPermission(
     campgroundId,
