@@ -177,10 +177,10 @@ export default async function InfrastructureMaintenancePage({
           <p className="eyebrow">Build 072 · Infrastructure maintenance</p>
           <h1>Roads, Utilities, Garbage & Septic Maintenance</h1>
           <p className="hero-panel__lead">
-            Run recurring condition checks and inspections, record infrastructure
-            condition, and escalate defects into the existing maintenance
-            work-order engine without creating a second scheduler, checklist or
-            issue-closure system.
+            Run recurring condition checks and inspections, record
+            infrastructure condition, and escalate defects into the existing
+            maintenance work-order engine without creating a second scheduler,
+            checklist or issue-closure system.
           </p>
         </section>
 
