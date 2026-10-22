@@ -1068,19 +1068,35 @@ Promotion evidence:
 - Verify, Browser E2E, database lifecycle/idempotence, production build, dependency audit and JavaScript/TypeScript analysis were GREEN;
 - clean main-based promotion isolated the 12 Build 072 files/edits and preserved Build 071 closeout history.
 
+### Build 073 — Departure Campsite Cleanup
+Status: **FULLY PROMOTED — `main` GREEN.**
+
+Promotion evidence:
+- feature PR #272 and advisor-hardening PR #273;
+- final feature head `8375b5f504fbcb0b1c5d3a690edb8df5d8ebacf1`;
+- exact independently verified production-candidate `dev` SHA `3fea3b34cf38464ed9445c5f574cdb34dba249d2`;
+- hosted migrations `20261022150031 / departure_campsite_cleanup` and `20261022152556 / build073_advisor_hardening`;
+- exact hosted Build 073 verification SQL passed for both migrations;
+- Supabase Security Advisor: zero findings;
+- final Build 073 unindexed-foreign-key findings: zero; only expected INFO-level unused-index notices remain;
+- clean production PR #274 isolated the 17 Build 073 files/edits;
+- production feature `main` SHA `34b0cbbb68f62dbe459de69bcfbd0aede83030f9`;
+- production `main` independently passed Verify, Browser E2E, database lifecycle/idempotence, JavaScript/TypeScript analysis and Gitleaks;
+- Build 068 multi-theme semantic-token prerequisite remains binding for future graphical/style work.
+
 ## Current active build
-**Build 073 — Departure Campsite Cleanup**
+**Build 074 — Cottage Housekeeping & Turnover**
 
 Status: **QUEUED**
 
-Planned scope, advancing historical Build 074:
-- automatic campsite cleanup/inspection task creation from the existing post-checkout departure path;
-- site-type-specific cleanup and inspection checklist handling;
-- configured rebooking block until required cleanup/inspection clearance is complete;
-- reuse of canonical maintenance work orders, recurring/inspection authorities and accommodation status/availability rules rather than duplicate task or booking state;
-- preserve the Build 050 checkout boundary: physical departure remains complete while campsite cleanup becomes the next operational step.
+Planned scope, advancing historical Build 075:
+- rental-cottage cleaning and housekeeping turnover workflow;
+- linen and cottage-inventory checklist handling;
+- damage evidence capture and corrective-work handoff;
+- required inspection/sign-off before releasing the cottage to canonical `available` state;
+- reuse existing Build 027 cottage turnover, Build 065 work orders, Build 068 inspections and Build 030 accommodation status/availability authorities rather than duplicating them.
 
-Next after Build 073: **Build 074 — Cottage Housekeeping & Turnover**, advancing historical Build 075.
+Next after Build 074: **Build 075 — Preventive Maintenance Program**, advancing historical Build 076.
 
 ## Operating rule
 - Work primarily on `dev`.
