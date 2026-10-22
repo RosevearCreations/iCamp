@@ -1052,22 +1052,35 @@ Promotion evidence:
 - Verify, Browser E2E, database lifecycle/idempotence, production build, dependency audit, TypeScript analysis and Gitleaks were GREEN;
 - direct production PR #265 was closed without merge because squash-history divergence made it dirty; the clean main-based promotion preserved Build 070 and isolated the 13 Build 071 changes.
 
+### Build 072 — Roads, Utilities, Garbage & Septic Maintenance
+Status: **FULLY PROMOTED — `main` GREEN.**
+
+Promotion evidence:
+- feature PR #268 and clean production PR #270;
+- final feature head `399549e6132b574f1949926defd24cbff68397b4`;
+- exact independently verified production-candidate `dev` SHA `3e03325fd56d91e9f16d9e4b01460b2d7048e373`;
+- hosted migration `20261022125530 / roads_utilities_garbage_septic_maintenance`;
+- exact hosted Build 072 verification SQL passed;
+- Supabase Security Advisor: zero findings;
+- no Build 072 warning/error or unindexed-foreign-key Performance Advisor finding; only expected INFO-level unused-index notices remain;
+- production feature `main` SHA `2bd712ab81284ff5ae56ccabe215dd9c2841c233`;
+- production `main` independently passed CI #39787429477, analysis #39787429470 and Gitleaks #39787429430;
+- Verify, Browser E2E, database lifecycle/idempotence, production build, dependency audit and JavaScript/TypeScript analysis were GREEN;
+- clean main-based promotion isolated the 12 Build 072 files/edits and preserved Build 071 closeout history.
+
 ## Current active build
-**Build 072 — Roads, Utilities, Garbage & Septic Maintenance**
+**Build 073 — Departure Campsite Cleanup**
 
 Status: **QUEUED**
 
-Planned scope, advancing historical Build 073:
-- roads and parking operational assets;
-- electrical, water and septic utility assets;
-- garbage and recycling areas;
-- recurring/scheduled maintenance using the existing Build 067 scheduler;
-- inspections and sign-off using the existing Build 068 inspection engine;
-- reactive defects and corrective work through the canonical Build 065 work-order engine and Build 066 foreman/escalation;
-- closures/restrictions through canonical Build 030 operational-asset status rather than duplicate state;
-- reuse of the canonical operational-asset registry rather than introducing a second infrastructure inventory.
+Planned scope, advancing historical Build 074:
+- automatic campsite cleanup/inspection task creation from the existing post-checkout departure path;
+- site-type-specific cleanup and inspection checklist handling;
+- configured rebooking block until required cleanup/inspection clearance is complete;
+- reuse of canonical maintenance work orders, recurring/inspection authorities and accommodation status/availability rules rather than duplicate task or booking state;
+- preserve the Build 050 checkout boundary: physical departure remains complete while campsite cleanup becomes the next operational step.
 
-Next after Build 072: **Build 073 — Departure Campsite Cleanup**, advancing historical Build 074.
+Next after Build 073: **Build 074 — Cottage Housekeeping & Turnover**, advancing historical Build 075.
 
 ## Operating rule
 - Work primarily on `dev`.
