@@ -944,8 +944,8 @@ export default async function InfrastructureMaintenancePage({
             helpTopic="shell.channels"
           />
           <p className={styles.boundary}>
-            Web/PWA provides the complete visual program, inspection, condition and
-            corrective-work review. Verified IVR/DTMF or SMS workflows may
+            Web/PWA provides the complete visual program, inspection, condition
+            and corrective-work review. Verified IVR/DTMF or SMS workflows may
             report an infrastructure defect or request supported status facts
             through the existing communications and identity controls, while
             rich checklist configuration and evidence review use a secure-link
