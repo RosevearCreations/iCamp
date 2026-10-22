@@ -157,6 +157,30 @@ export default async function WorkspacePage({
           <>
             <section
               className="content-panel"
+              aria-labelledby="maintenance-recreation-heading"
+            >
+              <SectionHeading
+                eyebrow="Recreation operations"
+                title="Baseball, Sports, Playground & Hall Maintenance"
+                id="maintenance-recreation-heading"
+                helpTopic="shell.overview"
+                trailing={<span className="build-chip">Build 071</span>}
+              />
+              <p>
+                Run recurring field, playground and hall condition checks,
+                restrict or close unsafe assets through the canonical status
+                engine, and escalate defects into canonical maintenance work
+                orders.
+              </p>
+              <Link
+                className="primary-link primary-link--dark"
+                href="/workspaces/maintenance/recreation"
+              >
+                Open recreation maintenance
+              </Link>
+            </section>
+            <section
+              className="content-panel"
               aria-labelledby="maintenance-facility-upkeep-heading"
             >
               <SectionHeading
