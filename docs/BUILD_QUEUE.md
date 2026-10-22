@@ -1036,21 +1036,20 @@ Promotion evidence:
 - Verify, Browser E2E, database lifecycle/idempotence, production build, dependency audit, TypeScript analysis and Gitleaks were GREEN.
 
 ## Current active build
-**Build 071 — Baseball, Sports, Playground & Hall Maintenance**
+**Build 072 — Roads, Utilities, Garbage & Septic Maintenance**
 
 Status: **IMPLEMENTED — PROMOTION PENDING.**
 
 Delivered:
-- baseball/softball, sports-field, playground and hall recreation-maintenance programs;
-- recurring condition checks through the existing Build 067 scheduler and Build 068 inspection engine;
-- append-only surface/floor, safety and amenity/equipment condition evidence;
-- restrictions, closures and return-to-service through canonical Build 030 operational-asset status;
-- corrective defects through canonical Build 065 maintenance work orders with Build 066 foreman/escalation;
+- canonical road, parking, utility, garbage/recycling and septic maintenance programs;
+- recurring work through Build 067 and inspection/sign-off through Build 068;
+- append-only surface/access, safety and infrastructure-service evidence;
+- canonical Build 030 status restrictions/closures and Build 065 work-order escalation;
+- Build 066 foreman/escalation continuity;
 - exact-asset database guards, forced RLS and minimum application-role privileges;
-- Web/PWA recreation workspace with program, inspection, condition, operating-state and corrective-work controls;
-- no duplicate scheduler, checklist, work-order, issue-closure or asset-state authority.
+- Web/PWA infrastructure controls without duplicate inventory, scheduler, checklist, issue closure or operating state.
 
-Next after successful promotion: **Build 072 — Roads, Utilities, Garbage & Septic Maintenance.**
+Next after successful promotion: **Build 073 — Departure Campsite Cleanup.**
 
 ## Operating rule
 - Work primarily on `dev`.
