@@ -101,7 +101,10 @@ test("Build 072 schema reuses canonical scheduler, inspection, work orders and i
   assert.match(migration, /references public\.inspection_templates/iu);
   assert.match(migration, /references public\.inspection_occurrences/iu);
   assert.match(migration, /references public\.maintenance_work_orders/iu);
-  assert.match(migration, /'road','parking','utility','garbage_area','septic_area'/u);
+  assert.match(
+    migration,
+    /'road','parking','utility','garbage_area','septic_area'/u,
+  );
   assert.match(migration, /profile_kind <> facility_type_value/u);
   assert.match(migration, /force row level security/iu);
   assert.doesNotMatch(
