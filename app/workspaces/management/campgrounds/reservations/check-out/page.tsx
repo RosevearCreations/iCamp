@@ -466,7 +466,7 @@ export default async function FrontDeskCheckOutPage({
                 <div className={styles.review + " " + styles.full}>
                   {detail.reservation.accommodationKind === "cottage"
                     ? "A configured Build 027 departure turnover will be reused or created automatically. If no single active departure template is available, checkout still completes but records a configuration-required turnover handoff."
-                    : "The accommodation will enter the post-departure inspection path. Build 074 remains the authority for campsite-specific cleanup task checklists and configured rebooking blocks."}
+                    : "The accommodation will enter the post-departure inspection path. Build 073 (advancing historical Build 074) automatically owns campsite-specific cleanup task checklists and configured rebooking clearance."}
                 </div>
 
                 <button
