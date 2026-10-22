@@ -32,7 +32,7 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: "Baseball, sports, playground & hall maintenance · iCamp",
   description:
-    "Scheduled cleaning, inspection, supply status and corrective maintenance for campground recreation facilities.",
+    "Recurring condition checks, inspections, operating restrictions and corrective maintenance for campground recreation facilities.",
 };
 
 type SearchParams = Promise<{
@@ -102,7 +102,8 @@ export default async function RecreationMaintenancePage({
     selected.campgroundId,
   );
 
-  const [canConfigure, canPerform, canCreate, canComplete, canManageAsset] = await Promise.all([
+  const [canConfigure, canPerform, canCreate, canComplete, canManageAsset] =
+    await Promise.all([
     hasCampgroundPermission(
       session.user.id,
       selected.campgroundId,
@@ -123,8 +124,12 @@ export default async function RecreationMaintenancePage({
       selected.campgroundId,
       "maintenance.complete",
     ),
-    hasCampgroundPermission(session.user.id, selected.campgroundId, "asset.manage"),
-  ]);
+      hasCampgroundPermission(
+        session.user.id,
+        selected.campgroundId,
+        "asset.manage",
+      ),
+    ]);
 
   const canRecord = canCreate || canComplete;
   const programByAsset = new Map(
@@ -144,11 +149,16 @@ export default async function RecreationMaintenancePage({
     (program) => program.isActive,
   ).length;
   const serviceDue = [...latestSnapshotByProgram.values()].filter(
-    (snapshot) => snapshot.surfaceState === "attention" || snapshot.surfaceState === "unsafe" ||
-      snapshot.safetyState === "restrict_use" || snapshot.safetyState === "close_area",
+    (snapshot) =>
+      snapshot.surfaceState === "attention" ||
+      snapshot.surfaceState === "unsafe" ||
+      snapshot.safetyState === "restrict_use" ||
+      snapshot.safetyState === "close_area",
   ).length;
   const supplyAttention = [...latestSnapshotByProgram.values()].filter(
-    (snapshot) => snapshot.amenityState === "attention" || snapshot.amenityState === "out_of_service",
+    (snapshot) =>
+      snapshot.amenityState === "attention" ||
+      snapshot.amenityState === "out_of_service",
   ).length;
   const openIssues = workspace.issues.filter((issue) => !issue.resolved).length;
 
@@ -167,7 +177,7 @@ export default async function RecreationMaintenancePage({
           <p className="eyebrow">Build 071 · Recreation maintenance</p>
           <h1>Baseball, Sports, Playground & Hall Maintenance</h1>
           <p className="hero-panel__lead">
-            Schedule cleaning and inspection, record supply and facility
+            Run recurring condition checks and inspection, record recreation
             condition, and escalate defects into the existing maintenance
             work-order engine without creating a second scheduler, checklist or
             issue-closure system.
@@ -239,7 +249,7 @@ export default async function RecreationMaintenancePage({
         <section className="content-panel" aria-labelledby="summary-heading">
           <SectionHeading
             eyebrow="Management visibility"
-            title="Comfort-recreation maintenance summary"
+            title="Recreation maintenance summary"
             id="summary-heading"
             helpTopic="shell.overview"
             trailing={<span className="build-chip">Build 071</span>}
@@ -276,7 +286,7 @@ export default async function RecreationMaintenancePage({
             helpTopic="shell.overview"
           />
           <p className={styles.boundary}>
-            Each program binds an existing facility asset to one Build 067
+            Each program binds an existing recreation asset to one Build 067
             recurring maintenance schedule and one published Build 068
             inspection template. Generated scheduled work remains a normal Build
             065 maintenance work order.
@@ -284,8 +294,8 @@ export default async function RecreationMaintenancePage({
 
           {workspace.facilities.length === 0 ? (
             <p className={styles.empty}>
-              No eligible washroom/building operational assets exist at this
-              campground yet.
+              No eligible sports-field, playground or hall operational assets exist at
+              this campground yet.
             </p>
           ) : (
             <div className={styles.facilityGrid}>
@@ -305,8 +315,11 @@ export default async function RecreationMaintenancePage({
                 );
                 const defaultKind =
                   program?.profileKind ??
-                  (facility.facilityType === "playground" ? "playground" :
-                    facility.facilityType === "hall" ? "hall" : "sports_field");
+                  facility.facilityType === "playground"
+                    ? "playground"
+                    : facility.facilityType === "hall"
+                      ? "hall"
+                      : "sports_field";
 
                 return (
                   <article className={styles.facilityCard} key={facility.id}>
@@ -357,8 +370,13 @@ export default async function RecreationMaintenancePage({
                                 key={kind}
                                 value={kind}
                                 disabled={
-                                  kind === "washroom" &&
-                                  facility.facilityType !== "washroom"
+                                  (kind === "playground" &&
+                                    facility.facilityType !== "playground") ||
+                                  (kind === "hall" &&
+                                    facility.facilityType !== "hall") ||
+                                  ((kind === "sports_field" ||
+                                    kind === "baseball_softball") &&
+                                    facility.facilityType !== "sports_field")
                                 }
                               >
                                 {formatRecreationMaintenanceKind(kind)}
@@ -890,7 +908,7 @@ export default async function RecreationMaintenancePage({
             checklist configuration and evidence review use a secure-link or
             staff-assisted handoff. iCamp records upkeep operations; it does not
             replace required public-health, accessibility, electrical, plumbing,
-            laundry-equipment or workplace-safety procedures.
+            sports-facility, playground, building or workplace-safety procedures.
           </p>
         </section>
       </div>
