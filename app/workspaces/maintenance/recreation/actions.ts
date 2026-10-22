@@ -139,12 +139,17 @@ export async function reportRecreationMaintenanceIssueAction(formData: FormData)
   finish(campgroundId, "Recreation issue escalated to a maintenance work order.");
 }
 
-
 export async function transitionRecreationAssetStatusAction(formData: FormData) {
   const campgroundId = field(formData, "campgroundId");
-  const session = await requireCampgroundPermission(campgroundId, "asset.manage", path);
+  const session = await requireCampgroundPermission(
+    campgroundId,
+    "asset.manage",
+    path,
+  );
   const expectedRowVersion = Number(field(formData, "assetRowVersion"));
-  if (!Number.isInteger(expectedRowVersion) || expectedRowVersion < 1) throw new Error("Asset row version is required.");
+  if (!Number.isInteger(expectedRowVersion) || expectedRowVersion < 1) {
+    throw new Error("Asset row version is required.");
+  }
   await transitionOperationalAssetStatus({
     actorUserId: session.user.id,
     actorSessionId: session.sessionId,
