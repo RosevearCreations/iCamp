@@ -90,7 +90,7 @@ test("Build 074 Web/PWA exposes configuration, turnover queue and release", () =
   assert.match(page, /Release cottage to availability/u);
   assert.match(page, /Build 027 remains/u);
   assert.match(page, /Build 068 owns/u);
-  assert.match(page, /Build\\s+065 maintenance work orders/u);
+  assert.match(page, /Build 065 corrective work orders/u);
   assert.match(page, /Web\/PWA/u);
   assert.match(page, /IVR\/DTMF/u);
   assert.match(page, /SMS\/MMS/u);
