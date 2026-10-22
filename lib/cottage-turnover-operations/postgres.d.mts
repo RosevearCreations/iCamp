@@ -47,6 +47,7 @@ export interface CottageTurnoverOperationsWorkspace {
     housekeepingTemplateName: string;
     finalInspectionTemplateId: string | null;
     status: string;
+    releaseRequired: boolean;
     scheduledFor: string | null;
     startedAt: string | null;
     completedAt: string | null;
