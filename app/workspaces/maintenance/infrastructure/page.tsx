@@ -286,16 +286,16 @@ export default async function InfrastructureMaintenancePage({
             helpTopic="shell.overview"
           />
           <p className={styles.boundary}>
-            Each program binds an existing canonical infrastructure asset to one Build 067
-            recurring maintenance schedule and one published Build 068
+            Each program binds an existing canonical infrastructure asset to one
+            Build 067 recurring maintenance schedule and one published Build 068
             inspection template. Generated scheduled work remains a normal Build
             065 maintenance work order.
           </p>
 
           {workspace.facilities.length === 0 ? (
             <p className={styles.empty}>
-              No eligible road, parking, utility, garbage/recycling or septic operational assets
-              exist at this campground yet.
+              No eligible road, parking, utility, garbage/recycling or septic
+              operational assets exist at this campground yet.
             </p>
           ) : (
             <div className={styles.facilityGrid}>
@@ -482,7 +482,9 @@ export default async function InfrastructureMaintenancePage({
                     <div className={styles.cardHeader}>
                       <div>
                         <p className={styles.kicker}>
-                          {formatInfrastructureMaintenanceKind(program.profileKind)}
+                          {formatInfrastructureMaintenanceKind(
+                            program.profileKind,
+                          )}
                         </p>
                         <h3>{program.assetName}</h3>
                       </div>
@@ -521,13 +523,15 @@ export default async function InfrastructureMaintenancePage({
                       <div className={styles.snapshotSummary}>
                         <strong>Latest status</strong>
                         <span>
-                          Surface: {formatInfrastructureState(latest.surfaceState)}
+                          Surface:{" "}
+                          {formatInfrastructureState(latest.surfaceState)}
                         </span>
                         <span>
-                          Safety: {formatInfrastructureState(latest.safetyState)}
+                          Safety:{" "}
+                          {formatInfrastructureState(latest.safetyState)}
                         </span>
                         <span>
-                          Amenities:{" "}
+                          Service:{" "}
                           {formatInfrastructureState(latest.serviceState)}
                         </span>
                         <small>
@@ -539,7 +543,8 @@ export default async function InfrastructureMaintenancePage({
                       </div>
                     ) : (
                       <p className={styles.help}>
-                        No infrastructure condition snapshot has been recorded yet.
+                        No infrastructure condition snapshot has been recorded
+                        yet.
                       </p>
                     )}
 
@@ -600,7 +605,9 @@ export default async function InfrastructureMaintenancePage({
                     ) : null}
 
                     {canPerform && program.isActive ? (
-                      <form action={startInfrastructureMaintenanceInspectionAction}>
+                      <form
+                        action={startInfrastructureMaintenanceInspectionAction}
+                      >
                         <input
                           type="hidden"
                           name="campgroundId"
@@ -785,8 +792,10 @@ export default async function InfrastructureMaintenancePage({
                   <div>
                     <strong>{snapshot.assetName}</strong>
                     <p>
-                      {formatInfrastructureMaintenanceKind(snapshot.profileKind)} ·{" "}
-                      {formatInfrastructureState(snapshot.surfaceState)} ·{" "}
+                      {formatInfrastructureMaintenanceKind(
+                        snapshot.profileKind,
+                      )}{" "}
+                      · {formatInfrastructureState(snapshot.surfaceState)} ·{" "}
                       {formatInfrastructureState(snapshot.safetyState)} ·{" "}
                       {formatInfrastructureState(snapshot.serviceState)}
                     </p>
@@ -937,13 +946,13 @@ export default async function InfrastructureMaintenancePage({
           <p className={styles.boundary}>
             Web/PWA provides the complete visual program, supply, checklist and
             corrective-work review. Verified IVR/DTMF or SMS workflows may
-            report a infrastructure defect or request supported status facts through
-            the existing communications and identity controls, while rich
-            checklist configuration and evidence review use a secure-link or
-            staff-assisted handoff. iCamp records upkeep operations; it does not
-            replace required public-health, accessibility, electrical, plumbing,
-            road, parking, utility, garbage, septic or workplace-safety
-            procedures.
+            report an infrastructure defect or request supported status facts
+            through the existing communications and identity controls, while
+            rich checklist configuration and evidence review use a secure-link
+            or staff-assisted handoff. iCamp records upkeep operations; it does
+            not replace required public-health, accessibility, electrical,
+            plumbing, road, parking, utility, garbage, septic or
+            workplace-safety procedures.
           </p>
         </section>
       </div>
