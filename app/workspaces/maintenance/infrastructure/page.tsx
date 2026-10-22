@@ -708,7 +708,7 @@ export default async function InfrastructureMaintenancePage({
                           value={program.id}
                         />
 
-                        <strong>Escalate a infrastructure defect</strong>
+                        <strong>Escalate an infrastructure defect</strong>
 
                         <label className={styles.field}>
                           <span>Issue type</span>
@@ -944,7 +944,7 @@ export default async function InfrastructureMaintenancePage({
             helpTopic="shell.channels"
           />
           <p className={styles.boundary}>
-            Web/PWA provides the complete visual program, supply, checklist and
+            Web/PWA provides the complete visual program, inspection, condition and
             corrective-work review. Verified IVR/DTMF or SMS workflows may
             report an infrastructure defect or request supported status facts
             through the existing communications and identity controls, while
