@@ -104,26 +104,26 @@ export default async function RecreationMaintenancePage({
 
   const [canConfigure, canPerform, canCreate, canComplete, canManageAsset] =
     await Promise.all([
-    hasCampgroundPermission(
-      session.user.id,
-      selected.campgroundId,
-      "maintenance.schedule",
-    ),
-    hasCampgroundPermission(
-      session.user.id,
-      selected.campgroundId,
-      "inspection.perform",
-    ),
-    hasCampgroundPermission(
-      session.user.id,
-      selected.campgroundId,
-      "maintenance.create",
-    ),
-    hasCampgroundPermission(
-      session.user.id,
-      selected.campgroundId,
-      "maintenance.complete",
-    ),
+      hasCampgroundPermission(
+        session.user.id,
+        selected.campgroundId,
+        "maintenance.schedule",
+      ),
+      hasCampgroundPermission(
+        session.user.id,
+        selected.campgroundId,
+        "inspection.perform",
+      ),
+      hasCampgroundPermission(
+        session.user.id,
+        selected.campgroundId,
+        "maintenance.create",
+      ),
+      hasCampgroundPermission(
+        session.user.id,
+        selected.campgroundId,
+        "maintenance.complete",
+      ),
       hasCampgroundPermission(
         session.user.id,
         selected.campgroundId,
@@ -294,8 +294,8 @@ export default async function RecreationMaintenancePage({
 
           {workspace.facilities.length === 0 ? (
             <p className={styles.empty}>
-              No eligible sports-field, playground or hall operational assets exist at
-              this campground yet.
+              No eligible sports-field, playground or hall operational assets
+              exist at this campground yet.
             </p>
           ) : (
             <div className={styles.facilityGrid}>
@@ -315,11 +315,11 @@ export default async function RecreationMaintenancePage({
                 );
                 const defaultKind =
                   program?.profileKind ??
-                  facility.facilityType === "playground"
+                  (facility.facilityType === "playground"
                     ? "playground"
                     : facility.facilityType === "hall"
                       ? "hall"
-                      : "sports_field";
+                      : "sports_field");
 
                 return (
                   <article className={styles.facilityCard} key={facility.id}>
@@ -478,14 +478,17 @@ export default async function RecreationMaintenancePage({
 
           {workspace.programs.length === 0 ? (
             <p className={styles.empty}>
-              Configure a recreation maintenance program before recording operational
-              evidence.
+              Configure a recreation maintenance program before recording
+              operational evidence.
             </p>
           ) : (
             <div className={styles.programGrid}>
               {workspace.programs.map((program) => {
                 const latest = latestSnapshotByProgram.get(program.id) ?? null;
-                const asset = workspace.facilities.find((facility) => facility.id === program.assetId) ?? null;
+                const asset =
+                  workspace.facilities.find(
+                    (facility) => facility.id === program.assetId,
+                  ) ?? null;
 
                 return (
                   <article className={styles.programCard} key={program.id}>
@@ -531,14 +534,14 @@ export default async function RecreationMaintenancePage({
                       <div className={styles.snapshotSummary}>
                         <strong>Latest status</strong>
                         <span>
-                          Surface:{" "}
-                          {formatRecreationState(latest.surfaceState)}
+                          Surface: {formatRecreationState(latest.surfaceState)}
                         </span>
                         <span>
                           Safety: {formatRecreationState(latest.safetyState)}
                         </span>
                         <span>
-                          Amenities: {formatRecreationState(latest.amenityState)}
+                          Amenities:{" "}
+                          {formatRecreationState(latest.amenityState)}
                         </span>
                         <small>
                           {formatDate(
@@ -554,20 +557,58 @@ export default async function RecreationMaintenancePage({
                     )}
 
                     {canManageAsset && asset && program.isActive ? (
-                      <form action={transitionRecreationAssetStatusAction} className={styles.formGrid}>
-                        <input type="hidden" name="campgroundId" value={selected.campgroundId} />
-                        <input type="hidden" name="assetId" value={program.assetId} />
-                        <input type="hidden" name="assetRowVersion" value={asset.rowVersion} />
+                      <form
+                        action={transitionRecreationAssetStatusAction}
+                        className={styles.formGrid}
+                      >
+                        <input
+                          type="hidden"
+                          name="campgroundId"
+                          value={selected.campgroundId}
+                        />
+                        <input
+                          type="hidden"
+                          name="assetId"
+                          value={program.assetId}
+                        />
+                        <input
+                          type="hidden"
+                          name="assetRowVersion"
+                          value={asset.rowVersion}
+                        />
                         <label className={styles.field}>
                           <span>Canonical operating state</span>
-                          <select name="toState" defaultValue={program.operatingState === "closed" ? "operational" : "limited"}>
-                            <option value="limited">Restricted / limited use</option>
+                          <select
+                            name="toState"
+                            defaultValue={
+                              program.operatingState === "closed"
+                                ? "operational"
+                                : "limited"
+                            }
+                          >
+                            <option value="limited">
+                              Restricted / limited use
+                            </option>
                             <option value="closed">Closed</option>
-                            <option value="operational">Return to operational</option>
+                            <option value="operational">
+                              Return to operational
+                            </option>
                           </select>
                         </label>
-                        <label className={styles.field}><span>Reason</span><input name="reason" minLength={4} maxLength={1000} required /></label>
-                        <div className={styles.actions}><button className="primary-button" type="submit">Apply canonical operating state</button></div>
+                        <label className={styles.field}>
+                          <span>Reason</span>
+                          <input
+                            name="reason"
+                            minLength={4}
+                            maxLength={1000}
+                            required
+                          />
+                        </label>
+                        <div className={styles.actions}>
+                          <button className="primary-button" type="submit">
+                            Apply canonical operating state
+                          </button>
+                        </div>
                       </form>
                     ) : null}
 
@@ -611,16 +652,15 @@ export default async function RecreationMaintenancePage({
                             <option value="ready">Ready</option>
                             <option value="attention">Needs attention</option>
                             <option value="unsafe">Unsafe</option>
-                            <option value="not_applicable">Not applicable</option>
+                            <option value="not_applicable">
+                              Not applicable
+                            </option>
                           </select>
                         </label>
 
                         <label className={styles.field}>
                           <span>Safety posture</span>
-                          <select
-                            name="safetyState"
-                            defaultValue="clear"
-                          >
+                          <select name="safetyState" defaultValue="clear">
                             <option value="clear">Clear</option>
                             <option value="monitor">Monitor</option>
                             <option value="restrict_use">Restrict use</option>
@@ -630,10 +670,15 @@ export default async function RecreationMaintenancePage({
 
                         <label className={styles.field}>
                           <span>Amenities / equipment</span>
-                          <select name="amenityState" defaultValue="operational">
+                          <select
+                            name="amenityState"
+                            defaultValue="operational"
+                          >
                             <option value="operational">Operational</option>
                             <option value="attention">Needs attention</option>
-                            <option value="out_of_service">Out of service</option>
+                            <option value="out_of_service">
+                              Out of service
+                            </option>
                             <option value="not_applicable">Not applicable</option>
                           </select>
                         </label>
@@ -908,7 +953,8 @@ export default async function RecreationMaintenancePage({
             checklist configuration and evidence review use a secure-link or
             staff-assisted handoff. iCamp records upkeep operations; it does not
             replace required public-health, accessibility, electrical, plumbing,
-            sports-facility, playground, building or workplace-safety procedures.
+            sports-facility, playground, building or workplace-safety
+            procedures.
           </p>
         </section>
       </div>
