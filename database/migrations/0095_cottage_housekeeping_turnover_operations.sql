@@ -14,6 +14,7 @@ alter table public.cottage_housekeeping_templates
   on delete restrict;
 
 alter table public.cottage_turnovers
+  add column release_required boolean not null default true,
   add column released_at timestamptz,
   add column released_by_user_id uuid
     references icamp_private.user_accounts(id)
@@ -27,6 +28,12 @@ alter table public.cottage_turnovers
     or
     (released_at is not null and released_by_user_id is not null and status='ready')
   );
+
+-- Turnovers already completed before Build 074 are legacy-complete. New and
+-- still-open turnovers require the new final inspection/release path.
+update public.cottage_turnovers
+set release_required=false
+where status in ('ready','cancelled');
 
 create table public.cottage_turnover_inspection_evidence (
   id uuid primary key default gen_random_uuid(),
@@ -136,6 +143,7 @@ begin
        where t.organization_id=new.organization_id
          and t.campground_id=new.campground_id
          and t.accommodation_id=new.id
+         and t.release_required
          and t.status <> 'cancelled'
          and t.released_at is null
      ) then
@@ -194,6 +202,9 @@ with check (
 
 comment on column public.cottage_housekeeping_templates.final_inspection_template_id is
   'Build 074 link from the canonical Build 027 turnover template to the canonical Build 068 cottage inspection template used for final release.';
+
+comment on column public.cottage_turnovers.release_required is
+  'Build 074 compatibility boundary: false only for legacy turnovers already ready/cancelled when the migration was applied; new turnover rows require final release.';
 
 comment on column public.cottage_turnovers.released_at is
   'Build 074 authoritative timestamp proving final signed inspection and corrective-work reconciliation before canonical availability release.';
