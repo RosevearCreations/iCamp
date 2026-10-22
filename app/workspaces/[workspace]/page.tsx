@@ -168,9 +168,9 @@ export default async function WorkspacePage({
               />
               <p>
                 Turn campsite checkout into automatic cleanup and site
-                inspection work, keep failed items in canonical maintenance
-                work orders, and release configured rebooking blocks only
-                after clearance.
+                inspection work, keep failed items in canonical maintenance work
+                orders, and release configured rebooking blocks only after
+                clearance.
               </p>
               <Link
                 className="primary-link primary-link--dark"

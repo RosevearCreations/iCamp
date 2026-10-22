@@ -55,8 +55,7 @@ export async function configureCampsiteDepartureCleanupProgramAction(
     accommodationId: field(formData, "accommodationId"),
     campsiteType: field(formData, "campsiteType"),
     inspectionTemplateId: field(formData, "inspectionTemplateId"),
-    blockRebookingUntilClear:
-      formData.get("blockRebookingUntilClear") === "on",
+    blockRebookingUntilClear: formData.get("blockRebookingUntilClear") === "on",
     notes: optionalField(formData, "notes"),
     isActive: formData.get("isActive") === "on",
   });

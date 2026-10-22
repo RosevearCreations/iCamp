@@ -1,8 +1,6 @@
 export const campsiteTypes: ReadonlyArray<"tent" | "rv" | "mixed">;
 
-export function validateCampsiteType(
-  value: unknown,
-): "tent" | "rv" | "mixed";
+export function validateCampsiteType(value: unknown): "tent" | "rv" | "mixed";
 
 export function validateDepartureCleanupProgramInput(input: {
   accommodationId?: unknown;

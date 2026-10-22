@@ -87,10 +87,7 @@ test("Build 073 schema reuses checkout, Build 068 inspections, Build 065 work or
 
 test("Build 073 service starts canonical site inspections and clears only resolved work", () => {
   const service = fs.readFileSync(
-    new URL(
-      "../lib/campsite-departure-cleanup/postgres.mjs",
-      import.meta.url,
-    ),
+    new URL("../lib/campsite-departure-cleanup/postgres.mjs", import.meta.url),
     "utf8",
   );
 
@@ -100,10 +97,7 @@ test("Build 073 service starts canonical site inspections and clears only resolv
   assert.match(service, /completed','cancelled/u);
   assert.match(service, /status_state='available'/u);
   assert.match(service, /accommodation\.manage/u);
-  assert.doesNotMatch(
-    service,
-    /insert into public\.maintenance_work_orders/u,
-  );
+  assert.doesNotMatch(service, /insert into public\.maintenance_work_orders/u);
 });
 
 test("Build 073 checkout creates the automatic handoff and honors configured rebooking policy", () => {

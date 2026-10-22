@@ -162,9 +162,9 @@ export default async function DepartureCampsiteCleanupPage({
           <h1>Departure Campsite Cleanup</h1>
           <p className="hero-panel__lead">
             Checkout automatically hands campsites into a site-type cleanup
-            queue. Build 068 remains the checklist and sign-off authority,
-            Build 065 remains corrective-work authority, and Build 030 remains
-            the only booking-availability state authority.
+            queue. Build 068 remains the checklist and sign-off authority, Build
+            065 remains corrective-work authority, and Build 030 remains the
+            only booking-availability state authority.
           </p>
         </section>
 
@@ -237,11 +237,10 @@ export default async function DepartureCampsiteCleanupPage({
           </div>
           <p className={styles.boundary}>
             Physical checkout remains complete even when cleanup configuration
-            is missing. A campsite stays in canonical{" "}
-            <code>inspection</code> status by default; only a configured
-            non-blocking program permits immediate return to{" "}
-            <code>available</code>. Cleanup clearance never invents a second
-            booking-state flag.
+            is missing. A campsite stays in canonical <code>inspection</code>{" "}
+            status by default; only a configured non-blocking program permits
+            immediate return to <code>available</code>. Cleanup clearance never
+            invents a second booking-state flag.
           </p>
         </section>
 
@@ -257,8 +256,7 @@ export default async function DepartureCampsiteCleanupPage({
               const program = programByAccommodation.get(campsite.id);
               const templates = workspace.templates.filter(
                 (template) =>
-                  template.accommodationId === campsite.id &&
-                  template.isActive,
+                  template.accommodationId === campsite.id && template.isActive,
               );
 
               return (
@@ -272,16 +270,12 @@ export default async function DepartureCampsiteCleanupPage({
                         {campsite.code} · {campsite.name}
                       </h3>
                     </div>
-                    <span className={styles.state}>
-                      {campsite.statusState}
-                    </span>
+                    <span className={styles.state}>{campsite.statusState}</span>
                   </header>
 
                   {canConfigure && templates.length > 0 ? (
                     <form
-                      action={
-                        configureCampsiteDepartureCleanupProgramAction
-                      }
+                      action={configureCampsiteDepartureCleanupProgramAction}
                       className={styles.formGrid}
                     >
                       <input
@@ -316,9 +310,7 @@ export default async function DepartureCampsiteCleanupPage({
                           {templates.map((template) => (
                             <option key={template.id} value={template.id}>
                               {template.name} · v{template.versionNumber}
-                              {template.signoffRequired
-                                ? " · sign-off"
-                                : ""}
+                              {template.signoffRequired ? " · sign-off" : ""}
                             </option>
                           ))}
                         </select>
@@ -401,8 +393,7 @@ export default async function DepartureCampsiteCleanupPage({
                   canClear &&
                   task.inspectionStatus === "signed_off" &&
                   task.openCorrectiveWorkOrders === 0 &&
-                  (!task.blockRebookingUntilClear ||
-                    canManageAccommodation) &&
+                  (!task.blockRebookingUntilClear || canManageAccommodation) &&
                   !task.clearedAt;
 
                 return (
@@ -438,7 +429,9 @@ export default async function DepartureCampsiteCleanupPage({
                       </span>
                       <span>
                         Inspection:{" "}
-                        <strong>{task.inspectionStatus ?? "not started"}</strong>
+                        <strong>
+                          {task.inspectionStatus ?? "not started"}
+                        </strong>
                       </span>
                       <span>
                         Corrective work:{" "}
@@ -462,20 +455,14 @@ export default async function DepartureCampsiteCleanupPage({
                     canPerform &&
                     !task.clearedAt ? (
                       <form
-                        action={
-                          startCampsiteDepartureCleanupInspectionAction
-                        }
+                        action={startCampsiteDepartureCleanupInspectionAction}
                       >
                         <input
                           type="hidden"
                           name="campgroundId"
                           value={selected.campgroundId}
                         />
-                        <input
-                          type="hidden"
-                          name="taskId"
-                          value={task.id}
-                        />
+                        <input type="hidden" name="taskId" value={task.id} />
                         <button className="primary-button" type="submit">
                           Start campsite cleanup inspection
                         </button>
@@ -508,19 +495,13 @@ export default async function DepartureCampsiteCleanupPage({
                     ) : null}
 
                     {mayClear ? (
-                      <form
-                        action={clearCampsiteDepartureCleanupTaskAction}
-                      >
+                      <form action={clearCampsiteDepartureCleanupTaskAction}>
                         <input
                           type="hidden"
                           name="campgroundId"
                           value={selected.campgroundId}
                         />
-                        <input
-                          type="hidden"
-                          name="taskId"
-                          value={task.id}
-                        />
+                        <input type="hidden" name="taskId" value={task.id} />
                         <input
                           type="hidden"
                           name="rowVersion"
