@@ -445,7 +445,7 @@ export default async function PreventiveMaintenancePage({
                   {workspace.schedules.map((schedule) => (
                     <option key={schedule.id} value={schedule.id}>
                       {schedule.assetName} · {schedule.title} ·{" "}
-                      {recurrenceLabel(schedule.recurrenceKind)}
+                      {recurrenceLabel(schedule)}
                     </option>
                   ))}
                 </select>
@@ -515,7 +515,7 @@ export default async function PreventiveMaintenancePage({
                     </p>
                     <p>
                       Interval:{" "}
-                      <strong>{recurrenceLabel(program.recurrenceKind)}</strong>{" "}
+                      <strong>{recurrenceLabel(program)}</strong>{" "}
                       · Next service{" "}
                       <strong>
                         {formatDate(
