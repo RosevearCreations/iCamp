@@ -27,9 +27,20 @@ begin
       raise exception 'Build 078 table % must enable and force RLS', table_name;
     end if;
 
-    if has_table_privilege('anon','public.' || table_name,'SELECT')
-       or has_table_privilege('authenticated','public.' || table_name,'SELECT') then
-      raise exception 'Build 078 table % exposes direct browser SELECT', table_name;
+    if exists (select 1 from pg_roles where rolname='anon')
+       and has_table_privilege('anon','public.' || table_name,'SELECT') then
+      raise exception 'Build 078 table % exposes direct anon SELECT', table_name;
+    end if;
+
+    if exists (select 1 from pg_roles where rolname='authenticated')
+       and has_table_privilege(
+         'authenticated',
+         'public.' || table_name,
+         'SELECT'
+       ) then
+      raise exception
+        'Build 078 table % exposes direct authenticated SELECT',
+        table_name;
     end if;
   end loop;
 
