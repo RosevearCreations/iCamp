@@ -47,6 +47,7 @@ export const permissions = [
   "maintenance.escalate",
   "maintenance.schedule",
   "maintenance.preventive",
+  "maintenance.offline.media",
   "inspection.perform",
   "inspection.signoff",
   "inspection.template.manage",

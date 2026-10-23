@@ -83,6 +83,20 @@ export async function POST(request: Request) {
     if (!authorization) {
       return NextResponse.json({ error: "Not authorized." }, { status: 403 });
     }
+    const evidenceAllowed = [
+      "maintenance.create",
+      "maintenance.assign",
+      "maintenance.complete",
+    ].some((permission) => authorization.permissions.includes(permission));
+    if (
+      !authorization.permissions.includes("maintenance.offline.media") ||
+      !evidenceAllowed
+    ) {
+      return NextResponse.json(
+        { error: "Offline maintenance media permission is required." },
+        { status: 403 },
+      );
+    }
 
     const bytes = new Uint8Array(await source.arrayBuffer());
     const validation = validateMediaUpload({

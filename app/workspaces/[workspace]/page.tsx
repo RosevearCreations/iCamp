@@ -157,6 +157,29 @@ export default async function WorkspacePage({
           <>
             <section
               className="content-panel"
+              aria-labelledby="maintenance-offline-heading"
+            >
+              <SectionHeading
+                eyebrow="Field continuity"
+                title="Offline Maintenance Workspace"
+                id="maintenance-offline-heading"
+                helpTopic="shell.overview"
+                trailing={<span className="build-chip">Build 076</span>}
+              />
+              <p>
+                Cache assigned field work, record notes, checklist answers and
+                validated media without a signal, then reconcile conflicts
+                safely after reconnecting without allowing offline finalization.
+              </p>
+              <Link
+                className="primary-link primary-link--dark"
+                href="/workspaces/maintenance/offline"
+              >
+                Open offline maintenance
+              </Link>
+            </section>
+            <section
+              className="content-panel"
               aria-labelledby="maintenance-preventive-heading"
             >
               <SectionHeading

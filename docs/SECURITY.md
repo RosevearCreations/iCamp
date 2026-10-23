@@ -78,6 +78,7 @@ At minimum:
 - maintenance.escalate
 - maintenance.schedule
 - maintenance.preventive
+- maintenance.offline.media
 - inspection.perform
 - inspection.signoff
 - inspection.template.manage
@@ -730,3 +731,25 @@ Web/PWA, IVR/DTMF and SMS may enqueue the same canonical job types, but queueing
 - Provider control events are idempotent and append-only.
 - Preference evidence never copies raw message bodies, phone numbers or endpoint values.
 - I.T. diagnostics expose counts only.
+
+
+## Offline maintenance device boundary
+
+Build 076 keeps offline field evidence within the existing maintenance and
+inspection authorities rather than creating a second task system.
+
+- cached snapshots contain only work assigned to the signed-in staff member and
+  that staff member's in-progress inspections;
+- queued notes, checklist answers and media remain device-local until sync;
+- sync is idempotent through append-only client-operation receipts and rejects
+  stale row versions instead of overwriting newer server state;
+- `maintenance.offline.media` is a narrow standard-risk authority for validated
+  **internal** maintenance evidence only; it does not grant general
+  `media.manage`;
+- offline mode cannot complete/cancel work orders, submit/sign off inspections,
+  change assignments, resolve escalations or perform another final/high-risk
+  transition;
+- the service worker caches a public offline shell and static assets, not an
+  authenticated server-rendered maintenance page;
+- operators can explicitly clear the IndexedDB snapshot and pending queue from
+  the device.
