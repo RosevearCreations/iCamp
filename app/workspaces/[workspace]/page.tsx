@@ -157,6 +157,30 @@ export default async function WorkspacePage({
           <>
             <section
               className="content-panel"
+              aria-labelledby="maintenance-preventive-heading"
+            >
+              <SectionHeading
+                eyebrow="Preventive operations"
+                title="Preventive Maintenance Program"
+                id="maintenance-preventive-heading"
+                helpTopic="shell.overview"
+                trailing={<span className="build-chip">Build 075</span>}
+              />
+              <p>
+                Create reusable facility and equipment service templates, bind
+                them to canonical recurring schedules, and review overdue work,
+                parts/materials and labour history through one maintenance
+                authority.
+              </p>
+              <Link
+                className="primary-link primary-link--dark"
+                href="/workspaces/maintenance/preventive"
+              >
+                Open preventive maintenance
+              </Link>
+            </section>
+            <section
+              className="content-panel"
               aria-labelledby="maintenance-cottage-turnover-heading"
             >
               <SectionHeading
