@@ -562,11 +562,29 @@ export const helpTopics = {
       "Requests are accepted only for a checked-in reservation owned by the signed-in guest, and the server derives the campground and accommodation from that canonical stay.",
       "Choose maintenance, garbage, septic, electrical, water, Wi-Fi, noise, security, rental, store or other. Routine, soon and urgent describe campground response priority; urgent is not emergency dispatch.",
       "Optional images and PDFs reuse the Build 008 secure-media validator and internal storage boundary. A request can have up to five attachments.",
-      "Build 077 records immutable intake evidence. Build 078 owns reclassification, assignment, escalation, guest communication, outcome and closure.",
+      "Build 077 records immutable intake evidence. Build 078 now tracks operational classification, assignment, escalation, guest-visible updates and closure without rewriting the original report.",
       "Web/PWA provides the full intake. Verified IVR/DTMF and SMS/MMS use the same canonical request command, with secure-link or staff-assisted handoff for visual evidence when needed.",
     ],
     audience: "public",
     related: ["customer.input"],
+  },
+
+  "camper.assistance.triage": {
+    id: "camper.assistance.triage",
+    slug: "camper-assistance-triage-management",
+    title: "Assistance triage and escalation",
+    summary:
+      "Build 078 gives authorized campground staff one operational queue for reclassification, assignment, management escalation, guest-visible updates and outcome-based closure.",
+    details: [
+      "The camper's Build 077 category, priority, text and media remain immutable intake evidence. Operational reclassification is stored separately.",
+      "Triage can change the operational category/priority and assign an active staff member at the same campground. Every change uses optimistic row-version checks and append-only event evidence.",
+      "Management escalation is explicit and campground-scoped. An escalation may be acknowledged and resolved, but it never means emergency services were contacted.",
+      "Guest communication records an in-app update or a staff contact record for email, SMS or phone. Build 078 does not claim provider delivery unless a later canonical provider workflow actually performs it.",
+      "Closing requires assistance.close authority, a final outcome code and a guest-visible summary. Active management escalation must be resolved first.",
+      "Web/PWA is the full visual console. Verified staff IVR/DTMF or SMS can use the same canonical commands only when the existing identity, authorization and input limits can safely represent the action.",
+    ],
+    audience: "privileged",
+    related: ["camper.assistance.request", "shell.channels"],
   },
 
   "customer.input": {

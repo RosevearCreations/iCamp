@@ -1099,44 +1099,46 @@ Promotion evidence:
 - Verify, Browser E2E, database lifecycle/idempotence, production build, dependency audit, JavaScript/TypeScript analysis and Gitleaks were GREEN.
 
 ## Most recently fully promoted build
-**Build 076 — Offline Maintenance Workspace**
+**Build 077 — Camper Assistance Request Interface**
 
 Status: **FULLY PROMOTED — `main` GREEN**
 
 Production evidence:
-- production `main` SHA `970d85ad4554079f868ed4837673fe370fc2f5ec`;
-- exact production push passed CI #39956044346, CodeQL #39956044360 and
-  Secret Scan #39956044408;
+- exact production-candidate `dev` SHA `8a83abd00c295dea5879f5c332a801d4c2dc7e84`;
+- production `main` SHA `f82c0402fbccdcea5512a5469b574f07ca635f67`;
+- exact production push passed CI #39993067353, CodeQL #39993067258 and
+  Secret Scan #39993067391;
 - CI Verify, Database migrations and Browser end-to-end all completed
   successfully on that exact production SHA;
-- hosted migration `offline_maintenance_workspace` applied and repository
-  verification SQL passed;
+- hosted Build 077 migrations and exact verification SQL passed;
 - Supabase Security Advisor returned zero findings.
 
 ## Current delivery target
-**Build 077 — Camper Assistance Request Interface**
+**Build 078 — Assistance Triage & Management Escalation**
 
-Scope, advancing historical Build 078:
-- canonical checked-in-stay assistance intake for maintenance, garbage, septic,
-  electrical, water, Wi-Fi, noise, security, rental, store and other requests;
-- routine/soon/urgent campground response priority with explicit emergency
-  services boundary;
-- optional text, contact preference and validated internal media;
-- guest-visible request history linked to the canonical reservation and
-  accommodation;
-- duplicate-safe client request IDs and append-only intake/media evidence;
-- forced RLS with no direct anonymous/authenticated Data API access;
-- My Stay integration and dedicated contextual help;
-- Web/PWA full flow with verified IVR/DTMF and SMS/MMS parity contract.
+Scope, advancing historical Build 079:
+- separate operational case projection over immutable Build 077 camper intake;
+- reclassification of operational category and priority without rewriting the
+  original guest evidence;
+- campground-scoped assignment to active staff;
+- dedicated assistance triage, escalation, communication and close authorities;
+- append-only internal notes and guest-visible communication evidence;
+- explicit management escalation with acknowledge/resolve lifecycle;
+- terminal outcome-based closure after active escalation is resolved;
+- optimistic row-version protection for case/escalation mutations;
+- Management workspace queue plus My Stay operational status/update visibility;
+- FORCE RLS and no direct anonymous/authenticated Data API access;
+- Web/PWA full console with verified IVR/DTMF and SMS secure-handoff parity.
 
-Next after Build 077: **Build 078 — Assistance Triage & Management Escalation**,
-advancing historical Build 079.
+Next after Build 078: **Build 079 — Garbage Service Models**,
+advancing historical Build 080.
 
-### Queue horizon after Build 077
+### Queue horizon after Build 078
 - immediate detailed queue remaining after successful promotion:
-  **Builds 078–081 (4 builds)**;
-- broader active roadmap after Build 077: **Builds 078–156 (79 builds)**;
+  **Builds 079–081 (3 builds)**;
+- broader active roadmap after Build 078: **Builds 079–156 (78 builds)**;
 - the existing several-build planning batch remains sufficient through Build 081.
+
 ## Operating rule
 - Work primarily on `dev`.
 - Promote to `main` only after applicable gates are GREEN.
