@@ -121,6 +121,21 @@ export default async function GarbageServicesPage({
         </section>
         <section className="content-panel">
           <SectionHeading
+            id="garbage-tags-link"
+            eyebrow="Paid pickup"
+            title="Paid stickers & tags"
+            helpTopic="garbage.tags"
+          />
+          <p>
+            Issue one-use paid waste tags from verified receipt evidence and
+            redeem them against a matching on-demand pickup.
+          </p>
+          <Link href="/workspaces/maintenance/garbage/tags">
+            Open paid tag register & redemption
+          </Link>
+        </section>
+        <section className="content-panel">
+          <SectionHeading
             eyebrow="Campground"
             title="Service scope"
             id="garbage-scope"
