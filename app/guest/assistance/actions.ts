@@ -131,7 +131,7 @@ export async function createCamperAssistanceRequestAction(formData: FormData) {
   const reservationId = text(formData, "reservationId");
   const path = pathFor(reservationId);
   const session = await guestSession(path);
-  let createdRequestId: string | null = null;
+  let attachmentError: string | null = null;
 
   try {
     const result = await createCamperAssistanceRequest({
@@ -148,7 +148,7 @@ export async function createCamperAssistanceRequestAction(formData: FormData) {
       },
     });
 
-    createdRequestId = result.request?.id ?? null;
+    const createdRequestId = result.request?.id ?? null;
     const file = formData.get("file");
     if (file instanceof File && file.size > 0 && createdRequestId) {
       try {
@@ -158,17 +158,7 @@ export async function createCamperAssistanceRequestAction(formData: FormData) {
           file,
         });
       } catch (error) {
-        revalidatePath(path);
-        redirect(
-          path +
-            "&saved=" +
-            encodeURIComponent("Assistance request submitted.") +
-            "&error=" +
-            encodeURIComponent(
-              "The request is saved, but its attachment was not added: " +
-                errorMessage(error),
-            ),
-        );
+        attachmentError = errorMessage(error);
       }
     }
 
@@ -177,7 +167,20 @@ export async function createCamperAssistanceRequestAction(formData: FormData) {
     redirect(path + "&error=" + encodeURIComponent(errorMessage(error)));
   }
 
-  redirect(path + "&saved=" + encodeURIComponent("Assistance request submitted."));
+  const saved = "&saved=" + encodeURIComponent("Assistance request submitted.");
+  if (attachmentError) {
+    redirect(
+      path +
+        saved +
+        "&error=" +
+        encodeURIComponent(
+          "The request is saved, but its attachment was not added: " +
+            attachmentError,
+        ),
+    );
+  }
+
+  redirect(path + saved);
 }
 
 export async function addCamperAssistanceMediaAction(formData: FormData) {
