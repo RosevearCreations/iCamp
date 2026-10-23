@@ -133,4 +133,6 @@ test("Build 079 operations never claim external payment or duplicate maintenance
   assert.doesNotMatch(service, /payment\.capture|charge\(/u);
   assert.match(ui, /pending checkout/u);
   assert.match(ui, /garbage\.services/u);
+  assert.match(service, /icamp-garbage-request:/u);
+  assert.match(service, /pg_advisory_xact_lock/u);
 });
