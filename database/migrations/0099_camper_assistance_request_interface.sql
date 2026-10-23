@@ -308,9 +308,11 @@ using (
   exists (
     select 1
     from public.camper_assistance_requests r
-    where r.id = request_id
-      and r.organization_id = camper_assistance_requests.organization_id
-      and r.campground_id = camper_assistance_requests.campground_id
+    where r.id = camper_assistance_request_events.request_id
+      and r.organization_id =
+        camper_assistance_request_events.organization_id
+      and r.campground_id =
+        camper_assistance_request_events.campground_id
       and (
         r.guest_user_id =
           nullif((select current_setting('icamp.user_id',true)),'')::uuid
@@ -344,11 +346,13 @@ with check (
   and exists (
     select 1
     from public.camper_assistance_requests r
-    where r.id = request_id
-      and r.organization_id = camper_assistance_requests.organization_id
-      and r.campground_id = camper_assistance_requests.campground_id
+    where r.id = camper_assistance_request_events.request_id
+      and r.organization_id =
+        camper_assistance_request_events.organization_id
+      and r.campground_id =
+        camper_assistance_request_events.campground_id
       and (
-        r.guest_user_id = actor_user_id
+        r.guest_user_id = camper_assistance_request_events.actor_user_id
         or icamp_private.has_campground_permission(
           r.campground_id,
           'reservation.read'
@@ -377,9 +381,11 @@ using (
   exists (
     select 1
     from public.camper_assistance_requests r
-    where r.id = request_id
-      and r.organization_id = camper_assistance_requests.organization_id
-      and r.campground_id = camper_assistance_requests.campground_id
+    where r.id = camper_assistance_request_media.request_id
+      and r.organization_id =
+        camper_assistance_request_media.organization_id
+      and r.campground_id =
+        camper_assistance_request_media.campground_id
       and (
         r.guest_user_id =
           nullif((select current_setting('icamp.user_id',true)),'')::uuid
@@ -413,10 +419,13 @@ with check (
   and exists (
     select 1
     from public.camper_assistance_requests r
-    where r.id = request_id
-      and r.organization_id = camper_assistance_requests.organization_id
-      and r.campground_id = camper_assistance_requests.campground_id
-      and r.guest_user_id = created_by_user_id
+    where r.id = camper_assistance_request_media.request_id
+      and r.organization_id =
+        camper_assistance_request_media.organization_id
+      and r.campground_id =
+        camper_assistance_request_media.campground_id
+      and r.guest_user_id =
+        camper_assistance_request_media.created_by_user_id
   )
 );
 
