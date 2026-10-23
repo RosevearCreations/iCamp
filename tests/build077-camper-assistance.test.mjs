@@ -71,7 +71,10 @@ test("Build 077 request fingerprints are deterministic and payload-sensitive", (
       contactPreference: "in_app",
     },
   };
-  assert.equal(camperAssistanceFingerprint(base), camperAssistanceFingerprint(base));
+  assert.equal(
+    camperAssistanceFingerprint(base),
+    camperAssistanceFingerprint(base),
+  );
   assert.notEqual(
     camperAssistanceFingerprint(base),
     camperAssistanceFingerprint({
