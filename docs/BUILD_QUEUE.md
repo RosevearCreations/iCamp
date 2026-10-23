@@ -1084,19 +1084,40 @@ Promotion evidence:
 - production `main` independently passed Verify, Browser E2E, database lifecycle/idempotence, JavaScript/TypeScript analysis and Gitleaks;
 - Build 068 multi-theme semantic-token prerequisite remains binding for future graphical/style work.
 
+### Build 074 — Cottage Housekeeping & Turnover
+Status: **FULLY PROMOTED — `main` GREEN.**
+
+Promotion evidence:
+- feature PR #282 and production PR #283;
+- final feature head `1b996768e8be20136abc8d4cdda45e503101cba7`;
+- exact production-candidate `dev` SHA `933029e0743273f6ba84bbfc08df6f4ec069d2fe`;
+- hosted migration `20261022190122 / cottage_housekeeping_turnover_operations`;
+- exact hosted Build 074 verification SQL passed;
+- Supabase Security Advisor: zero findings;
+- production `main` SHA `56d84e8f50226742ff511b95f19dbfb3026687bc`;
+- production `main` independently passed CI #39838203949, CodeQL #39838203417 and Secret Scan #39838203443;
+- Verify, Browser E2E, database lifecycle/idempotence, production build, dependency audit, JavaScript/TypeScript analysis and Gitleaks were GREEN.
+
 ## Current active build
-**Build 074 — Cottage Housekeeping & Turnover**
+**Build 075 — Preventive Maintenance Program**
 
-Status: **QUEUED**
+Status: **IMPLEMENTED — promotion in progress**
 
-Planned scope, advancing historical Build 075:
-- rental-cottage cleaning and housekeeping turnover workflow;
-- linen and cottage-inventory checklist handling;
-- damage evidence capture and corrective-work handoff;
-- required inspection/sign-off before releasing the cottage to canonical `available` state;
-- reuse existing Build 027 cottage turnover, Build 065 work orders, Build 068 inspections and Build 030 accommodation status/availability authorities rather than duplicating them.
+Scope, advancing historical Build 076:
+- reusable preventive-maintenance service templates for canonical facilities and equipment;
+- service intervals remain owned by the Build 067 recurring scheduler;
+- exact asset/template/schedule program binding;
+- overdue preventive-work visibility;
+- parts/material and labour history remain owned by Build 065 work-order evidence;
+- Web/PWA full workflow with safe IVR/DTMF and SMS/MMS status/handoff boundaries;
+- forced RLS, minimum grants, audit evidence and immutable deactivate-and-replace definitions.
 
-Next after Build 074: **Build 075 — Preventive Maintenance Program**, advancing historical Build 076.
+Next after Build 075: **Build 076 — Offline Maintenance Workspace**, advancing historical Build 077.
+
+### Queue horizon after Build 075
+- immediate detailed queue: **Builds 076–081 (6 builds)**;
+- broader active roadmap after Build 075: **Builds 076–156 (81 builds)**;
+- a new several-build planning list is not required yet because Builds 076–081 are already scoped in sequence.
 
 ## Operating rule
 - Work primarily on `dev`.
