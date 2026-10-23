@@ -11,6 +11,21 @@ export interface HelpTopic {
 }
 
 export const helpTopics = {
+  "garbage.services": {
+    id: "garbage.services",
+    slug: "garbage-service-models",
+    title: "Garbage, Recycling & Organics",
+    summary:
+      "Configure which waste streams and pickup methods are available at each campground, then dispatch and track site pickups.",
+    details: [
+      "Each stream can use central self-service bins, included site pickup, scheduled site pickup or paid on-demand pickup. Enable only methods actually offered at this campground.",
+      "Scheduled pickup requires a weekday. Central-bin instructions should give a clear bin location. Paid on-demand fees are entered in Canadian cents.",
+      "A pickup request snapshots the fee when created. A paid request is marked pending checkout; recording or completing service never means money was collected.",
+      "Staff progress requests from requested to scheduled, in progress and completed; cancellation is available before completion. Completed or cancelled records cannot be reopened.",
+      "Use the canonical booking, payment and maintenance systems for reservations, receipts and work orders. Waste service operations do not replace them.",
+    ],
+    audience: "operational",
+  },
   "shell.overview": {
     id: "shell.overview",
     slug: "application-overview",
