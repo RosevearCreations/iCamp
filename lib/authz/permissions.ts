@@ -46,6 +46,7 @@ export const permissions = [
   "maintenance.triage",
   "maintenance.escalate",
   "maintenance.schedule",
+  "maintenance.preventive",
   "inspection.perform",
   "inspection.signoff",
   "inspection.template.manage",
