@@ -70,8 +70,8 @@ This matrix cross-checks the complete iCamp vision against the restarted active 
 | Departure campsite cleanup | 074 |
 | Cottage housekeeping/turnover | 075 |
 | Preventive maintenance | 076 |
-| Offline field maintenance | 077 |
-| Camper assistance/problems/severity | 078-079 |
+| Offline field maintenance | 076 |
+| Camper assistance/problems/severity | 077-078 |
 | Garbage bins/site pickup/scheduled/paid collection | 080 |
 | Paid garbage stickers/tags | 081, 123 |
 | Versioned campground/facility rules | 082 |
