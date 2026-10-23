@@ -1,7 +1,7 @@
 # Build 076 — Offline Maintenance Workspace
 
 ## Status
-**IMPLEMENTED — validation and promotion in progress.**
+**FULLY PROMOTED — `main` GREEN.**
 
 ## Queue authority
 Build 076 advances the active maintenance roadmap after Build 075 and implements
@@ -108,6 +108,12 @@ is reused.
 
 ## Manual action
 **None expected.**
+
+## Production evidence
+- `main` production SHA `970d85ad4554079f868ed4837673fe370fc2f5ec`;
+- exact production push CI #39956044346, CodeQL #39956044360 and Secret Scan #39956044408 all GREEN;
+- hosted `offline_maintenance_workspace` migration and repository verification SQL passed;
+- Supabase Security Advisor returned zero findings.
 
 ## Next build after successful promotion
 **Build 077 — Camper Assistance Request Interface**, advancing historical
