@@ -34,13 +34,15 @@ A preventive program binds one canonical asset, one preventive template and one 
 
 ## Database
 
-Migration:
+Migrations:
 
 - `database/migrations/0096_preventive_maintenance_program.sql`
+- `database/migrations/0097_build075_advisor_hardening.sql`
 
 Verification:
 
 - `database/verify/0096_preventive_maintenance_program.sql`
+- `database/verify/0097_build075_advisor_hardening.sql`
 
 The migration adds:
 
@@ -49,7 +51,8 @@ The migration adds:
 - `preventive_maintenance_programs`;
 - exact asset/template/schedule binding guards;
 - immutable template and program definition guards;
-- forced RLS and explicit public/anon/authenticated revocation.
+- forced RLS and explicit public/anon/authenticated revocation;
+- covering indexes for the scoped asset, template and recurring-schedule foreign keys reported by the Supabase Performance Advisor.
 
 No duplicate service-event or completion table is created. Service history is derived from existing schedule occurrences and work orders.
 
