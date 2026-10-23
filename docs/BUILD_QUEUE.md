@@ -1098,26 +1098,49 @@ Promotion evidence:
 - production `main` independently passed CI #39838203949, CodeQL #39838203417 and Secret Scan #39838203443;
 - Verify, Browser E2E, database lifecycle/idempotence, production build, dependency audit, JavaScript/TypeScript analysis and Gitleaks were GREEN.
 
-## Current active build
+## Most recently fully promoted build
 **Build 075 — Preventive Maintenance Program**
 
-Status: **IMPLEMENTED — promotion in progress**
+Status: **FULLY PROMOTED — `main` GREEN**
 
-Scope, advancing historical Build 076:
-- reusable preventive-maintenance service templates for canonical facilities and equipment;
-- service intervals remain owned by the Build 067 recurring scheduler;
-- exact asset/template/schedule program binding;
-- overdue preventive-work visibility;
-- parts/material and labour history remain owned by Build 065 work-order evidence;
-- Web/PWA full workflow with safe IVR/DTMF and SMS/MMS status/handoff boundaries;
-- forced RLS, minimum grants, audit evidence and immutable deactivate-and-replace definitions.
+Production evidence:
+- production `main` SHA `712f567e5e85791282a0113a2f544098f24b6039`;
+- exact production push passed CI #39895135772, CodeQL #39895135879 and Secret Scan #39895135784;
+- hosted migrations `preventive_maintenance_program` and
+  `build075_advisor_hardening` applied and verified;
+- Supabase Security Advisor returned zero findings;
+- Build 075 unindexed-foreign-key findings were reduced to zero.
 
-Next after Build 075: **Build 076 — Offline Maintenance Workspace**, advancing historical Build 077.
+## Current active build
+**Build 076 — Offline Maintenance Workspace**
 
-### Queue horizon after Build 075
-- immediate detailed queue: **Builds 076–081 (6 builds)**;
-- broader active roadmap after Build 075: **Builds 076–156 (81 builds)**;
-- a new several-build planning list is not required yet because Builds 076–081 are already scoped in sequence.
+Status: **IMPLEMENTED — validation and promotion in progress**
+
+Scope, advancing historical Build 077:
+- cache only maintenance work assigned to the current staff member;
+- cache the current staff member's in-progress Build 068 inspection checklists;
+- device-local IndexedDB queue for work-order notes, checklist answers and
+  internal field media;
+- durable append-only client-operation receipts for idempotent retries;
+- optimistic row-version conflict detection before queued evidence is applied;
+- automatic retry after reconnect with explicit conflict/blocked state retained
+  for review;
+- secure-media validation and restricted internal evidence upload without broad
+  media-management authority;
+- static PWA fallback shell so authenticated maintenance pages do not need to be
+  cached for offline cold-start access;
+- explicit prohibition on offline completion/cancellation, inspection
+  submission/sign-off, assignment, escalation resolution and other final or
+  high-risk actions.
+
+Next after Build 076: **Build 077 — Camper Assistance Request Interface**,
+advancing historical Build 078.
+
+### Queue horizon after Build 076
+- immediate detailed queue remaining after successful promotion:
+  **Builds 077–081 (5 builds)**;
+- broader active roadmap after Build 076: **Builds 077–156 (80 builds)**;
+- the existing several-build planning batch remains sufficient through Build 081.
 
 ## Operating rule
 - Work primarily on `dev`.
