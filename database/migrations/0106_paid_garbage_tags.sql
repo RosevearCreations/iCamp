@@ -99,14 +99,14 @@ create policy garbage_tag_read on public.garbage_paid_tags for select to icamp_a
 );
 create policy garbage_tag_issue on public.garbage_paid_tags for insert to icamp_app with check (
  icamp_private.has_campground_permission(campground_id,'garbage.tags.sell')
- and issued_by_user_id=(select nullif(current_setting('icamp.user_id',true),'')::uuid)
+ and issued_by_user_id=nullif((select current_setting('icamp.user_id',true)),'')::uuid
  and redeemed_pickup_id is null
 );
 create policy garbage_tag_redeem on public.garbage_paid_tags for update to icamp_app using (
  icamp_private.has_campground_permission(campground_id,'garbage.tags.redeem')
 ) with check (
  icamp_private.has_campground_permission(campground_id,'garbage.tags.redeem')
- and redeemed_by_user_id=(select nullif(current_setting('icamp.user_id',true),'')::uuid)
+ and redeemed_by_user_id=nullif((select current_setting('icamp.user_id',true)),'')::uuid
 );
 -- Reuse one SELECT policy for site visibility, preserving advisor performance.
 alter policy accommodations_read on public.accommodations using (

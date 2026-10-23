@@ -8,6 +8,7 @@
 - Accessible Maintenance → Garbage → Paid tags view, issued-history cards, permission-gated issue/redeem actions, and contextual information-circle help.
 - Forced RLS and application-role-only access; auditable references to verified receipts rather than invented payment-provider captures. Ledger retains issued and redeemed timestamps and staff identities.
 - SQL migration/verification, repository contract tests, and a release pipeline through dev and main.
+- Supabase advisor hardening for session-context initialization plans (`0107`).
 
 ## Important financial boundary
 
