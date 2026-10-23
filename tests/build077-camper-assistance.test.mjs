@@ -28,11 +28,7 @@ test("Build 077 normalizes the canonical assistance intake vocabulary", () => {
     "store",
     "other",
   ]);
-  assert.deepEqual(CAMPER_ASSISTANCE_SEVERITIES, [
-    "routine",
-    "soon",
-    "urgent",
-  ]);
+  assert.deepEqual(CAMPER_ASSISTANCE_SEVERITIES, ["routine", "soon", "urgent"]);
   assert.deepEqual(CAMPER_ASSISTANCE_CONTACT_PREFERENCES, [
     "in_app",
     "email",
