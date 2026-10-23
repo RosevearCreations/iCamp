@@ -54,7 +54,10 @@ function label(value: string) {
     .replace(/\b\w/gu, (letter) => letter.toUpperCase());
 }
 
-function hiddenCase(caseItem: { id: string; rowVersion: number }, campgroundId: string) {
+function hiddenCase(
+  caseItem: { id: string; rowVersion: number },
+  campgroundId: string,
+) {
   return (
     <>
       <input type="hidden" name="campgroundId" value={campgroundId} />
@@ -179,7 +182,9 @@ export default async function AssistanceTriagePage({
           <div className={styles.history}>
             <article>
               <strong>{openCases.length} open</strong>
-              <p>{urgent} urgent · {escalated} escalated</p>
+              <p>
+                {urgent} urgent · {escalated} escalated
+              </p>
             </article>
             <article>
               <strong>Immutable intake</strong>
@@ -208,17 +213,13 @@ export default async function AssistanceTriagePage({
             <section className="content-panel" key={caseItem.id}>
               <SectionHeading
                 eyebrow={
-                  caseItem.accommodationCode +
-                  " · " +
-                  label(caseItem.caseState)
+                  caseItem.accommodationCode + " · " + label(caseItem.caseState)
                 }
                 title={caseItem.summary}
                 id={"assistance-case-" + caseItem.id}
                 helpTopic="camper.assistance.triage"
                 trailing={
-                  <span className="build-chip">
-                    {label(caseItem.severity)}
-                  </span>
+                  <span className="build-chip">{label(caseItem.severity)}</span>
                 }
               />
 
@@ -242,12 +243,8 @@ export default async function AssistanceTriagePage({
                     {label(caseItem.category)} · {label(caseItem.severity)} ·{" "}
                     {label(caseItem.caseState)}
                   </p>
-                  <p>
-                    Assigned: {caseItem.assignedToLabel ?? "Unassigned"}
-                  </p>
-                  <p>
-                    Contact preference: {label(caseItem.contactPreference)}
-                  </p>
+                  <p>Assigned: {caseItem.assignedToLabel ?? "Unassigned"}</p>
+                  <p>Contact preference: {label(caseItem.contactPreference)}</p>
                 </article>
                 {caseItem.caseState === "closed" ? (
                   <article>
@@ -263,7 +260,10 @@ export default async function AssistanceTriagePage({
               {caseItem.caseState !== "closed" && canTriage ? (
                 <>
                   <h3>Triage / assignment</h3>
-                  <form action={triageAssistanceCaseAction} className={styles.formGrid}>
+                  <form
+                    action={triageAssistanceCaseAction}
+                    className={styles.formGrid}
+                  >
                     {hiddenCase(caseItem, selected.campgroundId)}
                     <label>
                       Category
@@ -314,7 +314,10 @@ export default async function AssistanceTriagePage({
                   </form>
 
                   <h3>Internal note</h3>
-                  <form action={addAssistanceStaffNoteAction} className={styles.formGrid}>
+                  <form
+                    action={addAssistanceStaffNoteAction}
+                    className={styles.formGrid}
+                  >
                     {hiddenCase(caseItem, selected.campgroundId)}
                     <label className={styles.full}>
                       Staff-only note
@@ -457,7 +460,10 @@ export default async function AssistanceTriagePage({
               !caseItem.activeEscalationId ? (
                 <>
                   <h3>Close with outcome</h3>
-                  <form action={closeAssistanceCaseAction} className={styles.formGrid}>
+                  <form
+                    action={closeAssistanceCaseAction}
+                    className={styles.formGrid}
+                  >
                     {hiddenCase(caseItem, selected.campgroundId)}
                     <label>
                       Outcome
@@ -497,7 +503,9 @@ export default async function AssistanceTriagePage({
                       <p>{event.summary}</p>
                       <p className={styles.historyMeta}>
                         {event.actorLabel} · {event.occurredAt}
-                        {event.guestVisible ? " · guest visible" : " · internal"}
+                        {event.guestVisible
+                          ? " · guest visible"
+                          : " · internal"}
                       </p>
                     </article>
                   ))}
