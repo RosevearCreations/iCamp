@@ -131,7 +131,11 @@ test("Build 076 PWA queues notes, checklists and media without caching authentic
   assert.match(page, /Build 076/u);
 });
 
-test("Build 076 remains closed as Build 077 advances the queue and preserves the theme prerequisite", () => {
+test("Build 076 remains documented as promoted while later builds advance the queue", () => {
+  const build076 = fs.readFileSync(
+    new URL("../docs/BUILD_076.md", import.meta.url),
+    "utf8",
+  );
   const queue = fs.readFileSync(
     new URL("../docs/BUILD_QUEUE.md", import.meta.url),
     "utf8",
@@ -141,10 +145,11 @@ test("Build 076 remains closed as Build 077 advances the queue and preserves the
     "utf8",
   );
 
-  assert.match(queue, /Build 076 — Offline Maintenance Workspace/u);
-  assert.match(queue, /FULLY PROMOTED/u);
+  assert.match(build076, /Build 076 — Offline Maintenance Workspace/u);
+  assert.match(build076, /FULLY PROMOTED/u);
   assert.match(queue, /Build 077 — Camper Assistance Request Interface/u);
-  assert.match(queue, /Builds 079–081 \(4 builds\)/u);
+  assert.match(queue, /Build 078 — Assistance Triage & Management Escalation/u);
+  assert.match(queue, /Builds 079–081 \(3 builds\)/u);
   assert.match(roadmap, /standard theme ruleset and token contract/u);
   assert.match(roadmap, /No future visual\/style build should bypass/u);
 });
