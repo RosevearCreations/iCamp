@@ -11,6 +11,22 @@ export interface HelpTopic {
 }
 
 export const helpTopics = {
+  "garbage.tags": {
+    id: "garbage.tags",
+    slug: "paid-garbage-tags",
+    title: "Paid Garbage Tags & Pickup Redemption",
+    summary:
+      "Record verified receipt evidence for serialized garbage tags, then redeem each tag once for a matching paid pickup.",
+    details: [
+      "Confirm the actual payment in the campground's POS or external payment service before issuing a tag. Enter the exact receipt reference; this screen does not charge cards, verify a payment provider or issue tax receipts.",
+      "Each issued tag receives a unique GT-code suitable for printing as text or encoding in a barcode/QR label. Keep the code private until pickup.",
+      "Optional reservation links require an active checked-in stay at the selected site. Redemption requires the same campground, waste stream, site and reservation as the pending paid on-demand pickup.",
+      "A redeemed tag cannot be transferred, redeemed again on a different pickup or erased. A repeated submission for the same pickup returns the existing redemption.",
+      "Tag redemption authorizes operational pickup, but does not change the separate checkout status of the original pickup or synthesize a payment-provider confirmation. Reconcile receipts with finance independently.",
+    ],
+    audience: "operational",
+    related: ["garbage.services"],
+  },
   "garbage.services": {
     id: "garbage.services",
     slug: "garbage-service-models",
