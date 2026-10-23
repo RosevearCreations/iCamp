@@ -84,6 +84,13 @@ create index camper_assistance_requests_reservation_fk_idx
     reservation_id
   );
 
+create index camper_assistance_requests_accommodation_fk_idx
+  on public.camper_assistance_requests(
+    organization_id,
+    campground_id,
+    accommodation_id
+  );
+
 create table public.camper_assistance_request_events (
   id uuid primary key default gen_random_uuid(),
   organization_id uuid not null,
@@ -157,6 +164,9 @@ create index camper_assistance_request_media_request_idx
 
 create index camper_assistance_request_media_creator_fk_idx
   on public.camper_assistance_request_media(created_by_user_id);
+
+create index camper_assistance_request_media_asset_fk_idx
+  on public.camper_assistance_request_media(media_asset_id);
 
 create or replace function icamp_private.validate_camper_assistance_request()
 returns trigger
