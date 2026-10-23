@@ -132,7 +132,7 @@ export default async function PreventiveMaintenancePage({
   const programById = new Map(
     workspace.programs.map((program) => [program.id, program]),
   );
-  const now = Date.now();
+  const now = new Date(workspace.generatedAt).getTime();
   const activePrograms = workspace.programs.filter(
     (program) => program.isActive,
   ).length;
