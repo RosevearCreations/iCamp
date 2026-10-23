@@ -74,6 +74,17 @@ export default async function GarbageTagsPage({
         </section>
         <section className="content-panel">
           <SectionHeading
+            eyebrow="Field & finance"
+            id="tag-collection-link"
+            title="Collection proof & receipt review"
+            helpTopic="garbage.collections"
+          />
+          <Link href="/workspaces/maintenance/garbage/collections">
+            Open collection and reconciliation
+          </Link>
+        </section>
+        <section className="content-panel">
+          <SectionHeading
             id="tag-scope"
             eyebrow="Campground"
             title="Campground & evidence"

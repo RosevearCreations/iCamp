@@ -136,6 +136,21 @@ export default async function GarbageServicesPage({
         </section>
         <section className="content-panel">
           <SectionHeading
+            eyebrow="Field & finance"
+            id="garbage-collection-link"
+            title="Collection & receipt review"
+            helpTopic="garbage.collections"
+          />
+          <p>
+            Plan waste routes, record observed pickup outcomes and review
+            paid-tag receipt evidence without inventing payment captures.
+          </p>
+          <Link href="/workspaces/maintenance/garbage/collections">
+            Open collection & reconciliation workspace
+          </Link>
+        </section>
+        <section className="content-panel">
+          <SectionHeading
             eyebrow="Campground"
             title="Service scope"
             id="garbage-scope"

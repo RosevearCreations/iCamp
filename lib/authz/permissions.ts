@@ -85,6 +85,8 @@ export const permissions = [
   "garbage.dispatch",
   "garbage.tags.sell",
   "garbage.tags.redeem",
+  "garbage.routes.manage",
+  "garbage.finance.reconcile",
   "staff.read",
   "staff.manage",
   "role.manage",
