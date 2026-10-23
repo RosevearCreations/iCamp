@@ -107,10 +107,7 @@ export async function POST(request: Request) {
       headerBytes: bytes,
     });
     if (!validation.ok) {
-      return NextResponse.json(
-        { error: validation.message },
-        { status: 400 },
-      );
+      return NextResponse.json({ error: validation.message }, { status: 400 });
     }
 
     const checksumSha256 = createHash("sha256").update(bytes).digest("hex");
@@ -129,7 +126,10 @@ export async function POST(request: Request) {
       operation,
     });
     if (existing) {
-      return NextResponse.json({ status: "already_applied", receipt: existing });
+      return NextResponse.json({
+        status: "already_applied",
+        receipt: existing,
+      });
     }
 
     const config = getMediaStorageConfig();
