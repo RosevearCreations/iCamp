@@ -111,9 +111,7 @@ export default async function CamperAssistancePage({
           <Link href="/">iCamp</Link>
           <span>/</span>
           <Link
-            href={
-              "/guest/stay?reservation=" + encodeURIComponent(selected.id)
-            }
+            href={"/guest/stay?reservation=" + encodeURIComponent(selected.id)}
           >
             My Stay
           </Link>
@@ -171,11 +169,7 @@ export default async function CamperAssistancePage({
             className={styles.formGrid}
           >
             <input type="hidden" name="reservationId" value={selected.id} />
-            <input
-              type="hidden"
-              name="clientRequestId"
-              value={randomUUID()}
-            />
+            <input type="hidden" name="clientRequestId" value={randomUUID()} />
             <label>
               Category
               <select name="category" defaultValue="maintenance" required>
