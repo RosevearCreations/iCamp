@@ -565,7 +565,7 @@ export const helpTopics = {
       "Build 077 records immutable intake evidence. Build 078 owns reclassification, assignment, escalation, guest communication, outcome and closure.",
       "Web/PWA provides the full intake. Verified IVR/DTMF and SMS/MMS use the same canonical request command, with secure-link or staff-assisted handoff for visual evidence when needed.",
     ],
-    audience: "guest",
+    audience: "public",
     related: ["customer.input"],
   },
 
