@@ -12,6 +12,7 @@ import {
   CAMPER_ASSISTANCE_CONTACT_PREFERENCES,
   CAMPER_ASSISTANCE_SEVERITIES,
 } from "@/lib/camper-assistance/core.mjs";
+import { listGuestAssistanceUpdates } from "@/lib/camper-assistance-triage/postgres.mjs";
 import { listCamperAssistanceRequests } from "@/lib/camper-assistance/postgres.mjs";
 import { listMyStays } from "@/lib/my-stay/postgres.mjs";
 
@@ -99,10 +100,19 @@ export default async function CamperAssistancePage({
     );
   }
 
-  const requests = await listCamperAssistanceRequests({
-    userId: session.user.id,
-    reservationId: selected.id,
-  });
+  const [requests, operationalUpdates] = await Promise.all([
+    listCamperAssistanceRequests({
+      userId: session.user.id,
+      reservationId: selected.id,
+    }),
+    listGuestAssistanceUpdates({
+      userId: session.user.id,
+      reservationId: selected.id,
+    }),
+  ]);
+  const updateByRequest = new Map(
+    operationalUpdates.map((item) => [item.requestId, item]),
+  );
 
   return (
     <AppShell>
@@ -257,6 +267,7 @@ export default async function CamperAssistancePage({
                     <th>Category</th>
                     <th>Priority</th>
                     <th>Request</th>
+                    <th>Status / updates</th>
                     <th>Contact</th>
                     <th>Media</th>
                   </tr>
@@ -271,10 +282,39 @@ export default async function CamperAssistancePage({
                         <strong>{request.summary}</strong>
                         {request.details ? <p>{request.details}</p> : null}
                       </td>
+                      <td>
+                        {(() => {
+                          const operational = updateByRequest.get(request.id);
+                          if (!operational) return <span>Submitted</span>;
+                          return (
+                            <>
+                              <p>
+                                <strong>{label(operational.caseState)}</strong> ·{" "}
+                                {label(operational.category)} ·{" "}
+                                {label(operational.severity)}
+                              </p>
+                              {operational.updates.map((update) => (
+                                <p key={update.id}>
+                                  {update.summary}
+                                  {update.channel
+                                    ? " · " + label(update.channel)
+                                    : ""}
+                                </p>
+                              ))}
+                              {operational.outcomeSummary ? (
+                                <p>
+                                  Outcome: {operational.outcomeSummary}
+                                </p>
+                              ) : null}
+                            </>
+                          );
+                        })()}
+                      </td>
                       <td>{label(request.contactPreference)}</td>
                       <td>
                         <p>{request.mediaCount} / 5 attached</p>
-                        {request.mediaCount < 5 ? (
+                        {request.mediaCount < 5 &&
+                        updateByRequest.get(request.id)?.caseState !== "closed" ? (
                           <form action={addCamperAssistanceMediaAction}>
                             <input
                               type="hidden"
@@ -323,8 +363,10 @@ export default async function CamperAssistancePage({
             Visual review can use secure-link or staff-assisted handoff.
           </p>
           <p>
-            Build 077 records intake only. Build 078 owns reclassification,
-            assignment, escalation, guest communication, outcome and closure.
+            Build 077 preserves your original report. Build 078 tracks
+            operational classification, assignment, management escalation,
+            guest-visible updates and the final outcome without rewriting that
+            original intake.
           </p>
         </section>
       </div>
