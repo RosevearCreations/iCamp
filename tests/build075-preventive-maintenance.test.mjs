@@ -11,11 +11,7 @@ import {
 } from "../lib/preventive-maintenance/core.mjs";
 
 test("Build 075 validates preventive templates and immutable program bindings", () => {
-  assert.deepEqual(preventiveAssetClasses, [
-    "facility",
-    "equipment",
-    "either",
-  ]);
+  assert.deepEqual(preventiveAssetClasses, ["facility", "equipment", "either"]);
 
   const template = validatePreventiveMaintenanceTemplateInput({
     targetAssetClass: "equipment",
@@ -25,7 +21,10 @@ test("Build 075 validates preventive templates and immutable program bindings", 
       "Change engine oil\nInspect belt condition\nSharpen mower blades",
   });
   assert.equal(template.targetAssetClass, "equipment");
-  assert.equal(preventiveInstructionSteps(template.serviceInstructions).length, 3);
+  assert.equal(
+    preventiveInstructionSteps(template.serviceInstructions).length,
+    3,
+  );
   assert.equal(formatPreventiveAssetClass("either"), "Facility or equipment");
 
   const program = validatePreventiveMaintenanceProgramInput({
@@ -61,10 +60,7 @@ test("Build 075 schema reuses canonical assets and recurring schedules", () => {
   assert.match(migration, /references public\.operational_assets/iu);
   assert.match(migration, /references public\.maintenance_schedules/iu);
   assert.match(migration, /maintenance\.preventive/u);
-  assert.match(
-    migration,
-    /schedule must target the exact canonical asset/u,
-  );
+  assert.match(migration, /schedule must target the exact canonical asset/u);
   assert.match(migration, /force row level security/iu);
   assert.doesNotMatch(
     migration,
@@ -84,10 +80,7 @@ test("Build 075 service reads parts and labour from canonical work orders", () =
   assert.match(service, /maintenance_work_order_labor/u);
   assert.match(service, /maintenance\.preventive/u);
   assert.match(service, /maintenance\.schedule/u);
-  assert.doesNotMatch(
-    service,
-    /insert into public\.maintenance_work_orders/u,
-  );
+  assert.doesNotMatch(service, /insert into public\.maintenance_work_orders/u);
 });
 
 test("Build 075 Web/PWA exposes overdue service and canonical history", () => {
