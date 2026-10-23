@@ -1,5 +1,11 @@
-const CACHE_NAME = "icamp-shell-v1";
-const SHELL_URLS = ["/", "/manifest.webmanifest"];
+const CACHE_NAME = "icamp-shell-v2";
+const SHELL_URLS = [
+  "/",
+  "/manifest.webmanifest",
+  "/offline-maintenance.html",
+  "/offline-maintenance.css",
+  "/offline-maintenance.js",
+];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
@@ -29,8 +35,14 @@ self.addEventListener("fetch", (event) => {
   }
 
   event.respondWith(
-    fetch(event.request).catch(() =>
-      caches.match(event.request).then((cached) => cached || caches.match("/")),
-    ),
+    fetch(event.request).catch(() => {
+      const url = new URL(event.request.url);
+      if (url.pathname === "/workspaces/maintenance/offline") {
+        return caches.match("/offline-maintenance.html");
+      }
+      return caches
+        .match(event.request)
+        .then((cached) => cached || caches.match("/"));
+    }),
   );
 });
