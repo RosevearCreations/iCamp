@@ -331,7 +331,9 @@
       snapshot && snapshot.generatedAt
         ? formatDate(snapshot.generatedAt)
         : "No cached snapshot";
-    const pending = localQueue.filter((entry) => entry.state === "pending").length;
+    const pending = localQueue.filter(
+      (entry) => entry.state === "pending",
+    ).length;
     const conflicts = localQueue.filter(
       (entry) => entry.state === "conflict" || entry.state === "blocked",
     ).length;
@@ -346,7 +348,9 @@
       workOrders.length === 0
         ? '<p class="offline-empty">No assigned work orders are cached for this campground.</p>'
         : '<div class="offline-grid">' +
-          workOrders.map((order) => workOrderCard(order, capabilities)).join("") +
+          workOrders
+            .map((order) => workOrderCard(order, capabilities))
+            .join("") +
           "</div>";
     const inspectionHtml =
       inspections.length === 0
@@ -388,9 +392,7 @@
       "</div>" +
       (message
         ? '<p class="offline-message' +
-          (message.startsWith("Error:")
-            ? " offline-message--error"
-            : "") +
+          (message.startsWith("Error:") ? " offline-message--error" : "") +
           '" role="status">' +
           escapeHtml(message) +
           "</p>"
