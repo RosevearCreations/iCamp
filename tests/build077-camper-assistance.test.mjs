@@ -149,7 +149,7 @@ test("Build 077 Web/PWA is integrated into My Stay with emergency and next-build
   );
 
   assert.match(page, /For campground assistance, not emergency dispatch/u);
-  assert.match(page, /Build 078 owns reclassification/u);
+  assert.match(page, /Build 078 tracks/u);
   assert.match(page, /addCamperAssistanceMediaAction/u);
   assert.match(stay, /Request camper assistance/u);
   assert.match(stay, /guest\/assistance\?reservation/u);
@@ -168,11 +168,11 @@ test("Build 077 remains closed as Build 078 advances the queue and preserves the
     "utf8",
   );
 
-  assert.match(queue, /Build 076 — Offline Maintenance Workspace/u);
-  assert.match(queue, /FULLY PROMOTED/u);
   assert.match(queue, /Build 077 — Camper Assistance Request Interface/u);
+  assert.match(queue, /FULLY PROMOTED/u);
   assert.match(queue, /Build 078 — Assistance Triage & Management Escalation/u);
-  assert.match(queue, /Builds 079–081 \(4 builds\)/u);
+  assert.match(queue, /Build 079 — Garbage Service Models/u);
+  assert.match(queue, /Builds 079–081 \(3 builds\)/u);
   assert.match(roadmap, /standard theme ruleset and token contract/u);
   assert.match(roadmap, /No future visual\/style build should bypass/u);
 });
