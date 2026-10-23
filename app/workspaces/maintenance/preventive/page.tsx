@@ -350,16 +350,14 @@ export default async function PreventiveMaintenancePage({
                   </div>
                   {template.description ? <p>{template.description}</p> : null}
                   <ol className={styles.instructions}>
-                    {preventiveInstructionSteps(template.serviceInstructions).map(
-                      (step, index) => (
-                        <li key={`${template.id}-${index}`}>{step}</li>
-                      ),
-                    )}
+                    {preventiveInstructionSteps(
+                      template.serviceInstructions,
+                    ).map((step, index) => (
+                      <li key={`${template.id}-${index}`}>{step}</li>
+                    ))}
                   </ol>
                   {canConfigure ? (
-                    <form
-                      action={setPreventiveMaintenanceTemplateActiveAction}
-                    >
+                    <form action={setPreventiveMaintenanceTemplateActiveAction}>
                       <input
                         type="hidden"
                         name="campgroundId"
@@ -442,11 +440,7 @@ export default async function PreventiveMaintenancePage({
               </label>
               <label className={styles.field + " " + styles.full}>
                 <span>Recurring maintenance schedule</span>
-                <select
-                  name="maintenanceScheduleId"
-                  required
-                  defaultValue=""
-                >
+                <select name="maintenanceScheduleId" required defaultValue="">
                   <option value="">Choose asset-targeted schedule</option>
                   {workspace.schedules.map((schedule) => (
                     <option key={schedule.id} value={schedule.id}>
@@ -623,7 +617,10 @@ export default async function PreventiveMaintenancePage({
                   0,
                 );
                 return (
-                  <article className={styles.historyRow} key={entry.occurrenceId}>
+                  <article
+                    className={styles.historyRow}
+                    key={entry.occurrenceId}
+                  >
                     <div>
                       <strong>
                         {program?.assetName ?? "Preventive maintenance"}
@@ -632,7 +629,9 @@ export default async function PreventiveMaintenancePage({
                         {program?.templateName ?? "Service"} ·{" "}
                         {titleCase(entry.occurrenceState)}
                       </p>
-                      {entry.workOrderTitle ? <p>{entry.workOrderTitle}</p> : null}
+                      {entry.workOrderTitle ? (
+                        <p>{entry.workOrderTitle}</p>
+                      ) : null}
                       {entry.completionSummary ? (
                         <p>{entry.completionSummary}</p>
                       ) : null}
