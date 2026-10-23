@@ -776,5 +776,30 @@ input as a privileged operational command.
   RLS is also forced;
 - client request UUIDs make request creation duplicate-safe and reject payload
   substitution under a reused key;
-- Build 078 is responsible for privileged triage, assignment, escalation,
-  communication and closure controls.
+- Build 078 adds those privileged triage, assignment, escalation,
+  communication and closure controls while preserving Build 077 intake.
+
+
+## Camper assistance operational boundary
+
+Build 078 separates staff operations from immutable Build 077 guest intake.
+
+- `assistance.triage`, `assistance.escalate`, `assistance.communicate` and
+  `assistance.close` are distinct campground-scoped authorities;
+- operational classification and assignment live in a separate case projection;
+  the original guest category, priority, narrative and media are never rewritten;
+- assignment is limited to an active staff identity assigned to the same
+  campground;
+- case and escalation updates use optimistic row versions and reject stale
+  operator screens instead of silently overwriting newer work;
+- operational events are append-only and distinguish internal staff notes from
+  guest-visible communication;
+- email/SMS/phone selections in Build 078 are contact records, not fabricated
+  provider-delivery receipts; real external delivery must use the canonical
+  communications gateway and its consent/suppression controls;
+- management escalation is not emergency dispatch and does not replace calling
+  emergency services where immediate life safety is involved;
+- closure is terminal, requires an explicit outcome and guest-visible summary,
+  and is blocked while an escalation remains open or acknowledged;
+- all new public tables enable and FORCE RLS, and direct `anon`/
+  `authenticated` table privileges remain revoked.
