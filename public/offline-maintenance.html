@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="robots" content="noindex,nofollow" />
+    <title>Offline Maintenance · iCamp</title>
+    <link rel="stylesheet" href="/offline-maintenance.css" />
+  </head>
+  <body class="offline-standalone">
+    <main class="offline-standalone__main">
+      <p class="offline-eyebrow">iCamp · Build 076</p>
+      <h1>Offline Maintenance Workspace</h1>
+      <p class="offline-intro">
+        This fallback shell reads only the maintenance snapshot and unsent
+        evidence previously cached on this device. Reconnect to refresh or sync.
+      </p>
+      <div id="offline-maintenance-root">
+        <p role="status">Opening the device-local maintenance cache…</p>
+      </div>
+      <p class="offline-boundary">
+        Work-order completion, cancellation, inspection submission/sign-off and
+        other final decisions are never available offline.
+      </p>
+    </main>
+    <script src="/offline-maintenance.js" defer></script>
+  </body>
+</html>
