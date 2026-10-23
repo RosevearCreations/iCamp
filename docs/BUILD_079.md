@@ -60,6 +60,10 @@ permission checks. Existing semantic UI tokens are retained; no new theme fork.
 
 - `database/migrations/0103_garbage_service_models.sql`
 - `database/verify/0103_garbage_service_models.sql`
+- `database/migrations/0104_build079_advisor_hardening.sql`
+- `database/verify/0104_build079_advisor_hardening.sql`
+- `database/migrations/0105_build079_rls_initplan_hardening.sql`
+- `database/verify/0105_build079_rls_initplan_hardening.sql`
 
 ## Verification and release
 
