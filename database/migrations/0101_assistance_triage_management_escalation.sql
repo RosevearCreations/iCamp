@@ -788,6 +788,57 @@ with check (
   )
 );
 
+create policy camper_assistance_requests_build078_staff_read
+on public.camper_assistance_requests
+for select
+to icamp_app
+using (
+  icamp_private.has_campground_permission(campground_id,'assistance.triage')
+  or icamp_private.has_campground_permission(campground_id,'assistance.escalate')
+  or icamp_private.has_campground_permission(campground_id,'assistance.communicate')
+  or icamp_private.has_campground_permission(campground_id,'assistance.close')
+);
+
+create policy camper_assistance_request_events_build078_staff_read
+on public.camper_assistance_request_events
+for select
+to icamp_app
+using (
+  exists (
+    select 1
+    from public.camper_assistance_requests r
+    where r.id=camper_assistance_request_events.request_id
+      and r.organization_id=camper_assistance_request_events.organization_id
+      and r.campground_id=camper_assistance_request_events.campground_id
+      and (
+        icamp_private.has_campground_permission(r.campground_id,'assistance.triage')
+        or icamp_private.has_campground_permission(r.campground_id,'assistance.escalate')
+        or icamp_private.has_campground_permission(r.campground_id,'assistance.communicate')
+        or icamp_private.has_campground_permission(r.campground_id,'assistance.close')
+      )
+  )
+);
+
+create policy camper_assistance_request_media_build078_staff_read
+on public.camper_assistance_request_media
+for select
+to icamp_app
+using (
+  exists (
+    select 1
+    from public.camper_assistance_requests r
+    where r.id=camper_assistance_request_media.request_id
+      and r.organization_id=camper_assistance_request_media.organization_id
+      and r.campground_id=camper_assistance_request_media.campground_id
+      and (
+        icamp_private.has_campground_permission(r.campground_id,'assistance.triage')
+        or icamp_private.has_campground_permission(r.campground_id,'assistance.escalate')
+        or icamp_private.has_campground_permission(r.campground_id,'assistance.communicate')
+        or icamp_private.has_campground_permission(r.campground_id,'assistance.close')
+      )
+  )
+);
+
 comment on table public.camper_assistance_cases is
   'Build 078 operational projection over immutable Build 077 camper assistance intake.';
 
