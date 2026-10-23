@@ -53,6 +53,8 @@ create table public.garbage_service_policies (
 
 create index garbage_service_policies_scope_idx
  on public.garbage_service_policies(organization_id,campground_id,enabled);
+create index garbage_service_policies_actor_fk_idx
+ on public.garbage_service_policies(updated_by_user_id);
 
 create table public.garbage_pickup_requests (
  id uuid primary key default gen_random_uuid(),
@@ -107,6 +109,10 @@ create index garbage_pickup_requests_accommodation_fk_idx
  on public.garbage_pickup_requests(organization_id,campground_id,accommodation_id);
 create index garbage_pickup_requests_reservation_fk_idx
  on public.garbage_pickup_requests(organization_id,campground_id,reservation_id);
+create index garbage_pickup_requests_creator_fk_idx
+ on public.garbage_pickup_requests(created_by_user_id);
+create index garbage_pickup_requests_updater_fk_idx
+ on public.garbage_pickup_requests(updated_by_user_id);
 
 create table public.garbage_pickup_events (
  id uuid primary key default gen_random_uuid(),
@@ -122,6 +128,8 @@ create table public.garbage_pickup_events (
 );
 create index garbage_pickup_events_request_idx
  on public.garbage_pickup_events(organization_id,campground_id,pickup_id,created_at);
+create index garbage_pickup_events_actor_fk_idx
+ on public.garbage_pickup_events(actor_user_id);
 
 create function icamp_private.guard_garbage_pickup_update()
 returns trigger language plpgsql as $$
@@ -223,9 +231,14 @@ create policy garbage_events_insert on public.garbage_pickup_events
   and actor_user_id=nullif(current_setting('icamp.user_id',true),'')::uuid
  );
 
--- Waste dispatchers need a site selector, not unrestricted reservation data.
-create policy accommodations_garbage_site_read on public.accommodations
- for select to icamp_app using (
-  icamp_private.has_campground_permission(campground_id,'garbage.read')
-  or icamp_private.has_campground_permission(campground_id,'garbage.dispatch')
- );
+-- Extend the existing site read policy rather than adding a duplicate
+-- permissive SELECT policy that would trigger the Supabase advisor.
+alter policy accommodations_read on public.accommodations using (
+ icamp_private.has_campground_permission(campground_id,'accommodation.read')
+ or icamp_private.has_campground_permission(campground_id,'accommodation.manage')
+ or icamp_private.has_campground_permission(campground_id,'campground.operations.manage')
+ or icamp_private.has_campground_permission(campground_id,'visitor.read')
+ or icamp_private.has_campground_permission(campground_id,'visitor.register')
+ or icamp_private.has_campground_permission(campground_id,'garbage.read')
+ or icamp_private.has_campground_permission(campground_id,'garbage.dispatch')
+);

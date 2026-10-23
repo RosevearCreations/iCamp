@@ -113,7 +113,7 @@ test("Build 079 schema uses scoped RLS, append-only events and fee snapshots", (
   assert.match(migration, /guard_garbage_pickup_update/u);
   assert.match(migration, /fee_cents integer not null/u);
   assert.match(migration, /unique\(campground_id,client_request_id\)/u);
-  assert.match(migration, /accommodations_garbage_site_read/u);
+  assert.match(migration, /alter policy accommodations_read/u);
 });
 
 test("Build 079 operations never claim external payment or duplicate maintenance orders", () => {
