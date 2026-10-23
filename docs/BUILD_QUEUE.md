@@ -1099,49 +1099,44 @@ Promotion evidence:
 - Verify, Browser E2E, database lifecycle/idempotence, production build, dependency audit, JavaScript/TypeScript analysis and Gitleaks were GREEN.
 
 ## Most recently fully promoted build
-**Build 075 — Preventive Maintenance Program**
+**Build 076 — Offline Maintenance Workspace**
 
 Status: **FULLY PROMOTED — `main` GREEN**
 
 Production evidence:
-- production `main` SHA `712f567e5e85791282a0113a2f544098f24b6039`;
-- exact production push passed CI #39895135772, CodeQL #39895135879 and Secret Scan #39895135784;
-- hosted migrations `preventive_maintenance_program` and
-  `build075_advisor_hardening` applied and verified;
-- Supabase Security Advisor returned zero findings;
-- Build 075 unindexed-foreign-key findings were reduced to zero.
+- production `main` SHA `970d85ad4554079f868ed4837673fe370fc2f5ec`;
+- exact production push passed CI #39956044346, CodeQL #39956044360 and
+  Secret Scan #39956044408;
+- CI Verify, Database migrations and Browser end-to-end all completed
+  successfully on that exact production SHA;
+- hosted migration `offline_maintenance_workspace` applied and repository
+  verification SQL passed;
+- Supabase Security Advisor returned zero findings.
 
-## Current active build
-**Build 076 — Offline Maintenance Workspace**
+## Current delivery target
+**Build 077 — Camper Assistance Request Interface**
 
-Status: **IMPLEMENTED — validation and promotion in progress**
+Scope, advancing historical Build 078:
+- canonical checked-in-stay assistance intake for maintenance, garbage, septic,
+  electrical, water, Wi-Fi, noise, security, rental, store and other requests;
+- routine/soon/urgent campground response priority with explicit emergency
+  services boundary;
+- optional text, contact preference and validated internal media;
+- guest-visible request history linked to the canonical reservation and
+  accommodation;
+- duplicate-safe client request IDs and append-only intake/media evidence;
+- forced RLS with no direct anonymous/authenticated Data API access;
+- My Stay integration and dedicated contextual help;
+- Web/PWA full flow with verified IVR/DTMF and SMS/MMS parity contract.
 
-Scope, advancing historical Build 077:
-- cache only maintenance work assigned to the current staff member;
-- cache the current staff member's in-progress Build 068 inspection checklists;
-- device-local IndexedDB queue for work-order notes, checklist answers and
-  internal field media;
-- durable append-only client-operation receipts for idempotent retries;
-- optimistic row-version conflict detection before queued evidence is applied;
-- automatic retry after reconnect with explicit conflict/blocked state retained
-  for review;
-- secure-media validation and restricted internal evidence upload without broad
-  media-management authority;
-- static PWA fallback shell so authenticated maintenance pages do not need to be
-  cached for offline cold-start access;
-- explicit prohibition on offline completion/cancellation, inspection
-  submission/sign-off, assignment, escalation resolution and other final or
-  high-risk actions.
+Next after Build 077: **Build 078 — Assistance Triage & Management Escalation**,
+advancing historical Build 079.
 
-Next after Build 076: **Build 077 — Camper Assistance Request Interface**,
-advancing historical Build 078.
-
-### Queue horizon after Build 076
+### Queue horizon after Build 077
 - immediate detailed queue remaining after successful promotion:
-  **Builds 077–081 (5 builds)**;
-- broader active roadmap after Build 076: **Builds 077–156 (80 builds)**;
+  **Builds 078–081 (4 builds)**;
+- broader active roadmap after Build 077: **Builds 078–156 (79 builds)**;
 - the existing several-build planning batch remains sufficient through Build 081.
-
 ## Operating rule
 - Work primarily on `dev`.
 - Promote to `main` only after applicable gates are GREEN.

@@ -552,6 +552,23 @@ export const helpTopics = {
     audience: "privileged",
     related: ["access.device.registry", "access.events"],
   },
+  "camper.assistance.request": {
+    id: "camper.assistance.request",
+    slug: "camper-assistance-request",
+    title: "Camper assistance requests",
+    summary:
+      "Build 077 creates a stay-linked campground assistance request with category, operational priority, contact preference and optional validated internal media.",
+    details: [
+      "Requests are accepted only for a checked-in reservation owned by the signed-in guest, and the server derives the campground and accommodation from that canonical stay.",
+      "Choose maintenance, garbage, septic, electrical, water, Wi-Fi, noise, security, rental, store or other. Routine, soon and urgent describe campground response priority; urgent is not emergency dispatch.",
+      "Optional images and PDFs reuse the Build 008 secure-media validator and internal storage boundary. A request can have up to five attachments.",
+      "Build 077 records immutable intake evidence. Build 078 owns reclassification, assignment, escalation, guest communication, outcome and closure.",
+      "Web/PWA provides the full intake. Verified IVR/DTMF and SMS/MMS use the same canonical request command, with secure-link or staff-assisted handoff for visual evidence when needed.",
+    ],
+    audience: "public",
+    related: ["customer.input"],
+  },
+
   "customer.input": {
     id: "customer.input",
     slug: "customer-input-guidance",

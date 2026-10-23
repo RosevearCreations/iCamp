@@ -753,3 +753,28 @@ inspection authorities rather than creating a second task system.
   authenticated server-rendered maintenance page;
 - operators can explicitly clear the IndexedDB snapshot and pending queue from
   the device.
+
+
+## Camper assistance intake boundary
+
+Build 077 accepts guest-originated campground assistance without treating guest
+input as a privileged operational command.
+
+- a request must belong to the signed-in guest and a canonical reservation in
+  `checked_in` state;
+- reservation, campground and accommodation linkage is validated server-side and
+  again by the database trigger/RLS boundary;
+- guest intake is append-only; later staff triage cannot silently rewrite what
+  the camper originally reported;
+- routine/soon/urgent are campground response priorities only and never imply
+  emergency-service dispatch;
+- optional attachments reuse Build 008 internal-media validation and private
+  storage, with a five-file request cap;
+- storage service credentials remain server-only and raw signed URLs/object
+  credentials are not persisted in assistance rows;
+- direct `anon` and `authenticated` Data API table access is revoked even though
+  RLS is also forced;
+- client request UUIDs make request creation duplicate-safe and reject payload
+  substitution under a reused key;
+- Build 078 is responsible for privileged triage, assignment, escalation,
+  communication and closure controls.
