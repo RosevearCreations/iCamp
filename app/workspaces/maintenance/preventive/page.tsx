@@ -514,9 +514,8 @@ export default async function PreventiveMaintenancePage({
                       <strong>{program.templateName}</strong>
                     </p>
                     <p>
-                      Interval:{" "}
-                      <strong>{recurrenceLabel(program)}</strong>{" "}
-                      · Next service{" "}
+                      Interval: <strong>{recurrenceLabel(program)}</strong> ·
+                      Next service{" "}
                       <strong>
                         {formatDate(
                           program.nextOccurrenceAt,
