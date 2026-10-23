@@ -2,27 +2,27 @@
 
 do $verify$
 declare
-  table_name text;
+  target_table text;
   forced boolean;
 begin
-  foreach table_name in array array[
+  foreach target_table in array array[
     'camper_assistance_requests',
     'camper_assistance_request_events',
     'camper_assistance_request_media'
   ]
   loop
-    if to_regclass('public.' || table_name) is null then
-      raise exception 'Build 077 table % is missing', table_name;
+    if to_regclass('public.' || target_table) is null then
+      raise exception 'Build 077 table % is missing', target_table;
     end if;
 
     select c.relrowsecurity and c.relforcerowsecurity
     into forced
     from pg_class c
     join pg_namespace n on n.oid=c.relnamespace
-    where n.nspname='public' and c.relname=table_name;
+    where n.nspname='public' and c.relname=target_table;
 
     if forced is distinct from true then
-      raise exception 'Build 077 table % must force RLS', table_name;
+      raise exception 'Build 077 table % must force RLS', target_table;
     end if;
   end loop;
 
@@ -55,14 +55,14 @@ begin
 
   if exists (
     select 1
-    from information_schema.role_table_grants
-    where table_schema='public'
-      and table_name in (
+    from information_schema.role_table_grants grants
+    where grants.table_schema='public'
+      and grants.table_name in (
         'camper_assistance_requests',
         'camper_assistance_request_events',
         'camper_assistance_request_media'
       )
-      and grantee in ('anon','authenticated')
+      and grants.grantee in ('anon','authenticated')
   ) then
     raise exception 'Build 077 must not grant direct Data API access';
   end if;
