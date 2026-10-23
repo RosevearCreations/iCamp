@@ -11,6 +11,23 @@ export interface HelpTopic {
 }
 
 export const helpTopics = {
+  "garbage.collections": {
+    id: "garbage.collections",
+    slug: "garbage-collection-reconciliation",
+    title: "Garbage Collection & Receipt Reconciliation",
+    summary:
+      "Create route manifests, attest collection outcomes and independently review paid-tag receipts.",
+    details: [
+      "Create a route for one campground, service date and waste stream. This records a dispatch manifest, not an automatic GPS optimized route or recurring schedule.",
+      "For each stop, select an existing pickup in the same waste stream, record the observed outcome and explain it. Collected pickups require at least one bag and a pickup already in progress or completed; skipped pickups require zero bags.",
+      "The collection ledger is append-only and guards against declaring one pickup collected twice, even across routes. It never silently changes the canonical pickup's status. Update that status separately in Garbage Services.",
+      "The optional evidence reference identifies an existing photo/media record or other external evidence; this workflow does not upload a file or claim photo verification by itself.",
+      "Finance reviewers compare a tag's issued amount and exact receipt reference against independently inspected POS records. A matched decision must contain the same amount as the issued tag. Follow-up and dispute reviews preserve the history without silently posting a charge, refund or tax invoice.",
+      "Owners and campground managers can reconcile; authorized maintenance field roles can record collections. Neither role may view records outside its campground permissions.",
+    ],
+    audience: "operational",
+    related: ["garbage.services", "garbage.tags"],
+  },
   "garbage.tags": {
     id: "garbage.tags",
     slug: "paid-garbage-tags",
