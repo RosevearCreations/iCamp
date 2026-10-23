@@ -291,11 +291,11 @@ with check (
   and exists (
     select 1
     from public.reservations r
-    where r.id = reservation_id
-      and r.organization_id = organization_id
-      and r.campground_id = campground_id
-      and r.accommodation_id = accommodation_id
-      and r.guest_user_id = guest_user_id
+    where r.id = camper_assistance_requests.reservation_id
+      and r.organization_id = camper_assistance_requests.organization_id
+      and r.campground_id = camper_assistance_requests.campground_id
+      and r.accommodation_id = camper_assistance_requests.accommodation_id
+      and r.guest_user_id = camper_assistance_requests.guest_user_id
       and r.status = 'checked_in'
   )
 );
@@ -309,8 +309,8 @@ using (
     select 1
     from public.camper_assistance_requests r
     where r.id = request_id
-      and r.organization_id = organization_id
-      and r.campground_id = campground_id
+      and r.organization_id = camper_assistance_requests.organization_id
+      and r.campground_id = camper_assistance_requests.campground_id
       and (
         r.guest_user_id =
           nullif((select current_setting('icamp.user_id',true)),'')::uuid
@@ -345,8 +345,8 @@ with check (
     select 1
     from public.camper_assistance_requests r
     where r.id = request_id
-      and r.organization_id = organization_id
-      and r.campground_id = campground_id
+      and r.organization_id = camper_assistance_requests.organization_id
+      and r.campground_id = camper_assistance_requests.campground_id
       and (
         r.guest_user_id = actor_user_id
         or icamp_private.has_campground_permission(
@@ -378,8 +378,8 @@ using (
     select 1
     from public.camper_assistance_requests r
     where r.id = request_id
-      and r.organization_id = organization_id
-      and r.campground_id = campground_id
+      and r.organization_id = camper_assistance_requests.organization_id
+      and r.campground_id = camper_assistance_requests.campground_id
       and (
         r.guest_user_id =
           nullif((select current_setting('icamp.user_id',true)),'')::uuid
@@ -414,8 +414,8 @@ with check (
     select 1
     from public.camper_assistance_requests r
     where r.id = request_id
-      and r.organization_id = organization_id
-      and r.campground_id = campground_id
+      and r.organization_id = camper_assistance_requests.organization_id
+      and r.campground_id = camper_assistance_requests.campground_id
       and r.guest_user_id = created_by_user_id
   )
 );
