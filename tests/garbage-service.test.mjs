@@ -108,7 +108,11 @@ test("Build 079 schema uses scoped RLS, append-only events and fee snapshots", (
     assert.match(migration, new RegExp(`public\\.${name}`, "u"));
   }
   assert.equal((migration.match(/force row level security/gu) ?? []).length, 3);
-  assert.match(migration, /revoke all on[\s\S]*anon,authenticated/iu);
+  assert.match(migration, /revoke all on[\s\S]*from public;/iu);
+  assert.match(
+    migration,
+    /role_name in array array\['anon','authenticated'\]/u,
+  );
   assert.match(migration, /garbage_pickup_events_append_only/u);
   assert.match(migration, /guard_garbage_pickup_update/u);
   assert.match(migration, /fee_cents integer not null/u);

@@ -179,7 +179,20 @@ alter table public.garbage_pickup_events enable row level security;
 alter table public.garbage_pickup_events force row level security;
 
 revoke all on public.garbage_service_policies,public.garbage_pickup_requests,
- public.garbage_pickup_events from public,anon,authenticated;
+ public.garbage_pickup_events from public;
+do $garbage_data_api_roles$
+declare
+ role_name text;
+begin
+ foreach role_name in array array['anon','authenticated'] loop
+  if exists(select 1 from pg_roles where rolname=role_name) then
+   execute format(
+    'revoke all on public.garbage_service_policies,public.garbage_pickup_requests,public.garbage_pickup_events from %I',
+    role_name
+   );
+  end if;
+ end loop;
+end $garbage_data_api_roles$;
 grant select,insert,update on public.garbage_service_policies to icamp_app;
 grant select,insert,update on public.garbage_pickup_requests to icamp_app;
 grant select,insert on public.garbage_pickup_events to icamp_app;
