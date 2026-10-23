@@ -289,8 +289,8 @@ export default async function CamperAssistancePage({
                           return (
                             <>
                               <p>
-                                <strong>{label(operational.caseState)}</strong> ·{" "}
-                                {label(operational.category)} ·{" "}
+                                <strong>{label(operational.caseState)}</strong>{" "}
+                                · {label(operational.category)} ·{" "}
                                 {label(operational.severity)}
                               </p>
                               {operational.updates.map((update) => (
@@ -302,9 +302,7 @@ export default async function CamperAssistancePage({
                                 </p>
                               ))}
                               {operational.outcomeSummary ? (
-                                <p>
-                                  Outcome: {operational.outcomeSummary}
-                                </p>
+                                <p>Outcome: {operational.outcomeSummary}</p>
                               ) : null}
                             </>
                           );
@@ -314,7 +312,8 @@ export default async function CamperAssistancePage({
                       <td>
                         <p>{request.mediaCount} / 5 attached</p>
                         {request.mediaCount < 5 &&
-                        updateByRequest.get(request.id)?.caseState !== "closed" ? (
+                        updateByRequest.get(request.id)?.caseState !==
+                          "closed" ? (
                           <form action={addCamperAssistanceMediaAction}>
                             <input
                               type="hidden"
