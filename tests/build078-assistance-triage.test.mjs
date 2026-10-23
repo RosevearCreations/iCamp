@@ -113,10 +113,7 @@ test("Build 078 schema preserves immutable intake and adds forced-RLS operationa
   assert.match(migration, /Closed camper assistance cases are terminal/u);
   assert.match(migration, /revoke all on[\s\S]*anon/iu);
   assert.match(migration, /revoke all on[\s\S]*authenticated/iu);
-  assert.doesNotMatch(
-    migration,
-    /update public\.camper_assistance_requests/iu,
-  );
+  assert.doesNotMatch(migration, /update public\.camper_assistance_requests/iu);
 });
 
 test("Build 078 persistence enforces same-campground assignment, optimistic concurrency and escalation-before-close governance", () => {
@@ -130,7 +127,10 @@ test("Build 078 persistence enforces same-campground assignment, optimistic conc
   assert.match(service, /row_version=\$8/u);
   assert.match(service, /row_version=\$5/u);
   assert.match(service, /already has an active escalation/u);
-  assert.match(service, /Resolve the active management escalation before closing/u);
+  assert.match(
+    service,
+    /Resolve the active management escalation before closing/u,
+  );
   assert.match(service, /externalDispatchClaimed: false/u);
   assert.match(service, /guest_visible/u);
   assert.match(service, /appendAuditEvent/u);
