@@ -65,7 +65,6 @@ export default async function OfflineMaintenancePage({
 
   return (
     <AppShell>
-      <link rel="stylesheet" href="/offline-maintenance.css" />
       <Script src="/offline-maintenance.js" strategy="afterInteractive" />
       <div className="page-stack">
         <nav className="breadcrumbs" aria-label="Breadcrumb">

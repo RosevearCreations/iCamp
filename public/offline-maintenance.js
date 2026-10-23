@@ -5,6 +5,13 @@
   if (!root || root.dataset.initialized === "true") return;
   root.dataset.initialized = "true";
 
+  if (!document.querySelector('link[href="/offline-maintenance.css"]')) {
+    const stylesheet = document.createElement("link");
+    stylesheet.rel = "stylesheet";
+    stylesheet.href = "/offline-maintenance.css";
+    document.head.append(stylesheet);
+  }
+
   const DB_NAME = "icamp-offline-maintenance-v1";
   const DB_VERSION = 1;
   const META = "meta";
