@@ -40,9 +40,9 @@ self.addEventListener("fetch", (event) => {
       if (url.pathname === "/workspaces/maintenance/offline") {
         return caches.match("/offline-maintenance.html");
       }
-      return caches.match(event.request).then(
-        (cached) => cached || caches.match("/"),
-      );
+      return caches
+        .match(event.request)
+        .then((cached) => cached || caches.match("/"));
     }),
   );
 });
