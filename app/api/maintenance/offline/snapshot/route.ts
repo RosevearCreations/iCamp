@@ -35,7 +35,8 @@ export async function GET(request: Request) {
     );
   }
 
-  const campgroundId = new URL(request.url).searchParams.get("campground") ?? "";
+  const campgroundId =
+    new URL(request.url).searchParams.get("campground") ?? "";
   if (!uuidPattern.test(campgroundId)) {
     return NextResponse.json(
       { error: "A valid campground is required." },
