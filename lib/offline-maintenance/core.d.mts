@@ -1,7 +1,5 @@
 export type OfflineMaintenanceOperationKind =
-  | "work_order_note"
-  | "inspection_result"
-  | "work_order_media";
+  "work_order_note" | "inspection_result" | "work_order_media";
 
 export type OfflineMaintenanceOperation =
   | {
@@ -33,8 +31,7 @@ export type OfflineMaintenanceOperation =
       fileChecksumSha256: string;
     };
 
-export const offlineMaintenanceOperationKinds:
-  readonly OfflineMaintenanceOperationKind[];
+export const offlineMaintenanceOperationKinds: readonly OfflineMaintenanceOperationKind[];
 
 export function validateOfflineMaintenanceOperation(
   input: unknown,
