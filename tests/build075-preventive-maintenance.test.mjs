@@ -110,6 +110,29 @@ test("Build 075 Web/PWA exposes overdue service and canonical history", () => {
   assert.match(workspace, /Build 075/u);
 });
 
+test("Build 075 advisor hardening covers scoped foreign keys", () => {
+  const hardening = fs.readFileSync(
+    new URL(
+      "../database/migrations/0097_build075_advisor_hardening.sql",
+      import.meta.url,
+    ),
+    "utf8",
+  );
+
+  assert.match(
+    hardening,
+    /preventive_maintenance_programs_scope_asset_fk_idx/u,
+  );
+  assert.match(
+    hardening,
+    /preventive_maintenance_programs_scope_template_fk_idx/u,
+  );
+  assert.match(
+    hardening,
+    /preventive_maintenance_programs_scope_schedule_fk_idx/u,
+  );
+});
+
 test("Build 075 preserves the standard multi-theme prerequisite", () => {
   const roadmap = fs.readFileSync(
     new URL("../docs/BUILD_ROADMAP.md", import.meta.url),
