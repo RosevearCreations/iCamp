@@ -295,7 +295,7 @@ create table public.camper_assistance_escalations (
     )
     on update cascade
     on delete restrict,
-  constraint camper_assistance_escalations_state_check
+  constraint camper_assistance_escalations_evidence_check
     check (
       (
         state = 'open'
