@@ -3,7 +3,7 @@
 do $verify$
 declare
   table_name text;
-  permission_key text;
+  expected_permission text;
 begin
   foreach table_name in array array[
     'camper_assistance_cases',
@@ -33,7 +33,7 @@ begin
     end if;
   end loop;
 
-  foreach permission_key in array array[
+  foreach expected_permission in array array[
     'assistance.triage',
     'assistance.escalate',
     'assistance.communicate',
@@ -43,9 +43,9 @@ begin
     if not exists (
       select 1
       from icamp_private.permission_catalog p
-      where p.permission_key=permission_key
+      where p.permission_key=expected_permission
     ) then
-      raise exception 'Build 078 permission % is missing', permission_key;
+      raise exception 'Build 078 permission % is missing', expected_permission;
     end if;
   end loop;
 
