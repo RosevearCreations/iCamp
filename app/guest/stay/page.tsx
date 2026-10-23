@@ -398,19 +398,31 @@ export default async function MyStayPage({
                 eyebrow="Help"
                 title="Assistance"
                 id="my-stay-assistance"
-                helpTopic="shell.overview"
+                helpTopic="camper.assistance.request"
               />
               <p>
                 {detail.portal.assistanceInstructions ??
-                  "Contact the campground office for assistance. Build 078 will add the canonical camper-assistance request workflow."}
+                  "Use the stay-linked assistance form for campground service requests."}
               </p>
-              {detail.portal.assistanceUrl ? (
-                <p>
-                  <a href={detail.portal.assistanceUrl}>
-                    Open campground assistance →
+              <div className="hero-actions">
+                <Link
+                  className="primary-link"
+                  href={
+                    "/guest/assistance?reservation=" +
+                    encodeURIComponent(detail.reservation.id)
+                  }
+                >
+                  Request camper assistance
+                </Link>
+                {detail.portal.assistanceUrl ? (
+                  <a
+                    className="secondary-link"
+                    href={detail.portal.assistanceUrl}
+                  >
+                    Additional campground help
                   </a>
-                </p>
-              ) : null}
+                ) : null}
+              </div>
             </section>
 
             <section className="content-panel">
@@ -508,8 +520,10 @@ export default async function MyStayPage({
               </p>
               <p>
                 Build 051 does not create parallel store, rental, event,
-                destination, assistance or versioned-rule records. Those remain
-                owned by Builds 078–082, 097–106, 112–121 and their successors.
+                destination or versioned-rule records. Camper assistance intake
+                is now canonical in Build 077; triage and closure continue in
+                Build 078. The remaining domains stay owned by their scheduled
+                builds.
               </p>
             </section>
           </>
