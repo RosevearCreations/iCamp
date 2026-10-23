@@ -415,7 +415,10 @@ export default async function MyStayPage({
                   Request camper assistance
                 </Link>
                 {detail.portal.assistanceUrl ? (
-                  <a className="secondary-link" href={detail.portal.assistanceUrl}>
+                  <a
+                    className="secondary-link"
+                    href={detail.portal.assistanceUrl}
+                  >
                     Additional campground help
                   </a>
                 ) : null}
