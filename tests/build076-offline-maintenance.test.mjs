@@ -144,7 +144,7 @@ test("Build 076 remains closed as Build 077 advances the queue and preserves the
   assert.match(queue, /Build 076 — Offline Maintenance Workspace/u);
   assert.match(queue, /FULLY PROMOTED/u);
   assert.match(queue, /Build 077 — Camper Assistance Request Interface/u);
-  assert.match(queue, /Builds 078–081 \(4 builds\)/u);
+  assert.match(queue, /Builds 079–081 \(4 builds\)/u);
   assert.match(roadmap, /standard theme ruleset and token contract/u);
   assert.match(roadmap, /No future visual\/style build should bypass/u);
 });
