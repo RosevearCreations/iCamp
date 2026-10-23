@@ -130,6 +130,32 @@ export default async function WorkspacePage({
         {workspace.slug === "management" ? (
           <section
             className="content-panel"
+            aria-labelledby="assistance-triage-heading"
+          >
+            <SectionHeading
+              eyebrow="Guest operations"
+              title="Assistance Triage & Management Escalation"
+              id="assistance-triage-heading"
+              helpTopic="camper.assistance.triage"
+              trailing={<span className="build-chip">Build 078</span>}
+            />
+            <p>
+              Reclassify and assign camper-assistance cases, record guest
+              communication, escalate to management, and close with a durable
+              outcome without rewriting the camper&apos;s original report.
+            </p>
+            <Link
+              className="primary-link primary-link--dark"
+              href="/workspaces/management/campgrounds/assistance"
+            >
+              Open assistance triage
+            </Link>
+          </section>
+        ) : null}
+
+        {workspace.slug === "management" ? (
+          <section
+            className="content-panel"
             aria-labelledby="campground-structure-heading"
           >
             <SectionHeading
