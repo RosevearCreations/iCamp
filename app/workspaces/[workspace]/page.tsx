@@ -183,6 +183,29 @@ export default async function WorkspacePage({
           <>
             <section
               className="content-panel"
+              aria-labelledby="garbage-services-heading"
+            >
+              <SectionHeading
+                eyebrow="Waste collection"
+                title="Garbage, Recycling & Organics"
+                id="garbage-services-heading"
+                helpTopic="garbage.services"
+                trailing={<span className="build-chip">Build 079</span>}
+              />
+              <p>
+                Configure central bins, included or scheduled site pickup, and
+                paid on-demand pickup. Review the pickup queue and its separate
+                billing status without duplicating work orders.
+              </p>
+              <Link
+                className="primary-link primary-link--dark"
+                href="/workspaces/maintenance/garbage"
+              >
+                Open waste services
+              </Link>
+            </section>
+            <section
+              className="content-panel"
               aria-labelledby="maintenance-offline-heading"
             >
               <SectionHeading
