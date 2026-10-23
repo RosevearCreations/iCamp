@@ -86,7 +86,10 @@ export default async function OfflineMaintenancePage({
           </p>
         </section>
 
-        <section className="content-panel" aria-labelledby="offline-scope-heading">
+        <section
+          className="content-panel"
+          aria-labelledby="offline-scope-heading"
+        >
           <SectionHeading
             eyebrow="Property scope"
             title="Choose campground"
