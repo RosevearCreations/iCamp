@@ -61,6 +61,10 @@ export interface PreventiveMaintenanceWorkspace {
     maintenanceScheduleId: string;
     maintenanceScheduleTitle: string;
     recurrenceKind: string;
+    intervalValue: number | null;
+    monthDay: number | null;
+    seasonMonth: number | null;
+    seasonDay: number | null;
     nextOccurrenceAt: string;
     scheduleActive: boolean;
     notes: string | null;
