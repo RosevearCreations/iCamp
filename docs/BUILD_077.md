@@ -102,3 +102,14 @@ None expected.
 
 Build 078 — Assistance Triage & Management Escalation, advancing historical
 Build 079.
+
+
+## Production evidence
+- feature PR #290 and closeout/hardening PR #292 merged to `dev`;
+- exact GREEN production-candidate `dev` SHA `8a83abd00c295dea5879f5c332a801d4c2dc7e84`;
+- production PR #291 merged to `main`;
+- production `main` SHA `f82c0402fbccdcea5512a5469b574f07ca635f67`;
+- independent production push CI #39993067353, CodeQL #39993067258 and Secret Scan #39993067391 all succeeded;
+- production CI Verify, Database migrations and Browser end-to-end all succeeded;
+- hosted migrations `camper_assistance_request_interface` and `build077_advisor_hardening` applied;
+- exact hosted Build 077 verification SQL passed and Supabase Security Advisor returned zero findings.
