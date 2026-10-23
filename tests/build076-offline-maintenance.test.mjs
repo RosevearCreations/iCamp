@@ -115,10 +115,7 @@ test("Build 076 PWA queues notes, checklists and media without caching authentic
     "utf8",
   );
   const page = fs.readFileSync(
-    new URL(
-      "../app/workspaces/maintenance/offline/page.tsx",
-      import.meta.url,
-    ),
+    new URL("../app/workspaces/maintenance/offline/page.tsx", import.meta.url),
     "utf8",
   );
 
