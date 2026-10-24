@@ -5,9 +5,11 @@ import { redirect } from "next/navigation";
 import { AppShell } from "@/components/app-shell";
 import { SectionHeading } from "@/components/section-heading";
 import { requireSignedIn } from "@/lib/auth/current-session";
+import { getGuestRulePublications } from "@/lib/campground-rules/postgres.mjs";
 import { getMyStayDetail, listMyStays } from "@/lib/my-stay/postgres.mjs";
 import { formatMoney } from "@/lib/pricing/core.mjs";
 
+import { acknowledgeCampgroundRuleAction } from "./rule-actions";
 import styles from "../../workspaces/management/campgrounds/reservations/reservations.module.css";
 
 export const dynamic = "force-dynamic";
@@ -72,6 +74,13 @@ export default async function MyStayPage({
         reservationId: selected.id,
       })
     : null;
+
+  const publishedRules = detail
+    ? await getGuestRulePublications({
+        userId: session.user.id,
+        reservationId: detail.reservation.id,
+      })
+    : [];
 
   const mapHref = detail
     ? "/booking/map?campground=" +
@@ -331,7 +340,7 @@ export default async function MyStayPage({
                   </p>
                   <p>
                     {detail.rules.guestSummary ??
-                      "Your accepted booking-rule snapshot remains the current stay evidence. Build 082 will add versioned campground/facility rule sets."}
+                      "Your accepted booking-rule snapshot remains part of your stay evidence. Current published facility rules and acknowledgements appear below."}
                   </p>
                   <p>
                     Booking acknowledgement:{" "}
@@ -360,6 +369,87 @@ export default async function MyStayPage({
                   </p>
                 </article>
               </div>
+            </section>
+
+            <section className="content-panel">
+              <SectionHeading
+                eyebrow="Build 082 · Published policies"
+                title="Campground & facility rules"
+                id="my-stay-published-rules"
+                helpTopic="campground.rules"
+              />
+              <p>
+                Each acknowledgement refers to the precise published rule
+                version displayed here. If the campground publishes a newer
+                version, it appears as a new item requiring your review.
+              </p>
+              {publishedRules.length === 0 ? (
+                <p>
+                  No facility rule publications are available for this stay yet.
+                </p>
+              ) : (
+                <div className={styles.history}>
+                  {publishedRules.map((rule) => (
+                    <article key={rule.rule_version_id}>
+                      <h3>{rule.title}</h3>
+                      <p>
+                        <strong>{rule.rule_category}</strong> · version{" "}
+                        {rule.version_number}
+                        {rule.facility_id
+                          ? " · facility-specific"
+                          : " · category-wide"}
+                      </p>
+                      <p style={{ whiteSpace: "pre-wrap" }}>{rule.content}</p>
+                      {rule.acknowledged_at ? (
+                        <p role="status">
+                          Acknowledged this exact version on{" "}
+                          {new Date(rule.acknowledged_at).toLocaleString(
+                            "en-CA",
+                          )}
+                          .
+                        </p>
+                      ) : rule.acknowledgement_required ? (
+                        <form action={acknowledgeCampgroundRuleAction}>
+                          <input
+                            type="hidden"
+                            name="reservationId"
+                            value={detail.reservation.id}
+                          />
+                          <input
+                            type="hidden"
+                            name="ruleSetId"
+                            value={rule.rule_set_id}
+                          />
+                          <input
+                            type="hidden"
+                            name="ruleVersionId"
+                            value={rule.rule_version_id}
+                          />
+                          <label>
+                            <input
+                              type="checkbox"
+                              name="acknowledge"
+                              required
+                            />
+                            I have read and acknowledge version{" "}
+                            {rule.version_number} of {rule.title}.
+                          </label>
+                          <p>
+                            <button type="submit" className="primary-button">
+                              Record acknowledgement
+                            </button>
+                          </p>
+                        </form>
+                      ) : (
+                        <p>
+                          Information only; acknowledgement is not required for
+                          this version.
+                        </p>
+                      )}
+                    </article>
+                  ))}
+                </div>
+              )}
             </section>
 
             <section className="content-panel">

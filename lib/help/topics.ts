@@ -11,6 +11,23 @@ export interface HelpTopic {
 }
 
 export const helpTopics = {
+  "campground.rules": {
+    id: "campground.rules",
+    slug: "versioned-campground-facility-rules",
+    title: "Published Campground & Facility Rules",
+    summary:
+      "Publish immutable versions of campground and facility rules, and record exactly which version each confirmed guest accepted.",
+    details: [
+      "Authorized management registers a stable rule code and a category: campground, pool, waterfront, sports, playground, event or access. A category may optionally target a single registered facility.",
+      "Publish a complete new text each time rules change. Each publication has an immutable version number, author and timestamp; editing the previously published version is deliberately forbidden.",
+      "If guest acknowledgement is required, a signed-in guest with a confirmed or checked-in reservation reads the current version through My Stay and explicitly accepts that exact version. Publishing a newer version leaves earlier evidence intact but requires a fresh acknowledgement.",
+      "The former booking rules snapshot remains separate; Build 082 does not retroactively change booking contracts, remove access, suspend a guest, close a facility, make lifeguard safety decisions or create enforcement actions.",
+      "Phone and SMS channels may provide staff-assisted rule lookup and a secure My Stay handoff. A bare SMS reply or unverified phone call must not create acknowledgement evidence.",
+      "Keep safety language up to date and reviewed by the campground owner; publication is not proof of statutory compliance or staff certification.",
+    ],
+    audience: "public",
+    related: ["shell.channels", "campground.structure"],
+  },
   "garbage.collections": {
     id: "garbage.collections",
     slug: "garbage-collection-reconciliation",
