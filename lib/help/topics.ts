@@ -11,6 +11,24 @@ export interface HelpTopic {
 }
 
 export const helpTopics = {
+  "waterfront.swim": {
+    id: "waterfront.swim",
+    slug: "beach-waterfront-swim-zones-safety",
+    title: "Beach Swimming Zones, Hazards & Closures",
+    summary:
+      "Publish beach swimming zones with locally approved hours and guest rules; document training checks, hazards, entry decisions and independently reviewed reopenings.",
+    details: [
+      "Only active registered beach facilities appear here. A campground manager publishes immutable zone versions with physical boundaries, local time-zone operating days/hours, maximum swimmers, unaccompanied-swimmer age, minimum supervisor age and adult-to-child ratio. Staff must verify local laws and environmental operating requirements before adopting limits.",
+      "Select the exact current published waterfront guest-rule version. A guest's account-linked confirmed or checked-in reservation must have acknowledged that version before a positive admission when acknowledgement is required. A newer rule needs a new zone version and guest acceptance.",
+      "Management independently verifies assigned waterfront staff training records and future expiry; an operator cannot verify their own training. Monitoring permission does not establish qualification. Incident reporting and emergency closures remain available to authorized monitors even before training verification.",
+      "For each admission, trained staff check the latest zone version, local operating hours, canonical beach operational state, absence of a swimming closure, actual observed weather/water-current/water-quality hazard state, guest rules, counted swimmers and adult supervision, and age verification. Never treat software as a sensor, lifeguard or confirmation that water is safe.",
+      "Warnings and removals record observations about one active guest reservation. Use the separate enforcement register for formal guest suspensions. Incident entries describe observed hazards; operators must independently place an immediate swimming closure and follow emergency procedures when unsafe.",
+      "A monitor can close swimming at once or request reopening after corrective work. Independent campground management reviews a reopening request with source evidence; the approving person cannot be the closer or the requester. The underlying beach must separately be canonically operational before swimming reopens.",
+      "History is append-only, scoped to the assigned campground and restricted by staff permissions. A swim-zone closure does not physically barricade a beach, post warnings, shut down gate equipment, dispatch emergency services or change inspected facility status. Operators must complete those real-world actions separately.",
+    ],
+    audience: "operational",
+    related: ["campground.rules", "pool.supervision", "safety.enforcement"],
+  },
   "pool.supervision": {
     id: "pool.supervision",
     slug: "lifeguarded-swimming-safety-register",
