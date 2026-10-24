@@ -661,6 +661,33 @@ export default async function CampgroundAdministrationPage({
           </Link>
         </section>
 
+        <section
+          className="content-panel"
+          aria-labelledby="campground-waterfront-swim-heading"
+        >
+          <SectionHeading
+            eyebrow="Waterfront safety"
+            title="Beach swimming zones, hazards & closures"
+            id="campground-waterfront-swim-heading"
+            helpTopic="waterfront.swim"
+            trailing={<span className="build-chip">Build 085</span>}
+          />
+          <p>
+            Define swimming boundaries and locally approved hours, record safety
+            observations, initiate immediate swimming closures and independently
+            review reopening evidence.
+          </p>
+          <Link
+            className="primary-link primary-link--dark"
+            href={
+              "/workspaces/management/campgrounds/waterfront-safety?campground=" +
+              encodeURIComponent(structure.campground.id)
+            }
+          >
+            Open waterfront safety register
+          </Link>
+        </section>
+
         <section className="content-panel" aria-labelledby="my-stay-heading">
           <SectionHeading
             eyebrow="Guest experience"
