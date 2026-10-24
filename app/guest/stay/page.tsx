@@ -7,6 +7,7 @@ import { SectionHeading } from "@/components/section-heading";
 import { requireSignedIn } from "@/lib/auth/current-session";
 import { getGuestRulePublications } from "@/lib/campground-rules/postgres.mjs";
 import { getMyStayDetail, listMyStays } from "@/lib/my-stay/postgres.mjs";
+import { getGuestActiveSuspensions } from "@/lib/safety-enforcement/postgres.mjs";
 import { formatMoney } from "@/lib/pricing/core.mjs";
 
 import { acknowledgeCampgroundRuleAction } from "./rule-actions";
@@ -77,6 +78,13 @@ export default async function MyStayPage({
 
   const publishedRules = detail
     ? await getGuestRulePublications({
+        userId: session.user.id,
+        reservationId: detail.reservation.id,
+      })
+    : [];
+
+  const activeSuspensions = detail
+    ? await getGuestActiveSuspensions({
         userId: session.user.id,
         reservationId: detail.reservation.id,
       })
@@ -370,6 +378,38 @@ export default async function MyStayPage({
                 </article>
               </div>
             </section>
+
+            {activeSuspensions.length ? (
+              <section className="content-panel">
+                <SectionHeading
+                  eyebrow="Access notice · Management record"
+                  title="Current feature or area restrictions"
+                  id="my-stay-enforcement"
+                  helpTopic="safety.enforcement"
+                />
+                <p>
+                  Your campground has recorded the following approved access
+                  restriction(s). Contact the campground office for questions,
+                  review or reinstatement. Physical gate settings are managed
+                  separately.
+                </p>
+                <div className={styles.history}>
+                  {activeSuspensions.map((item) => (
+                    <article key={item.id}>
+                      <strong>
+                        {item.facility_name ??
+                          item.zone_name ??
+                          item.feature_code ??
+                          "Campground-wide"}
+                      </strong>
+                      <p style={{ whiteSpace: "pre-wrap" }}>
+                        {item.reason_summary}
+                      </p>
+                    </article>
+                  ))}
+                </div>
+              </section>
+            ) : null}
 
             <section className="content-panel">
               <SectionHeading

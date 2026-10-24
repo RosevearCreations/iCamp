@@ -607,6 +607,33 @@ export default async function CampgroundAdministrationPage({
           </Link>
         </section>
 
+        <section
+          className="content-panel"
+          aria-labelledby="campground-enforcement-heading"
+        >
+          <SectionHeading
+            eyebrow="Safety & governance"
+            title="Warnings, suspensions & reinstatement"
+            id="campground-enforcement-heading"
+            helpTopic="safety.enforcement"
+            trailing={<span className="build-chip">Build 083</span>}
+          />
+          <p>
+            Record authorized staff warnings, request scoped restrictions and
+            route suspension decisions to independent campground management.
+            Review the immutable event history before reinstatement.
+          </p>
+          <Link
+            className="primary-link primary-link--dark"
+            href={
+              "/workspaces/management/campgrounds/enforcement?campground=" +
+              encodeURIComponent(structure.campground.id)
+            }
+          >
+            Open enforcement register
+          </Link>
+        </section>
+
         <section className="content-panel" aria-labelledby="my-stay-heading">
           <SectionHeading
             eyebrow="Guest experience"
