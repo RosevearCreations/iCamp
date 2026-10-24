@@ -14,6 +14,11 @@ const nextConfig: NextConfig = {
   output: "standalone",
   poweredByHeader: false,
   reactStrictMode: true,
+  experimental: {
+    // Use the TS compiler API: detached CLI subprocess output is unavailable
+    // in some sandboxed production-build environments.
+    useTypeScriptCli: false,
+  },
   async headers() {
     return [
       {

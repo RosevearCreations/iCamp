@@ -1098,6 +1098,17 @@ Promotion evidence:
 - production `main` independently passed CI #39838203949, CodeQL #39838203417 and Secret Scan #39838203443;
 - Verify, Browser E2E, database lifecycle/idempotence, production build, dependency audit, JavaScript/TypeScript analysis and Gitleaks were GREEN.
 
+## Build 082 — Delivery: Versioned Campground & Facility Rule Sets
+
+This advances the historical Build 082 scope after Build 081 garbage collection reconciliation:
+
+- stable campground/facility rule identities, immutable version publication and seven categories;
+- current-version staff and guest views, plus explicit reservation-linked exact-version acknowledgements;
+- isolated publish/read roles, guest ownership validation, scoped FORCE RLS, append-only evidence;
+- no implicit access suspensions, payment changes, booking contractual rewriting or false IVR/SMS acknowledgements.
+
+Next in the active queue: **Build 083 — Warning, Suspension & Reinstatement Workflow**.
+
 ## Most recently fully promoted build
 **Build 077 — Camper Assistance Request Interface**
 

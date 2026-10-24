@@ -580,6 +580,33 @@ export default async function CampgroundAdministrationPage({
           </Link>
         </section>
 
+        <section
+          className="content-panel"
+          aria-labelledby="published-facility-rules-heading"
+        >
+          <SectionHeading
+            eyebrow="Rules & safety"
+            title="Versioned campground & facility rules"
+            id="published-facility-rules-heading"
+            helpTopic="campground.rules"
+            trailing={<span className="build-chip">Build 082</span>}
+          />
+          <p>
+            Register campground and facility policies, publish exact immutable
+            versions, and review reservation-linked guest acknowledgement
+            counts.
+          </p>
+          <Link
+            className="primary-link primary-link--dark"
+            href={
+              "/workspaces/management/campgrounds/rules?campground=" +
+              encodeURIComponent(structure.campground.id)
+            }
+          >
+            Open published rules
+          </Link>
+        </section>
+
         <section className="content-panel" aria-labelledby="my-stay-heading">
           <SectionHeading
             eyebrow="Guest experience"
