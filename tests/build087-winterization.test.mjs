@@ -149,6 +149,15 @@ test("database migration enforces signed review and live physical-attestation bo
   );
   assert.match(migration, /sign-off must be independent/iu);
   assert.match(migration, /approved/iu);
+  const indexRepair = readFileSync(
+    new URL(
+      "../database/migrations/0119_winterization_fk_index_repair.sql",
+      import.meta.url,
+    ),
+    "utf8",
+  );
+  assert.match(indexRepair, /winterization_step_run_fk_idx/iu);
+  assert.match(indexRepair, /winterization_review_run_fk_idx/iu);
   const page = readFileSync(
     new URL(
       "../app/workspaces/management/campgrounds/winterization/page.tsx",

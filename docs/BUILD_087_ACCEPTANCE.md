@@ -25,6 +25,7 @@ Camp Rosevear is synthetic and inactive. It may be used to verify draft template
 ## Acceptance and promotion gates
 
 - SQL migration `0118_seasonal_yearly_winterization.sql` and its `database/verify/0118_seasonal_yearly_winterization.sql` run against the actual connected Supabase project (including negative permission tests where feasible).
+- Follow-up migration `0119_winterization_fk_index_repair.sql` covers the two scoped FK indexes identified by Supabase's post-0118 Performance Advisor. Its matching verification must pass; existing historic index-usage information is not an error.
 - Unit contract tests under `tests/build087-winterization.test.mjs` validate mandatory water steps, custom/optional steps, source evidence, work orders, winter-year derivation, and immutable security surface.
 - `npm run verify`: formatting, ESLint, TypeScript, automated tests, Next production build.
 - Merge feature into `dev` after checks; promote `dev` into `main` only when all required checks pass, then verify production `main` SHA matches candidate and all production CI/CodeQL/Secret Scan jobs are GREEN.
