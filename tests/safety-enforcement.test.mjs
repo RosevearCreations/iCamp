@@ -28,7 +28,10 @@ const migration = fs.readFileSync(
   "utf8",
 );
 const fkIndexes = fs.readFileSync(
-  new URL("../database/migrations/0114_build083_fk_indexes.sql", import.meta.url),
+  new URL(
+    "../database/migrations/0114_build083_fk_indexes.sql",
+    import.meta.url,
+  ),
   "utf8",
 );
 
@@ -124,7 +127,10 @@ test("SQL enforces independent management review, append-only audit and guest is
   assert.match(migration, /safety_enforcement_events_immutable/);
   assert.match(migration, /has_campground_permission/);
   assert.match(migration, /guest_user_id=nullif/);
-  assert.match(migration, /from public,anon,authenticated/);
+  assert.match(
+    migration,
+    /foreach role_name in array array\['anon','authenticated'\]/,
+  );
   assert.match(
     migration,
     /grant select on public\.safety_enforcement_events to icamp_app/,
@@ -134,5 +140,8 @@ test("SQL enforces independent management review, append-only audit and guest is
     /grant (?:select,)?insert on public\.safety_enforcement_events to icamp_app/,
   );
   assert.match(migration, /old\.case_state='active'/);
-  assert.equal((fkIndexes.match(/create index safety_enforcement_scope_/g) ?? []).length, 4);
+  assert.equal(
+    (fkIndexes.match(/create index safety_enforcement_scope_/g) ?? []).length,
+    4,
+  );
 });

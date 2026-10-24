@@ -201,7 +201,14 @@ alter table public.safety_enforcement_cases force row level security;
 alter table public.safety_enforcement_events enable row level security;
 alter table public.safety_enforcement_events force row level security;
 revoke all on public.safety_enforcement_cases,public.safety_enforcement_events
- from public,anon,authenticated;
+ from public;
+do $roles$ declare role_name text; begin
+ foreach role_name in array array['anon','authenticated'] loop
+  if exists(select 1 from pg_roles where rolname=role_name) then
+   execute format('revoke all on public.safety_enforcement_cases,public.safety_enforcement_events from %I',role_name);
+  end if;
+ end loop;
+end $roles$;
 grant select,insert,update on public.safety_enforcement_cases to icamp_app;
 grant select on public.safety_enforcement_events to icamp_app;
 

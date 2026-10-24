@@ -8,9 +8,15 @@ begin
       and c.relrowsecurity and c.relforcerowsecurity) then
    raise exception 'Missing forced RLS on %',name;
   end if;
-  if has_table_privilege('anon','public.'||name,'SELECT')
-    or has_table_privilege('authenticated','public.'||name,'SELECT') then
-   raise exception 'Direct Data API reads prohibited on %',name;
+  if exists(select 1 from pg_roles where rolname='anon') then
+   if has_table_privilege('anon','public.'||name,'SELECT') then
+    raise exception 'Direct anonymous Data API reads prohibited on %',name;
+   end if;
+  end if;
+  if exists(select 1 from pg_roles where rolname='authenticated') then
+   if has_table_privilege('authenticated','public.'||name,'SELECT') then
+    raise exception 'Direct authenticated Data API reads prohibited on %',name;
+   end if;
   end if;
  end loop;
  if has_table_privilege('icamp_app','public.safety_enforcement_events','INSERT') then
