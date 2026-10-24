@@ -107,6 +107,16 @@ export default async function SeasonalAssignmentsPage({
             derived from Build 039 on the server and protected as immutable
             assignment evidence.
           </p>
+          <p>
+            Required winter closures now depend on separate shutdown evidence
+            and foreman approval.{" "}
+            <Link
+              href={`/workspaces/management/campgrounds/winterization?campground=${encodeURIComponent(selected.campgroundId)}`}
+            >
+              Open the Build 087 winterization checklist
+            </Link>
+            .
+          </p>
         </section>
 
         {params.saved ? (
@@ -222,7 +232,8 @@ export default async function SeasonalAssignmentsPage({
             </label>
             <label className={styles.full}>
               <input type="checkbox" name="winterizationRequired" /> This
-              assignment requires the later winterization/readiness workflow.
+              assignment requires completed winter shutdown evidence and
+              maintenance/foreman approval before winter-closing the site.
             </label>
             <label className={styles.full}>
               Staff note / reason

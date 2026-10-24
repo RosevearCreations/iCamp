@@ -11,6 +11,23 @@ export interface HelpTopic {
 }
 
 export const helpTopics = {
+  "winterization.shutdown": {
+    id: "winterization.shutdown",
+    slug: "seasonal-yearly-winter-shutdown-checklists",
+    title: "Seasonal & Yearly Winterization",
+    summary:
+      "Record documented campground winter shutdown work, water shutoff and draining evidence, and independent maintenance/foreman approval before a required assignment is winter-closed.",
+    details: [
+      "Management publishes campground-specific immutable checklist versions. Water supply shutoff and line draining are always required; add campground-specific utilities and local steps. New runs preserve the exact selected version.",
+      "Start a separate run for each long-term assignment and winter operating year. Staff must perform the actual on-site work. For each step, record a descriptive inspection note and supporting evidence reference; any failed step must link an active campground work order.",
+      "A maintenance lead or main foreman reviews the latest evidence for every step and records an immutable approval or rejection. Required steps must pass; optional steps may be marked not applicable. A failed or unrecorded step blocks approval.",
+      "An assignment marked winterization-required cannot be changed to winter-closed until a matching approved run exists for the current winter operating year. Approval does not itself change occupancy; authorized management must perform the existing separate long-term assignment transition.",
+      "Inactive demonstration campgrounds such as Camp Rosevear can test records but cannot record a genuine physical-shutdown approval. The system cannot operate shutoff valves, drain plumbing, protect pipes against freezing or inspect a property. Trained staff follow local procedures and document physical results independently.",
+      "Build 088 will cover a different cold-weather readiness path for occupied/open sites. Build 089 will cover separately authorized spring inspections and reopening. Neither is implied by this winter shutdown record.",
+    ],
+    audience: "operational",
+    related: ["campground.structure", "emergency.notices"],
+  },
   "emergency.notices": {
     id: "emergency.notices",
     slug: "emergency-communication-manual-approval-handoff",
