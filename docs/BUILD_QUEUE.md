@@ -1150,7 +1150,19 @@ advancing historical Build 080.
 - broader active roadmap after Build 078: **Builds 079–156 (78 builds)**;
 - the existing several-build planning batch remains sufficient through Build 081.
 
+## Build 086 — Emergency Communication & Safety Guardrails
+
+Implementation delivered for production verification:
+- campground/section/site/staff audience-specific immutable notice drafts;
+- independent management approval, rejection and cancellation;
+- approved-notice manual handoff evidence only after real on-site action;
+- emergency-services, accessibility, evacuation and physical-safety boundaries;
+- private RLS permissions, source-verified audit history, help and tests.
+
+See `docs/BUILD_086_ACCEPTANCE.md`. Next queued: **Build 087 — Seasonal/Yearly Winterization Workflow**.
+
 ## Operating rule
+
 - Work primarily on `dev`.
 - Promote to `main` only after applicable gates are GREEN.
 - Every feature must declare Web/PWA, IVR/DTMF and SMS support or a documented safe/visual fallback.

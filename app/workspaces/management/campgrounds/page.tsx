@@ -688,6 +688,33 @@ export default async function CampgroundAdministrationPage({
           </Link>
         </section>
 
+        <section
+          className="content-panel"
+          aria-labelledby="campground-emergency-notices-heading"
+        >
+          <SectionHeading
+            eyebrow="Emergency communication"
+            title="Campground alerts & safety guardrails"
+            id="campground-emergency-notices-heading"
+            helpTopic="emergency.notices"
+            trailing={<span className="build-chip">Build 086</span>}
+          />
+          <p>
+            Draft notices for the whole campground, specific sections or sites,
+            or campground staff. Record independent management approvals and
+            manual on-site announcements without claiming emergency dispatch.
+          </p>
+          <Link
+            className="primary-link primary-link--dark"
+            href={
+              "/workspaces/management/campgrounds/emergency-notices?campground=" +
+              encodeURIComponent(structure.campground.id)
+            }
+          >
+            Open emergency notice register
+          </Link>
+        </section>
+
         <section className="content-panel" aria-labelledby="my-stay-heading">
           <SectionHeading
             eyebrow="Guest experience"
