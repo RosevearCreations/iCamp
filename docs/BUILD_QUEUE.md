@@ -1173,6 +1173,17 @@ Implementation ready for verification and staged promotion:
 
 See `docs/BUILD_087_ACCEPTANCE.md`. Next queued: **Build 088 — Cold-Weather Winter-Readiness Compliance**.
 
+## Build 088 — Cold-Weather Winter-Readiness Compliance
+
+Delivery scope:
+- an auditable, policy-versioned alternative for eligible sites that may remain open in winter;
+- mandatory site observations for water insulation or verified waterless mode, safe heating/power, wastewater protection and winter emergency access;
+- explicit defect-to-maintenance-work-order loop and independent manager/foreman approval;
+- no bypass of Build 087 required shutdown, no automatic winter booking activation and no physical equipment control;
+- private campground-scoped RLS, management UI, contextual help and Camp Rosevear synthetic-data safeguards.
+
+See `docs/BUILD_088_ACCEPTANCE.md`. Next queued: **Build 089 — Spring Reopening Inspection**.
+
 ## Operating rule
 
 - Work primarily on `dev`.
