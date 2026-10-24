@@ -109,6 +109,36 @@ test("SQL forces scoped RLS, exact acknowledgement and append-only histories", (
   assert.match(migration, /new.version_number<>latest\+1/);
   assert.match(migration, /status in \('confirmed','checked_in'\)/);
 });
+test("guest rule visibility depends on an owned confirmed stay, not staff permissions", () => {
+  const guestPolicy = fs.readFileSync(
+    new URL(
+      "../database/migrations/0111_build082_guest_reservation_rls.sql",
+      import.meta.url,
+    ),
+    "utf8",
+  );
+  assert.match(guestPolicy, /reservations_guest_owned_active_read/);
+  assert.match(guestPolicy, /for select to icamp_app/);
+  assert.match(guestPolicy, /guest_user_id=nullif/);
+  assert.match(guestPolicy, /status in \('confirmed','checked_in'\)/);
+  assert.doesNotMatch(
+    guestPolicy,
+    /grant .* to authenticated|for update|for insert/,
+  );
+  const consolidated = fs.readFileSync(
+    new URL(
+      "../database/migrations/0112_build082_guest_rls_policy_consolidation.sql",
+      import.meta.url,
+    ),
+    "utf8",
+  );
+  assert.match(consolidated, /alter policy reservations_read/);
+  assert.match(consolidated, /guest_user_id=nullif/);
+  assert.match(
+    consolidated,
+    /drop policy reservations_guest_owned_active_read/,
+  );
+});
 test("app writes no booking, payment or safety enforcement side effects", () => {
   const source = fs.readFileSync(
     new URL("../lib/campground-rules/postgres.mjs", import.meta.url),
