@@ -11,6 +11,23 @@ export interface HelpTopic {
 }
 
 export const helpTopics = {
+  "emergency.notices": {
+    id: "emergency.notices",
+    slug: "emergency-communication-manual-approval-handoff",
+    title: "Emergency Communications & Safety Guardrails",
+    summary:
+      "Draft a campground, section, site or staff notice; record independent management approval and separately attest any manual communication handoff.",
+    details: [
+      "Choose one audience: the full campground, one active section, one active site/accommodation or assigned campground staff. The audience is a targeting label; saving a draft does not select individual recipients or expose personal contact data.",
+      "The author may not approve or reject their own draft. A different owner or campground manager with explicit emergency broadcast permission must review the exact immutable message and on-site instructions; they must acknowledge that approval does not contact emergency services and that they checked the physical emergency plan.",
+      "Approval alone does not send an SMS, push, email, IVR call or public notice. An active campground's authorized on-site staff may record a real, separate public-address announcement, sign posting, staff briefing or door-to-door handoff with a source reference. This is operator-attested evidence, not proof that anyone received or understood the message.",
+      "Independent management can reject an unapproved draft or cancel an approved notice. Events are append-only, auditable, scoped to one campground and cannot modify the original audience or content.",
+      "Inactive demonstration campgrounds such as Camp Rosevear can practice drafting and approval but cannot record a real-world handoff. A genuine emergency always requires contacting appropriate emergency services directly, coordinating trained personnel, physical evacuation and accessible instructions under the campground's local plan.",
+      "The software never places emergency calls, triggers rescue, opens physical gates, operates sirens, overrides life-safety procedures or guarantees notification delivery. Future provider integrations require separate approval, consent and delivery evidence controls.",
+    ],
+    audience: "operational",
+    related: ["waterfront.swim", "pool.supervision", "safety.enforcement"],
+  },
   "waterfront.swim": {
     id: "waterfront.swim",
     slug: "beach-waterfront-swim-zones-safety",
