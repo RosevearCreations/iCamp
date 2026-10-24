@@ -30,6 +30,12 @@ begin
   and indexname='campground_rule_versions_current_idx') then
   raise exception 'Current published version lookup index missing';
  end if;
+ if not exists(select 1 from pg_policies where schemaname='public'
+  and tablename='reservations' and policyname='reservations_read'
+  and cmd='SELECT' and qual like '%guest_user_id%'
+  and qual like '%checked_in%' and qual like '%reservation.read%') then
+  raise exception 'Guest-owned active reservation RLS lookup missing';
+ end if;
  if not exists(select 1 from pg_constraint
   where conrelid='public.campground_rule_acknowledgements'::regclass
    and contype='u' and pg_get_constraintdef(oid) like '%UNIQUE (rule_version_id, reservation_id)%') then

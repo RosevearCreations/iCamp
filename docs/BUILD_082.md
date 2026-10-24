@@ -20,7 +20,7 @@
 
 ## Verification
 
-- `database/migrations/0109_versioned_campground_facility_rules.sql`, the companion `0110_build082_fk_indexes.sql` index-hardening migration and `database/verify/0109_versioned_campground_facility_rules.sql`.
+- `database/migrations/0109_versioned_campground_facility_rules.sql`, `0110_build082_fk_indexes.sql`, `0111_build082_guest_reservation_rls.sql`, and `0112_build082_guest_rls_policy_consolidation.sql` (which preserves staff permissions and adds the signed-in guest's own active reservation without duplicate permissive SELECT policies), plus `database/verify/0109_versioned_campground_facility_rules.sql`.
 - `tests/campground-rules.test.mjs`, full test suite, formatting, lint, type check, production build and production-gated GitHub workflows.
 
 ## Next
