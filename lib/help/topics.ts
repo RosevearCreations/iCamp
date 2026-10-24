@@ -11,6 +11,24 @@ export interface HelpTopic {
 }
 
 export const helpTopics = {
+  "pool.supervision": {
+    id: "pool.supervision",
+    slug: "lifeguarded-swimming-safety-register",
+    title: "Pool Supervision, Admissions & Safety Holds",
+    summary:
+      "Manage versioned pool operating rules, independently checked lifeguard credentials, guest admission observations and swimming holds.",
+    details: [
+      "A manager publishes each pool's capacity, unaccompanied-swimmer age, minimum supervisor age, maximum children-per-supervisor ratio and minimum on-duty lifeguard count. These are local operating choices, not built-in legislative limits. Validate them with the applicable public health authority before use.",
+      "Pool policy references an exact currently published pool-rule version from the campground rules register. When those rules change, publish a new supervision policy. Guests acknowledge the rule version in My Stay; positive admission decisions require the matching reservation's acknowledgement.",
+      "A campground manager must verify each lifeguard's genuine current credentials and expiry independently, using a source record. Lifeguard role assignment by itself does not prove qualifications. The same manager cannot verify their own credentials; credential revocation is retained in immutable history.",
+      "The lifeguard records real-time swimmer, child, supervisor and staff counts. For a positive admission, the pool must be canonically operational, have no active swimming hold, satisfy local limits, and the lifeguard must attest that unaccompanied swimmers' and supervisors' ages were checked on site. No software assertion replaces physical observation or an emergency plan.",
+      "Warnings and removals are supervised-swimming records for an active guest reservation, not formal campground suspensions or gate changes. For broader restrictions use the separately reviewed Warnings & Suspensions register.",
+      "A verified lifeguard can initiate an immediate swimming hold and request release. Admission remains blocked until independent management approval. The manager approving release cannot be either the hold originator or the release requestor, and the canonical pool must already have returned to operational status through the existing signed-inspection workflow.",
+      "Every policy, qualification decision and supervision event is append-only, scoped to one campground, and permission checked. A swimming hold is not a physical closure or emergency-service dispatch. The on-site operator must still close the actual pool and follow their current jurisdiction's rules and emergency procedures.",
+    ],
+    audience: "operational",
+    related: ["campground.rules", "safety.enforcement"],
+  },
   "safety.enforcement": {
     id: "safety.enforcement",
     slug: "staff-warnings-suspension-review-reinstatement",

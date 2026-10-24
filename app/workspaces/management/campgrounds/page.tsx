@@ -634,6 +634,33 @@ export default async function CampgroundAdministrationPage({
           </Link>
         </section>
 
+        <section
+          className="content-panel"
+          aria-labelledby="campground-pool-supervision-heading"
+        >
+          <SectionHeading
+            eyebrow="Aquatic safety"
+            title="Lifeguarded pool & supervised swimming"
+            id="campground-pool-supervision-heading"
+            helpTopic="pool.supervision"
+            trailing={<span className="build-chip">Build 084</span>}
+          />
+          <p>
+            Publish facility-specific swimming limits, verify staff
+            qualifications, record on-site admission and incident decisions, and
+            independently review temporary swim holds.
+          </p>
+          <Link
+            className="primary-link primary-link--dark"
+            href={
+              "/workspaces/management/campgrounds/pool-safety?campground=" +
+              encodeURIComponent(structure.campground.id)
+            }
+          >
+            Open pool safety register
+          </Link>
+        </section>
+
         <section className="content-panel" aria-labelledby="my-stay-heading">
           <SectionHeading
             eyebrow="Guest experience"
