@@ -11,6 +11,24 @@ export interface HelpTopic {
 }
 
 export const helpTopics = {
+  "winter.readiness": {
+    id: "winter.readiness",
+    slug: "cold-weather-winter-readiness-compliance",
+    title: "Cold-Weather Winter-Readiness Compliance",
+    summary:
+      "Document physical cold-weather protections for an eligible open site and require independent approval; winterized long-term assignments cannot use this alternative.",
+    details: [
+      "A campground manager publishes a versioned local winter-readiness checklist. Four tasks are mandatory: water freeze protection, heating/power, wastewater/drainage and safe winter access. Additional utility and emergency response steps may be configured. A new checklist never rewrites the older historical version used by existing assessments.",
+      "Start one assessment per accommodation per winter operating year. Check whether local rules permit the proposed winter use. Select the physically observed water arrangement: insulated supply, approved heat-traced/heated supply, or confirmed no live water service. Never assume a site has insulation, heating or freeze sensors because a checkbox is selected.",
+      "For each mandatory task record actual observations with a source reference (photo, inspection sheet, equipment test or maintenance log) and a factual note. Defects must reference an existing campground maintenance work order. New observations supersede earlier step evidence without editing the audit trail; optional tasks may be explicitly marked not applicable.",
+      "A maintenance lead, main foreman or authorized manager must independently review the current evidence. The review author cannot be the case creator or any person who recorded field observations in that case. All mandatory steps must pass, and every optional step must be accounted for before approval. Rejection permits corrective follow-up; final approval makes the case immutable.",
+      "A long-term assignment marked as requiring winterization must follow Build 087 shutdown and foreman sign-off. The system rejects readiness approval for an accommodation with an active shutdown-required assignment, including when no assignment was selected when the readiness case began.",
+      "Camp Rosevear and other inactive demonstration properties cannot obtain real-world approval. Readiness approval does not turn on heat or utilities, establish legal compliance, override closure orders, open a site, accept a booking or verify current weather conditions. On-site trained staff and local authorities remain responsible for physical safety and permits.",
+      "Build 089 will add separate spring reopening inspection and explicit return-to-service authority; winter-readiness evidence does not grant spring reopening.",
+    ],
+    audience: "operational",
+    related: ["winterization.shutdown", "campground.structure"],
+  },
   "winterization.shutdown": {
     id: "winterization.shutdown",
     slug: "seasonal-yearly-winter-shutdown-checklists",
