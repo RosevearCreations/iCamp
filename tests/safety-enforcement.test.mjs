@@ -27,6 +27,10 @@ const migration = fs.readFileSync(
   ),
   "utf8",
 );
+const fkIndexes = fs.readFileSync(
+  new URL("../database/migrations/0114_build083_fk_indexes.sql", import.meta.url),
+  "utf8",
+);
 
 test("case input is reservation-linked, scoped and documented", () => {
   assert.deepEqual(ENFORCEMENT_SCOPES, [
@@ -130,4 +134,5 @@ test("SQL enforces independent management review, append-only audit and guest is
     /grant (?:select,)?insert on public\.safety_enforcement_events to icamp_app/,
   );
   assert.match(migration, /old\.case_state='active'/);
+  assert.equal((fkIndexes.match(/create index safety_enforcement_scope_/g) ?? []).length, 4);
 });

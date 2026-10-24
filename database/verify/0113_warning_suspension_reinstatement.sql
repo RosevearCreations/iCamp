@@ -32,4 +32,14 @@ begin
  if not exists(select 1 from pg_indexes where schemaname='public'
    and indexname='safety_enforcement_campground_queue_idx') then
   raise exception 'Campground enforcement queue index missing'; end if;
+ foreach name in array array[
+  'safety_enforcement_scope_reservation_fk_idx',
+  'safety_enforcement_scope_facility_fk_idx',
+  'safety_enforcement_scope_zone_fk_idx',
+  'safety_enforcement_scope_event_case_fk_idx'
+ ] loop
+  if not exists(select 1 from pg_indexes where schemaname='public'
+   and indexname=name) then
+   raise exception 'Composite tenant FK index missing: %',name; end if;
+ end loop;
 end $verify$;

@@ -15,6 +15,7 @@
 - Immutable transition events are inserted by an internal private trigger; application callers cannot directly forge an event.
 - Optimistic `row_version` check rejects stale simultaneous decisions. Case retry UUID avoids duplicate warning or suspension creation on form resubmission.
 - Database verification: `database/verify/0113_warning_suspension_reinstatement.sql`.
+- Composite tenant FK indexes and advisor follow-up: `database/migrations/0114_build083_fk_indexes.sql`.
 - Unit/contract verification: `tests/safety-enforcement.test.mjs`.
 
 ## Boundaries
