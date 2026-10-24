@@ -873,6 +873,33 @@ export default async function CampgroundAdministrationPage({
           </Link>
         </section>
 
+        <section
+          className="content-panel"
+          aria-labelledby="winterization-heading"
+        >
+          <SectionHeading
+            eyebrow="Seasonal/yearly site shutdown"
+            title="Winterization checklists & foreman approval"
+            id="winterization-heading"
+            helpTopic="winterization.shutdown"
+            trailing={<span className="build-chip">Build 087</span>}
+          />
+          <p>
+            Create campground-specific water and utility shutdown checklists,
+            preserve physical work evidence and require authorized maintenance
+            sign-off before winter-closing a flagged long-term assignment.
+          </p>
+          <Link
+            className="primary-link primary-link--dark"
+            href={
+              "/workspaces/management/campgrounds/winterization?campground=" +
+              encodeURIComponent(structure.campground.id)
+            }
+          >
+            Open seasonal winterization
+          </Link>
+        </section>
+
         <section className="content-panel" aria-labelledby="payments-heading">
           <SectionHeading
             eyebrow="Reservation payments"

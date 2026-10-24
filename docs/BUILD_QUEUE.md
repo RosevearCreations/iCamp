@@ -1161,6 +1161,18 @@ Implementation delivered for production verification:
 
 See `docs/BUILD_086_ACCEPTANCE.md`. Next queued: **Build 087 — Seasonal/Yearly Winterization Workflow**.
 
+## Build 087 — Seasonal/Yearly Winterization Workflow
+
+Implementation ready for verification and staged promotion:
+- campground-specific immutable shutdown templates with mandatory water isolation and line draining;
+- version-pinned winter work runs linked to canonical Build 047 seasonal/yearly assignments;
+- append-only observation/evidence and corrective maintenance-work-order linkage;
+- independent maintenance lead/main foreman sign-off for active campground runs only;
+- database-enforced seasonal assignment winter-close prerequisite for flagged sites;
+- role-restricted management dashboard, contextual help, and RLS-safe test data.
+
+See `docs/BUILD_087_ACCEPTANCE.md`. Next queued: **Build 088 — Cold-Weather Winter-Readiness Compliance**.
+
 ## Operating rule
 
 - Work primarily on `dev`.
