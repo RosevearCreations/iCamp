@@ -11,6 +11,23 @@ export interface HelpTopic {
 }
 
 export const helpTopics = {
+  "safety.enforcement": {
+    id: "safety.enforcement",
+    slug: "staff-warnings-suspension-review-reinstatement",
+    title: "Warnings, Suspensions & Reinstatement",
+    summary:
+      "Issue accountable staff warnings, request limited-access suspensions, and require an independent management decision before approval.",
+    details: [
+      "Authorized security staff or campground management can record a warning or request a suspension for an account-linked confirmed or checked-in reservation. Every record names the guest's reservation and a campground, named facility, access zone or feature category.",
+      "Warnings are recorded immediately but do not revoke access. A suspension request starts as pending review; it cannot become active until a campground manager or owner reviews it. The requester cannot approve or deny their own request, even if they also hold a management role.",
+      "A manager must enter a reason to approve, deny or reinstate. The case has a conflict-checked revision; refresh if another operator has acted. Denied requests, recorded warnings and reinstated cases are terminal. A new incident requires a new case.",
+      "Every transition is logged automatically in an immutable event history with the actor, time and explanation. Initial reasons are visible to the affected guest if the suspension is approved; management decision notes remain internal.",
+      "The guest's My Stay portal displays approved active restrictions for their own stay only. This module does not automatically change gate passes, revoke credentials, cancel reservations, close facilities, call emergency services or adjudicate physical safety. Follow the appropriate separately authorized on-site workflow.",
+      "Use neutral fact-based descriptions, document follow-up using existing incident or guest-contact channels, and seek management review when restrictions affect access or safety.",
+    ],
+    audience: "operational",
+    related: ["campground.rules", "access.rules", "shell.channels"],
+  },
   "campground.rules": {
     id: "campground.rules",
     slug: "versioned-campground-facility-rules",
