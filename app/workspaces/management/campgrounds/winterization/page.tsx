@@ -498,10 +498,14 @@ export default async function WinterizationPage({
             authorized maintenance/foreman approval.
           </p>
           <p>
-            Cold-weather open-site alternatives and insulation compliance belong
-            to <strong>Build 088</strong>. Independent spring-opening
-            inspections and return-to-service authorization belong to{" "}
-            <strong>Build 089</strong>.
+            <Link
+              href={`/workspaces/management/campgrounds/winter-readiness?campground=${encodeURIComponent(campground.id)}`}
+            >
+              Build 088 cold-weather readiness
+            </Link>{" "}
+            applies only to eligible non-shutdown sites. Independent
+            spring-opening inspections and return-to-service authorization
+            remain in <strong>Build 089</strong>.
           </p>
           <Link
             href={`/workspaces/management/campgrounds/seasonal?campground=${encodeURIComponent(campground.id)}`}

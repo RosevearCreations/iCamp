@@ -900,6 +900,34 @@ export default async function CampgroundAdministrationPage({
           </Link>
         </section>
 
+        <section
+          className="content-panel"
+          aria-labelledby="winter-readiness-heading"
+        >
+          <SectionHeading
+            eyebrow="Eligible cold-weather open sites"
+            title="Winter-readiness compliance & approval"
+            id="winter-readiness-heading"
+            helpTopic="winter.readiness"
+            trailing={<span className="build-chip">Build 088</span>}
+          />
+          <p>
+            Verify freeze protection, heating, wastewater measures and winter
+            access for sites permitted to operate during cold weather. Defects
+            require corrective work and independent approval. This does not
+            bypass mandatory shutdown or activate bookings.
+          </p>
+          <Link
+            className="primary-link primary-link--dark"
+            href={
+              "/workspaces/management/campgrounds/winter-readiness?campground=" +
+              encodeURIComponent(structure.campground.id)
+            }
+          >
+            Open winter-readiness compliance
+          </Link>
+        </section>
+
         <section className="content-panel" aria-labelledby="payments-heading">
           <SectionHeading
             eyebrow="Reservation payments"
