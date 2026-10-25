@@ -11,6 +11,26 @@ export interface HelpTopic {
 }
 
 export const helpTopics = {
+  "permanent.followup": {
+    id: "permanent.followup",
+    slug: "finance-owner-followup-reassessment-closure",
+    title: "Owner Follow-Up Task Continuity & Escalation Closure",
+    summary:
+      "Carry accepted owner escalations into restricted task assignments, evidence, independent reassessment and administrative closure.",
+    details: [
+      "An owner escalation must first have a recorded accepted_followup acknowledgement. A separate authorized operator assigns one immutable task to the same campground's designated active owner with a due date within 90 days. No message is sent automatically.",
+      "Only the assigned owner may append evidence of action taken, a blocked dependency or ongoing follow-up. Use references to privately retained source records; never enter SINs, bank details, credit reports or customer documents in the notes.",
+      "A different staff member independently reassesses source-linked evidence. An administrative completion recommendation requires documented action_taken evidence; the follow-up can otherwise continue.",
+      "A separate active Owner / Administrator performs the final administrative disposition against the latest independent reassessment. This only closes internal follow-up tracking; it never changes a financing decision, applicant acceptance, contract, ownership or the separate exception hold ledger.",
+      "Camp Rosevear acceptance testing must use synthetic information only. Use the Build 096 exception ledger for a separately authorized hold release if independently appropriate.",
+    ],
+    audience: "privileged",
+    related: [
+      "permanent.ageing",
+      "permanent.reconciliation",
+      "permanent.receipts",
+    ],
+  },
   "permanent.ageing": {
     id: "permanent.ageing",
     slug: "finance-delivery-exception-ageing-owner-escalation",
