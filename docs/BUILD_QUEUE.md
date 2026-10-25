@@ -1227,6 +1227,16 @@ See `docs/BUILD_092_ACCEPTANCE.md`. Next queued: **Build 093 — Office Financin
 
 ## Operating rule
 
+## Build 093 — Office Financing Application Intake
+
+Delivery scope:
+- applicant-consented financing interest tied to a current Build 092 sale case;
+- four confidential document-reference categories, independently triaged for intake completeness;
+- strict private append-only RLS, operator help and no credit, lending, payment or transfer side effects.
+
+See `docs/BUILD_093_ACCEPTANCE.md`. Next queued: **Build 094 — Financing Terms & Independent Offer Authorization**.
+
+
 - Work primarily on `dev`.
 - Promote to `main` only after applicable gates are GREEN.
 - Every feature must declare Web/PWA, IVR/DTMF and SMS support or a documented safe/visual fallback.

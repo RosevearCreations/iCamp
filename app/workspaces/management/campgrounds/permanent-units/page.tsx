@@ -100,6 +100,13 @@ export default async function PermanentUnitsPage({
               Open Build 092 · Buyer application, inspection and transfer review
             </Link>
           </p>
+          <p>
+            <Link
+              href={`/workspaces/management/campgrounds/permanent-units/financing?campground=${encodeURIComponent(campground.id)}`}
+            >
+              Open Build 093 · Private office financing application intake
+            </Link>
+          </p>
         </section>
         {params.saved ? (
           <p role="status" className={styles.notice}>

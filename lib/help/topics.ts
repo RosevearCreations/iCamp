@@ -11,6 +11,23 @@ export interface HelpTopic {
 }
 
 export const helpTopics = {
+  "permanent.financing": {
+    id: "permanent.financing",
+    slug: "office-financing-application-intake",
+    title: "Office Financing Application Intake",
+    summary:
+      "Record consent-attested financing interest and secure document pointers for independent completeness review, without creating a credit decision or loan.",
+    details: [
+      "Use only a currently open Build 092 permanent-unit sale case at an active campground. Only staff with permanent-unit transfer permission can read and create confidential intake records.",
+      "Confirm the applicant's explicit consent and store the restricted consent record ID, approved CRM contact reference, purpose and requested CAD amount. Never enter SINs, bank details, credit scores, source-document contents or raw income data in this desk.",
+      "Track four document categories through secure system references only: verified identity/consent, income-document receipt, sale terms and financing disclosures. A later defect supersedes a prior received status. Evidence and decisions are immutable.",
+      "An independent reviewer who neither opened the intake nor recorded evidence may mark an application complete for external review only after all four categories are currently received. They may also return incomplete or withdraw the intake.",
+      "Completeness is not lender approval, a credit check, a financing offer, a payment, disbursement, signed agreement or permission to close the unit sale. A separate authorized lending process and privacy/retention policy are required for those activities.",
+      "Voice, SMS and keypad channels may direct applicants to staff but cannot collect private financing documents or create or approve an application. Synthetic Camp Rosevear data must never be submitted to lenders.",
+    ],
+    audience: "privileged",
+    related: ["permanent.transfer", "permanent.units"],
+  },
   "permanent.transfer": {
     id: "permanent.transfer",
     slug: "permanent-unit-sale-and-transfer-closeout",
