@@ -1215,6 +1215,16 @@ Delivery scope:
 
 See `docs/BUILD_091_ACCEPTANCE.md`. Next queued: **Build 092 — Permanent Unit Sale/Transfer Workflow**.
 
+## Build 092 — Permanent Unit Sale/Transfer Workflow
+
+Delivery scope:
+- buyer applications pinned to approved listings and matching inquiries;
+- six required inspection/fee/document/closing evidence domains, independently reviewed;
+- separate, atomic unit-owner ledger handoff and closeout receipt;
+- campground-scoped private RLS, Web/PWA management, contextual help, no automatic land/lease/payment transfer.
+
+See `docs/BUILD_092_ACCEPTANCE.md`. Next queued: **Build 093 — Office Financing Application Intake**.
+
 ## Operating rule
 
 - Work primarily on `dev`.
