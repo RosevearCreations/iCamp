@@ -98,6 +98,11 @@ export default async function PortfolioPage({
           <span>Portfolio monitoring</span>
         </nav>
         <section className="hero-panel">
+          <p>
+            <Link href="/workspaces/management/campgrounds/permanent-units/financing/owner-portfolio">
+              Owner-only cross-campground operational overview
+            </Link>
+          </p>
           <p className="eyebrow">
             Build 100 · Restricted operational oversight
           </p>

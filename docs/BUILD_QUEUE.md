@@ -1227,6 +1227,15 @@ See `docs/BUILD_092_ACCEPTANCE.md`. Next queued: **Build 093 — Office Financin
 
 ## Operating rule
 
+## Build 101 — Cross-Campground Finance Portfolio Owner View & Risk-Neutral Trend Reports
+
+Delivery scope:
+- read-only owner-only portfolio for multiple campgrounds, requiring an active Owner / Administrator role and finance-operations permission for each property independently;
+- privacy-safe operational counts over selectable 7-, 30-, and 90-day activity windows, with separate current hold/overdue task snapshots;
+- 12-week UTC event-count trends and campground breakdowns, no applicant records, lending/credit profiling, automated messaging or exception releases.
+
+See `docs/BUILD_101_ACCEPTANCE.md`. Next queued: **Build 102 — Owner Trend Review Annotations & Cross-Campground Follow-Up Handoff Planning**.
+
 ## Build 100 — Finance Follow-Up Portfolio Monitoring & Exception Recurrence Review
 
 Delivery scope:
