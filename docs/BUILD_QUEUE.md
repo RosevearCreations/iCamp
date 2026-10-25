@@ -1227,6 +1227,16 @@ See `docs/BUILD_092_ACCEPTANCE.md`. Next queued: **Build 093 — Office Financin
 
 ## Operating rule
 
+## Build 094 — Financing Terms & Independent Offer Authorization
+
+Delivery scope:
+- immutable internal-only finance terms, estimated repayments and source-linked disclosures;
+- independent authorization for office preparation, not customer credit/loan issuance;
+- private tenant-isolated SQL, contextual help and Web/PWA console.
+
+See `docs/BUILD_094_ACCEPTANCE.md`. Next queued: **Build 095 — Applicant Offer Delivery Consent, Versioned Disclosures & Manual Sign-Off Boundary**.
+
+
 ## Build 093 — Office Financing Application Intake
 
 Delivery scope:
