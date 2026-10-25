@@ -11,6 +11,22 @@ export interface HelpTopic {
 }
 
 export const helpTopics = {
+  "permanent.owner-report": {
+    id: "permanent.owner-report",
+    slug: "cross-campground-finance-owner-operational-report",
+    title: "Cross-Campground Owner Operations & Risk-Neutral Trends",
+    summary:
+      "Show aggregated operational event volumes only for campgrounds with active owner-admin and finance-operations permission.",
+    details: [
+      "This is an owner-only, read-only screen. Each campground is checked for an active Owner / Administrator assignment, a matching organization and the permanent_unit.transfer permission. The queries also run as the RLS-protected icamp_app role. A staff member's access to an individual campground does not grant access to this cross-property report.",
+      "The selected 7-, 30-, or 90-day window applies to activity counters (new consents, hold and clear events, task creation and administrative closure, recurrence review entries). Current hold and open/overdue task counts are point-in-time conditions and remain independent of the activity-window selector.",
+      "The weekly trend always covers 12 UTC calendar weeks, including the current partial week. It counts workflow events only. Counts are not customer credit or eligibility ratings, repayment predictions, legal compliance measures, rankings or performance comparisons.",
+      "Property names and aggregate counts are displayed, but no applicant names, source evidence, financial documents, credit data, offer terms, personally identifying records or customer messages are included. The report does not send notifications or change any finance ledger.",
+      "An owner assigned more than 50 properties sees a coverage warning; never interpret a truncated portfolio as a full-company summary. Review individual cases only within the corresponding Build 100 campground desk and under its own permission gate.",
+    ],
+    audience: "privileged",
+    related: ["permanent.portfolio", "permanent.followup", "permanent.ageing"],
+  },
   "permanent.portfolio": {
     id: "permanent.portfolio",
     slug: "finance-followup-portfolio-recurrence",
