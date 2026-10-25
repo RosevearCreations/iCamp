@@ -11,6 +11,26 @@ export interface HelpTopic {
 }
 
 export const helpTopics = {
+  "permanent.portfolio": {
+    id: "permanent.portfolio",
+    slug: "finance-followup-portfolio-recurrence",
+    title: "Finance Follow-Up Portfolio & Recurring Exceptions",
+    summary:
+      "Review campground-scoped open owner tasks, overdue dates, current holds and repeated reasons without touching financial decisions.",
+    details: [
+      "All figures come from existing private consent, manual exception, owner escalation, task and administrative closure evidence. Active holds are derived solely from the most recent hold/clear event; tasks are open until Build 099 administrative closure. Those independent conditions must not be conflated.",
+      "Recurrence means two or more recorded hold events for the same consent and the same reason code across retained history. It is not an applicant credit score, generalized risk prediction or statutory violation. Each reason has its own independent review record and due date.",
+      "The operator may record a source-linked manual review with a disposition of continued monitoring, owner review recommendation or follow-up pattern. The database checks current exception event identity and exact hold/escalation counts and refuses a repeat review by the same reviewer or the latest event recorder.",
+      "Owner follow-up deadlines and overdue counters are operator priorities, not legally defined lending timelines. The portfolio displays up to the latest 500 consent records and clearly warns if additional records exist; only the first 40 matching cases are rendered to keep the interface usable.",
+      "No automatic messages, credit approvals, contract binding, offer delivery acknowledgement, hold clear or transfer are triggered. Test using synthetic Camp Rosevear evidence references only; never paste applicant bank details, identification numbers or documents into these notes.",
+    ],
+    audience: "privileged",
+    related: [
+      "permanent.followup",
+      "permanent.ageing",
+      "permanent.reconciliation",
+    ],
+  },
   "permanent.followup": {
     id: "permanent.followup",
     slug: "finance-owner-followup-reassessment-closure",
