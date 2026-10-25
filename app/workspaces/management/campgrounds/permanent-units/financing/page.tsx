@@ -84,6 +84,14 @@ export default async function FinancingPage({
             sensitive document contents here. Keep them only in separately
             approved secure systems.
           </p>
+          <p>
+            <Link
+              href={`/workspaces/management/campgrounds/permanent-units/financing/offers?campground=${encodeURIComponent(selected.campgroundId)}`}
+            >
+              Open Build 094 · Non-binding financing terms and independent
+              internal authorization
+            </Link>
+          </p>
         </section>
         {params.saved ? (
           <p role="status" className={styles.notice}>
