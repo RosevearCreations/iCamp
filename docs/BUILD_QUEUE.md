@@ -1227,6 +1227,15 @@ See `docs/BUILD_092_ACCEPTANCE.md`. Next queued: **Build 093 — Office Financin
 
 ## Operating rule
 
+## Build 102 — Owner Trend Review Annotations & Cross-Campground Follow-Up Handoff Planning
+
+Delivery scope:
+- append-only owner annotations on the last 12 UTC weeks of consent, exception and task activity, with source references, owner interpretation and bounded next-review dates;
+- handoff plans linked to a source trend annotation and a second authorized owner campground, with no automatic task assignment, customer movement, lending decisions, messages or hold release;
+- dual-campground owner authorization under RLS (including cross-organization scope), separated planning screen, ⓘ help, bounded history and user-input validation.
+
+See `docs/BUILD_102_ACCEPTANCE.md`. Next queued: **Build 103 — Owner Planning Follow-Up Outcomes & Cross-Campground Resolution Evidence**.
+
 ## Build 101 — Cross-Campground Finance Portfolio Owner View & Risk-Neutral Trend Reports
 
 Delivery scope:
