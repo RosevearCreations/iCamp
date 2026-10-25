@@ -1227,6 +1227,15 @@ See `docs/BUILD_092_ACCEPTANCE.md`. Next queued: **Build 093 — Office Financin
 
 ## Operating rule
 
+## Build 100 — Finance Follow-Up Portfolio Monitoring & Exception Recurrence Review
+
+Delivery scope:
+- restricted campground-level summary of held cases, outstanding and overdue manual owner tasks, completed administrative tasks and repeated exception reasons;
+- deterministic repeat classification (at least two holds with the same reason for the same consent), with bounded display coverage and filters;
+- append-only, independently reviewed recurrence observations pinned to current event and verified counts, with contextual help and zero automatic lending, customer communications or hold release.
+
+See `docs/BUILD_100_ACCEPTANCE.md`. Next queued: **Build 101 — Cross-Campground Finance Portfolio Owner View & Risk-Neutral Trend Reports**.
+
 ## Build 099 — Owner Follow-Up Task Continuity, Reassessment & Escalation Closure Evidence
 
 Delivery scope:

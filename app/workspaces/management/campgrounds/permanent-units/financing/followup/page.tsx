@@ -86,6 +86,12 @@ export default async function FollowupPage({
         </nav>
         <section className="hero-panel">
           <p className="eyebrow">Build 099 · Restricted finance records</p>
+          <p>
+            <Link href="/workspaces/management/campgrounds/permanent-units/financing/portfolio">
+              Open Build 100 portfolio monitoring &amp; recurring exception
+              reviews
+            </Link>
+          </p>
           <h1>
             Owner follow-up, independent reassessment &amp; closure evidence
           </h1>
