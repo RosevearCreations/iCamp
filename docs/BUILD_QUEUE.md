@@ -1227,6 +1227,15 @@ See `docs/BUILD_092_ACCEPTANCE.md`. Next queued: **Build 093 — Office Financin
 
 ## Operating rule
 
+## Build 103 — Owner Planning Follow-Up Outcomes & Cross-Campground Resolution Evidence
+
+Delivery scope:
+- append-only, source-plan-linked owner coordination outcomes, with a bounded next-action date for open follow-up and terminal states for target review complete or unable to proceed;
+- a separate one-time owner planning resolution citing the latest terminal outcome, protected from concurrent stale writes and with no automated applicant, financing, delivery hold, messaging or task side effects;
+- independent active owner authorization on both campgrounds and forced row-level security, privacy-safe notes, contextual ⓘ help and visible coverage warnings.
+
+See `docs/BUILD_103_ACCEPTANCE.md`. Next queued: **Build 104 — Owner Handoff Resolution Reassessment & Independent Review Acceptance**.
+
 ## Build 102 — Owner Trend Review Annotations & Cross-Campground Follow-Up Handoff Planning
 
 Delivery scope:
