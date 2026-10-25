@@ -77,6 +77,11 @@ export default async function ReconciliationPage({
             accept an agreement, transfer ownership, move money, or treat
             silence as consent.
           </p>
+          <p>
+            <Link href="/workspaces/management/campgrounds/permanent-units/financing/ageing">
+              Build 098 · Finance delivery exception ageing and owner escalation
+            </Link>
+          </p>
         </section>
         {params.saved ? (
           <p role="status" className={styles.notice}>

@@ -11,6 +11,26 @@ export interface HelpTopic {
 }
 
 export const helpTopics = {
+  "permanent.ageing": {
+    id: "permanent.ageing",
+    slug: "finance-delivery-exception-ageing-owner-escalation",
+    title: "Finance Delivery Exception Ageing, Re-Review & Owner Escalation",
+    summary:
+      "Track how long private delivery evidence remains unresolved, require independent reviews and record owner-only follow-up acknowledgements.",
+    details: [
+      "The ageing clock derives from the latest immutable Build 096 exception event, or the latest Build 097 reconciliation/Build 095 consent if there is no event. The 24-hour and 72-hour bands are operational attention suggestions only, not statutory lending deadlines or guaranteed service levels.",
+      "Each independent re-review pins the exact latest exception ID, current status, next review due date, external evidence source and rationale. The database refuses stale snapshots or same-operator consecutive reviews. A recommendation for manual clearance does not actually clear a hold; return to the Build 096 exception ledger for a separately authorized hold-clear record.",
+      "To involve the campground owner, first document an independent review requesting escalation. A separate staff member records the private request and directs it to an active assigned Owner / Administrator for this property; outstanding escalations cannot be duplicated. No email or SMS is automatically sent.",
+      "The designated owner alone may record a private acknowledgement accepting follow-up or returning the request to staff. An acknowledgement is not consent to a loan, resolution of the exception, approval of legal disclosure or transfer of ownership.",
+      "Only restricted source identifiers and factual notes belong in these forms. Do not copy financial documents, SINs, bank details, credit reports, signatures or other raw personal records. Camp Rosevear testing must use synthetic records only.",
+    ],
+    audience: "privileged",
+    related: [
+      "permanent.reconciliation",
+      "permanent.receipts",
+      "permanent.delivery",
+    ],
+  },
   "permanent.reconciliation": {
     id: "permanent.reconciliation",
     slug: "finance-delivery-evidence-reconciliation-closure-review",
