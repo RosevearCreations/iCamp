@@ -11,6 +11,26 @@ export interface HelpTopic {
 }
 
 export const helpTopics = {
+  "permanent.owner-planning": {
+    id: "permanent.owner-planning",
+    slug: "owner-finance-trend-annotations-handoff-planning",
+    title: "Owner Trend Reviews & Cross-Campground Handoff Planning",
+    summary:
+      "Document manual owner interpretation of weekly operational counts and plan a discussion between two authorized campgrounds.",
+    details: [
+      "Only an actively assigned Owner / Administrator with permanent_unit.transfer authorization may save or read trend annotations. A handoff requires the same owner to be actively authorized on both source and destination campground, even when these belong to different organizations. RLS revalidates both owners on every ledger read or insert.",
+      "A weekly annotation refers to a retained UTC Monday and one of the event categories shown on the Build 101 report. It is an immutable point-in-time owner note, not a recalculated historical metric, lending-risk label, statistical forecast or applicant assessment. Record an internal evidence reference and next-review date within 90 days.",
+      "To plan a handoff, first save a source campground annotation, then choose another authorized campground. A handoff is a manual coordination proposal with an evidence reference, planning scope and due date; it does not move applicant records, assign employee tasks, send communications, bind offers or clear a delivery hold.",
+      "Both ledgers are append-only. Do not enter applicant names, contact information, bank accounts, identity numbers, financing terms or documents in owner notes. Records remain inaccessible to non-owner staff and other campground tenants.",
+      "Displayed history is limited to the most recent 100 records per ledger across the owner's first 50 assigned campgrounds. Warn users about partial history or portfolio coverage; never interpret missing older rows as the absence of work.",
+    ],
+    audience: "privileged",
+    related: [
+      "permanent.owner-report",
+      "permanent.portfolio",
+      "permanent.followup",
+    ],
+  },
   "permanent.owner-report": {
     id: "permanent.owner-report",
     slug: "cross-campground-finance-owner-operational-report",
