@@ -92,6 +92,12 @@ export default async function OwnerPortfolioPage({
             lending performance. This screen makes no changes to finance or
             consent records.
           </p>
+          <p>
+            <Link href="/workspaces/management/campgrounds/permanent-units/financing/owner-portfolio/planning">
+              Open Build 102: owner trend annotations and cross-campground
+              handoff planning
+            </Link>
+          </p>
         </section>
         <section className="content-panel">
           <SectionHeading
