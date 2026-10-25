@@ -1227,6 +1227,15 @@ See `docs/BUILD_092_ACCEPTANCE.md`. Next queued: **Build 093 — Office Financin
 
 ## Operating rule
 
+## Build 099 — Owner Follow-Up Task Continuity, Reassessment & Escalation Closure Evidence
+
+Delivery scope:
+- one immutable assigned task per accepted campground owner escalation, with bounded due date;
+- private owner-only progress evidence with append-only source references, independent reassessment and segregation of duties;
+- restricted, owner-authorized administrative closure pinned to the latest reassessment without altering exception holds, applicant consent, credit decisions or transfers.
+
+See `docs/BUILD_099_ACCEPTANCE.md`. Next queued: **Build 100 — Finance Follow-Up Portfolio Monitoring & Exception Recurrence Review**.
+
 ## Build 098 — Finance Delivery Exception Ageing, Re-Review & Owner Escalation
 
 Delivery scope:

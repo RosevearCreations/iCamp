@@ -76,6 +76,11 @@ export default async function AgeingPage({
           <span>/</span>
           <span>Exception ageing</span>
         </nav>
+        <p>
+          <Link href="/workspaces/management/campgrounds/permanent-units/financing/followup">
+            Open Build 099 owner follow-up, reassessment and closure queue
+          </Link>
+        </p>
         <section className="hero-panel">
           <p className="eyebrow">Build 098 · Owner escalation boundary</p>
           <h1>Delivery exceptions, re-review &amp; owner follow-up</h1>
