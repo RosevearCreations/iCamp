@@ -928,6 +928,34 @@ export default async function CampgroundAdministrationPage({
           </Link>
         </section>
 
+        <section
+          className="content-panel"
+          aria-labelledby="spring-reopening-heading"
+        >
+          <SectionHeading
+            eyebrow="Independent seasonal return to service"
+            title="Spring reopening inspections & approval"
+            id="spring-reopening-heading"
+            helpTopic="spring.reopening"
+            trailing={<span className="build-chip">Build 089</span>}
+          />
+          <p>
+            Inspect restored water and utilities, fire safety, sanitation,
+            grounds and site hazards after winter. Resolve maintenance defects
+            and secure independent sign-off before a winter-closed assignment
+            may be separately reopened by authorized management.
+          </p>
+          <Link
+            className="primary-link primary-link--dark"
+            href={
+              "/workspaces/management/campgrounds/spring-reopening?campground=" +
+              encodeURIComponent(structure.campground.id)
+            }
+          >
+            Open spring reopening inspection
+          </Link>
+        </section>
+
         <section className="content-panel" aria-labelledby="payments-heading">
           <SectionHeading
             eyebrow="Reservation payments"

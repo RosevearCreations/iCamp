@@ -503,9 +503,14 @@ export default async function WinterizationPage({
             >
               Build 088 cold-weather readiness
             </Link>{" "}
-            applies only to eligible non-shutdown sites. Independent
-            spring-opening inspections and return-to-service authorization
-            remain in <strong>Build 089</strong>.
+            applies only to eligible non-shutdown sites. After shutdown, use the
+            independent{" "}
+            <Link
+              href={`/workspaces/management/campgrounds/spring-reopening?campground=${encodeURIComponent(campground.id)}`}
+            >
+              Build 089 spring reopening inspection
+            </Link>{" "}
+            before management reopens a winter-closed assignment.
           </p>
           <Link
             href={`/workspaces/management/campgrounds/seasonal?campground=${encodeURIComponent(campground.id)}`}
