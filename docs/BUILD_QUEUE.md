@@ -1184,6 +1184,17 @@ Delivery scope:
 
 See `docs/BUILD_088_ACCEPTANCE.md`. Next queued: **Build 089 — Spring Reopening Inspection**.
 
+## Build 089 — Spring Reopening & Return-to-Service Safety
+
+Delivery scope:
+- immutable campground spring inspection policy with water restoration, safe utilities, sanitation, fire, grounds access and site condition requirements;
+- closure-event-pinned seasonal/yearly inspections, plus standalone site records;
+- append-only on-site observations, completed corrective work order prerequisites and independent approval;
+- canonical long-term `reopened` action gated by the latest winter-close event's spring approval;
+- Camp Rosevear synthetic-data safety, private RLS, Web/PWA management, contextual help and safe voice/SMS handoff.
+
+See `docs/BUILD_089_ACCEPTANCE.md`. Proposed next: **Build 090 — Spring Opening Owner Acceptance & Cross-System Operational Hold Review**.
+
 ## Operating rule
 
 - Work primarily on `dev`.

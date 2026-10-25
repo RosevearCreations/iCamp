@@ -115,6 +115,13 @@ export default async function SeasonalAssignmentsPage({
             >
               Open the Build 087 winterization checklist
             </Link>
+            . Winter-closed assignments additionally need independent spring
+            return-to-service approval before the Reopen action is available.{" "}
+            <Link
+              href={`/workspaces/management/campgrounds/spring-reopening?campground=${encodeURIComponent(selected.campgroundId)}`}
+            >
+              Open the Build 089 spring inspection desk
+            </Link>
             .
           </p>
         </section>

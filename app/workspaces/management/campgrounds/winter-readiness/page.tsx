@@ -560,7 +560,13 @@ export default async function WinterReadinessPage({
           <p>
             Mandatory yearly/seasonal winter shutdown remains in{" "}
             <strong>Build 087</strong>. Independent spring reopening and
-            return-to-service inspections remain in <strong>Build 089</strong>.
+            return-to-service inspections are available in{" "}
+            <Link
+              href={`/workspaces/management/campgrounds/spring-reopening?campground=${encodeURIComponent(campground.id)}`}
+            >
+              Build 089
+            </Link>
+            .
           </p>
           <Link
             className="secondary-button"
