@@ -11,6 +11,28 @@ export interface HelpTopic {
 }
 
 export const helpTopics = {
+  "spring.reopening": {
+    id: "spring.reopening",
+    slug: "spring-reopening-return-to-service-safety",
+    title: "Spring Reopening & Return-to-Service Safety",
+    summary:
+      "Inspect campground accommodations after winter, document restored utilities and corrected defects, and require independent approval before a winter-closed long-term assignment can be reopened.",
+    details: [
+      "Management publishes an immutable, campground-specific inspection checklist. Water restoration or confirmed no-water mode, electrical/heating, wastewater and drainage, fire and emergency systems, grounds/access, and site condition are always mandatory. The local property can require additional safety checks or clearly label optional steps.",
+      "Start an inspection for an active accommodation. For seasonal/yearly occupants currently winter closed, link the matching assignment; the database pins the newest canonical winter-close event and exact winter cycle, even if the site was closed more than once. A standalone site can be inspected only if no active winter-closed long-term assignment occupies it.",
+      "Staff complete real field inspections and enter a source-linked result for each step. A defect must link an active, matching campground maintenance work order. Every defect's work order must later be completed and the failed inspection step rechecked with passing evidence before approval. Required steps never accept 'not applicable.'",
+      "A maintenance lead, main foreman or authorized manager independently reviews the latest inspections. They may reject for correction, but cannot approve work they created or observed. Approval requires an active campground/site, the current spring cycle, no unresolved step, no unfinished corrective work and (for linked cases) the same latest winter-close event.",
+      "The existing Seasonal & Yearly Reopen action now checks the latest winter-close event for its own independent spring approval. Even after approval, management separately initiates that canonical transition; the site does not reopen automatically. A new winter close invalidates any approval tied to the earlier close.",
+      "Camp Rosevear and other inactive synthetic campgrounds can practice inspection drafts and field observations but cannot approve actual physical safety or reopen an assignment. The software does not operate valves, heat, electrical power or gates, verify regulatory permits or water-quality tests, make sites bookable, clear other facility safety holds, or dispatch emergency responders. Trained staff must comply with applicable local requirements.",
+      "The complete workflow is available in authenticated Web/PWA management. Phone/IVR/DTMF and SMS may provide a secure navigation handoff but cannot create, approve or infer physical inspection evidence.",
+    ],
+    audience: "operational",
+    related: [
+      "winterization.shutdown",
+      "winter.readiness",
+      "campground.structure",
+    ],
+  },
   "winter.readiness": {
     id: "winter.readiness",
     slug: "cold-weather-winter-readiness-compliance",
@@ -24,10 +46,14 @@ export const helpTopics = {
       "A maintenance lead, main foreman or authorized manager must independently review the current evidence. The review author cannot be the case creator or any person who recorded field observations in that case. All mandatory steps must pass, and every optional step must be accounted for before approval. Rejection permits corrective follow-up; final approval makes the case immutable.",
       "A long-term assignment marked as requiring winterization must follow Build 087 shutdown and foreman sign-off. The system rejects readiness approval for an accommodation with an active shutdown-required assignment, including when no assignment was selected when the readiness case began.",
       "Camp Rosevear and other inactive demonstration properties cannot obtain real-world approval. Readiness approval does not turn on heat or utilities, establish legal compliance, override closure orders, open a site, accept a booking or verify current weather conditions. On-site trained staff and local authorities remain responsible for physical safety and permits.",
-      "Build 089 will add separate spring reopening inspection and explicit return-to-service authority; winter-readiness evidence does not grant spring reopening.",
+      "Build 089 adds a separate spring reopening inspection and independent return-to-service approval. Winter-readiness evidence does not grant spring reopening; follow the dedicated Spring Reopening desk.",
     ],
     audience: "operational",
-    related: ["winterization.shutdown", "campground.structure"],
+    related: [
+      "winterization.shutdown",
+      "spring.reopening",
+      "campground.structure",
+    ],
   },
   "winterization.shutdown": {
     id: "winterization.shutdown",
@@ -41,10 +67,10 @@ export const helpTopics = {
       "A maintenance lead or main foreman reviews the latest evidence for every step and records an immutable approval or rejection. Required steps must pass; optional steps may be marked not applicable. A failed or unrecorded step blocks approval.",
       "An assignment marked winterization-required cannot be changed to winter-closed until a matching approved run exists for the current winter operating year. Approval does not itself change occupancy; authorized management must perform the existing separate long-term assignment transition.",
       "Inactive demonstration campgrounds such as Camp Rosevear can test records but cannot record a genuine physical-shutdown approval. The system cannot operate shutoff valves, drain plumbing, protect pipes against freezing or inspect a property. Trained staff follow local procedures and document physical results independently.",
-      "Build 088 will cover a different cold-weather readiness path for occupied/open sites. Build 089 will cover separately authorized spring inspections and reopening. Neither is implied by this winter shutdown record.",
+      "Build 088 covers a different cold-weather readiness path for eligible winter-open sites. Build 089 separately inspects sites for spring return-to-service and gates the canonical long-term assignment reopening. Neither approval is implied by this winter shutdown record.",
     ],
     audience: "operational",
-    related: ["campground.structure", "emergency.notices"],
+    related: ["spring.reopening", "campground.structure", "emergency.notices"],
   },
   "emergency.notices": {
     id: "emergency.notices",
