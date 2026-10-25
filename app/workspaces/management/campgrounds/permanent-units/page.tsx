@@ -93,6 +93,13 @@ export default async function PermanentUnitsPage({
             land. The desk does not transfer title, approve financing, publish a
             public advertisement or create an agreement.
           </p>
+          <p>
+            <Link
+              href={`/workspaces/management/campgrounds/permanent-units/transfers?campground=${encodeURIComponent(campground.id)}`}
+            >
+              Open Build 092 · Buyer application, inspection and transfer review
+            </Link>
+          </p>
         </section>
         {params.saved ? (
           <p role="status" className={styles.notice}>
