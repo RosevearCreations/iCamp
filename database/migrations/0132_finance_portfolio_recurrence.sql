@@ -52,7 +52,14 @@ create trigger finance_recurrence_review_guard before insert on public.permanent
 
 alter table public.permanent_unit_finance_recurrence_reviews enable row level security;
 alter table public.permanent_unit_finance_recurrence_reviews force row level security;
-revoke all on public.permanent_unit_finance_recurrence_reviews from public, anon, authenticated, service_role;
+revoke all on public.permanent_unit_finance_recurrence_reviews from public;
+do $roles$ declare role_name text; begin
+ foreach role_name in array array['anon','authenticated','service_role'] loop
+  if exists(select 1 from pg_roles where rolname=role_name) then
+   execute format('revoke all on public.permanent_unit_finance_recurrence_reviews from %I',role_name);
+  end if;
+ end loop;
+end $roles$;
 grant select,insert on public.permanent_unit_finance_recurrence_reviews to icamp_app;
 create trigger permanent_unit_finance_recurrence_reviews_immutable before update or delete on public.permanent_unit_finance_recurrence_reviews
  for each row execute function icamp_private.winterization_append_only();
