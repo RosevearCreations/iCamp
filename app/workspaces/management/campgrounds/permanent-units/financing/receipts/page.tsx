@@ -92,6 +92,11 @@ export default async function ReceiptsPage({
             acceptance, loan approval, payment or transfer of ownership. Never
             paste applicant financial or identity documents here.
           </p>
+          <p>
+            <Link href="/workspaces/management/campgrounds/permanent-units/financing/reconciliation">
+              Build 097 · Evidence reconciliation and independent closure review
+            </Link>
+          </p>
         </section>
         {params.saved ? (
           <p role="status" className={styles.notice}>
