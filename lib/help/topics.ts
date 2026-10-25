@@ -11,6 +11,22 @@ export interface HelpTopic {
 }
 
 export const helpTopics = {
+  "permanent.offers": {
+    id: "permanent.offers",
+    slug: "office-financing-terms-independent-authorization",
+    title: "Private Office Financing Terms & Independent Authorization",
+    summary:
+      "Prepare non-binding internal financing illustrations only after consented intake completeness, then independently authorize internal preparation.",
+    details: [
+      "Start with a Build 093 intake independently triaged complete for external review. The underlying unit sale must remain open and the campground active. The requested principal cannot exceed the applicant's original requested amount.",
+      "Draft principal, nominal annual rate in basis points, monthly term, separate upfront fee, policy source, disclosure-template source and factual note. A monthly repayment estimate is illustrative: actual APR, total borrowing cost, fee treatment and contractual obligations may differ.",
+      "The reviewer must be a separate transfer-authorized operator who did not open the intake, complete its triage or draft the terms. An immutable decision either rejects the draft or authorizes internal preparation only. An authorized predecessor blocks duplicate or stale drafts.",
+      "This workflow is NOT a lending approval, credit eligibility determination, regulatory disclosure, applicant-facing offer, loan agreement, payment authorization, signed document, disbursement, ownership handoff or change in occupancy rights. Legal and finance professionals must independently confirm jurisdiction-specific policies and disclosure requirements before any customer proposal.",
+      "Do not place borrower bank details, raw credit reports, SINs, income documents or health data into source references or notes. SMS/IVR/DTMF can provide only a staff handoff, never a financing quote or decision. Synthetic Camp Rosevear cases are for local tests and must never generate a real offer.",
+    ],
+    audience: "privileged",
+    related: ["permanent.financing", "permanent.transfer"],
+  },
   "permanent.financing": {
     id: "permanent.financing",
     slug: "office-financing-application-intake",
