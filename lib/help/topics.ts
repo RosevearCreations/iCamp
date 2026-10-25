@@ -11,6 +11,22 @@ export interface HelpTopic {
 }
 
 export const helpTopics = {
+  "permanent.owner-outcomes": {
+    id: "permanent.owner-outcomes",
+    slug: "owner-handoff-outcomes-cross-campground-resolution",
+    title: "Owner Handoff Outcomes & Cross-Campground Planning Resolution",
+    summary:
+      "Track owner coordination after an approved handoff plan, then retain a separate source-linked administrative planning resolution.",
+    details: [
+      "A current Owner / Administrator with permanent_unit.transfer permission must be actively assigned to both source and destination campground. Both independent campground permissions are checked in the application and by row-level security on every outcome and resolution read or insert, even across different organizations.",
+      "Record an immutable coordination outcome for an existing Build 102 handoff plan. In-progress coordination and requests for further review must include the next owner action within 90 days. Finished target review and unable-to-proceed outcomes have no pending action date.",
+      "A separate one-time administrative resolution is available only after the latest recorded outcome is a finished target review or unable-to-proceed outcome. The resolution must explicitly cite that latest outcome, and the database serializes concurrent records so a stale outcome cannot silently close a plan.",
+      "Owner coordination complete, planning closed unresolved, and a recommendation to create a new plan are neutral internal planning dispositions. None closes a delivery exception, authorizes a loan, binds a contract, transfers an applicant or document, sends a notification, or automatically opens another plan.",
+      "Both ledgers are append-only and require internal evidence references; never include applicant identity, contact details, financial identifiers or documents. The portfolio intentionally limits historical rows and campground coverage; a partial-history notice is not proof that older outcomes do not exist.",
+    ],
+    audience: "privileged",
+    related: ["permanent.owner-planning", "permanent.owner-report"],
+  },
   "permanent.owner-planning": {
     id: "permanent.owner-planning",
     slug: "owner-finance-trend-annotations-handoff-planning",

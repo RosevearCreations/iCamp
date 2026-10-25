@@ -116,6 +116,11 @@ export default async function OwnerPlanningPage({
             release delivery exception holds, assign a task automatically or
             authorize financing.
           </p>
+          <p>
+            <Link href={`${path}/outcomes`}>
+              Review handoff outcomes and owner planning resolutions →
+            </Link>
+          </p>
         </section>
         {params.saved ? (
           <p className="content-panel" role="status">
