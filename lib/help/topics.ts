@@ -11,6 +11,23 @@ export interface HelpTopic {
 }
 
 export const helpTopics = {
+  "permanent.delivery": {
+    id: "permanent.delivery",
+    slug: "financing-offer-consent-disclosure-manual-signoff",
+    title:
+      "Applicant Delivery Consent, Versioned Disclosures & Manual Sign-Off",
+    summary:
+      "Pin an independently reviewed disclosure version to approved internal terms and applicant-specific consent, then record a separate manual coordination gate.",
+    details: [
+      "Register a disclosure package by jurisdiction and unique version code, with private document source ID, exact SHA-256 of the actual file and documented external legal-review reference. These IDs and hashes do not independently establish that a document satisfies applicable consumer-credit laws.",
+      "A different transfer-authorized staff member approves the immutable disclosure version for internal use. Rejections remain in history; corrections require a new version. Never replace documents under the same hash or version code.",
+      "For an internally authorized Build 094 financing proposal, staff record applicant-specific consent for either supervised in-person or an independently verified secure-portal handoff. Pin the exact reviewed disclosure version, verified recipient ID and consent record source. Do not paste names, addresses, account numbers, credit information or document contents into these fields.",
+      "A separate operator who did not record consent, author the terms, approve their internal preparation or open the intake independently marks the package ready for manual coordination or held. A completed unit sale and inactive campground block readiness. Sign-off is an internal boundary, not a statement of applicant receipt or acceptance.",
+      "No email, SMS, IVR, DTMF, portal publishing, e-signature, credit agreement, receipt acknowledgement, funds movement or owner transfer is performed here. Manual compliant delivery, borrower acknowledgement, legal terms, regulatory disclosures and any binding lender decision require separate verified procedures. Camp Rosevear synthetic cases must never be used for actual lending.",
+    ],
+    audience: "privileged",
+    related: ["permanent.offers", "permanent.financing"],
+  },
   "permanent.offers": {
     id: "permanent.offers",
     slug: "office-financing-terms-independent-authorization",
