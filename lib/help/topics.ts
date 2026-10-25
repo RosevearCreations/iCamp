@@ -11,6 +11,22 @@ export interface HelpTopic {
 }
 
 export const helpTopics = {
+  "permanent.reconciliation": {
+    id: "permanent.reconciliation",
+    slug: "finance-delivery-evidence-reconciliation-closure-review",
+    title: "Finance Delivery Evidence Reconciliation & Independent Closure",
+    summary:
+      "Review the exact Build 095/096 evidence chain, preserve immutable reconciliation snapshots, and independently close internal evidence only.",
+    details: [
+      "Each snapshot pins the approved disclosure version and exact SHA-256, consent, staff sign-off, manual delivery receipt, independently recorded applicant response and latest exception event. The database checks that all linked records belong to the same campground and consent, so changing any of these requires a new snapshot rather than altering history.",
+      "The evidence-complete classification requires a signed-off manual handoff, external delivery record, documented applicant receipt confirmation and no active hold. Disputes, silence, missing evidence or holds must be classified needs-follow-up; this is evidence quality, not a legal compliance decision.",
+      "A different transfer-authorized reviewer who did not record the handoff, applicant response, consent or reconcile the snapshot may mark it returned for rework or closed for internal evidence. Closure is refused if an exception changed since the snapshot, if the property is inactive, if the sale has closed or if another snapshot already closed the same consent.",
+      "Keep notes factual and use restricted evidence IDs only. No SIN, credit file, bank details, agreement contents or scanned applicant signatures should be added. Old snapshots and reviews are append-only, private and campground-scoped.",
+      "Closed internal evidence is only an operator task outcome; it does not send financing terms, prove legal service, authorize lending, create a signed agreement, change sale state or move money. Retain all required independent legal and finance checks outside the application.",
+    ],
+    audience: "privileged",
+    related: ["permanent.receipts", "permanent.delivery", "permanent.offers"],
+  },
   "permanent.receipts": {
     id: "permanent.receipts",
     slug: "manual-delivery-evidence-applicant-acknowledgement-exceptions",

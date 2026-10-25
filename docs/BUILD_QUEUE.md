@@ -1227,6 +1227,15 @@ See `docs/BUILD_092_ACCEPTANCE.md`. Next queued: **Build 093 — Office Financin
 
 ## Operating rule
 
+## Build 097 — Finance Delivery Evidence Reconciliation & Operator Closure Review
+
+Delivery scope:
+- exact version/hash-linked immutable consent, sign-off, manual receipt, applicant response and exception snapshots;
+- database-derived completeness state, with disputed/missing or held evidence returned for follow-up;
+- independent, immutable operator review allowing administrative evidence closure only when the evidence remains current and unheld.
+
+See `docs/BUILD_097_ACCEPTANCE.md`. Next queued: **Build 098 — Finance Delivery Exception Ageing, Re-Review & Owner Escalation**.
+
 ## Build 096 — Manual Delivery Evidence Receipt, Applicant Acknowledgement & Exception Holds
 
 Delivery scope:
