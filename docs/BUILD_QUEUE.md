@@ -1227,6 +1227,16 @@ See `docs/BUILD_092_ACCEPTANCE.md`. Next queued: **Build 093 — Office Financin
 
 ## Operating rule
 
+## Build 095 — Applicant Offer Delivery Consent, Versioned Disclosures & Manual Sign-Off Boundary
+
+Delivery scope:
+- SHA-256-pinned disclosure versions, independently reviewed before internal use;
+- applicant-specific manual-channel consent against Build 094 authorized terms;
+- separate independent readiness/hold decision with immutable RLS and staff-only PWA UI.
+
+See `docs/BUILD_095_ACCEPTANCE.md`. Next queued: **Build 096 — Manual Delivery Evidence Receipt, Applicant Acknowledgement & Exception Holds**.
+
+
 ## Build 094 — Financing Terms & Independent Offer Authorization
 
 Delivery scope:

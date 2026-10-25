@@ -87,6 +87,14 @@ export default async function OffersPage({
             payment, disbursement or unit transfer occurs here. Applicable law
             and actual lender terms must be independently reviewed.
           </p>
+          <p>
+            <Link
+              href={`/workspaces/management/campgrounds/permanent-units/financing/delivery?campground=${encodeURIComponent(selected.campgroundId)}`}
+            >
+              Open Build 095 · Applicant delivery consent and versioned
+              disclosure sign-off
+            </Link>
+          </p>
         </section>
         {params.saved ? (
           <p role="status" className={styles.notice}>
