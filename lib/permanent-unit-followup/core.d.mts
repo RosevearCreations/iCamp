@@ -1,0 +1,12 @@
+export function normalizeFollowupTask(
+  input: Record<string, unknown>,
+): Record<string, string>;
+export function normalizeFollowupEvidence(
+  input: Record<string, unknown>,
+): Record<string, string>;
+export function normalizeFollowupReassessment(
+  input: Record<string, unknown>,
+): Record<string, string>;
+export function normalizeEscalationClosure(
+  input: Record<string, unknown>,
+): Record<string, string>;
