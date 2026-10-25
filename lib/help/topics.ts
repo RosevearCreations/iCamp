@@ -11,6 +11,23 @@ export interface HelpTopic {
 }
 
 export const helpTopics = {
+  "permanent.transfer": {
+    id: "permanent.transfer",
+    slug: "permanent-unit-sale-and-transfer-closeout",
+    title: "Permanent-Unit Sale, Inspection and Transfer Closeout",
+    summary:
+      "Verify buyer application, physical inspection, fees, sale papers, closing checklist and replacement agreement before independently approving and recording a unit-owner handoff.",
+    details: [
+      "Begin with a Build 091 approved current seller listing and matching buyer inquiry. The case pins the seller's ownership event and uses the original private buyer reference; a stale listing or owner change invalidates approval.",
+      "Record each of six mandatory domains with a source reference and factual note: buyer application, unit inspection, external fee receipt, sale documents, closing checklist and replacement occupancy agreement. A defect must be reinspected and superseded by a fresh pass; no cash collection occurs in this desk.",
+      "A transfer-authorized reviewer must be independent of the case opener and all evidence authors. Review is immutable, must see the latest passing evidence, and may reject. Approval never automatically transfers the unit.",
+      "A third authorized operator verifies signed closing and replacement agreement sources, then separately records the new unit owner in an atomic transaction with a closing receipt. This does not change site/land title, seasonal/yearly occupancy assignments, bookings, payments, tax obligations or physical controls.",
+      "Staff must independently verify legal ownership, signatures, liens, permits, payment settlements and campground agreement terms. The software stores operator-source attestations, not legal certification. Inactive and synthetic properties must not be presented as legally closed sales.",
+      "Web/PWA is the authenticated operational console. Voice, DTMF and SMS can hand off to authorized staff but cannot approve legal documents, record fees or complete transfers.",
+    ],
+    audience: "privileged",
+    related: ["permanent.units", "campground.structure"],
+  },
   "permanent.units": {
     id: "permanent.units",
     slug: "permanent-unit-ownership-listing-buyer-inquiry",
