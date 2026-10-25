@@ -7,6 +7,8 @@ import { AppShell } from "@/components/app-shell";
 import { SectionHeading } from "@/components/section-heading";
 import { requireStaff } from "@/lib/auth/current-session";
 import { listAssignedCampgrounds } from "@/lib/authz/postgres.mjs";
+import { getLiveAvailabilitySnapshot } from "@/lib/live-availability/postgres.mjs";
+import { reconcileSpringOwnerReview } from "@/lib/spring-reopening/owner-review.mjs";
 import { springWinterYear } from "@/lib/spring-reopening/core.mjs";
 import {
   getSpringReopeningDashboard,
@@ -93,6 +95,28 @@ export default async function SpringReopeningPage({
       ),
   );
   const guideYear = springWinterYear();
+  const today = new Date();
+  const arrivalDate = today.toISOString().slice(0, 10);
+  const departureDate = new Date(today.getTime() + 86400000)
+    .toISOString()
+    .slice(0, 10);
+  // Availability is separately permission-gated. Never display a clear state
+  // when this read is unavailable or fails.
+  const availability = await getLiveAvailabilitySnapshot({
+    userId: session.user.id,
+    campgroundId: campground.id,
+    arrivalDate,
+    departureDate,
+  }).catch(() => null);
+  const ownerReview = reconcileSpringOwnerReview({
+    campgroundActive: campground.lifecycle_state === "active",
+    accommodations,
+    assignments,
+    closureEvents,
+    inspections,
+    decisions,
+    availability,
+  });
 
   return (
     <AppShell>
@@ -119,6 +143,68 @@ export default async function SpringReopeningPage({
             review, not proof of a safety test or legal compliance. It never
             turns on water, powers equipment, unlocks a gate, restores bookings,
             or clears other facility holds.
+          </p>
+        </section>
+
+        <section className="content-panel">
+          <SectionHeading
+            id="spring-owner-review"
+            eyebrow="Build 090 · Owner acceptance preparation"
+            title="Cross-system operational hold review"
+            helpTopic="spring.reopening"
+          />
+          <p>
+            Read-only snapshot for {arrivalDate} through {departureDate}
+            (departure exclusive). Spring approval is not booking availability,
+            final owner acceptance, or permission to clear a separate safety
+            hold. Recheck dates, current source records, permits and physical
+            conditions before any real-world opening decision.
+          </p>
+          {!availability ? (
+            <p role="status">
+              Live availability could not be verified with this role or
+              connection. Every site remains flagged for review.
+            </p>
+          ) : null}
+          <div className={styles.tableWrap}>
+            <table>
+              <thead>
+                <tr>
+                  <th>Site</th>
+                  <th>Spring evidence</th>
+                  <th>Owner review</th>
+                  <th>Outstanding restrictions / evidence gaps</th>
+                </tr>
+              </thead>
+              <tbody>
+                {ownerReview.map((item) => (
+                  <tr key={item.accommodationId}>
+                    <td>{item.code}</td>
+                    <td>
+                      {item.approved
+                        ? "Approved inspection on current closure"
+                        : "Missing or stale approval"}
+                    </td>
+                    <td>
+                      {item.reviewState === "ready_for_owner_review"
+                        ? "Ready for human review — not opened"
+                        : "Review required"}
+                    </td>
+                    <td>
+                      {item.blockers.length
+                        ? item.blockers.map(show).join(", ")
+                        : "No blockers in this date-window snapshot; verify other systems manually"}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <p>
+            Review separate reservation, temporary-hold, management-closure,
+            housekeeping and seasonal-assignment sources at their desks. This
+            screen has no release or override action. Voice/SMS/DTMF operators
+            must hand off to authenticated Web/PWA staff review.
           </p>
         </section>
         {params.saved ? (

@@ -1195,6 +1195,16 @@ Delivery scope:
 
 See `docs/BUILD_089_ACCEPTANCE.md`. Proposed next: **Build 090 — Spring Opening Owner Acceptance & Cross-System Operational Hold Review**.
 
+## Build 090 — Spring Opening Owner Acceptance & Cross-System Operational Hold Review
+
+Delivery scope:
+- campground-scoped read-only owner evidence and operational hold snapshot;
+- latest winter-close pinning, fail-closed missing evidence and live availability permission failures;
+- independent reservation/hold/restriction/turnover/seasonal blockers remain authoritative;
+- no automatic owner sign-off, booking release or physical safety action.
+
+See `docs/BUILD_090_ACCEPTANCE.md`. The earlier roadmap's permanent-unit Build 090 number conflicts with the active queue and requires explicit renumbering before that separate feature begins.
+
 ## Operating rule
 
 - Work primarily on `dev`.
