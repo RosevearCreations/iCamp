@@ -1227,6 +1227,15 @@ See `docs/BUILD_092_ACCEPTANCE.md`. Next queued: **Build 093 — Office Financin
 
 ## Operating rule
 
+## Build 096 — Manual Delivery Evidence Receipt, Applicant Acknowledgement & Exception Holds
+
+Delivery scope:
+- restricted, append-only staff attestation that a consent-matched manual handoff happened outside iCamp, after independent Build 095 readiness;
+- independent, evidence-linked applicant receipt-confirmed/disputed/no-response records, explicitly not signatures or acceptance;
+- immutable exception hold/independently cleared event sequence, with database-enforced holds and private campground RLS.
+
+See `docs/BUILD_096_ACCEPTANCE.md`. Next queued: **Build 097 — Finance Delivery Evidence Reconciliation & Operator Closure Review**.
+
 ## Build 095 — Applicant Offer Delivery Consent, Versioned Disclosures & Manual Sign-Off Boundary
 
 Delivery scope:

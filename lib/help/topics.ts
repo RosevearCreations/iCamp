@@ -11,6 +11,22 @@ export interface HelpTopic {
 }
 
 export const helpTopics = {
+  "permanent.receipts": {
+    id: "permanent.receipts",
+    slug: "manual-delivery-evidence-applicant-acknowledgement-exceptions",
+    title: "Manual Handoff Evidence, Applicant Response & Exception Holds",
+    summary:
+      "Attest external handoff evidence, record a separate applicant receipt response and govern exceptions without transmitting or signing offers.",
+    details: [
+      "Staff must first obtain Build 095 applicant-specific channel consent and independent ready-for-manual-handoff sign-off for the exact versioned disclosure. A different operator may then reference evidence of a manual handoff that actually happened outside iCamp. The channel must match consent, the external delivery timestamp cannot predate sign-off, and completed sales block new receipts.",
+      "An applicant response is an independently recorded reference to receipt-confirmed, receipt-disputed or no-response evidence. A confirmation means only receipt, not agreement with terms, a signature, a credit decision or legal proof of service. Disputes and missing responses require follow-up with authorized staff.",
+      "Place an exception hold for identity mismatch, disclosure dispute, delivery failure, withdrawn consent or another documented concern. The hold blocks new manual receipt attestations and affirmative receipt confirmations. Only a different authorized operator can clear it with a new append-only source-linked resolution event. Historical holds are never deleted.",
+      "All notes and references are restricted staff-only. Store only short external evidence identifiers, not financial records, personal identifiers, borrower documents or copies of agreements. These data are not shared by email, SMS, IVR or portal publishing.",
+      "The ledger has no customer-facing delivery, electronic signature, acceptance, credit decision, payment, disbursement or legal title/occupancy effects. Obtain independent legal and financing review of any actual customer communication. Camp Rosevear fixtures are synthetic only.",
+    ],
+    audience: "privileged",
+    related: ["permanent.delivery", "permanent.offers"],
+  },
   "permanent.delivery": {
     id: "permanent.delivery",
     slug: "financing-offer-consent-disclosure-manual-signoff",
