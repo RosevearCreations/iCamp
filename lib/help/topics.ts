@@ -11,6 +11,22 @@ export interface HelpTopic {
 }
 
 export const helpTopics = {
+  "permanent.units": {
+    id: "permanent.units",
+    slug: "permanent-unit-ownership-listing-buyer-inquiry",
+    title: "Permanent-Unit Ownership and Sale Listing",
+    summary:
+      "Record unit ownership evidence separately from campground land rights, independently review a private listing and route buyer inquiries through authorized staff.",
+    details: [
+      "An accommodation of permanent-unit type represents a movable or individually owned unit at the campground. Ownership of that unit never establishes legal ownership of the campsite, permission to occupy the land, or the right to transfer a lease.",
+      "Record source-linked owner evidence in the private append-only ledger. Correct or end an owner record with a later event; old evidence remains intact. Do not claim legal verification merely because a document reference is entered.",
+      "Staff create private listing drafts referencing the latest active ownership event. An independent manager may approve or withdraw once; changed ownership automatically makes a previous listing stale for future inquiries.",
+      "Approved listings remain internal until a separately authorized public publication workflow exists. Staff may record a private buyer inquiry against only a current approved listing. No title transfer, financing offer, booking change or payment is triggered.",
+      "Keep personal contact information in an approved CRM or private contact reference. Voice, DTMF and SMS channels hand off to an authenticated operator; do not collect financing or payment information by unverified messages.",
+    ],
+    audience: "privileged",
+    related: ["campground.structure", "spring.reopening"],
+  },
   "spring.reopening": {
     id: "spring.reopening",
     slug: "spring-reopening-return-to-service-safety",

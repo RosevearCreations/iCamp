@@ -956,6 +956,33 @@ export default async function CampgroundAdministrationPage({
           </Link>
         </section>
 
+        <section
+          className="content-panel"
+          aria-labelledby="permanent-units-heading"
+        >
+          <SectionHeading
+            eyebrow="Owned units, separate from campground land"
+            title="Permanent-unit listings & buyer inquiries"
+            id="permanent-units-heading"
+            helpTopic="permanent.units"
+            trailing={<span className="build-chip">Build 091</span>}
+          />
+          <p>
+            Track source-linked unit ownership, independently review private
+            sale listings and record buyer inquiries without transferring land
+            rights, bookings, leases or payments.
+          </p>
+          <Link
+            className="primary-link primary-link--dark"
+            href={
+              "/workspaces/management/campgrounds/permanent-units?campground=" +
+              encodeURIComponent(structure.campground.id)
+            }
+          >
+            Open permanent-unit desk
+          </Link>
+        </section>
+
         <section className="content-panel" aria-labelledby="payments-heading">
           <SectionHeading
             eyebrow="Reservation payments"

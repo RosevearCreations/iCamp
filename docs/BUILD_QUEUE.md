@@ -1205,6 +1205,16 @@ Delivery scope:
 
 See `docs/BUILD_090_ACCEPTANCE.md`. The earlier roadmap's permanent-unit Build 090 number conflicts with the active queue and requires explicit renumbering before that separate feature begins.
 
+## Build 091 — Permanent-Unit Ownership-Backed Listing & Buyer Inquiry
+
+Delivery scope:
+- owner evidence for a movable/permanent unit kept distinct from campground land and occupancy rights;
+- ownership-pinned private listing drafts with independent review;
+- current-approved-listing buyer inquiry intake; stale ownership invalidates intake;
+- privileged management UI, scoped database safeguards, contextual help and no transfer/payment/public publication side effects.
+
+See `docs/BUILD_091_ACCEPTANCE.md`. Next queued: **Build 092 — Permanent Unit Sale/Transfer Workflow**.
+
 ## Operating rule
 
 - Work primarily on `dev`.
