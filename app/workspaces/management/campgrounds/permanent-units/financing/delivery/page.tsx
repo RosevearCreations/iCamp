@@ -99,6 +99,12 @@ export default async function DeliveryPage({
             disclosure contents and independently complete any lawful delivery,
             acknowledgement or contract workflow.
           </p>
+          <p>
+            <Link href="/workspaces/management/campgrounds/permanent-units/financing/receipts">
+              Build 096 · Manual delivery evidence, applicant response &amp;
+              exception holds
+            </Link>
+          </p>
         </section>
         {params.saved ? (
           <p role="status" className={styles.notice}>
