@@ -1227,6 +1227,15 @@ See `docs/BUILD_092_ACCEPTANCE.md`. Next queued: **Build 093 — Office Financin
 
 ## Operating rule
 
+## Build 098 — Finance Delivery Exception Ageing, Re-Review & Owner Escalation
+
+Delivery scope:
+- deterministic 24h/72h operational ageing of exception, reconciliation or consent evidence origins;
+- immutable independent re-review observations and bounded next-review dates;
+- private owner escalation request and designated owner acknowledgement without automated messaging or hold clearance.
+
+See `docs/BUILD_098_ACCEPTANCE.md`. Next queued: **Build 099 — Owner Follow-Up Task Continuity, Reassessment & Escalation Closure Evidence**.
+
 ## Build 097 — Finance Delivery Evidence Reconciliation & Operator Closure Review
 
 Delivery scope:
