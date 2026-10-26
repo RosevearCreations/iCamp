@@ -1227,6 +1227,15 @@ See `docs/BUILD_092_ACCEPTANCE.md`. Next queued: **Build 093 — Office Financin
 
 ## Operating rule
 
+## Build 110 — Owner Export Follow-Up Aging & Decision Reassessment Audit
+
+Delivery scope:
+- a complete owner-only, directed campground-pair aging summary from the latest Build 109 decision per review, retaining the original due date beside the effective reassessed due date; overdue, seven-day, 30-day, later, closure-recommended and final no-action classifications;
+- a separate append-only independent reassessment ledger with due dates and evidence references; the reviewer must differ from the original decision-maker, stale decisions are rejected under the same review concurrency lock as Build 109, and manual escalation cites an unclosed Build 107 case;
+- database-derived counts of unresolved source exceptions and new cases since the Build 109 review, with conservative closure recommendations requiring independent closeout and no new cases; forced dual-campground RLS, bounded workbench/audit history and contextual help; no actual case closure, applicant data, financial actions, automatic tasks, messaging or file deletion.
+
+See `docs/BUILD_110_ACCEPTANCE.md`. Next expected: **Build 111 — Owner Export Reassessment Follow-Up Outcomes & Independent Closure Acceptance**.
+
 ## Build 109 — Owner Export Oversight Review Notes & Follow-Up Decision Ledger
 
 Delivery scope:
