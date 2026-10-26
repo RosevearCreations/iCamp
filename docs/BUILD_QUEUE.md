@@ -1227,6 +1227,15 @@ See `docs/BUILD_092_ACCEPTANCE.md`. Next queued: **Build 093 — Office Financin
 
 ## Operating rule
 
+## Build 106 — Owner Export Receipt Reconciliation & Evidence Retention Controls
+
+Delivery scope:
+- independent authorized owner SHA-256 and row-count reconciliation against the original Build 105 acceptance receipt, retaining both matched and mismatched observations without modifying the source receipt;
+- append-only, source-linked attestations for controlled local storage, bounded retention deadline extensions and terminal manual copy disposal; overdue reviews are visible, never silently purged;
+- dual-campground owner-only forced RLS and SQL transition/independence guards, integrated owner workbench and contextual ⓘ help; no remote file deletion, applicant data, finance approvals, transfer, hold release or automatic communications.
+
+See `docs/BUILD_106_ACCEPTANCE.md`. Next queued: **Build 107 — Owner Export Retention Exception Follow-Up & Audit Closeout**.
+
 ## Build 105 — Cross-Campground Owner Resolution Evidence Search & Export Acceptance
 
 Delivery scope:

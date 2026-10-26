@@ -136,6 +136,12 @@ export default async function OwnerEvidenceSearchPage({
             fingerprint. No applicant identities, loan terms, source documents
             or free-text review notes are exported.
           </p>
+          <p>
+            <Link href={`${path}/retention`}>
+              Review export receipts, independent reconciliation and retention
+              attestations
+            </Link>
+          </p>
         </section>
         {error ? (
           <p className="content-panel" role="alert">
