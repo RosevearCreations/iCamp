@@ -1227,6 +1227,15 @@ See `docs/BUILD_092_ACCEPTANCE.md`. Next queued: **Build 093 — Office Financin
 
 ## Operating rule
 
+## Build 107 — Owner Export Retention Exception Follow-Up & Audit Closeout
+
+Delivery scope:
+- detect currently missing/mismatched owner export reconciliation and missing/overdue manual copy retention, then open one active source-receipt-linked case with a bounded next owner action;
+- append-only follow-up and escalation outcomes that reference corrective Build 106 evidence before a case can become review-ready;
+- independent second-owner audit acceptance or returned follow-up, rechecking current source evidence under concurrency locks; forced dual-campground RLS, owner workbench and contextual help; no applicant, lending, transfer, deletion or communication side effects.
+
+See `docs/BUILD_107_ACCEPTANCE.md`. Next queued: **Build 108 — Owner Export Exception Recurrence & Retention Oversight Reporting**.
+
 ## Build 106 — Owner Export Receipt Reconciliation & Evidence Retention Controls
 
 Delivery scope:

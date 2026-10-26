@@ -11,6 +11,23 @@ export interface HelpTopic {
 }
 
 export const helpTopics = {
+  "permanent.owner-exception-closeout": {
+    id: "permanent.owner-exception-closeout",
+    slug: "owner-export-retention-exception-follow-up-independent-closeout",
+    title: "Export Retention Exception Follow-Up & Independent Audit Closeout",
+    summary:
+      "Open source-linked cases for owner export discrepancies, record accountable follow-up, then require an independent owner to review corrective evidence before closing an audit case.",
+    details: [
+      "Only an actively authorized Owner / Administrator with permanent_unit.transfer permission on both campgrounds may read or insert exception records. Three new append-only ledgers have forced row-level security; neither a forged form nor an exported CSV exposes another campground's history.",
+      "An exception can be opened only when the source receipt currently shows missing reconciliation, a digest/row-count mismatch, missing retention controls or an expired retention deadline. One unresolved case per export receipt is permitted; the next owner action must be within 90 days.",
+      "Owners record an immutable pending follow-up or escalation with another bounded due date. An outcome may be marked ready for independent review only after Build 106 contains actual corrective evidence: a matching reconciliation or active retention/disposal attestation appropriate to the original exception. No free-text claim alone resolves a control gap.",
+      "A separate authorized owner who neither opened the case nor recorded the review-ready outcome can accept closeout or return the case for further work. Acceptance rechecks the latest referenced evidence and rejects stale records, revived retention expiry and concurrent changes. Rejected reviews remain part of the audit history.",
+      "An accepted closeout is an internal audit decision, not evidence that any computer file was remotely deleted. Source export receipts, hash checks, copy events, cases, outcomes and reviews remain immutable. No financing decisions, applicant information, hold clearing, transfers, tasks, outbound messages or automatic deletion are performed.",
+      "The workbench intentionally limits receipts and history. Partial coverage is prominently marked and must not be mistaken for a complete audit. Evidence references and notes must exclude personal identifiers and banking details.",
+    ],
+    audience: "privileged",
+    related: ["permanent.owner-retention", "permanent.owner-evidence"],
+  },
   "permanent.owner-retention": {
     id: "permanent.owner-retention",
     slug: "owner-export-receipt-reconciliation-copy-retention",
@@ -25,7 +42,11 @@ export const helpTopics = {
       "A copy-disposal attestation is a manual statement and does not remotely delete a file, verify a user's computer, or delete the iCamp audit trail. No applicant information, lending decisions, transfers, payment changes, hold releases, alerts or messages are created.",
     ],
     audience: "privileged",
-    related: ["permanent.owner-evidence", "permanent.owner-review"],
+    related: [
+      "permanent.owner-exception-closeout",
+      "permanent.owner-evidence",
+      "permanent.owner-review",
+    ],
   },
   "permanent.owner-evidence": {
     id: "permanent.owner-evidence",
