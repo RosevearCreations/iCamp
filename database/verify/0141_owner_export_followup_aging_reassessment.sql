@@ -1,14 +1,16 @@
-do $verify$ begin
+do $verify$ declare role_name text; begin
  if not exists(select 1 from pg_class c join pg_namespace n on n.oid=c.relnamespace
   where n.nspname='public' and c.relname='owner_export_oversight_reassessments'
    and c.relrowsecurity and c.relforcerowsecurity) then
   raise exception 'Build 110 reassessment requires forced private row-level security'; end if;
  if has_table_privilege('icamp_app','public.owner_export_oversight_reassessments','UPDATE,DELETE') then
   raise exception 'Owner reassessment audit must be append-only'; end if;
- if has_table_privilege('anon','public.owner_export_oversight_reassessments','SELECT,INSERT')
-  or has_table_privilege('authenticated','public.owner_export_oversight_reassessments','SELECT,INSERT')
-  or has_table_privilege('service_role','public.owner_export_oversight_reassessments','SELECT,INSERT') then
-  raise exception 'Public client and service roles must not read owner reassessments'; end if;
+ foreach role_name in array array['anon','authenticated','service_role'] loop
+  if exists(select 1 from pg_roles where rolname=role_name)
+   and has_table_privilege(role_name,'public.owner_export_oversight_reassessments','SELECT,INSERT') then
+   raise exception 'Public client and service role % must not read owner reassessments',role_name;
+  end if;
+ end loop;
  if not exists(select 1 from pg_trigger where tgname='owner_export_oversight_reassessment_immutable' and not tgisinternal)
   or not exists(select 1 from pg_trigger where tgname='owner_export_oversight_reassessment_guard' and not tgisinternal) then
   raise exception 'Owner reassessment immutability and authorization guards are missing'; end if;
