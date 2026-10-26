@@ -11,6 +11,26 @@ export interface HelpTopic {
 }
 
 export const helpTopics = {
+  "permanent.owner-review-decisions": {
+    id: "permanent.owner-review-decisions",
+    slug: "owner-export-oversight-review-followup-ledger",
+    title: "Owner Export Oversight Reviews & Follow-Up Decisions",
+    summary:
+      "Capture a point-in-time owner interpretation of real export exception counts and append manual, evidence-linked follow-up decisions for an authorized campground pair.",
+    details: [
+      "An active Owner / Administrator with permanent_unit.transfer permission must have access to both campgrounds. The application checks each separately and the database enforces both under forced row-level security. Records are append-only; no public, authenticated, or service-role table access is granted.",
+      "Select a directed pair, 30/90/180-day UTC observation window and specific exception kind or all kinds. The database computes cases, cases without independently accepted closeout, and receipts with repeated cases at the time a note is saved. The owner cannot change these counts or backdate the snapshot.",
+      "Record a contextual note and internal evidence reference, with a next review within 90 days. This is interpretation of historical operational data, never a risk score, allegation or financing recommendation.",
+      "Append monitoring, follow-up, manual escalation or a terminal no-action decision to an existing review. Pending decisions need a due date within 90 days. Escalation cites a real exception case belonging to the same directed pair, category and frozen reporting window. Terminal no-action cannot be followed by new decisions on the same review.",
+      "Old notes, counts, due dates and decisions are never rewritten. History is capped at 50 reviews, 150 decisions and 100 source cases; warnings disclose truncation. A displayed due date is not an automated task or reminder.",
+      "These owner-only ledgers do not close source audit cases, delete downloaded export copies, approve financing, move applicants or units, or send messages. Avoid applicant identities, banking details and contact information in internal evidence references and notes.",
+    ],
+    audience: "privileged",
+    related: [
+      "permanent.owner-export-oversight",
+      "permanent.owner-exception-closeout",
+    ],
+  },
   "permanent.owner-export-oversight": {
     id: "permanent.owner-export-oversight",
     slug: "owner-export-exception-recurrence-retention-oversight",
@@ -27,6 +47,7 @@ export const helpTopics = {
     ],
     audience: "privileged",
     related: [
+      "permanent.owner-review-decisions",
       "permanent.owner-exception-closeout",
       "permanent.owner-retention",
     ],

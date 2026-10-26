@@ -93,6 +93,32 @@ export default async function OwnerExportOversightPage({
         </section>
         <section className="content-panel">
           <SectionHeading
+            id="oversight-review-decisions"
+            title="Owner interpretation &amp; decision ledger"
+            eyebrow="Build 109 · Append-only notes"
+            helpTopic="permanent.owner-review-decisions"
+          />
+          <p>
+            Save a dated owner interpretation of observed exception counts, then
+            record manual follow-up decisions, next review dates and case-linked
+            escalation evidence. The source audit stays intact.
+          </p>
+          {report.selectedSource && report.selectedTarget ? (
+            <Link
+              className="primary-button"
+              href={`${pagePath}/reviews?source=${report.selectedSource}&target=${report.selectedTarget}`}
+            >
+              Open review &amp; decision ledger for this pair
+            </Link>
+          ) : (
+            <p>
+              Choose a source and target campground above or use a pair below to
+              open its owner review ledger.
+            </p>
+          )}
+        </section>
+        <section className="content-panel">
+          <SectionHeading
             id="oversight-filters"
             title="Reporting scope"
             eyebrow="Revalidated private owner permissions"
@@ -293,6 +319,13 @@ export default async function OwnerExportOversightPage({
                         {name.get(g.source) ?? "Campground"} →{" "}
                         {name.get(g.target) ?? "Campground"}
                       </Link>
+                      <p>
+                        <Link
+                          href={`${pagePath}/reviews?source=${g.source}&target=${g.target}`}
+                        >
+                          Record owner interpretation
+                        </Link>
+                      </p>
                     </td>
                     <td>{issueNames[g.issueKind] ?? g.issueKind}</td>
                     <td>{g.casesOpened}</td>
