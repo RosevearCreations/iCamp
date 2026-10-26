@@ -107,6 +107,13 @@ export default async function OwnerResolutionReviewPage({
             financing, amend applicant documents, release delivery holds,
             transfer campground records or send messages.
           </p>
+          <p>
+            <Link href={`${path}/evidence`}>
+              Search cross-campground owner resolution evidence and accept a
+              restricted CSV export (Build 105)
+            </Link>
+            .
+          </p>
         </section>
         {params.saved ? (
           <p className="content-panel" role="status">
