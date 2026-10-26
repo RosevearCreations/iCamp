@@ -119,3 +119,21 @@ export function classifyIndependentClosureFollowup(
   review: { review_kind: string } | null,
   now?: Date,
 ): string;
+export function normalizeOwnerFollowupHandoffDecision(
+  raw: Record<string, unknown>,
+  now?: Date,
+): {
+  id: string;
+  independentReviewId: string;
+  sourceCampgroundId: string;
+  targetCampgroundId: string;
+  actionKind: string;
+  nextDueAt: string | null;
+  evidenceReference: string;
+  actionNote: string;
+};
+export function classifyIndependentOutcomeAging(
+  review: { review_kind: string; next_due_at?: Date | string | null },
+  handoff: { action_kind: string } | null,
+  now?: Date,
+): string;
