@@ -106,6 +106,12 @@ export default async function OwnerExportExceptionPage({
             downloaded files or original receipts, changes financing or
             transfers, releases holds, or contacts applicants.
           </p>
+          <p>
+            <Link href={`${path}/oversight`}>
+              Open Build 108 recurrence trends, overdue actions and retention
+              oversight across authorized campground pairs
+            </Link>
+          </p>
         </section>
         {params.saved ? (
           <p className="content-panel" role="status">
