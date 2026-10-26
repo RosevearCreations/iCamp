@@ -32,6 +32,20 @@ export interface RecurrenceLedger {
     action_note: string;
     next_due_at: Date | null;
   }>;
+  exceptionReviews: Array<{
+    id: string;
+    owner_action_id: string;
+    observed_open_gaps: number;
+    observed_overdue_gaps: number;
+    observed_recurrence_count: number;
+    review_note: string;
+  }>;
+  closureRechecks: Array<{
+    id: string;
+    exception_review_id: string;
+    recheck_kind: string;
+    recheck_note: string;
+  }>;
   limited: boolean;
 }
 export function getRecurrenceLedger(
@@ -49,5 +63,11 @@ export function recordIndependentRecurrenceReassessment(
   raw: Record<string, unknown> & { actorUserId: string },
 ): Promise<{ id: string }>;
 export function recordOwnerEvidenceGapAction(
+  raw: Record<string, unknown> & { actorUserId: string },
+): Promise<{ id: string }>;
+export function recordReconciliationExceptionReview(
+  raw: Record<string, unknown> & { actorUserId: string },
+): Promise<{ id: string }>;
+export function recordIndependentClosureRecheck(
   raw: Record<string, unknown> & { actorUserId: string },
 ): Promise<{ id: string }>;

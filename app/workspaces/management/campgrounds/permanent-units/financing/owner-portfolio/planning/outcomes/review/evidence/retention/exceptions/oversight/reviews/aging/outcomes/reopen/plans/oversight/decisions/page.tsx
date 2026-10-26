@@ -9,6 +9,8 @@ import {
   recordRecurrenceDecisionAction,
   recordRecurrenceReassessmentAction,
   recordEvidenceGapAction,
+  recordExceptionRecurrenceAction,
+  recordIndependentClosureAction,
 } from "./actions";
 const previous =
   "/workspaces/management/campgrounds/permanent-units/financing/owner-portfolio/planning/outcomes/review/evidence/retention/exceptions/oversight/reviews/aging/outcomes/reopen/plans/oversight";
@@ -350,6 +352,154 @@ export default async function RecurrenceDecisionsPage({
             {report.ownerActions.map((a) => (
               <li key={a.id}>
                 {a.action_kind} · {a.reassessment_id} — {a.action_note}
+              </li>
+            ))}
+          </ul>
+        </section>
+        <section>
+          <h2>
+            Reconciliation exception recurrence &amp; independent closure
+            recheck
+          </h2>
+          <p>
+            Owner reviews freeze current pair-wide open, overdue, and recurring
+            gaps. A different authorized owner independently rechecks closure.
+            This is audit closure only: no automatic release of holds,
+            transfers, finance actions, or customer notifications.
+          </p>
+          <form action={recordExceptionRecurrenceAction}>
+            {pair}
+            <label>
+              Previously reconciled owner action{" "}
+              <select name="ownerActionId" required>
+                {report.ownerActions
+                  .filter(
+                    (a) =>
+                      a.action_kind === "owner_reconciled" &&
+                      !report.exceptionReviews.some(
+                        (r) => r.owner_action_id === a.id,
+                      ),
+                  )
+                  .map((a) => (
+                    <option key={a.id} value={a.id}>
+                      {a.id}
+                    </option>
+                  ))}
+              </select>
+            </label>
+            <label>
+              Evidence reference{" "}
+              <input
+                name="evidenceReference"
+                minLength={8}
+                maxLength={400}
+                required
+              />
+            </label>
+            <label>
+              Owner recurrence rationale{" "}
+              <textarea
+                name="reviewNote"
+                minLength={12}
+                maxLength={800}
+                required
+              />
+            </label>
+            <button
+              type="submit"
+              disabled={
+                !report.ownerActions.some(
+                  (a) =>
+                    a.action_kind === "owner_reconciled" &&
+                    !report.exceptionReviews.some(
+                      (r) => r.owner_action_id === a.id,
+                    ),
+                )
+              }
+            >
+              Record exception recurrence review
+            </button>
+          </form>
+          <h3>Frozen exception recurrence reviews</h3>
+          <ul>
+            {report.exceptionReviews.map((r) => (
+              <li key={r.id}>
+                {r.id} · {r.observed_open_gaps} open gaps ·{" "}
+                {r.observed_overdue_gaps} overdue ·{" "}
+                {r.observed_recurrence_count} previous reconciliations —{" "}
+                {r.review_note}
+              </li>
+            ))}
+          </ul>
+          <form action={recordIndependentClosureAction}>
+            {pair}
+            <label>
+              Exception recurrence review{" "}
+              <select name="exceptionReviewId" required>
+                {report.exceptionReviews
+                  .filter(
+                    (r) =>
+                      !report.closureRechecks.some(
+                        (c) => c.exception_review_id === r.id,
+                      ),
+                  )
+                  .map((r) => (
+                    <option key={r.id} value={r.id}>
+                      {r.id} · {r.observed_open_gaps} open gaps
+                    </option>
+                  ))}
+              </select>
+            </label>
+            <label>
+              Independent closure recheck{" "}
+              <select name="recheckKind" required>
+                <option value="continue_exception">Continue exception</option>
+                <option value="request_new_evidence">
+                  Request new evidence
+                </option>
+                <option value="manual_escalation">Manual escalation</option>
+                <option value="independent_audit_closed">
+                  Close audit (only if all clear)
+                </option>
+              </select>
+            </label>
+            <label>
+              Independent evidence reference{" "}
+              <input
+                name="evidenceReference"
+                minLength={8}
+                maxLength={400}
+                required
+              />
+            </label>
+            <label>
+              Independent rationale{" "}
+              <textarea
+                name="recheckNote"
+                minLength={12}
+                maxLength={800}
+                required
+              />
+            </label>
+            <button
+              type="submit"
+              disabled={
+                !report.exceptionReviews.some(
+                  (r) =>
+                    !report.closureRechecks.some(
+                      (c) => c.exception_review_id === r.id,
+                    ),
+                )
+              }
+            >
+              Record immutable closure recheck
+            </button>
+          </form>
+          <h3>Independent closure recheck history</h3>
+          <ul>
+            {report.closureRechecks.map((c) => (
+              <li key={c.id}>
+                {c.recheck_kind} · {c.exception_review_id} — {c.recheck_note}
               </li>
             ))}
           </ul>
