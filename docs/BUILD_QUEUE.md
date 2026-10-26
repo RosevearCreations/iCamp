@@ -2,6 +2,36 @@
 
 Current program: **iCamp2027**
 
+## Build 115 — Hold Recurrence Owner Review & Independent Follow-Up Decision Ledger
+
+Implemented on the Build 110–114 feature baseline. See `docs/BUILD_115_ACCEPTANCE.md`; promotion is gated on migrations and remote CI.
+
+Next expected: **Build 116 — Recurrence Decision Follow-Up Aging & Independent Exception Reassessment**.
+
+## Build 114 — Hold Resolution Follow-Up Aging & Independent Recurrence Oversight
+
+Implemented against Build 113's immutable private audit data; promotion is gated on predecessor migrations and remote CI. See `docs/BUILD_114_ACCEPTANCE.md`.
+
+Next expected: **Build 115 — Hold Recurrence Owner Review & Independent Follow-Up Decision Ledger**.
+
+## Build 113 — Reopen Review Owner Action Plans & Independent Hold Resolution
+
+Implemented on the Build 110–112 feature baseline. See `docs/BUILD_113_ACCEPTANCE.md`; promotion requires database and GitHub release gates.
+
+Next expected: **Build 114 — Hold Resolution Follow-Up Aging & Independent Recurrence Oversight**.
+
+## Build 112 — Independent Acceptance Exception Monitoring & Evidence Reopen Review
+
+Implementation completed on the Build 111 baseline; production promotion remains subject to prerequisite Build 110/111 migrations and release gates. See `docs/BUILD_112_ACCEPTANCE.md`.
+
+Next expected: **Build 113 — Reopen Review Owner Action Plans & Independent Hold Resolution**.
+
+## Build 111 — Owner Export Reassessment Follow-Up Outcomes & Independent Closure Acceptance
+
+Implementation on the Build 110 feature baseline; promotion is gated on migrations, full CI and production verification. See `docs/BUILD_111_ACCEPTANCE.md`.
+
+Next expected: **Build 112 — Independent Acceptance Exception Monitoring & Evidence Reopen Review**.
+
 ## Pre-Implementation Engineering Baseline
 The repository, CI and security engineering foundation is complete and already promoted. It is intentionally **unnumbered** so it does not conflict with the restarted product roadmap.
 
@@ -1226,6 +1256,15 @@ Delivery scope:
 See `docs/BUILD_092_ACCEPTANCE.md`. Next queued: **Build 093 — Office Financing Application Intake**.
 
 ## Operating rule
+
+## Build 110 — Owner Export Follow-Up Aging & Decision Reassessment Audit
+
+Delivery scope:
+- a complete owner-only, directed campground-pair aging summary from the latest Build 109 decision per review, retaining the original due date beside the effective reassessed due date; overdue, seven-day, 30-day, later, closure-recommended and final no-action classifications;
+- a separate append-only independent reassessment ledger with due dates and evidence references; the reviewer must differ from the original decision-maker, stale decisions are rejected under the same review concurrency lock as Build 109, and manual escalation cites an unclosed Build 107 case;
+- database-derived counts of unresolved source exceptions and new cases since the Build 109 review, with conservative closure recommendations requiring independent closeout and no new cases; forced dual-campground RLS, bounded workbench/audit history and contextual help; no actual case closure, applicant data, financial actions, automatic tasks, messaging or file deletion.
+
+See `docs/BUILD_110_ACCEPTANCE.md`. Next expected: **Build 111 — Owner Export Reassessment Follow-Up Outcomes & Independent Closure Acceptance**.
 
 ## Build 109 — Owner Export Oversight Review Notes & Follow-Up Decision Ledger
 

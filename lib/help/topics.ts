@@ -11,6 +11,27 @@ export interface HelpTopic {
 }
 
 export const helpTopics = {
+  "permanent.owner-followup-aging": {
+    id: "permanent.owner-followup-aging",
+    slug: "owner-export-followup-aging-independent-decision-reassessment",
+    title: "Owner Export Follow-Up Aging & Independent Reassessment",
+    summary:
+      "Find overdue owner follow-up decisions and preserve a separate, independent owner reassessment with real underlying case evidence.",
+    details: [
+      "This workbench includes the latest Build 109 decision per review for one directed campground pair. Active Owner / Administrator finance authorization is checked separately on both properties in the application and under forced database row-level security, even when the campgrounds belong to different organizations.",
+      "Aging and due-date counts cover the entire available history of latest decisions for the selected pair, not just recent weeks. A pending decision is overdue, due within seven days, due within 30 days or due later based on its latest independently reassessed due date; the Build 109 original due date is always retained as evidence.",
+      "Only a different authorized owner can independently reassess an original pending decision. The database locks the original review against concurrent Build 109 decisions and rejects a stale decision. Monitoring, evidence-needed and escalation recommendations require the next due date within 90 days. Manual escalation must cite a currently unresolved Build 107 source case from the same pair and original reporting scope.",
+      "The database counts unclosed source cases and newly opened cases since the original owner review at the moment of reassessment. Closure can be recommended only when the original review's scoped cases have independent accepted closeout and no new case in that category/pair has opened since its snapshot; this is still only a recommendation, never the act of closing the case or decision.",
+      "Independent reassessments are append-only. The display is bounded to 100 decision rows, 150 reassessments and 100 available exception cases; entries beyond those limits may be excluded and explicit warnings flag partial coverage. Aggregate counts remain complete for the authorized pair.",
+      "No applicant identities, financial terms, files, local deletion, guest messaging, automatic notifications, work tasks, transfer authorizations or financing approvals are created. Keep all internal references and notes free of contact and banking details.",
+    ],
+    audience: "privileged",
+    related: [
+      "permanent.owner-review-decisions",
+      "permanent.owner-export-oversight",
+      "permanent.owner-exception-closeout",
+    ],
+  },
   "permanent.owner-review-decisions": {
     id: "permanent.owner-review-decisions",
     slug: "owner-export-oversight-review-followup-ledger",
@@ -27,6 +48,7 @@ export const helpTopics = {
     ],
     audience: "privileged",
     related: [
+      "permanent.owner-followup-aging",
       "permanent.owner-export-oversight",
       "permanent.owner-exception-closeout",
     ],

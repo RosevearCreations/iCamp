@@ -103,6 +103,25 @@ export default async function OwnerOversightReviewsPage({
             contact guests.
           </p>
         </section>
+        <section className="content-panel">
+          <SectionHeading
+            id="owner-oversight-aging"
+            title="Follow-up aging &amp; independent reassessment"
+            eyebrow="Build 110 · Current owner action queue"
+            helpTopic="permanent.owner-followup-aging"
+          />
+          <p>
+            Review overdue or upcoming decisions and record independent
+            evidence-based reassessments without changing original notes or
+            decision outcomes.
+          </p>
+          <Link
+            className="primary-button"
+            href={`${pagePath}/aging?source=${ledger.source}&target=${ledger.target}`}
+          >
+            Open aging &amp; reassessment audit
+          </Link>
+        </section>
         {params.saved ? (
           <p role="status" className="content-panel">
             {params.saved}
