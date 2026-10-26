@@ -90,6 +90,18 @@ export interface RecurrenceLedger {
     observed_other_open_handoffs: number;
     observed_other_overdue_handoffs: number;
     observed_other_escalation_handoffs: number;
+    owner_signoff_status: string;
+  }>;
+  closureAuditOwnerSignoffs: Array<{
+    id: string;
+    independent_audit_id: string;
+    signoff_kind: string;
+    next_due_at: Date | null;
+    signoff_note: string;
+    observed_reassessment_days_overdue: number;
+    observed_peer_open_audits: number;
+    observed_peer_overdue_audits: number;
+    observed_prior_manual_escalations: number;
   }>;
   limited: boolean;
 }
@@ -126,5 +138,8 @@ export function recordOwnerIndependentHandoffDecision(
   raw: Record<string, unknown> & { actorUserId: string },
 ): Promise<{ id: string }>;
 export function recordHandoffIndependentClosureAudit(
+  raw: Record<string, unknown> & { actorUserId: string },
+): Promise<{ id: string }>;
+export function recordClosureAuditOwnerSignoff(
   raw: Record<string, unknown> & { actorUserId: string },
 ): Promise<{ id: string }>;

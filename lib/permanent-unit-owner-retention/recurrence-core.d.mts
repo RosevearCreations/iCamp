@@ -155,3 +155,21 @@ export function classifyHandoffIndependentClosureStatus(
   audit: { audit_kind: string } | null,
   now?: Date,
 ): string;
+export function normalizeClosureAuditOwnerSignoff(
+  raw: Record<string, unknown>,
+  now?: Date,
+): {
+  id: string;
+  independentAuditId: string;
+  sourceCampgroundId: string;
+  targetCampgroundId: string;
+  signoffKind: string;
+  nextDueAt: string | null;
+  evidenceReference: string;
+  signoffNote: string;
+};
+export function classifyClosureAuditOwnerSignoff(
+  audit: { audit_kind: string; next_due_at?: Date | string | null },
+  signoff: { signoff_kind: string } | null,
+  now?: Date,
+): string;

@@ -15,6 +15,7 @@ import {
   recordIndependentClosureFollowupAction,
   recordOwnerIndependentHandoffAction,
   recordHandoffIndependentClosureAuditAction,
+  recordClosureAuditOwnerSignoffAction,
 } from "./actions";
 const previous =
   "/workspaces/management/campgrounds/permanent-units/financing/owner-portfolio/planning/outcomes/review/evidence/retention/exceptions/oversight/reviews/aging/outcomes/reopen/plans/oversight";
@@ -941,6 +942,121 @@ export default async function RecurrenceDecisionsPage({
                 {a.observed_other_overdue_handoffs} other overdue ·{" "}
                 {a.observed_other_escalation_handoffs} other escalations —{" "}
                 {a.audit_note}
+              </li>
+            ))}
+          </ul>
+        </section>
+        <section>
+          <h2>
+            Independent audit reassessment aging, owner exception sign-off &amp;
+            escalation recurrence
+          </h2>
+          <p>
+            An authorized owner other than the independent auditor, handoff
+            actor and earlier reviewer acknowledges a closed audit or signs off
+            on an open exception with a scheduled reassessment. An overdue 30+
+            day reassessment or recurring escalations require explicit
+            escalation acceptance. Database snapshots preserve the peer-wide
+            evidence context without closing operational cases or holds.
+          </p>
+          <ul>
+            {report.handoffIndependentAudits.map((a) => (
+              <li key={a.id}>
+                {a.id} · {a.owner_signoff_status} · {a.audit_kind}
+                {a.next_due_at
+                  ? ` · reassess by ${new Date(a.next_due_at).toISOString().slice(0, 10)} UTC`
+                  : " · independent closure, owner acknowledgment pending"}
+              </li>
+            ))}
+          </ul>
+          <form action={recordClosureAuditOwnerSignoffAction}>
+            {pair}
+            <label>
+              Independent closure audit{" "}
+              <select name="independentAuditId" required>
+                {report.handoffIndependentAudits
+                  .filter(
+                    (a) =>
+                      !report.closureAuditOwnerSignoffs.some(
+                        (s) => s.independent_audit_id === a.id,
+                      ),
+                  )
+                  .map((a) => (
+                    <option key={a.id} value={a.id}>
+                      {a.id} · {a.owner_signoff_status}
+                    </option>
+                  ))}
+              </select>
+            </label>
+            <label>
+              Owner sign-off decision{" "}
+              <select name="signoffKind" required>
+                <option value="owner_exception_signed_off">
+                  Sign off on a timely, continued exception (still open)
+                </option>
+                <option value="request_evidence_refresh">
+                  Request refreshed independent evidence
+                </option>
+                <option value="accept_manual_escalation">
+                  Accept escalation and schedule a follow-up
+                </option>
+                <option value="acknowledge_independent_closure">
+                  Acknowledge independent audit closure (only if clear)
+                </option>
+              </select>
+            </label>
+            <p>
+              Open findings need a future UTC owner reassessment date within 90
+              days. Leave it blank only for closed-audit acknowledgment. The
+              database checks independent signers, overdue findings and
+              recurring escalations before accepting a sign-off.
+            </p>
+            <label>
+              Owner reassessment due (UTC){" "}
+              <input type="date" name="nextDueAt" />
+            </label>
+            <label>
+              Evidence reference{" "}
+              <input
+                name="evidenceReference"
+                minLength={8}
+                maxLength={400}
+                required
+              />
+            </label>
+            <label>
+              Owner exception sign-off rationale{" "}
+              <textarea
+                name="signoffNote"
+                minLength={12}
+                maxLength={800}
+                required
+              />
+            </label>
+            <button
+              type="submit"
+              disabled={
+                !report.handoffIndependentAudits.some(
+                  (a) =>
+                    !report.closureAuditOwnerSignoffs.some(
+                      (s) => s.independent_audit_id === a.id,
+                    ),
+                )
+              }
+            >
+              Record immutable owner sign-off
+            </button>
+          </form>
+          <h3>Owner exception sign-offs and escalation recurrence snapshots</h3>
+          <ul>
+            {report.closureAuditOwnerSignoffs.map((s) => (
+              <li key={s.id}>
+                {s.signoff_kind} · {s.independent_audit_id} ·{" "}
+                {s.observed_reassessment_days_overdue} reassessment days overdue
+                · {s.observed_peer_open_audits} peer audits open ·{" "}
+                {s.observed_peer_overdue_audits} peer audits overdue ·{" "}
+                {s.observed_prior_manual_escalations} prior escalations —{" "}
+                {s.signoff_note}
               </li>
             ))}
           </ul>
