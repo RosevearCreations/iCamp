@@ -1227,6 +1227,15 @@ See `docs/BUILD_092_ACCEPTANCE.md`. Next queued: **Build 093 — Office Financin
 
 ## Operating rule
 
+## Build 109 — Owner Export Oversight Review Notes & Follow-Up Decision Ledger
+
+Delivery scope:
+- owner-only, pair-scoped 30/90/180-day exception review snapshots with DB-derived immutable total, unclosed, and recurring-receipt counts; category filter and next review within 90 days;
+- a separate append-only manual decision ledger for monitor, follow-up, escalation citing an in-scope source exception, or terminal no-action; explicit bounded next due dates, evidence references and notes, with serial concurrency checks;
+- both sides reauthorized in the server and forced private RLS, immutable guards, bounded review/case/decision history, contextual help and a direct Build 108 report handoff. No source case closure, applicant/lending actions, automatic messages, local file deletion or owner-data leakage.
+
+See `docs/BUILD_109_ACCEPTANCE.md`. Next expected: **Build 110 — Owner Export Follow-Up Aging & Decision Reassessment Audit**.
+
 ## Build 108 — Owner Export Exception Recurrence & Retention Oversight Reporting
 
 Delivery scope:
