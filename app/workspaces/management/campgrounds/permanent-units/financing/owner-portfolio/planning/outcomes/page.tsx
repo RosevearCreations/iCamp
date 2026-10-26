@@ -112,6 +112,11 @@ export default async function OwnerHandoffOutcomesPage({
             authorize financing, send messages or move another campground&apos;s
             records.
           </p>
+          <p>
+            <Link href={`${path}/review`}>
+              Independently reassess and accept owner planning resolutions →
+            </Link>
+          </p>
         </section>
         {params.saved ? (
           <p className="content-panel" role="status">
