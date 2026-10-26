@@ -11,6 +11,22 @@ export interface HelpTopic {
 }
 
 export const helpTopics = {
+  "permanent.owner-evidence": {
+    id: "permanent.owner-evidence",
+    slug: "cross-campground-owner-resolution-evidence-search-export",
+    title: "Owner Resolution Evidence Search & Export Acceptance",
+    summary:
+      "Search the Build 103/104 resolution evidence chain across independently authorized properties, then explicitly accept a bounded metadata-only export.",
+    details: [
+      "An active Owner / Administrator with permanent_unit.transfer permission must independently belong to both source and target campgrounds. Server authorization and forced database row-level security recheck both properties, even across organizations. Another property's information is never made visible by selection or a forged export form.",
+      "Search case-insensitive literal evidence references on the original resolution, latest independent reassessment and acceptance. Filter by two campgrounds, resolution date and current evidence state. History is paginated at 50 records per page, through page 20; narrowing filters is necessary for older evidence beyond that cap.",
+      "For CSV export, explicitly select one source-target pair and acknowledge restricted internal use with an evidence reference and owner note. The server recomputes the search inside one database transaction. Exports with no records or more than 50 records are rejected; none is silently truncated.",
+      "The exported CSV contains record identifiers, UTC dates, workflow states and internal evidence references. It excludes applicant names, contact information, documents, financial terms and free-text review notes. CSV cells are spreadsheet-formula escaped. The file is created only with an append-only export acceptance receipt containing a SHA-256 fingerprint and row count.",
+      "An acceptance receipt does not approve financing or a transfer, clear delivery holds, create follow-up tasks or contact applicants. Export downloads should be retained only in an access-controlled location and treated as private owner evidence. No automatic messaging or audit-file storage occurs.",
+    ],
+    audience: "privileged",
+    related: ["permanent.owner-review", "permanent.owner-outcomes"],
+  },
   "permanent.owner-review": {
     id: "permanent.owner-review",
     slug: "owner-handoff-resolution-independent-reassessment-acceptance",
@@ -25,7 +41,11 @@ export const helpTopics = {
       "Reassessments and acceptances are append-only and tied to the exact source resolution and both campground scopes. Keep evidence references internal; never include applicant names, contact information, bank accounts or lending terms. Bounded history is explicitly marked and must not be mistaken for complete coverage.",
     ],
     audience: "privileged",
-    related: ["permanent.owner-outcomes", "permanent.owner-planning"],
+    related: [
+      "permanent.owner-evidence",
+      "permanent.owner-outcomes",
+      "permanent.owner-planning",
+    ],
   },
   "permanent.owner-outcomes": {
     id: "permanent.owner-outcomes",

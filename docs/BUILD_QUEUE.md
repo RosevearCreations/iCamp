@@ -1227,6 +1227,15 @@ See `docs/BUILD_092_ACCEPTANCE.md`. Next queued: **Build 093 — Office Financin
 
 ## Operating rule
 
+## Build 105 — Cross-Campground Owner Resolution Evidence Search & Export Acceptance
+
+Delivery scope:
+- owner-only, server-side search of existing Build 103/104 handoff resolutions, latest independent reassessments and acceptances, with literal evidence-reference search, dual campground/status/date filters and paginated coverage warnings;
+- explicitly acknowledged CSV export for one independently authorized campground pair, restricted to 1–50 untruncated metadata-only records, with spreadsheet-injection protection and a transaction-consistent SHA-256 fingerprint;
+- immutable, dual-RLS-protected export acceptance receipt recording the exact scope, evidence reference, actor, row count and hash, with no applicant, lending, unit-transfer, hold-clearing, messaging or automation side effects.
+
+See `docs/BUILD_105_ACCEPTANCE.md`. Next queued: **Build 106 — Owner Export Receipt Reconciliation & Evidence Retention Controls**.
+
 ## Build 104 — Owner Handoff Resolution Reassessment & Independent Review Acceptance
 
 Delivery scope:
