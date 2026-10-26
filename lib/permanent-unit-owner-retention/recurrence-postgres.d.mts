@@ -22,6 +22,15 @@ export interface RecurrenceLedger {
     recurrence_decision_id: string;
     assessment_kind: string;
     assessment_note: string;
+    assessed_at: Date;
+    gap_status: string;
+  }>;
+  ownerActions: Array<{
+    id: string;
+    reassessment_id: string;
+    action_kind: string;
+    action_note: string;
+    next_due_at: Date | null;
   }>;
   limited: boolean;
 }
@@ -37,5 +46,8 @@ export function recordIndependentRecurrenceDecision(
   raw: Record<string, unknown> & { actorUserId: string },
 ): Promise<{ id: string }>;
 export function recordIndependentRecurrenceReassessment(
+  raw: Record<string, unknown> & { actorUserId: string },
+): Promise<{ id: string }>;
+export function recordOwnerEvidenceGapAction(
   raw: Record<string, unknown> & { actorUserId: string },
 ): Promise<{ id: string }>;

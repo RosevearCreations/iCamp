@@ -8,6 +8,7 @@ import {
   recordRecurrenceReviewAction,
   recordRecurrenceDecisionAction,
   recordRecurrenceReassessmentAction,
+  recordEvidenceGapAction,
 } from "./actions";
 const previous =
   "/workspaces/management/campgrounds/permanent-units/financing/owner-portfolio/planning/outcomes/review/evidence/retention/exceptions/oversight/reviews/aging/outcomes/reopen/plans/oversight";
@@ -249,6 +250,106 @@ export default async function RecurrenceDecisionsPage({
               <li key={r.id}>
                 {r.assessment_kind} · {r.recurrence_decision_id} —{" "}
                 {r.assessment_note}
+              </li>
+            ))}
+          </ul>
+        </section>
+        <section>
+          <h2>Evidence gap aging &amp; owner action reconciliation</h2>
+          <p>
+            Track outstanding independent reassessment evidence, including 30+
+            day gaps and overdue owner follow-up dates. This private ledger
+            records owner actions only; reconciliation never automatically lifts
+            a hold or overrides an independent decision.
+          </p>
+          {report.reassessments.length === 0 && (
+            <p>No independent reassessments to reconcile.</p>
+          )}
+          <ul>
+            {report.reassessments.map((r) => (
+              <li key={r.id}>
+                {r.id} · {r.gap_status} · assessed{" "}
+                {new Date(r.assessed_at).toISOString().slice(0, 10)}
+              </li>
+            ))}
+          </ul>
+          <form action={recordEvidenceGapAction}>
+            {pair}
+            <label>
+              Open independent reassessment{" "}
+              <select name="reassessmentId" required>
+                {report.reassessments
+                  .filter(
+                    (r) =>
+                      r.assessment_kind !== "confirm_resolution" &&
+                      r.gap_status !== "owner_reconciled",
+                  )
+                  .map((r) => (
+                    <option key={r.id} value={r.id}>
+                      {r.id} · {r.gap_status}
+                    </option>
+                  ))}
+              </select>
+            </label>
+            <label>
+              Owner action{" "}
+              <select name="actionKind" required>
+                <option value="evidence_requested">Request evidence</option>
+                <option value="evidence_submitted">
+                  Evidence submitted for review
+                </option>
+                <option value="manual_escalation">Manual escalation</option>
+                <option value="owner_reconciled">
+                  Owner reconciliation after evidence submitted
+                </option>
+              </select>
+            </label>
+            <label>
+              Next due (UTC; required for requests and escalations only){" "}
+              <input name="nextDueAt" type="date" />
+            </label>
+            <label>
+              Evidence reference{" "}
+              <input
+                name="evidenceReference"
+                minLength={8}
+                maxLength={400}
+                required
+              />
+            </label>
+            <label>
+              Action rationale{" "}
+              <textarea
+                name="actionNote"
+                minLength={12}
+                maxLength={800}
+                required
+              />
+            </label>
+            <button
+              type="submit"
+              disabled={
+                !report.reassessments.some(
+                  (r) =>
+                    r.assessment_kind !== "confirm_resolution" &&
+                    r.gap_status !== "owner_reconciled",
+                )
+              }
+            >
+              Record immutable owner action
+            </button>
+          </form>
+          <h3>Owner action history</h3>
+          {report.limited && (
+            <p role="status">
+              Recent owner actions are limited to 300 records on this screen.
+              Audit history remains in the database.
+            </p>
+          )}
+          <ul>
+            {report.ownerActions.map((a) => (
+              <li key={a.id}>
+                {a.action_kind} · {a.reassessment_id} — {a.action_note}
               </li>
             ))}
           </ul>
