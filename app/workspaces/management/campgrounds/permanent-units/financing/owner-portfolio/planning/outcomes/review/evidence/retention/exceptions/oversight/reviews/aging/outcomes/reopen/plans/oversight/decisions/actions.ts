@@ -8,6 +8,8 @@ import {
   recordIndependentRecurrenceDecision,
   recordIndependentRecurrenceReassessment,
   recordOwnerEvidenceGapAction,
+  recordReconciliationExceptionReview,
+  recordIndependentClosureRecheck,
 } from "@/lib/permanent-unit-owner-retention/recurrence-postgres.mjs";
 const path =
   "/workspaces/management/campgrounds/permanent-units/financing/owner-portfolio/planning/outcomes/review/evidence/retention/exceptions/oversight/reviews/aging/outcomes/reopen/plans/oversight/decisions";
@@ -115,4 +117,49 @@ export async function recordEvidenceGapAction(form: FormData) {
   redirect(
     `${path}?source=${encodeURIComponent(source)}&target=${encodeURIComponent(target)}&${kind}=${encodeURIComponent(message.slice(0, 180))}`,
   );
+}
+async function saveClosureAudit(form: FormData, independent: boolean) {
+  const session = await requireStaff(path);
+  const source = field(form, "sourceCampgroundId"),
+    target = field(form, "targetCampgroundId");
+  let kind = "saved",
+    message = "Immutable owner exception audit recorded.";
+  try {
+    const common = {
+      actorUserId: session.user.id,
+      id: randomUUID(),
+      sourceCampgroundId: source,
+      targetCampgroundId: target,
+      evidenceReference: field(form, "evidenceReference"),
+    };
+    if (independent)
+      await recordIndependentClosureRecheck({
+        ...common,
+        exceptionReviewId: field(form, "exceptionReviewId"),
+        recheckKind: field(form, "recheckKind"),
+        recheckNote: field(form, "recheckNote"),
+      });
+    else
+      await recordReconciliationExceptionReview({
+        ...common,
+        ownerActionId: field(form, "ownerActionId"),
+        reviewNote: field(form, "reviewNote"),
+      });
+  } catch (error) {
+    kind = "error";
+    message =
+      error instanceof Error
+        ? error.message
+        : "Exception closure audit rejected.";
+  }
+  revalidatePath(path);
+  redirect(
+    `${path}?source=${encodeURIComponent(source)}&target=${encodeURIComponent(target)}&${kind}=${encodeURIComponent(message.slice(0, 180))}`,
+  );
+}
+export async function recordExceptionRecurrenceAction(form: FormData) {
+  return saveClosureAudit(form, false);
+}
+export async function recordIndependentClosureAction(form: FormData) {
+  return saveClosureAudit(form, true);
 }
