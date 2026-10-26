@@ -16,7 +16,8 @@ do $verify$ declare tab text; role_name text; begin
    and policyname=tab||'_read' and qual like '%source_campground_id%' and qual like '%target_campground_id%') then
    raise exception 'Both owner campground permissions required for %',tab; end if;
  end loop;
- if not exists(select 1 from pg_constraint where conname='permanent_unit_finance_owner_resolution_acceptances_resolution_id_key' and contype='u') then
+ if not exists(select 1 from pg_constraint where conrelid='public.permanent_unit_finance_owner_resolution_acceptances'::regclass
+  and contype='u' and pg_get_constraintdef(oid) like '%(resolution_id)%') then
   raise exception 'Only one independent acceptance is allowed per owner resolution'; end if;
  if position('resolved_by_user_id=new.reviewed_by_user_id' in pg_get_functiondef('icamp_private.finance_owner_resolution_review_guard()'::regprocedure))=0
   or position('new.accepted_by_user_id=latest.reviewed_by_user_id' in pg_get_functiondef('icamp_private.finance_owner_resolution_acceptance_guard()'::regprocedure))=0 then
