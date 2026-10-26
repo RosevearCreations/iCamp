@@ -11,6 +11,22 @@ export interface HelpTopic {
 }
 
 export const helpTopics = {
+  "permanent.owner-retention": {
+    id: "permanent.owner-retention",
+    slug: "owner-export-receipt-reconciliation-copy-retention",
+    title: "Independent Export Reconciliation & Copy Retention",
+    summary:
+      "Independently verify a downloaded owner evidence export against its immutable SHA-256 receipt, then record manual copy-retention or disposal attestations.",
+    details: [
+      "Only an active Owner / Administrator holding permanent_unit.transfer permission in both source and target campgrounds can access the ledger. The database repeats both permission checks using forced row-level security. History and the first 30 receipts are bounded; a missing row never proves an export was not made.",
+      "The owner who originally accepted an export cannot independently reconcile it. A separate authorized owner calculates the downloaded CSV's SHA-256 hash locally, counts data records excluding the header, and records both observations with an internal evidence reference. Incorrect results are retained as mismatches; only an exact match permits a retention decision.",
+      "After independent matching, an owner attests to controlled storage and supplies an explicit future deadline within 180 days. Owners may later extend that deadline or explicitly attest to disposal of the downloaded copy; disposal cannot be reversed. Expired deadlines are highlighted for manual action, not automatically purged.",
+      "Each reconciliation and copy-retention action is append-only, source-linked to the export receipt, and protected against concurrent state changes. Existing export receipts, observed discrepancies and prior attestations are never overwritten or deleted.",
+      "A copy-disposal attestation is a manual statement and does not remotely delete a file, verify a user's computer, or delete the iCamp audit trail. No applicant information, lending decisions, transfers, payment changes, hold releases, alerts or messages are created.",
+    ],
+    audience: "privileged",
+    related: ["permanent.owner-evidence", "permanent.owner-review"],
+  },
   "permanent.owner-evidence": {
     id: "permanent.owner-evidence",
     slug: "cross-campground-owner-resolution-evidence-search-export",
@@ -25,7 +41,11 @@ export const helpTopics = {
       "An acceptance receipt does not approve financing or a transfer, clear delivery holds, create follow-up tasks or contact applicants. Export downloads should be retained only in an access-controlled location and treated as private owner evidence. No automatic messaging or audit-file storage occurs.",
     ],
     audience: "privileged",
-    related: ["permanent.owner-review", "permanent.owner-outcomes"],
+    related: [
+      "permanent.owner-retention",
+      "permanent.owner-review",
+      "permanent.owner-outcomes",
+    ],
   },
   "permanent.owner-review": {
     id: "permanent.owner-review",
