@@ -142,10 +142,18 @@ test("data access retains existing forced dual-campground policy without new pub
   const verification = read(
     "../database/verify/0139_owner_export_oversight_reporting_indexes.sql",
   );
-  assert.equal((migration.match(/create index if not exists/g) ?? []).length, 3);
+  assert.equal(
+    (migration.match(/create index if not exists/g) ?? []).length,
+    3,
+  );
   assert.match(verification, /relforcerowsecurity/);
   assert.match(verification, /update,delete/);
-  for (const forbidden of ["create table", "grant ", "create policy", "security definer"])
+  for (const forbidden of [
+    "create table",
+    "grant ",
+    "create policy",
+    "security definer",
+  ])
     assert.ok(!migration.includes(forbidden));
   const exceptionMigration = read(
     "../database/migrations/0138_owner_export_exception_followup_closeout.sql",
