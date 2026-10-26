@@ -14,6 +14,7 @@ import {
   recordClosureOwnerDecisionAction,
   recordIndependentClosureFollowupAction,
   recordOwnerIndependentHandoffAction,
+  recordHandoffIndependentClosureAuditAction,
 } from "./actions";
 const previous =
   "/workspaces/management/campgrounds/permanent-units/financing/owner-portfolio/planning/outcomes/review/evidence/retention/exceptions/oversight/reviews/aging/outcomes/reopen/plans/oversight";
@@ -827,6 +828,119 @@ export default async function RecurrenceDecisionsPage({
                 {d.observed_peer_overdue_reviews} other overdue ·{" "}
                 {d.observed_prior_escalation_handoffs} prior escalations —{" "}
                 {d.action_note}
+              </li>
+            ))}
+          </ul>
+        </section>
+        <section>
+          <h2>
+            Owner handoff outcome aging, evidence reassessment &amp; independent
+            escalation closure
+          </h2>
+          <p>
+            Owner handoff decisions are monitored for overdue independent
+            audits. A separate authorized auditor records an evidence
+            reassessment, continued exception, manual escalation, or independent
+            audit closure. Closure is strictly audit-ledger only; operational
+            holds, cases, payments and customer communications remain unchanged.
+          </p>
+          <ul>
+            {report.closureHandoffDecisions.map((d) => (
+              <li key={d.id}>
+                {d.id} · {d.independent_audit_status} · {d.action_kind}
+                {d.next_due_at
+                  ? ` · owner due ${new Date(d.next_due_at).toISOString().slice(0, 10)} UTC`
+                  : " · no pending owner deadline"}
+              </li>
+            ))}
+          </ul>
+          <form action={recordHandoffIndependentClosureAuditAction}>
+            {pair}
+            <label>
+              Owner handoff evidence decision{" "}
+              <select name="handoffDecisionId" required>
+                {report.closureHandoffDecisions
+                  .filter(
+                    (d) =>
+                      !report.handoffIndependentAudits.some(
+                        (a) => a.handoff_decision_id === d.id,
+                      ),
+                  )
+                  .map((d) => (
+                    <option key={d.id} value={d.id}>
+                      {d.id} · {d.independent_audit_status}
+                    </option>
+                  ))}
+              </select>
+            </label>
+            <label>
+              Independent audit finding{" "}
+              <select name="auditKind" required>
+                <option value="continue_exception">
+                  Continue exception (if timely)
+                </option>
+                <option value="request_evidence_reassessment">
+                  Request evidence reassessment
+                </option>
+                <option value="manual_escalation">Escalate manually</option>
+                <option value="independent_audit_closed">
+                  Close independent audit (only with sufficient evidence)
+                </option>
+              </select>
+            </label>
+            <p>
+              Open findings require a future UTC date within 90 days. Leave the
+              date blank for independent audit closure. Closure requires a valid
+              evidence or escalation outcome and no outstanding peer-wide
+              exception handoffs; 30+ day overdue open reviews must escalate
+              manually. Database safeguards validate these rules.
+            </p>
+            <label>
+              Next independent review due (UTC){" "}
+              <input type="date" name="nextDueAt" />
+            </label>
+            <label>
+              Evidence reference{" "}
+              <input
+                name="evidenceReference"
+                minLength={8}
+                maxLength={400}
+                required
+              />
+            </label>
+            <label>
+              Independent evidence finding{" "}
+              <textarea
+                name="auditNote"
+                minLength={12}
+                maxLength={800}
+                required
+              />
+            </label>
+            <button
+              type="submit"
+              disabled={
+                !report.closureHandoffDecisions.some(
+                  (d) =>
+                    !report.handoffIndependentAudits.some(
+                      (a) => a.handoff_decision_id === d.id,
+                    ),
+                )
+              }
+            >
+              Record immutable independent closure audit
+            </button>
+          </form>
+          <h3>Independent closure audit evidence snapshots</h3>
+          <ul>
+            {report.handoffIndependentAudits.map((a) => (
+              <li key={a.id}>
+                {a.audit_kind} · {a.handoff_decision_id} ·{" "}
+                {a.observed_handoff_days_overdue} days overdue ·{" "}
+                {a.observed_other_open_handoffs} other open ·{" "}
+                {a.observed_other_overdue_handoffs} other overdue ·{" "}
+                {a.observed_other_escalation_handoffs} other escalations —{" "}
+                {a.audit_note}
               </li>
             ))}
           </ul>

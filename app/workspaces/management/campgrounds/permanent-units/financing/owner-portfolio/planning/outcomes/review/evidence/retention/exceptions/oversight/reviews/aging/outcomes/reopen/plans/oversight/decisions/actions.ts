@@ -13,6 +13,7 @@ import {
   recordClosureOwnerDecision,
   recordIndependentClosureFollowupReview,
   recordOwnerIndependentHandoffDecision,
+  recordHandoffIndependentClosureAudit,
 } from "@/lib/permanent-unit-owner-retention/recurrence-postgres.mjs";
 const path =
   "/workspaces/management/campgrounds/permanent-units/financing/owner-portfolio/planning/outcomes/review/evidence/retention/exceptions/oversight/reviews/aging/outcomes/reopen/plans/oversight/decisions";
@@ -245,6 +246,38 @@ export async function recordOwnerIndependentHandoffAction(form: FormData) {
     kind = "error";
     message =
       error instanceof Error ? error.message : "Owner handoff rejected.";
+  }
+  revalidatePath(path);
+  redirect(
+    `${path}?source=${encodeURIComponent(source)}&target=${encodeURIComponent(target)}&${kind}=${encodeURIComponent(message.slice(0, 180))}`,
+  );
+}
+export async function recordHandoffIndependentClosureAuditAction(
+  form: FormData,
+) {
+  const session = await requireStaff(path);
+  const source = field(form, "sourceCampgroundId"),
+    target = field(form, "targetCampgroundId");
+  let kind = "saved",
+    message = "Independent owner handoff evidence reassessment recorded.";
+  try {
+    await recordHandoffIndependentClosureAudit({
+      actorUserId: session.user.id,
+      id: randomUUID(),
+      sourceCampgroundId: source,
+      targetCampgroundId: target,
+      handoffDecisionId: field(form, "handoffDecisionId"),
+      auditKind: field(form, "auditKind"),
+      nextDueAt: field(form, "nextDueAt"),
+      evidenceReference: field(form, "evidenceReference"),
+      auditNote: field(form, "auditNote"),
+    });
+  } catch (error) {
+    kind = "error";
+    message =
+      error instanceof Error
+        ? error.message
+        : "Independent closure audit rejected.";
   }
   revalidatePath(path);
   redirect(
