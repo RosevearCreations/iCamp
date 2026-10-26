@@ -6,6 +6,7 @@ import { requireStaff } from "@/lib/auth/current-session";
 import {
   recordOwnerRecurrenceReview,
   recordIndependentRecurrenceDecision,
+  recordIndependentRecurrenceReassessment,
 } from "@/lib/permanent-unit-owner-retention/recurrence-postgres.mjs";
 const path =
   "/workspaces/management/campgrounds/permanent-units/financing/owner-portfolio/planning/outcomes/review/evidence/retention/exceptions/oversight/reviews/aging/outcomes/reopen/plans/oversight/decisions";
@@ -54,4 +55,33 @@ export async function recordRecurrenceReviewAction(form: FormData) {
 }
 export async function recordRecurrenceDecisionAction(form: FormData) {
   return save(form, true);
+}
+export async function recordRecurrenceReassessmentAction(form: FormData) {
+  const session = await requireStaff(path);
+  const source = field(form, "sourceCampgroundId"),
+    target = field(form, "targetCampgroundId");
+  let kind = "saved",
+    message = "Independent exception reassessment recorded.";
+  try {
+    await recordIndependentRecurrenceReassessment({
+      actorUserId: session.user.id,
+      id: randomUUID(),
+      sourceCampgroundId: source,
+      targetCampgroundId: target,
+      recurrenceDecisionId: field(form, "recurrenceDecisionId"),
+      assessmentKind: field(form, "assessmentKind"),
+      evidenceReference: field(form, "evidenceReference"),
+      assessmentNote: field(form, "assessmentNote"),
+    });
+  } catch (error) {
+    kind = "error";
+    message =
+      error instanceof Error
+        ? error.message
+        : "Independent reassessment rejected.";
+  }
+  revalidatePath(path);
+  redirect(
+    `${path}?source=${encodeURIComponent(source)}&target=${encodeURIComponent(target)}&${kind}=${encodeURIComponent(message.slice(0, 180))}`,
+  );
 }

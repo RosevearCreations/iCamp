@@ -7,6 +7,7 @@ import { getRecurrenceLedger } from "@/lib/permanent-unit-owner-retention/recurr
 import {
   recordRecurrenceReviewAction,
   recordRecurrenceDecisionAction,
+  recordRecurrenceReassessmentAction,
 } from "./actions";
 const previous =
   "/workspaces/management/campgrounds/permanent-units/financing/owner-portfolio/planning/outcomes/review/evidence/retention/exceptions/oversight/reviews/aging/outcomes/reopen/plans/oversight";
@@ -162,6 +163,95 @@ export default async function RecurrenceDecisionsPage({
               Record independent decision
             </button>
           </form>
+        </section>
+        <section>
+          <h2>Follow-up aging &amp; independent reassessment</h2>
+          <p>
+            Past-due decisions are marked for review; they do not automatically
+            release a hold. A separate owner who neither authored the original
+            review nor made its decision must assess the evidence.
+          </p>
+          <ul>
+            {report.decisions.map((d) => (
+              <li key={d.id}>
+                {d.id} · {d.followup_status} ·{" "}
+                {d.next_due_at
+                  ? new Date(d.next_due_at).toISOString().slice(0, 10)
+                  : "no follow-up due"}
+              </li>
+            ))}
+          </ul>
+          <form action={recordRecurrenceReassessmentAction}>
+            {pair}
+            <label>
+              Pending follow-up decision{" "}
+              <select name="recurrenceDecisionId" required>
+                {report.decisions
+                  .filter(
+                    (d) =>
+                      !d.reassessment_id &&
+                      d.decision_kind !== "independent_no_action",
+                  )
+                  .map((d) => (
+                    <option key={d.id} value={d.id}>
+                      {d.id} · {d.followup_status}
+                    </option>
+                  ))}
+              </select>
+            </label>
+            <label>
+              Independent finding{" "}
+              <select name="assessmentKind" required>
+                <option value="continue_hold">Continue hold</option>
+                <option value="request_new_evidence">
+                  Request new evidence
+                </option>
+                <option value="manual_escalation">Escalate manually</option>
+                <option value="confirm_resolution">
+                  Confirm resolution (only if clear)
+                </option>
+              </select>
+            </label>
+            <label>
+              Evidence reference{" "}
+              <input
+                name="evidenceReference"
+                minLength={8}
+                maxLength={400}
+                required
+              />
+            </label>
+            <label>
+              Independent rationale{" "}
+              <textarea
+                name="assessmentNote"
+                minLength={12}
+                maxLength={800}
+                required
+              />
+            </label>
+            <button
+              type="submit"
+              disabled={
+                !report.decisions.some(
+                  (d) =>
+                    !d.reassessment_id &&
+                    d.decision_kind !== "independent_no_action",
+                )
+              }
+            >
+              Record immutable reassessment
+            </button>
+          </form>
+          <h3>Reassessment history</h3>
+          <ul>
+            {report.reassessments.map((r) => (
+              <li key={r.id}>
+                {r.assessment_kind} · {r.recurrence_decision_id} —{" "}
+                {r.assessment_note}
+              </li>
+            ))}
+          </ul>
         </section>
         <section>
           <h2>Immutable decision history</h2>
