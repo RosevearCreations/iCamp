@@ -14,6 +14,14 @@ export interface RecurrenceLedger {
     decision_kind: string;
     next_due_at: Date | null;
     decision_note: string;
+    reassessment_id: string | null;
+    followup_status: string;
+  }>;
+  reassessments: Array<{
+    id: string;
+    recurrence_decision_id: string;
+    assessment_kind: string;
+    assessment_note: string;
   }>;
   limited: boolean;
 }
@@ -26,5 +34,8 @@ export function recordOwnerRecurrenceReview(
   raw: Record<string, unknown> & { actorUserId: string },
 ): Promise<{ id: string }>;
 export function recordIndependentRecurrenceDecision(
+  raw: Record<string, unknown> & { actorUserId: string },
+): Promise<{ id: string }>;
+export function recordIndependentRecurrenceReassessment(
   raw: Record<string, unknown> & { actorUserId: string },
 ): Promise<{ id: string }>;
