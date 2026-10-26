@@ -59,3 +59,24 @@ export function classifyEvidenceGap(
   } | null,
   now?: Date,
 ): string;
+export function normalizeReconciliationExceptionReview(
+  raw: Record<string, unknown>,
+): {
+  id: string;
+  ownerActionId: string;
+  sourceCampgroundId: string;
+  targetCampgroundId: string;
+  evidenceReference: string;
+  reviewNote: string;
+};
+export function normalizeIndependentClosureRecheck(
+  raw: Record<string, unknown>,
+): {
+  id: string;
+  exceptionReviewId: string;
+  sourceCampgroundId: string;
+  targetCampgroundId: string;
+  recheckKind: string;
+  evidenceReference: string;
+  recheckNote: string;
+};
