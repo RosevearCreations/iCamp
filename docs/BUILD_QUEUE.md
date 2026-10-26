@@ -1227,6 +1227,15 @@ See `docs/BUILD_092_ACCEPTANCE.md`. Next queued: **Build 093 — Office Financin
 
 ## Operating rule
 
+## Build 104 — Owner Handoff Resolution Reassessment & Independent Review Acceptance
+
+Delivery scope:
+- immutable cross-campground planning-resolution reassessments by a different authorized owner than the original resolver, with supporting evidence and bounded next review when issues remain;
+- single source-linked planning acceptance citing the latest supported reassessment, by an owner other than the reviewer, with concurrency protection against stale evidence;
+- dual-campground owner-scoped RLS, operator forms, status/history and contextual ⓘ help; no automatic applicant movement, finance decisions, hold release, communications or task creation.
+
+See `docs/BUILD_104_ACCEPTANCE.md`. Next queued: **Build 105 — Cross-Campground Owner Resolution Evidence Search & Export Acceptance**.
+
 ## Build 103 — Owner Planning Follow-Up Outcomes & Cross-Campground Resolution Evidence
 
 Delivery scope:
