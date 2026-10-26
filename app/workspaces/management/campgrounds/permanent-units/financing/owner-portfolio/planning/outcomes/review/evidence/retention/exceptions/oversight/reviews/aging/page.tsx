@@ -82,6 +82,13 @@ export default async function OwnerDecisionAgingPage({
   return (
     <AppShell>
       <div className="page-stack">
+        <p>
+          <Link
+            href={`${pagePath}/outcomes?source=${encodeURIComponent(params.source)}&target=${encodeURIComponent(params.target)}`}
+          >
+            Build 111 — owner follow-up outcomes &amp; independent acceptance
+          </Link>
+        </p>
         <nav className="breadcrumbs" aria-label="Breadcrumb">
           <Link href="/">iCamp</Link>
           <span>/</span>
