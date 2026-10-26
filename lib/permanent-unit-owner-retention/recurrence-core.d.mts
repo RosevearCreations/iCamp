@@ -80,3 +80,24 @@ export function normalizeIndependentClosureRecheck(
   evidenceReference: string;
   recheckNote: string;
 };
+export function normalizeClosureOwnerDecision(
+  raw: Record<string, unknown>,
+  now?: Date,
+): {
+  id: string;
+  closureRecheckId: string;
+  sourceCampgroundId: string;
+  targetCampgroundId: string;
+  decisionKind: string;
+  nextDueAt: string | null;
+  evidenceReference: string;
+  decisionNote: string;
+};
+export function classifyClosureOwnerDecision(
+  recheck: { rechecked_at: Date | string },
+  decision: {
+    decision_kind: string;
+    next_due_at?: Date | string | null;
+  } | null,
+  now?: Date,
+): string;

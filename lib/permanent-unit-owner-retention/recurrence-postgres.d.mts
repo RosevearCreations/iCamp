@@ -45,6 +45,15 @@ export interface RecurrenceLedger {
     exception_review_id: string;
     recheck_kind: string;
     recheck_note: string;
+    rechecked_at: Date;
+    owner_decision_status: string;
+  }>;
+  closureOwnerDecisions: Array<{
+    id: string;
+    closure_recheck_id: string;
+    decision_kind: string;
+    next_due_at: Date | null;
+    decision_note: string;
   }>;
   limited: boolean;
 }
@@ -69,5 +78,8 @@ export function recordReconciliationExceptionReview(
   raw: Record<string, unknown> & { actorUserId: string },
 ): Promise<{ id: string }>;
 export function recordIndependentClosureRecheck(
+  raw: Record<string, unknown> & { actorUserId: string },
+): Promise<{ id: string }>;
+export function recordClosureOwnerDecision(
   raw: Record<string, unknown> & { actorUserId: string },
 ): Promise<{ id: string }>;
