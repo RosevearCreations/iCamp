@@ -11,6 +11,22 @@ export interface HelpTopic {
 }
 
 export const helpTopics = {
+  "permanent.owner-review": {
+    id: "permanent.owner-review",
+    slug: "owner-handoff-resolution-independent-reassessment-acceptance",
+    title: "Independent Resolution Reassessment & Owner Acceptance",
+    summary:
+      "Document a second-owner review of an existing cross-campground coordination resolution, then explicitly accept its latest supported assessment.",
+    details: [
+      "Only an actively assigned Owner / Administrator with permanent_unit.transfer permission on both the source and destination campground can read or insert these private records. RLS independently checks both properties even across separate organizations.",
+      "The person who entered the Build 103 planning resolution cannot reassess their own resolution. Another authorized owner records an immutable reassessment as supported by evidence, needing additional evidence, or requiring the resolution to be revisited. Non-supporting outcomes require the next review date within 90 days.",
+      "A separate owner may record a single acceptance only for the latest supported independent reassessment. The accepting owner must differ from the independent reviewer. The same per-resolution database lock prevents a concurrent reassessment from silently invalidating the cited review.",
+      "Acceptance confirms internal owner planning evidence only. It does not approve a loan, move applicant documents, release a delivery exception, change a sale, send messages, create tasks or automatically reopen a coordination plan.",
+      "Reassessments and acceptances are append-only and tied to the exact source resolution and both campground scopes. Keep evidence references internal; never include applicant names, contact information, bank accounts or lending terms. Bounded history is explicitly marked and must not be mistaken for complete coverage.",
+    ],
+    audience: "privileged",
+    related: ["permanent.owner-outcomes", "permanent.owner-planning"],
+  },
   "permanent.owner-outcomes": {
     id: "permanent.owner-outcomes",
     slug: "owner-handoff-outcomes-cross-campground-resolution",

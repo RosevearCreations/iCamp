@@ -19,6 +19,7 @@ export interface OwnerHandoffResolution {
   resolutionKind: string;
   evidenceReference: string;
   ownerNote: string;
+  resolvedByUserId: string;
   resolvedAt: string;
 }
 export function getOwnerHandoffEvidence(
