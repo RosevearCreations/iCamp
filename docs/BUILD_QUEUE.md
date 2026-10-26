@@ -1227,6 +1227,15 @@ See `docs/BUILD_092_ACCEPTANCE.md`. Next queued: **Build 093 — Office Financin
 
 ## Operating rule
 
+## Build 108 — Owner Export Exception Recurrence & Retention Oversight Reporting
+
+Delivery scope:
+- an owner-only, read-only 30/90/180-day UTC report over existing append-only export receipts, reconciliations, copy retention evidence, exception cases, outcomes and independent audit reviews;
+- observed reopened receipts, repeated campground-pair/issue categories, overdue owner actions, current control gaps, and weekly independently accepted/returned review activity;
+- exact cohort totals with separately bounded 50-case and 100-group drilldowns, 50-campground coverage warnings, cross-pair owner permission checks, existing forced database RLS, additive pair/time reporting indexes, contextual help and direct links to Build 107; no historical evidence modification or automated applicant/financial/file/communication actions.
+
+See `docs/BUILD_108_ACCEPTANCE.md`. Next expected: **Build 109 — Owner Export Oversight Review Notes & Follow-Up Decision Ledger**.
+
 ## Build 107 — Owner Export Retention Exception Follow-Up & Audit Closeout
 
 Delivery scope:

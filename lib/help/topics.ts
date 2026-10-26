@@ -11,6 +11,26 @@ export interface HelpTopic {
 }
 
 export const helpTopics = {
+  "permanent.owner-export-oversight": {
+    id: "permanent.owner-export-oversight",
+    slug: "owner-export-exception-recurrence-retention-oversight",
+    title: "Export Exception Recurrence & Retention Oversight",
+    summary:
+      "Review owner-only counts of export exception recurrence, overdue owner actions, independent closures, and manual retention-control gaps across authorized campground pairs.",
+    details: [
+      "An active Owner / Administrator with permanent_unit.transfer permission is required for both ends of every campground pair. The report rechecks assignment and role permissions before running read-only queries as icamp_app, with all existing forced row-level security policies still active. The first 50 authorized campgrounds are included; a coverage warning appears when more are assigned.",
+      "Choose a 30-, 90-, or 180-day UTC reporting window. The exception summary measures cases first opened in that window, whereas the independent review and escalation weekly timeline includes events during that window even for older cases. Do not compare these as though they were the same cohort.",
+      "A repeated campground-pair/exception category means two or more separately opened cases of that type in the selected window. A reopened receipt means a distinct export receipt has had multiple recorded cases in that window. These are observed operational findings, never predictions, ratings or allegations.",
+      "Current retention controls are checked for receipts originally accepted in the selected window: missing reconciliation, latest digest mismatch, missing retention attestation after reconciliation, or expiration of the latest retained-copy deadline. A copy-disposal attestation is a human statement, not remote erasure evidence.",
+      "Overview totals query the full selected cohort. Drilldown is limited to 50 active cases and the pair/issue table to 100 groups; explicit warnings disclose partial lists. Filter to a smaller directed campground pair or window to examine details, and use the Build 107 case workbench for source-linked evidence and independent closeout.",
+      "This report is read-only. It does not close exceptions, delete local copies, change lending or applicant decisions, move units, clear holds, contact guests, or create notifications. It does not expose applicant details, bank accounts, messages or document contents.",
+    ],
+    audience: "privileged",
+    related: [
+      "permanent.owner-exception-closeout",
+      "permanent.owner-retention",
+    ],
+  },
   "permanent.owner-exception-closeout": {
     id: "permanent.owner-exception-closeout",
     slug: "owner-export-retention-exception-follow-up-independent-closeout",
@@ -26,7 +46,11 @@ export const helpTopics = {
       "The workbench intentionally limits receipts and history. Partial coverage is prominently marked and must not be mistaken for a complete audit. Evidence references and notes must exclude personal identifiers and banking details.",
     ],
     audience: "privileged",
-    related: ["permanent.owner-retention", "permanent.owner-evidence"],
+    related: [
+      "permanent.owner-export-oversight",
+      "permanent.owner-retention",
+      "permanent.owner-evidence",
+    ],
   },
   "permanent.owner-retention": {
     id: "permanent.owner-retention",
