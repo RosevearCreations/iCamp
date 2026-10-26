@@ -13,6 +13,7 @@ import {
   recordIndependentClosureAction,
   recordClosureOwnerDecisionAction,
   recordIndependentClosureFollowupAction,
+  recordOwnerIndependentHandoffAction,
 } from "./actions";
 const previous =
   "/workspaces/management/campgrounds/permanent-units/financing/owner-portfolio/planning/outcomes/review/evidence/retention/exceptions/oversight/reviews/aging/outcomes/reopen/plans/oversight";
@@ -711,6 +712,121 @@ export default async function RecurrenceDecisionsPage({
                 {r.observed_escalation_decisions} prior manual escalations ·{" "}
                 {r.observed_owner_days_overdue} owner days overdue —{" "}
                 {r.review_note}
+              </li>
+            ))}
+          </ul>
+        </section>
+        <section>
+          <h2>
+            Independent outcome aging, owner evidence decisions &amp; escalation
+            handoffs
+          </h2>
+          <p>
+            Independent findings awaiting an owner response are tracked by UTC
+            due date, including 30+ day overdue handoffs. A different authorized
+            owner records the evidence decision or accepts the manual
+            escalation. Long-overdue outcomes require an escalation handoff;
+            neither an audit acknowledgment nor evidence reconciliation changes
+            operational holds.
+          </p>
+          <ul>
+            {report.closureFollowupReviews.map((r) => (
+              <li key={r.id}>
+                {r.id} · {r.owner_reconciliation_status} · {r.review_kind}
+                {r.next_due_at
+                  ? ` · independent due ${new Date(r.next_due_at).toISOString().slice(0, 10)} UTC`
+                  : " · no open independent deadline"}
+              </li>
+            ))}
+          </ul>
+          <form action={recordOwnerIndependentHandoffAction}>
+            {pair}
+            <label>
+              Independent follow-up outcome{" "}
+              <select name="independentReviewId" required>
+                {report.closureFollowupReviews
+                  .filter(
+                    (r) =>
+                      !report.closureHandoffDecisions.some(
+                        (d) => d.independent_review_id === r.id,
+                      ),
+                  )
+                  .map((r) => (
+                    <option key={r.id} value={r.id}>
+                      {r.id} · {r.owner_reconciliation_status}
+                    </option>
+                  ))}
+              </select>
+            </label>
+            <label>
+              Owner handoff or evidence outcome{" "}
+              <select name="actionKind" required>
+                <option value="escalation_handoff_accepted">
+                  Accept manual escalation handoff
+                </option>
+                <option value="evidence_requested">Request evidence</option>
+                <option value="evidence_reconciled">
+                  Reconcile evidence received (if independently requested)
+                </option>
+                <option value="monitoring_continues">
+                  Continue monitoring (if not overdue)
+                </option>
+                <option value="audit_confirmation_acknowledged">
+                  Acknowledge independently confirmed audit
+                </option>
+              </select>
+            </label>
+            <p>
+              Open actions need a future UTC due date within 90 days. Leave the
+              date empty for reconciled evidence or an acknowledged audit. The
+              database enforces compatibility with the independent finding,
+              including mandatory escalation of outcomes overdue by 30+ days.
+            </p>
+            <label>
+              Owner handoff due date (UTC){" "}
+              <input type="date" name="nextDueAt" />
+            </label>
+            <label>
+              Evidence reference{" "}
+              <input
+                name="evidenceReference"
+                minLength={8}
+                maxLength={400}
+                required
+              />
+            </label>
+            <label>
+              Owner evidence decision rationale{" "}
+              <textarea
+                name="actionNote"
+                minLength={12}
+                maxLength={800}
+                required
+              />
+            </label>
+            <button
+              type="submit"
+              disabled={
+                !report.closureFollowupReviews.some(
+                  (r) =>
+                    !report.closureHandoffDecisions.some(
+                      (d) => d.independent_review_id === r.id,
+                    ),
+                )
+              }
+            >
+              Record immutable owner evidence decision
+            </button>
+          </form>
+          <h3>Owner reconciliation &amp; escalation handoff evidence</h3>
+          <ul>
+            {report.closureHandoffDecisions.map((d) => (
+              <li key={d.id}>
+                {d.action_kind} · {d.independent_review_id} ·{" "}
+                {d.observed_review_days_overdue} days overdue ·{" "}
+                {d.observed_peer_overdue_reviews} other overdue ·{" "}
+                {d.observed_prior_escalation_handoffs} prior escalations —{" "}
+                {d.action_note}
               </li>
             ))}
           </ul>
