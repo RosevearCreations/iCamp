@@ -38,3 +38,24 @@ export function normalizeIndependentReassessment(
   evidenceReference: string;
   assessmentNote: string;
 };
+export function normalizeEvidenceGapAction(
+  raw: Record<string, unknown>,
+  now?: Date,
+): {
+  id: string;
+  reassessmentId: string;
+  sourceCampgroundId: string;
+  targetCampgroundId: string;
+  actionKind: string;
+  nextDueAt: string | null;
+  evidenceReference: string;
+  actionNote: string;
+};
+export function classifyEvidenceGap(
+  reassessment: { assessed_at: Date | string },
+  latestAction: {
+    action_kind: string;
+    next_due_at?: Date | string | null;
+  } | null,
+  now?: Date,
+): string;
