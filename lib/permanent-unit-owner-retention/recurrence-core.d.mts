@@ -173,3 +173,21 @@ export function classifyClosureAuditOwnerSignoff(
   signoff: { signoff_kind: string } | null,
   now?: Date,
 ): string;
+export function normalizeOwnerSignoffIndependentCloseout(
+  raw: Record<string, unknown>,
+  now?: Date,
+): {
+  id: string;
+  ownerSignoffId: string;
+  sourceCampgroundId: string;
+  targetCampgroundId: string;
+  reviewKind: string;
+  nextDueAt: string | null;
+  evidenceReference: string;
+  reviewNote: string;
+};
+export function classifyOwnerSignoffFollowup(
+  signoff: { signoff_kind: string; next_due_at?: Date | string | null },
+  review: { review_kind: string } | null,
+  now?: Date,
+): string;

@@ -16,6 +16,7 @@ import {
   recordOwnerIndependentHandoffAction,
   recordHandoffIndependentClosureAuditAction,
   recordClosureAuditOwnerSignoffAction,
+  recordOwnerSignoffIndependentCloseoutAction,
 } from "./actions";
 const previous =
   "/workspaces/management/campgrounds/permanent-units/financing/owner-portfolio/planning/outcomes/review/evidence/retention/exceptions/oversight/reviews/aging/outcomes/reopen/plans/oversight";
@@ -1057,6 +1058,123 @@ export default async function RecurrenceDecisionsPage({
                 {s.observed_peer_overdue_audits} peer audits overdue ·{" "}
                 {s.observed_prior_manual_escalations} prior escalations —{" "}
                 {s.signoff_note}
+              </li>
+            ))}
+          </ul>
+        </section>
+        <section>
+          <h2>
+            Owner sign-off follow-up aging, escalation evidence refresh &amp;
+            independent exception closeout
+          </h2>
+          <p>
+            An independent finance owner reviews signed-off exceptions and
+            escalation evidence, separate from the owner signer and previous
+            independent auditor. Open findings receive a fresh UTC follow-up; an
+            owner sign-off overdue 30+ days requires manual escalation.
+            Independent closeout is possible only after an acknowledged,
+            independently closed audit and a clear peer-wide exception record.
+            This records audit evidence only and never releases a live hold.
+          </p>
+          <ul>
+            {report.closureAuditOwnerSignoffs.map((s) => (
+              <li key={s.id}>
+                {s.id} · {s.independent_closeout_status} · {s.signoff_kind}
+                {s.next_due_at
+                  ? ` · owner follow-up ${new Date(s.next_due_at).toISOString().slice(0, 10)} UTC`
+                  : " · no open owner deadline"}
+              </li>
+            ))}
+          </ul>
+          <form action={recordOwnerSignoffIndependentCloseoutAction}>
+            {pair}
+            <label>
+              Owner exception sign-off{" "}
+              <select name="ownerSignoffId" required>
+                {report.closureAuditOwnerSignoffs
+                  .filter(
+                    (s) =>
+                      !report.signoffIndependentCloseoutReviews.some(
+                        (r) => r.owner_signoff_id === s.id,
+                      ),
+                  )
+                  .map((s) => (
+                    <option key={s.id} value={s.id}>
+                      {s.id} · {s.independent_closeout_status}
+                    </option>
+                  ))}
+              </select>
+            </label>
+            <label>
+              Independent finding{" "}
+              <select name="reviewKind" required>
+                <option value="continue_exception">
+                  Continue signed-off exception (if timely)
+                </option>
+                <option value="request_escalation_evidence_refresh">
+                  Request refreshed escalation evidence
+                </option>
+                <option value="manual_escalation">
+                  Escalate independently with new evidence
+                </option>
+                <option value="independent_exception_closed">
+                  Confirm independent exception closeout (only if clear)
+                </option>
+              </select>
+            </label>
+            <p>
+              Schedule an independent follow-up within 90 days for any open
+              finding. Leave the date blank only for an eligible independent
+              closeout. The database records overdue days, peer exceptions,
+              escalation acceptances and recent evidence-refresh requests.
+            </p>
+            <label>
+              Independent follow-up due (UTC){" "}
+              <input type="date" name="nextDueAt" />
+            </label>
+            <label>
+              Reassessed evidence reference{" "}
+              <input
+                name="evidenceReference"
+                minLength={8}
+                maxLength={400}
+                required
+              />
+            </label>
+            <label>
+              Independent exception review rationale{" "}
+              <textarea
+                name="reviewNote"
+                minLength={12}
+                maxLength={800}
+                required
+              />
+            </label>
+            <button
+              type="submit"
+              disabled={
+                !report.closureAuditOwnerSignoffs.some(
+                  (s) =>
+                    !report.signoffIndependentCloseoutReviews.some(
+                      (r) => r.owner_signoff_id === s.id,
+                    ),
+                )
+              }
+            >
+              Record immutable independent exception review
+            </button>
+          </form>
+          <h3>Independent closeout and escalation evidence snapshots</h3>
+          <ul>
+            {report.signoffIndependentCloseoutReviews.map((r) => (
+              <li key={r.id}>
+                {r.review_kind} · {r.owner_signoff_id} ·{" "}
+                {r.observed_signoff_days_overdue} owner days overdue ·{" "}
+                {r.observed_peer_open_signoffs} peer exceptions open ·{" "}
+                {r.observed_peer_overdue_signoffs} peer follow-ups overdue ·{" "}
+                {r.observed_prior_escalation_acceptances} prior accepted
+                escalations · {r.observed_prior_evidence_refreshes} recent
+                evidence refreshes — {r.review_note}
               </li>
             ))}
           </ul>
