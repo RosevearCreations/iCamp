@@ -11,6 +11,7 @@ import {
   recordEvidenceGapAction,
   recordExceptionRecurrenceAction,
   recordIndependentClosureAction,
+  recordClosureOwnerDecisionAction,
 } from "./actions";
 const previous =
   "/workspaces/management/campgrounds/permanent-units/financing/owner-portfolio/planning/outcomes/review/evidence/retention/exceptions/oversight/reviews/aging/outcomes/reopen/plans/oversight";
@@ -500,6 +501,103 @@ export default async function RecurrenceDecisionsPage({
             {report.closureRechecks.map((c) => (
               <li key={c.id}>
                 {c.recheck_kind} · {c.exception_review_id} — {c.recheck_note}
+              </li>
+            ))}
+          </ul>
+        </section>
+        <section>
+          <h2>Independent closure follow-up &amp; owner decision aging</h2>
+          <p>
+            Outstanding independent rechecks are flagged after 30 days without
+            an owner decision. Pending owner follow-up dates show overdue and
+            30+ day overdue status. These indicators do not change any
+            operational hold.
+          </p>
+          <ul>
+            {report.closureRechecks.map((c) => (
+              <li key={c.id}>
+                {c.id} · {c.owner_decision_status} · independent decision{" "}
+                {c.recheck_kind}
+              </li>
+            ))}
+          </ul>
+          <form action={recordClosureOwnerDecisionAction}>
+            {pair}
+            <label>
+              Independent closure recheck{" "}
+              <select name="closureRecheckId" required>
+                {report.closureRechecks
+                  .filter(
+                    (c) =>
+                      !report.closureOwnerDecisions.some(
+                        (d) => d.closure_recheck_id === c.id,
+                      ),
+                  )
+                  .map((c) => (
+                    <option key={c.id} value={c.id}>
+                      {c.id} · {c.owner_decision_status}
+                    </option>
+                  ))}
+              </select>
+            </label>
+            <label>
+              Owner follow-up decision{" "}
+              <select name="decisionKind" required>
+                <option value="keep_exception_open">Keep exception open</option>
+                <option value="request_evidence">
+                  Request additional evidence
+                </option>
+                <option value="manual_escalation">Escalate manually</option>
+                <option value="acknowledge_audit_closure">
+                  Acknowledge independently closed audit
+                </option>
+              </select>
+            </label>
+            <p>
+              For open exceptions, select a future UTC follow-up date within 90
+              days. Audit-closure acknowledgments must leave the date blank. The
+              database enforces agreement with the independent recheck.
+            </p>
+            <label>
+              Follow-up due date (UTC) <input type="date" name="nextDueAt" />
+            </label>
+            <label>
+              Evidence reference{" "}
+              <input
+                name="evidenceReference"
+                minLength={8}
+                maxLength={400}
+                required
+              />
+            </label>
+            <label>
+              Owner decision rationale{" "}
+              <textarea
+                name="decisionNote"
+                minLength={12}
+                maxLength={800}
+                required
+              />
+            </label>
+            <button
+              type="submit"
+              disabled={
+                !report.closureRechecks.some(
+                  (c) =>
+                    !report.closureOwnerDecisions.some(
+                      (d) => d.closure_recheck_id === c.id,
+                    ),
+                )
+              }
+            >
+              Record immutable owner decision
+            </button>
+          </form>
+          <h3>Owner decision history</h3>
+          <ul>
+            {report.closureOwnerDecisions.map((d) => (
+              <li key={d.id}>
+                {d.decision_kind} · {d.closure_recheck_id} — {d.decision_note}
               </li>
             ))}
           </ul>

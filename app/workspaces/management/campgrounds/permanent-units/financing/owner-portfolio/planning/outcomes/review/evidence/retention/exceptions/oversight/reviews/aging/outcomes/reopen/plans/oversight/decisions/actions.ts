@@ -10,6 +10,7 @@ import {
   recordOwnerEvidenceGapAction,
   recordReconciliationExceptionReview,
   recordIndependentClosureRecheck,
+  recordClosureOwnerDecision,
 } from "@/lib/permanent-unit-owner-retention/recurrence-postgres.mjs";
 const path =
   "/workspaces/management/campgrounds/permanent-units/financing/owner-portfolio/planning/outcomes/review/evidence/retention/exceptions/oversight/reviews/aging/outcomes/reopen/plans/oversight/decisions";
@@ -162,4 +163,32 @@ export async function recordExceptionRecurrenceAction(form: FormData) {
 }
 export async function recordIndependentClosureAction(form: FormData) {
   return saveClosureAudit(form, true);
+}
+export async function recordClosureOwnerDecisionAction(form: FormData) {
+  const session = await requireStaff(path);
+  const source = field(form, "sourceCampgroundId"),
+    target = field(form, "targetCampgroundId");
+  let kind = "saved",
+    message = "Owner closure follow-up decision recorded.";
+  try {
+    await recordClosureOwnerDecision({
+      actorUserId: session.user.id,
+      id: randomUUID(),
+      sourceCampgroundId: source,
+      targetCampgroundId: target,
+      closureRecheckId: field(form, "closureRecheckId"),
+      decisionKind: field(form, "decisionKind"),
+      nextDueAt: field(form, "nextDueAt"),
+      evidenceReference: field(form, "evidenceReference"),
+      decisionNote: field(form, "decisionNote"),
+    });
+  } catch (error) {
+    kind = "error";
+    message =
+      error instanceof Error ? error.message : "Owner decision rejected.";
+  }
+  revalidatePath(path);
+  redirect(
+    `${path}?source=${encodeURIComponent(source)}&target=${encodeURIComponent(target)}&${kind}=${encodeURIComponent(message.slice(0, 180))}`,
+  );
 }
