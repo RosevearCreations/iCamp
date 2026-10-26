@@ -11,6 +11,7 @@ import {
   recordReconciliationExceptionReview,
   recordIndependentClosureRecheck,
   recordClosureOwnerDecision,
+  recordIndependentClosureFollowupReview,
 } from "@/lib/permanent-unit-owner-retention/recurrence-postgres.mjs";
 const path =
   "/workspaces/management/campgrounds/permanent-units/financing/owner-portfolio/planning/outcomes/review/evidence/retention/exceptions/oversight/reviews/aging/outcomes/reopen/plans/oversight/decisions";
@@ -186,6 +187,34 @@ export async function recordClosureOwnerDecisionAction(form: FormData) {
     kind = "error";
     message =
       error instanceof Error ? error.message : "Owner decision rejected.";
+  }
+  revalidatePath(path);
+  redirect(
+    `${path}?source=${encodeURIComponent(source)}&target=${encodeURIComponent(target)}&${kind}=${encodeURIComponent(message.slice(0, 180))}`,
+  );
+}
+export async function recordIndependentClosureFollowupAction(form: FormData) {
+  const session = await requireStaff(path);
+  const source = field(form, "sourceCampgroundId"),
+    target = field(form, "targetCampgroundId");
+  let kind = "saved",
+    message = "Independent closure follow-up and recurrence snapshot recorded.";
+  try {
+    await recordIndependentClosureFollowupReview({
+      actorUserId: session.user.id,
+      id: randomUUID(),
+      sourceCampgroundId: source,
+      targetCampgroundId: target,
+      ownerDecisionId: field(form, "ownerDecisionId"),
+      reviewKind: field(form, "reviewKind"),
+      nextDueAt: field(form, "nextDueAt"),
+      evidenceReference: field(form, "evidenceReference"),
+      reviewNote: field(form, "reviewNote"),
+    });
+  } catch (error) {
+    kind = "error";
+    message =
+      error instanceof Error ? error.message : "Independent review rejected.";
   }
   revalidatePath(path);
   redirect(

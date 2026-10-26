@@ -12,6 +12,7 @@ import {
   recordExceptionRecurrenceAction,
   recordIndependentClosureAction,
   recordClosureOwnerDecisionAction,
+  recordIndependentClosureFollowupAction,
 } from "./actions";
 const previous =
   "/workspaces/management/campgrounds/permanent-units/financing/owner-portfolio/planning/outcomes/review/evidence/retention/exceptions/oversight/reviews/aging/outcomes/reopen/plans/oversight";
@@ -598,6 +599,118 @@ export default async function RecurrenceDecisionsPage({
             {report.closureOwnerDecisions.map((d) => (
               <li key={d.id}>
                 {d.decision_kind} · {d.closure_recheck_id} — {d.decision_note}
+              </li>
+            ))}
+          </ul>
+        </section>
+        <section>
+          <h2>
+            Owner closure recurrence, overdue escalation &amp; independent
+            follow-up
+          </h2>
+          <p>
+            Pair-wide recurrence, unresolved overdue owner follow-ups, and
+            earlier manual escalations are frozen when an independent owner
+            reviews a decision. Owner deadlines overdue by 30+ days require
+            manual escalation. This is an audit-only record: no live hold,
+            transfer, payment, or campground status changes.
+          </p>
+          <ul>
+            {report.closureOwnerDecisions.map((d) => (
+              <li key={d.id}>
+                {d.id} · {d.independent_followup_status} · {d.decision_kind}
+                {d.next_due_at
+                  ? ` · owner due ${new Date(d.next_due_at).toISOString().slice(0, 10)} UTC`
+                  : " · no open owner deadline"}
+              </li>
+            ))}
+          </ul>
+          <form action={recordIndependentClosureFollowupAction}>
+            {pair}
+            <label>
+              Owner closure decision{" "}
+              <select name="ownerDecisionId" required>
+                {report.closureOwnerDecisions
+                  .filter(
+                    (d) =>
+                      !report.closureFollowupReviews.some(
+                        (r) => r.owner_decision_id === d.id,
+                      ),
+                  )
+                  .map((d) => (
+                    <option key={d.id} value={d.id}>
+                      {d.id} · {d.independent_followup_status}
+                    </option>
+                  ))}
+              </select>
+            </label>
+            <label>
+              Independent finding{" "}
+              <select name="reviewKind" required>
+                <option value="continue_exception">
+                  Continue exception (not overdue)
+                </option>
+                <option value="request_new_evidence">
+                  Request new evidence
+                </option>
+                <option value="manual_escalation">Manual escalation</option>
+                <option value="confirm_audit_acknowledged">
+                  Confirm independently acknowledged audit (only if clear)
+                </option>
+              </select>
+            </label>
+            <p>
+              Open reviews need a future UTC follow-up within 90 days. Audit
+              confirmation must leave the date empty and requires no captured
+              overdue or recurring exceptions. The database checks the review
+              against the actual owner decision and independent rechecker.
+            </p>
+            <label>
+              Independent follow-up due (UTC){" "}
+              <input type="date" name="nextDueAt" />
+            </label>
+            <label>
+              Evidence reference{" "}
+              <input
+                name="evidenceReference"
+                minLength={8}
+                maxLength={400}
+                required
+              />
+            </label>
+            <label>
+              Independent review rationale{" "}
+              <textarea
+                name="reviewNote"
+                minLength={12}
+                maxLength={800}
+                required
+              />
+            </label>
+            <button
+              type="submit"
+              disabled={
+                !report.closureOwnerDecisions.some(
+                  (d) =>
+                    !report.closureFollowupReviews.some(
+                      (r) => r.owner_decision_id === d.id,
+                    ),
+                )
+              }
+            >
+              Record immutable independent review
+            </button>
+          </form>
+          <h3>Independent review evidence snapshots</h3>
+          <ul>
+            {report.closureFollowupReviews.map((r) => (
+              <li key={r.id}>
+                {r.review_kind} · {r.owner_decision_id} ·{" "}
+                {r.observed_recurring_decisions} recurrent ·{" "}
+                {r.observed_overdue_decisions} overdue ·{" "}
+                {r.observed_escalation_decisions} prior manual escalations ·{" "}
+                {r.observed_owner_days_overdue} owner days overdue —{" "}
+                {r.review_note}
               </li>
             ))}
           </ul>
