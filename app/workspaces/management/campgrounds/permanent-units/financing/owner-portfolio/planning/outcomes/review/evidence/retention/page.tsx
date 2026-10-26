@@ -92,10 +92,11 @@ export default async function OwnerExportRetentionPage({
           <p className="eyebrow">Build 106 · Independent receipt assurance</p>
           <h1>Export reconciliation &amp; copy retention</h1>
           <p className="hero-panel__lead">
-            An independent authorized owner checks the downloaded CSV file&apos;s
-            SHA-256 digest and data-row count against the original export
-            receipt. After a match, owners can attest to controlled storage, a
-            bounded retention extension, or manual disposal of a copy.
+            An independent authorized owner checks the downloaded CSV
+            file&apos;s SHA-256 digest and data-row count against the original
+            export receipt. After a match, owners can attest to controlled
+            storage, a bounded retention extension, or manual disposal of a
+            copy.
           </p>
           <p>
             No file is uploaded, automatically deleted, archived or transmitted
