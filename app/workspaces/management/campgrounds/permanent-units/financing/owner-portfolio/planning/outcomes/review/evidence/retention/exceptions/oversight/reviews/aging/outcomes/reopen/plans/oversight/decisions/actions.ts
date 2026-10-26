@@ -15,6 +15,7 @@ import {
   recordOwnerIndependentHandoffDecision,
   recordHandoffIndependentClosureAudit,
   recordClosureAuditOwnerSignoff,
+  recordOwnerSignoffIndependentCloseout,
 } from "@/lib/permanent-unit-owner-retention/recurrence-postgres.mjs";
 const path =
   "/workspaces/management/campgrounds/permanent-units/financing/owner-portfolio/planning/outcomes/review/evidence/retention/exceptions/oversight/reviews/aging/outcomes/reopen/plans/oversight/decisions";
@@ -308,6 +309,37 @@ export async function recordClosureAuditOwnerSignoffAction(form: FormData) {
     kind = "error";
     message =
       error instanceof Error ? error.message : "Owner audit sign-off rejected.";
+  }
+  revalidatePath(path);
+  redirect(
+    `${path}?source=${encodeURIComponent(source)}&target=${encodeURIComponent(target)}&${kind}=${encodeURIComponent(message.slice(0, 180))}`,
+  );
+}
+export async function recordOwnerSignoffIndependentCloseoutAction(
+  form: FormData,
+) {
+  const session = await requireStaff(path);
+  const source = field(form, "sourceCampgroundId"),
+    target = field(form, "targetCampgroundId");
+  let kind = "saved",
+    message =
+      "Independent owner sign-off follow-up and evidence closeout recorded.";
+  try {
+    await recordOwnerSignoffIndependentCloseout({
+      actorUserId: session.user.id,
+      id: randomUUID(),
+      sourceCampgroundId: source,
+      targetCampgroundId: target,
+      ownerSignoffId: field(form, "ownerSignoffId"),
+      reviewKind: field(form, "reviewKind"),
+      nextDueAt: field(form, "nextDueAt"),
+      evidenceReference: field(form, "evidenceReference"),
+      reviewNote: field(form, "reviewNote"),
+    });
+  } catch (error) {
+    kind = "error";
+    message =
+      error instanceof Error ? error.message : "Independent closeout rejected.";
   }
   revalidatePath(path);
   redirect(
