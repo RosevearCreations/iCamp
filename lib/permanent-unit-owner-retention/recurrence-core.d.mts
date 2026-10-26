@@ -137,3 +137,21 @@ export function classifyIndependentOutcomeAging(
   handoff: { action_kind: string } | null,
   now?: Date,
 ): string;
+export function normalizeHandoffIndependentClosureAudit(
+  raw: Record<string, unknown>,
+  now?: Date,
+): {
+  id: string;
+  handoffDecisionId: string;
+  sourceCampgroundId: string;
+  targetCampgroundId: string;
+  auditKind: string;
+  nextDueAt: string | null;
+  evidenceReference: string;
+  auditNote: string;
+};
+export function classifyHandoffIndependentClosureStatus(
+  handoff: { action_kind: string; next_due_at?: Date | string | null },
+  audit: { audit_kind: string } | null,
+  now?: Date,
+): string;
