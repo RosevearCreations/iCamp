@@ -104,6 +104,12 @@ export default async function OwnerExportRetentionPage({
             local file was erased. Immutable export receipts and the audit
             history remain intact.
           </p>
+          <p>
+            <Link href={`${path}/exceptions`}>
+              Review retention exceptions, owner follow-up and independent audit
+              closeout
+            </Link>
+          </p>
         </section>
         {params.saved ? (
           <p className="content-panel" role="status">
