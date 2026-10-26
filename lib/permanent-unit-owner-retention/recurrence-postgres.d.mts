@@ -54,6 +54,19 @@ export interface RecurrenceLedger {
     decision_kind: string;
     next_due_at: Date | null;
     decision_note: string;
+    independent_followup_status: string;
+  }>;
+  closureFollowupReviews: Array<{
+    id: string;
+    owner_decision_id: string;
+    review_kind: string;
+    next_due_at: Date | null;
+    reviewed_at: Date;
+    observed_recurring_decisions: number;
+    observed_overdue_decisions: number;
+    observed_escalation_decisions: number;
+    observed_owner_days_overdue: number;
+    review_note: string;
   }>;
   limited: boolean;
 }
@@ -81,5 +94,8 @@ export function recordIndependentClosureRecheck(
   raw: Record<string, unknown> & { actorUserId: string },
 ): Promise<{ id: string }>;
 export function recordClosureOwnerDecision(
+  raw: Record<string, unknown> & { actorUserId: string },
+): Promise<{ id: string }>;
+export function recordIndependentClosureFollowupReview(
   raw: Record<string, unknown> & { actorUserId: string },
 ): Promise<{ id: string }>;
