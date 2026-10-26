@@ -7,6 +7,7 @@ import {
   recordOwnerRecurrenceReview,
   recordIndependentRecurrenceDecision,
   recordIndependentRecurrenceReassessment,
+  recordOwnerEvidenceGapAction,
 } from "@/lib/permanent-unit-owner-retention/recurrence-postgres.mjs";
 const path =
   "/workspaces/management/campgrounds/permanent-units/financing/owner-portfolio/planning/outcomes/review/evidence/retention/exceptions/oversight/reviews/aging/outcomes/reopen/plans/oversight/decisions";
@@ -79,6 +80,36 @@ export async function recordRecurrenceReassessmentAction(form: FormData) {
       error instanceof Error
         ? error.message
         : "Independent reassessment rejected.";
+  }
+  revalidatePath(path);
+  redirect(
+    `${path}?source=${encodeURIComponent(source)}&target=${encodeURIComponent(target)}&${kind}=${encodeURIComponent(message.slice(0, 180))}`,
+  );
+}
+export async function recordEvidenceGapAction(form: FormData) {
+  const session = await requireStaff(path);
+  const source = field(form, "sourceCampgroundId"),
+    target = field(form, "targetCampgroundId");
+  let kind = "saved",
+    message = "Owner evidence action recorded.";
+  try {
+    await recordOwnerEvidenceGapAction({
+      actorUserId: session.user.id,
+      id: randomUUID(),
+      sourceCampgroundId: source,
+      targetCampgroundId: target,
+      reassessmentId: field(form, "reassessmentId"),
+      actionKind: field(form, "actionKind"),
+      nextDueAt: field(form, "nextDueAt"),
+      evidenceReference: field(form, "evidenceReference"),
+      actionNote: field(form, "actionNote"),
+    });
+  } catch (error) {
+    kind = "error";
+    message =
+      error instanceof Error
+        ? error.message
+        : "Owner evidence action rejected.";
   }
   revalidatePath(path);
   redirect(
