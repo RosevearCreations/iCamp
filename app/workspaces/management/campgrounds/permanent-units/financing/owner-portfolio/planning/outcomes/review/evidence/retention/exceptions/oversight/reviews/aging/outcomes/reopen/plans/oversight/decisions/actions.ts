@@ -18,6 +18,7 @@ import {
   recordOwnerSignoffIndependentCloseout,
   recordIndependentCloseoutOwnerOutcome,
   recordOwnerEvidenceIndependentDisposition,
+  recordIndependentDispositionRecheck,
 } from "@/lib/permanent-unit-owner-retention/recurrence-postgres.mjs";
 const path =
   "/workspaces/management/campgrounds/permanent-units/financing/owner-portfolio/planning/outcomes/review/evidence/retention/exceptions/oversight/reviews/aging/outcomes/reopen/plans/oversight/decisions";
@@ -408,6 +409,40 @@ export async function recordOwnerEvidenceIndependentDispositionAction(
       error instanceof Error
         ? error.message
         : "Independent evidence disposition rejected.";
+  }
+  revalidatePath(path);
+  redirect(
+    `${path}?source=${encodeURIComponent(source)}&target=${encodeURIComponent(target)}&${kind}=${encodeURIComponent(message.slice(0, 180))}`,
+  );
+}
+export async function recordIndependentDispositionRecheckAction(
+  form: FormData,
+) {
+  const session = await requireStaff(path);
+  const source = field(form, "sourceCampgroundId"),
+    target = field(form, "targetCampgroundId");
+  let kind = "saved",
+    message =
+      "Independent escalation recheck and owner evidence replay recorded.";
+  try {
+    await recordIndependentDispositionRecheck({
+      actorUserId: session.user.id,
+      id: randomUUID(),
+      sourceCampgroundId: source,
+      targetCampgroundId: target,
+      independentDispositionId: field(form, "independentDispositionId"),
+      replayOwnerOutcomeId: field(form, "replayOwnerOutcomeId"),
+      recheckKind: field(form, "recheckKind"),
+      nextDueAt: field(form, "nextDueAt"),
+      evidenceReference: field(form, "evidenceReference"),
+      recheckNote: field(form, "recheckNote"),
+    });
+  } catch (error) {
+    kind = "error";
+    message =
+      error instanceof Error
+        ? error.message
+        : "Independent evidence replay recheck rejected.";
   }
   revalidatePath(path);
   redirect(
