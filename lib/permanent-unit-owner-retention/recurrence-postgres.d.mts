@@ -173,6 +173,22 @@ export interface RecurrenceLedger {
     observed_recent_independent_escalations: number;
     observed_replay_is_newer: boolean;
     observed_closure_proof_chain_complete: boolean;
+    proof_continuity_status: string;
+  }>;
+  independentProofContinuityReviews: Array<{
+    id: string;
+    owner_decision_id: string;
+    replay_owner_decision_id: string;
+    review_kind: string;
+    next_due_at: Date | null;
+    review_note: string;
+    observed_owner_days_overdue: number;
+    observed_peer_open_owner_decisions: number;
+    observed_peer_overdue_owner_decisions: number;
+    observed_recent_escalation_renewals: number;
+    observed_open_independent_rechecks: number;
+    observed_replay_is_newer: boolean;
+    observed_prior_chain_complete: boolean;
   }>;
   limited: boolean;
 }
@@ -227,5 +243,8 @@ export function recordIndependentDispositionRecheck(
   raw: Record<string, unknown> & { actorUserId: string },
 ): Promise<{ id: string }>;
 export function recordIndependentRecheckOwnerDecision(
+  raw: Record<string, unknown> & { actorUserId: string },
+): Promise<{ id: string }>;
+export function recordIndependentProofContinuityReview(
   raw: Record<string, unknown> & { actorUserId: string },
 ): Promise<{ id: string }>;

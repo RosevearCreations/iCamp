@@ -267,3 +267,22 @@ export function classifyOwnerReplayGapAging(
   decision: { decision_kind: string } | null,
   now?: Date,
 ): string;
+export function normalizeIndependentProofContinuityReview(
+  raw: Record<string, unknown>,
+  now?: Date,
+): {
+  id: string;
+  ownerDecisionId: string;
+  replayOwnerDecisionId: string;
+  sourceCampgroundId: string;
+  targetCampgroundId: string;
+  reviewKind: string;
+  nextDueAt: string | null;
+  evidenceReference: string;
+  reviewNote: string;
+};
+export function classifyOwnerProofContinuityAging(
+  ownerDecision: { decision_kind: string; next_due_at?: Date | string | null },
+  review: { review_kind: string } | null,
+  now?: Date,
+): string;
