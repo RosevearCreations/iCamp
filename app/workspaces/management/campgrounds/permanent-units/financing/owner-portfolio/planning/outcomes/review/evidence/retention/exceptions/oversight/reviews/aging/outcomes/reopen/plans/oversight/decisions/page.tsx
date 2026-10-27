@@ -25,7 +25,51 @@ import {
   recordClosureRecurrenceEventAction,
   recordReopenedExceptionAgingReviewAction,
   recordContinuityResolutionFollowupAction,
+  recordVerifiedClosureMonitorAction,
 } from "./actions";
+const verifiedClosureOptions: Record<
+  string,
+  Array<{ value: string; label: string }>
+> = {
+  verified_closure_recurrence_monitor: [
+    {
+      value: "closure_watch_stable",
+      label: "Independently confirm a stable closure watch",
+    },
+    {
+      value: "recurrence_evidence_gap",
+      label: "Report recurring evidence gap",
+    },
+    {
+      value: "recurrence_watch_escalated",
+      label: "Escalate renewed recurrence or overdue finding",
+    },
+  ],
+  independent_evidence_renewal: [
+    {
+      value: "renewal_evidence_pending",
+      label: "Evidence renewal still pending",
+    },
+    {
+      value: "renewal_evidence_rechecked",
+      label: "Independently recheck renewed evidence",
+    },
+    {
+      value: "renewal_escalated",
+      label: "Escalate overdue or unresolved renewal",
+    },
+  ],
+  overdue_exception_reopening_audit: [
+    {
+      value: "owner_reopening_required",
+      label: "Record that owner reopening is required",
+    },
+    {
+      value: "verified_reopening_linked",
+      label: "Verify an actual newer owner reopening event",
+    },
+  ],
+};
 const resolutionOptions: Record<
   string,
   Array<{ value: string; label: string }>
@@ -151,6 +195,49 @@ export default async function RecurrenceDecisionsPage({
                 : "overdue_exception_resolution"
               : "verified_closure_followup",
         status: r.resolution_status,
+      })),
+  ];
+  const closureMonitorQueue = [
+    ...report.continuityResolutionFollowups
+      .filter(
+        (r) =>
+          r.outcome_kind === "closure_followup_verified" &&
+          !report.verifiedClosureMonitors.some(
+            (m) => m.closure_followup_id === r.id,
+          ),
+      )
+      .map((r) => ({
+        id: r.id,
+        closureFollowupId: r.id,
+        priorMonitorId: "",
+        monitorKind: "verified_closure_recurrence_monitor",
+        status: r.resolution_status,
+      })),
+    ...report.verifiedClosureMonitors
+      .filter(
+        (r) =>
+          r.outcome_kind !== "verified_reopening_linked" &&
+          !report.verifiedClosureMonitors.some(
+            (child) => child.prior_monitor_id === r.id,
+          ),
+      )
+      .map((r) => ({
+        id: r.id,
+        closureFollowupId: r.closure_followup_id,
+        priorMonitorId: r.id,
+        monitorKind:
+          r.monitor_kind === "verified_closure_recurrence_monitor"
+            ? r.outcome_kind === "closure_watch_stable"
+              ? "verified_closure_recurrence_monitor"
+              : "independent_evidence_renewal"
+            : r.monitor_kind === "independent_evidence_renewal"
+              ? r.outcome_kind === "renewal_evidence_rechecked"
+                ? "verified_closure_recurrence_monitor"
+                : r.outcome_kind === "renewal_escalated"
+                  ? "overdue_exception_reopening_audit"
+                  : "independent_evidence_renewal"
+              : "overdue_exception_reopening_audit",
+        status: r.monitoring_status,
       })),
   ];
   return (
@@ -2486,6 +2573,118 @@ export default async function RecurrenceDecisionsPage({
                   : " · evidence still under review"}
                 {" — "}
                 {r.review_note}
+              </li>
+            ))}
+          </ul>
+        </section>
+        <section>
+          <h2>
+            Build 133 — Verified closure recurrence monitoring &amp; evidence
+            renewal
+          </h2>
+          <p>
+            We recheck an independently verified closure, renew evidence through
+            a separate reviewer, then audit any overdue owner reopening. This is
+            an immutable iCamp owner record—not an operational case release or a
+            request to another application. A linked reopening must be a real,
+            newer Build 130 owner event from these same campgrounds.
+          </p>
+          <h3>Independent recurrence, renewal &amp; overdue reopening queue</h3>
+          {closureMonitorQueue.slice(0, 20).map((item) => {
+            const closure = report.continuityResolutionFollowups.find(
+              (r) => r.id === item.closureFollowupId,
+            );
+            return (
+              <form key={item.id} action={recordVerifiedClosureMonitorAction}>
+                {pair}
+                <input
+                  type="hidden"
+                  name="closureFollowupId"
+                  value={item.closureFollowupId}
+                />
+                <input
+                  type="hidden"
+                  name="priorMonitorId"
+                  value={item.priorMonitorId}
+                />
+                <input
+                  type="hidden"
+                  name="monitorKind"
+                  value={item.monitorKind}
+                />
+                <p>
+                  {item.monitorKind} · {item.status} · source {item.id}
+                </p>
+                <label>
+                  Independent audit outcome{" "}
+                  <select name="outcomeKind" required>
+                    {verifiedClosureOptions[item.monitorKind].map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label>
+                  Verified newer owner reopening event (only for linked
+                  reopening){" "}
+                  <select name="linkedReopenEventId" defaultValue="">
+                    <option value="">No verified reopening to link</option>
+                    {report.closureRecurrenceEvents
+                      .filter(
+                        (e) =>
+                          e.event_kind === "owner_exception_reopen" &&
+                          closure &&
+                          new Date(e.recorded_at).getTime() >
+                            new Date(closure.recorded_at).getTime(),
+                      )
+                      .map((e) => (
+                        <option key={e.id} value={e.id}>
+                          {e.id} · owner reopened
+                        </option>
+                      ))}
+                  </select>
+                </label>
+                <label>
+                  Next independent review due (UTC; blank only for linked
+                  reopening) <input type="date" name="nextDueAt" />
+                </label>
+                <label>
+                  Source evidence / renewal reference{" "}
+                  <input
+                    name="evidenceReference"
+                    minLength={8}
+                    maxLength={400}
+                    required
+                  />
+                </label>
+                <label>
+                  Independent recurrence, renewal or reopening findings{" "}
+                  <textarea
+                    name="monitorNote"
+                    minLength={12}
+                    maxLength={800}
+                    required
+                  />
+                </label>
+                <button type="submit">
+                  Record Build 133 independent audit
+                </button>
+              </form>
+            );
+          })}
+          <h3>Immutable verified closure monitoring history</h3>
+          <ul>
+            {report.verifiedClosureMonitors.map((r) => (
+              <li key={r.id}>
+                {r.monitor_kind} · {r.outcome_kind} · {r.monitoring_status}
+                {` · closure ${r.closure_followup_id} · source proof ${r.observed_proof_age_days} days old · prior ${r.observed_prior_days_overdue} days overdue · ${r.observed_open_peer_recurrences} open peer recurrences · ${r.observed_open_owner_dispositions} open owner decisions · ${r.observed_recent_owner_escalations} recent escalations`}
+                {r.linked_reopen_event_id
+                  ? ` · verified reopening ${r.linked_reopen_event_id}`
+                  : ""}
+                {r.prior_monitor_id ? ` · follows ${r.prior_monitor_id}` : ""}
+                {" — "}
+                {r.monitor_note}
               </li>
             ))}
           </ul>
