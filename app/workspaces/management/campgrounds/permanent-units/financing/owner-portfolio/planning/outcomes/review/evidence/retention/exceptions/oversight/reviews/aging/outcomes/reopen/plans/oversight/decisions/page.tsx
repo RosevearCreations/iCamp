@@ -18,6 +18,7 @@ import {
   recordClosureAuditOwnerSignoffAction,
   recordOwnerSignoffIndependentCloseoutAction,
   recordIndependentCloseoutOwnerOutcomeAction,
+  recordOwnerEvidenceIndependentDispositionAction,
 } from "./actions";
 const previous =
   "/workspaces/management/campgrounds/permanent-units/financing/owner-portfolio/planning/outcomes/review/evidence/retention/exceptions/oversight/reviews/aging/outcomes/reopen/plans/oversight";
@@ -1293,6 +1294,125 @@ export default async function RecurrenceDecisionsPage({
                 {o.observed_prior_independent_escalations} earlier independent
                 escalations · {o.observed_prior_exception_renewals} exception
                 renewals — {o.outcome_note}
+              </li>
+            ))}
+          </ul>
+        </section>
+        <section>
+          <h2>
+            Owner evidence renewal follow-up aging, independent escalation
+            disposition &amp; audit closure continuity
+          </h2>
+          <p>
+            An authorized reviewer other than the owner who recorded the
+            evidence outcome independently chooses the next evidence renewal
+            step. Renewed exceptions, repeated escalations and long-overdue
+            follow-ups cannot become passive monitoring. Closure continuity
+            requires a prior verified closeout plus no outstanding peer evidence
+            or recent escalations. All dispositions are immutable audit records;
+            none release operational holds or payments.
+          </p>
+          <h3>Pending and overdue owner evidence renewals</h3>
+          <ul>
+            {report.independentCloseoutOwnerOutcomes.map((o) => (
+              <li key={o.id}>
+                {o.id} · {o.independent_disposition_status} · {o.outcome_kind}
+                {o.next_due_at
+                  ? ` · owner renewal due ${new Date(o.next_due_at).toISOString().slice(0, 10)} UTC`
+                  : " · closure acknowledgment awaiting independent continuity review"}
+              </li>
+            ))}
+          </ul>
+          <form action={recordOwnerEvidenceIndependentDispositionAction}>
+            {pair}
+            <label>
+              Owner evidence outcome for independent review{" "}
+              <select name="ownerOutcomeId" required>
+                {report.independentCloseoutOwnerOutcomes
+                  .filter(
+                    (o) =>
+                      !report.ownerEvidenceIndependentDispositions.some(
+                        (d) => d.owner_outcome_id === o.id,
+                      ),
+                  )
+                  .map((o) => (
+                    <option key={o.id} value={o.id}>
+                      {o.id} · {o.independent_disposition_status}
+                    </option>
+                  ))}
+              </select>
+            </label>
+            <label>
+              Independent evidence disposition{" "}
+              <select name="dispositionKind" required>
+                <option value="continue_independent_monitoring">
+                  Continue timely independent evidence monitoring
+                </option>
+                <option value="request_owner_evidence_renewal">
+                  Request a new owner evidence renewal
+                </option>
+                <option value="escalate_renewal_exception">
+                  Explicitly escalate an overdue or recurring exception
+                </option>
+                <option value="verify_closure_continuity">
+                  Verify independently closed audit continuity (only if clear)
+                </option>
+              </select>
+            </label>
+            <p>
+              Open dispositions need a future UTC due date within 90 days; leave
+              the date blank only when verifying an existing owner
+              acknowledgment of independently closed evidence. The database
+              snapshots overdue days, unresolved peer outcomes and the last 90
+              days of exception renewals and independent escalations.
+            </p>
+            <label>
+              Independent evidence renewal due (UTC){" "}
+              <input type="date" name="nextDueAt" />
+            </label>
+            <label>
+              Independent evidence reference{" "}
+              <input
+                name="evidenceReference"
+                minLength={8}
+                maxLength={400}
+                required
+              />
+            </label>
+            <label>
+              Independent reviewer disposition rationale{" "}
+              <textarea
+                name="dispositionNote"
+                minLength={12}
+                maxLength={800}
+                required
+              />
+            </label>
+            <button
+              type="submit"
+              disabled={
+                !report.independentCloseoutOwnerOutcomes.some(
+                  (o) =>
+                    !report.ownerEvidenceIndependentDispositions.some(
+                      (d) => d.owner_outcome_id === o.id,
+                    ),
+                )
+              }
+            >
+              Record immutable independent disposition
+            </button>
+          </form>
+          <h3>Independent renewal and audit-continuity evidence snapshots</h3>
+          <ul>
+            {report.ownerEvidenceIndependentDispositions.map((d) => (
+              <li key={d.id}>
+                {d.disposition_kind} · {d.owner_outcome_id} ·{" "}
+                {d.observed_owner_days_overdue} owner days overdue ·{" "}
+                {d.observed_peer_pending_outcomes} pending peer outcomes ·{" "}
+                {d.observed_peer_overdue_outcomes} overdue peer outcomes ·{" "}
+                {d.observed_recent_owner_renewals} recent owner renewals ·{" "}
+                {d.observed_recent_independent_escalations} recent independent
+                escalations — {d.disposition_note}
               </li>
             ))}
           </ul>
