@@ -386,3 +386,28 @@ export function classifyVerifiedClosureMonitorStatus(
   next: { id: string } | null,
   now?: Date,
 ): string;
+export function normalizeReopeningFollowupOversight(
+  raw: Record<string, unknown>,
+  now?: Date,
+): {
+  id: string;
+  verifiedMonitorId: string;
+  priorOversightId: string | null;
+  verifiedResolutionEventId: string | null;
+  sourceCampgroundId: string;
+  targetCampgroundId: string;
+  oversightKind: string;
+  outcomeKind: string;
+  nextDueAt: string | null;
+  evidenceReference: string;
+  oversightNote: string;
+};
+export function classifyReopeningFollowupStatus(
+  record: {
+    oversight_kind: string;
+    outcome_kind: string;
+    next_due_at?: Date | string | null;
+  },
+  next: { id: string } | null,
+  now?: Date,
+): string;
