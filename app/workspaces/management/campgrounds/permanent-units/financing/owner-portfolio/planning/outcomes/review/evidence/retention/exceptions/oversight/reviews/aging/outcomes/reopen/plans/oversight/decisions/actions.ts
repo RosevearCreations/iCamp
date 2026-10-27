@@ -25,6 +25,7 @@ import {
   recordReopenedExceptionAgingReview,
   recordContinuityResolutionFollowup,
   recordVerifiedClosureMonitor,
+  recordReopeningFollowupOversight,
 } from "@/lib/permanent-unit-owner-retention/recurrence-postgres.mjs";
 const path =
   "/workspaces/management/campgrounds/permanent-units/financing/owner-portfolio/planning/outcomes/review/evidence/retention/exceptions/oversight/reviews/aging/outcomes/reopen/plans/oversight/decisions";
@@ -648,6 +649,40 @@ export async function recordVerifiedClosureMonitorAction(form: FormData) {
       error instanceof Error
         ? error.message
         : "Independent closure monitoring rejected.";
+  }
+  revalidatePath(path);
+  redirect(
+    `${path}?source=${encodeURIComponent(source)}&target=${encodeURIComponent(target)}&${kind}=${encodeURIComponent(message.slice(0, 180))}`,
+  );
+}
+export async function recordReopeningFollowupOversightAction(form: FormData) {
+  const session = await requireStaff(path);
+  const source = field(form, "sourceCampgroundId"),
+    target = field(form, "targetCampgroundId");
+  let kind = "saved",
+    message =
+      "Independent reopening follow-up, decision replay or owner escalation oversight recorded.";
+  try {
+    await recordReopeningFollowupOversight({
+      actorUserId: session.user.id,
+      id: randomUUID(),
+      sourceCampgroundId: source,
+      targetCampgroundId: target,
+      verifiedMonitorId: field(form, "verifiedMonitorId"),
+      priorOversightId: field(form, "priorOversightId"),
+      verifiedResolutionEventId: field(form, "verifiedResolutionEventId"),
+      oversightKind: field(form, "oversightKind"),
+      outcomeKind: field(form, "outcomeKind"),
+      nextDueAt: field(form, "nextDueAt"),
+      evidenceReference: field(form, "evidenceReference"),
+      oversightNote: field(form, "oversightNote"),
+    });
+  } catch (error) {
+    kind = "error";
+    message =
+      error instanceof Error
+        ? error.message
+        : "Independent reopening oversight rejected.";
   }
   revalidatePath(path);
   redirect(
