@@ -17,6 +17,7 @@ import {
   recordHandoffIndependentClosureAuditAction,
   recordClosureAuditOwnerSignoffAction,
   recordOwnerSignoffIndependentCloseoutAction,
+  recordIndependentCloseoutOwnerOutcomeAction,
 } from "./actions";
 const previous =
   "/workspaces/management/campgrounds/permanent-units/financing/owner-portfolio/planning/outcomes/review/evidence/retention/exceptions/oversight/reviews/aging/outcomes/reopen/plans/oversight";
@@ -1175,6 +1176,123 @@ export default async function RecurrenceDecisionsPage({
                 {r.observed_prior_escalation_acceptances} prior accepted
                 escalations · {r.observed_prior_evidence_refreshes} recent
                 evidence refreshes — {r.review_note}
+              </li>
+            ))}
+          </ul>
+        </section>
+        <section>
+          <h2>
+            Independent closeout follow-up aging, renewed escalation exceptions
+            &amp; owner evidence outcomes
+          </h2>
+          <p>
+            The owner evidence audit tracks independent closeout deadlines,
+            fresh evidence submissions and explicit renewal of escalated
+            exceptions. A different authorized finance owner responds to the
+            independent reviewer. Long-overdue or recurring escalations must be
+            renewed, not silently continued. A previously closed audit may only
+            be acknowledged when peer exceptions are clear; no operational hold
+            or payment is affected.
+          </p>
+          <ul>
+            {report.signoffIndependentCloseoutReviews.map((r) => (
+              <li key={r.id}>
+                {r.id} · {r.owner_outcome_status} · {r.review_kind}
+                {r.next_due_at
+                  ? ` · independent due ${new Date(r.next_due_at).toISOString().slice(0, 10)} UTC`
+                  : " · independent closeout, owner acknowledgment pending"}
+              </li>
+            ))}
+          </ul>
+          <form action={recordIndependentCloseoutOwnerOutcomeAction}>
+            {pair}
+            <label>
+              Independent closeout review{" "}
+              <select name="closeoutReviewId" required>
+                {report.signoffIndependentCloseoutReviews
+                  .filter(
+                    (r) =>
+                      !report.independentCloseoutOwnerOutcomes.some(
+                        (o) => o.closeout_review_id === r.id,
+                      ),
+                  )
+                  .map((r) => (
+                    <option key={r.id} value={r.id}>
+                      {r.id} · {r.owner_outcome_status}
+                    </option>
+                  ))}
+              </select>
+            </label>
+            <label>
+              Owner evidence outcome{" "}
+              <select name="outcomeKind" required>
+                <option value="continue_owner_followup">
+                  Continue a timely independent exception follow-up
+                </option>
+                <option value="submit_refreshed_evidence">
+                  Submit refreshed evidence for independent review
+                </option>
+                <option value="renew_escalation_exception">
+                  Renew the escalated exception and follow-up
+                </option>
+                <option value="acknowledge_independent_closeout">
+                  Acknowledge verified independent closeout (only if clear)
+                </option>
+              </select>
+            </label>
+            <p>
+              Open evidence outcomes require a future UTC follow-up within 90
+              days. Leave it blank only for an already independently closed
+              exception. The database snapshots overdue days, open and overdue
+              peer reviews, recent escalations and repeated renewals.
+            </p>
+            <label>
+              Owner evidence follow-up due (UTC){" "}
+              <input type="date" name="nextDueAt" />
+            </label>
+            <label>
+              Refreshed evidence reference{" "}
+              <input
+                name="evidenceReference"
+                minLength={8}
+                maxLength={400}
+                required
+              />
+            </label>
+            <label>
+              Owner evidence outcome rationale{" "}
+              <textarea
+                name="outcomeNote"
+                minLength={12}
+                maxLength={800}
+                required
+              />
+            </label>
+            <button
+              type="submit"
+              disabled={
+                !report.signoffIndependentCloseoutReviews.some(
+                  (r) =>
+                    !report.independentCloseoutOwnerOutcomes.some(
+                      (o) => o.closeout_review_id === r.id,
+                    ),
+                )
+              }
+            >
+              Record immutable owner evidence outcome
+            </button>
+          </form>
+          <h3>Renewed escalation and owner evidence audit snapshots</h3>
+          <ul>
+            {report.independentCloseoutOwnerOutcomes.map((o) => (
+              <li key={o.id}>
+                {o.outcome_kind} · {o.closeout_review_id} ·{" "}
+                {o.observed_review_days_overdue} days overdue ·{" "}
+                {o.observed_peer_open_reviews} peer reviews open ·{" "}
+                {o.observed_peer_overdue_reviews} peer reviews overdue ·{" "}
+                {o.observed_prior_independent_escalations} earlier independent
+                escalations · {o.observed_prior_exception_renewals} exception
+                renewals — {o.outcome_note}
               </li>
             ))}
           </ul>

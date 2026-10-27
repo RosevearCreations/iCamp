@@ -191,3 +191,21 @@ export function classifyOwnerSignoffFollowup(
   review: { review_kind: string } | null,
   now?: Date,
 ): string;
+export function normalizeIndependentCloseoutOwnerOutcome(
+  raw: Record<string, unknown>,
+  now?: Date,
+): {
+  id: string;
+  closeoutReviewId: string;
+  sourceCampgroundId: string;
+  targetCampgroundId: string;
+  outcomeKind: string;
+  nextDueAt: string | null;
+  evidenceReference: string;
+  outcomeNote: string;
+};
+export function classifyIndependentCloseoutOutcomeAging(
+  review: { review_kind: string; next_due_at?: Date | string | null },
+  outcome: { outcome_kind: string } | null,
+  now?: Date,
+): string;
