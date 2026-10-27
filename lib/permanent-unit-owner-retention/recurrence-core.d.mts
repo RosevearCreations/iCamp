@@ -336,3 +336,28 @@ export function classifyReopenedExceptionAgingStatus(
   nextReview: { id: string } | null,
   now?: Date,
 ): string;
+export function normalizeContinuityResolutionFollowup(
+  raw: Record<string, unknown>,
+  now?: Date,
+): {
+  id: string;
+  agingReviewId: string;
+  priorFollowupId: string | null;
+  verifiedFollowupEventId: string | null;
+  sourceCampgroundId: string;
+  targetCampgroundId: string;
+  followupKind: string;
+  outcomeKind: string;
+  nextDueAt: string | null;
+  evidenceReference: string;
+  followupNote: string;
+};
+export function classifyContinuityResolutionStatus(
+  record: {
+    followup_kind: string;
+    outcome_kind: string;
+    next_due_at?: Date | string | null;
+  },
+  next: { id: string } | null,
+  now?: Date,
+): string;

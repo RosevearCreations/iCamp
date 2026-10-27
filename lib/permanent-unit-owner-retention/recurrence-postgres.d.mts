@@ -224,6 +224,22 @@ export interface RecurrenceLedger {
     review_note: string;
     aging_status: string;
   }>;
+  continuityResolutionFollowups: Array<{
+    id: string;
+    aging_review_id: string;
+    prior_followup_id: string | null;
+    verified_followup_event_id: string | null;
+    followup_kind: string;
+    outcome_kind: string;
+    next_due_at: Date | null;
+    observed_prior_days_overdue: number;
+    observed_open_peer_recurrences: number;
+    observed_open_owner_dispositions: number;
+    observed_recent_owner_escalations: number;
+    observed_verified_followup_linked: boolean;
+    followup_note: string;
+    resolution_status: string;
+  }>;
   limited: boolean;
 }
 export function getRecurrenceLedger(
@@ -286,5 +302,8 @@ export function recordClosureRecurrenceEvent(
   raw: Record<string, unknown> & { actorUserId: string },
 ): Promise<{ id: string }>;
 export function recordReopenedExceptionAgingReview(
+  raw: Record<string, unknown> & { actorUserId: string },
+): Promise<{ id: string }>;
+export function recordContinuityResolutionFollowup(
   raw: Record<string, unknown> & { actorUserId: string },
 ): Promise<{ id: string }>;
