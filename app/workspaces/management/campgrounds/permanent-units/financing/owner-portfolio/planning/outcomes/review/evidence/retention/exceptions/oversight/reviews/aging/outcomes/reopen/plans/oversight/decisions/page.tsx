@@ -21,6 +21,7 @@ import {
   recordOwnerEvidenceIndependentDispositionAction,
   recordIndependentDispositionRecheckAction,
   recordIndependentRecheckOwnerDecisionAction,
+  recordIndependentProofContinuityReviewAction,
 } from "./actions";
 const previous =
   "/workspaces/management/campgrounds/permanent-units/financing/owner-portfolio/planning/outcomes/review/evidence/retention/exceptions/oversight/reviews/aging/outcomes/reopen/plans/oversight";
@@ -1691,6 +1692,141 @@ export default async function RecurrenceDecisionsPage({
                 {d.observed_prior_escalation_decisions} earlier escalation
                 decisions · {d.observed_recent_independent_escalations} recent
                 independent escalations — {d.decision_note}
+              </li>
+            ))}
+          </ul>
+        </section>
+        <section>
+          <h2>
+            Independent closure proof exception aging and continuity
+            confirmation
+          </h2>
+          <p>
+            Separately review the owner replay-gap disposition, compare a
+            source-linked owner disposition replay and confirm closure only when
+            the database verifies the complete proof chain and no open peer
+            exceptions remain. Follow-up reviews retain immutable due dates and
+            escalation snapshots. No audit action releases operational holds or
+            changes payments.
+          </p>
+          <h3>Owner disposition evidence queue</h3>
+          <ul>
+            {report.independentRecheckOwnerDecisions.map((d) => (
+              <li key={d.id}>
+                {d.id} · {d.proof_continuity_status} · {d.decision_kind}
+                {d.next_due_at
+                  ? ` · due ${new Date(d.next_due_at).toISOString().slice(0, 10)} UTC`
+                  : " · closure confirmation pending"}
+              </li>
+            ))}
+          </ul>
+          <form action={recordIndependentProofContinuityReviewAction}>
+            {pair}
+            <label>
+              Original owner evidence disposition{" "}
+              <select name="ownerDecisionId" required defaultValue="">
+                <option value="" disabled>
+                  Choose an unreviewed owner disposition
+                </option>
+                {report.independentRecheckOwnerDecisions
+                  .filter(
+                    (d) =>
+                      !report.independentProofContinuityReviews.some(
+                        (r) => r.owner_decision_id === d.id,
+                      ),
+                  )
+                  .map((d) => (
+                    <option key={d.id} value={d.id}>
+                      {d.id} · {d.proof_continuity_status}
+                    </option>
+                  ))}
+              </select>
+            </label>
+            <label>
+              Owner disposition replay for comparison{" "}
+              <select name="replayOwnerDecisionId" required defaultValue="">
+                <option value="" disabled>
+                  Choose original or newer disposition (same pair)
+                </option>
+                {report.independentRecheckOwnerDecisions.map((d) => (
+                  <option key={d.id} value={d.id}>
+                    {d.id} · {d.decision_kind}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label>
+              Independent exception or closure outcome{" "}
+              <select name="reviewKind" required>
+                <option value="continue_exception_watch">
+                  Continue timely exception watch
+                </option>
+                <option value="request_disposition_evidence">
+                  Request refreshed disposition evidence
+                </option>
+                <option value="renew_independent_escalation">
+                  Renew independent escalation
+                </option>
+                <option value="confirm_proof_continuity">
+                  Confirm verified closure proof continuity
+                </option>
+              </select>
+            </label>
+            <p>
+              Open exceptions need a future UTC follow-up within 90 days. Leave
+              the date blank only when confirming the original closure proof. A
+              separate reviewer is mandatory; overdue and renewed exceptions
+              cannot be silently closed.
+            </p>
+            <label>
+              Next independent follow-up due (UTC){" "}
+              <input type="date" name="nextDueAt" />
+            </label>
+            <label>
+              Source-linked proof evidence reference{" "}
+              <input
+                name="evidenceReference"
+                minLength={8}
+                maxLength={400}
+                required
+              />
+            </label>
+            <label>
+              Independent review rationale{" "}
+              <textarea
+                name="reviewNote"
+                minLength={12}
+                maxLength={800}
+                required
+              />
+            </label>
+            <button
+              type="submit"
+              disabled={
+                !report.independentRecheckOwnerDecisions.some(
+                  (d) =>
+                    !report.independentProofContinuityReviews.some(
+                      (r) => r.owner_decision_id === d.id,
+                    ),
+                )
+              }
+            >
+              Record immutable independent continuity review
+            </button>
+          </form>
+          <h3>Recorded independent review snapshots</h3>
+          <ul>
+            {report.independentProofContinuityReviews.map((r) => (
+              <li key={r.id}>
+                {r.review_kind} · owner {r.owner_decision_id} · replay{" "}
+                {r.replay_owner_decision_id}
+                {r.observed_replay_is_newer ? " (newer)" : " (original)"}
+                {` · ${r.observed_owner_days_overdue} days overdue · ${r.observed_peer_open_owner_decisions} open peers · ${r.observed_peer_overdue_owner_decisions} overdue peers · ${r.observed_recent_escalation_renewals} recent escalations`}
+                {r.observed_prior_chain_complete
+                  ? " · proof chain complete"
+                  : " · proof chain open"}
+                {" — "}
+                {r.review_note}
               </li>
             ))}
           </ul>
