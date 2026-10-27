@@ -26,6 +26,7 @@ import {
   recordContinuityResolutionFollowup,
   recordVerifiedClosureMonitor,
   recordReopeningFollowupOversight,
+  recordEscalationResolutionRenewal,
 } from "@/lib/permanent-unit-owner-retention/recurrence-postgres.mjs";
 const path =
   "/workspaces/management/campgrounds/permanent-units/financing/owner-portfolio/planning/outcomes/review/evidence/retention/exceptions/oversight/reviews/aging/outcomes/reopen/plans/oversight/decisions";
@@ -683,6 +684,40 @@ export async function recordReopeningFollowupOversightAction(form: FormData) {
       error instanceof Error
         ? error.message
         : "Independent reopening oversight rejected.";
+  }
+  revalidatePath(path);
+  redirect(
+    `${path}?source=${encodeURIComponent(source)}&target=${encodeURIComponent(target)}&${kind}=${encodeURIComponent(message.slice(0, 180))}`,
+  );
+}
+export async function recordEscalationResolutionRenewalAction(form: FormData) {
+  const session = await requireStaff(path);
+  const source = field(form, "sourceCampgroundId"),
+    target = field(form, "targetCampgroundId");
+  let kind = "saved",
+    message =
+      "Independent escalation follow-up, recurrence watch or owner renewal recorded.";
+  try {
+    await recordEscalationResolutionRenewal({
+      actorUserId: session.user.id,
+      id: randomUUID(),
+      sourceCampgroundId: source,
+      targetCampgroundId: target,
+      resolvedOversightId: field(form, "resolvedOversightId"),
+      priorRenewalId: field(form, "priorRenewalId"),
+      renewalEvidenceEventId: field(form, "renewalEvidenceEventId"),
+      renewalKind: field(form, "renewalKind"),
+      outcomeKind: field(form, "outcomeKind"),
+      nextDueAt: field(form, "nextDueAt"),
+      evidenceReference: field(form, "evidenceReference"),
+      renewalNote: field(form, "renewalNote"),
+    });
+  } catch (error) {
+    kind = "error";
+    message =
+      error instanceof Error
+        ? error.message
+        : "Independent escalation renewal rejected.";
   }
   revalidatePath(path);
   redirect(
