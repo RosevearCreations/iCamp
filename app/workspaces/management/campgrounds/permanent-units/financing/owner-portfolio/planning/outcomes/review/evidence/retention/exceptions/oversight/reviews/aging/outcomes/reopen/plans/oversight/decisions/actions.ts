@@ -19,6 +19,7 @@ import {
   recordIndependentCloseoutOwnerOutcome,
   recordOwnerEvidenceIndependentDisposition,
   recordIndependentDispositionRecheck,
+  recordIndependentRecheckOwnerDecision,
 } from "@/lib/permanent-unit-owner-retention/recurrence-postgres.mjs";
 const path =
   "/workspaces/management/campgrounds/permanent-units/financing/owner-portfolio/planning/outcomes/review/evidence/retention/exceptions/oversight/reviews/aging/outcomes/reopen/plans/oversight/decisions";
@@ -443,6 +444,38 @@ export async function recordIndependentDispositionRecheckAction(
       error instanceof Error
         ? error.message
         : "Independent evidence replay recheck rejected.";
+  }
+  revalidatePath(path);
+  redirect(
+    `${path}?source=${encodeURIComponent(source)}&target=${encodeURIComponent(target)}&${kind}=${encodeURIComponent(message.slice(0, 180))}`,
+  );
+}
+export async function recordIndependentRecheckOwnerDecisionAction(
+  form: FormData,
+) {
+  const session = await requireStaff(path);
+  const source = field(form, "sourceCampgroundId"),
+    target = field(form, "targetCampgroundId");
+  let kind = "saved",
+    message = "Owner replay-gap outcome and closure proof continuity recorded.";
+  try {
+    await recordIndependentRecheckOwnerDecision({
+      actorUserId: session.user.id,
+      id: randomUUID(),
+      sourceCampgroundId: source,
+      targetCampgroundId: target,
+      independentRecheckId: field(form, "independentRecheckId"),
+      decisionKind: field(form, "decisionKind"),
+      nextDueAt: field(form, "nextDueAt"),
+      evidenceReference: field(form, "evidenceReference"),
+      decisionNote: field(form, "decisionNote"),
+    });
+  } catch (error) {
+    kind = "error";
+    message =
+      error instanceof Error
+        ? error.message
+        : "Owner replay-gap exception decision rejected.";
   }
   revalidatePath(path);
   redirect(
