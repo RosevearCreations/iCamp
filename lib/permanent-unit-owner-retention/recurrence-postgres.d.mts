@@ -192,6 +192,7 @@ export interface RecurrenceLedger {
   }>;
   closureRecurrenceEvents: Array<{
     id: string;
+    recorded_at: Date;
     proof_review_id: string;
     prior_event_id: string | null;
     root_reopen_id: string | null;
@@ -226,6 +227,7 @@ export interface RecurrenceLedger {
   }>;
   continuityResolutionFollowups: Array<{
     id: string;
+    recorded_at: Date;
     aging_review_id: string;
     prior_followup_id: string | null;
     verified_followup_event_id: string | null;
@@ -239,6 +241,24 @@ export interface RecurrenceLedger {
     observed_verified_followup_linked: boolean;
     followup_note: string;
     resolution_status: string;
+  }>;
+  verifiedClosureMonitors: Array<{
+    id: string;
+    closure_followup_id: string;
+    prior_monitor_id: string | null;
+    linked_reopen_event_id: string | null;
+    monitor_kind: string;
+    outcome_kind: string;
+    next_due_at: Date | null;
+    observed_proof_age_days: number;
+    observed_prior_days_overdue: number;
+    observed_open_peer_recurrences: number;
+    observed_open_owner_dispositions: number;
+    observed_recent_owner_escalations: number;
+    observed_original_verified_closure: boolean;
+    observed_linked_reopening_verified: boolean;
+    monitor_note: string;
+    monitoring_status: string;
   }>;
   limited: boolean;
 }
@@ -305,5 +325,8 @@ export function recordReopenedExceptionAgingReview(
   raw: Record<string, unknown> & { actorUserId: string },
 ): Promise<{ id: string }>;
 export function recordContinuityResolutionFollowup(
+  raw: Record<string, unknown> & { actorUserId: string },
+): Promise<{ id: string }>;
+export function recordVerifiedClosureMonitor(
   raw: Record<string, unknown> & { actorUserId: string },
 ): Promise<{ id: string }>;
