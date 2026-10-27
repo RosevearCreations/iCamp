@@ -20,6 +20,7 @@ import {
   recordIndependentCloseoutOwnerOutcomeAction,
   recordOwnerEvidenceIndependentDispositionAction,
   recordIndependentDispositionRecheckAction,
+  recordIndependentRecheckOwnerDecisionAction,
 } from "./actions";
 const previous =
   "/workspaces/management/campgrounds/permanent-units/financing/owner-portfolio/planning/outcomes/review/evidence/retention/exceptions/oversight/reviews/aging/outcomes/reopen/plans/oversight";
@@ -1558,6 +1559,138 @@ export default async function RecurrenceDecisionsPage({
                 dispositions · {r.observed_recent_escalation_rechecks} recent
                 escalation rechecks · {r.observed_recent_owner_renewals} recent
                 owner renewals — {r.recheck_note}
+              </li>
+            ))}
+          </ul>
+        </section>
+        <section>
+          <h2>
+            Owner replay evidence-gap aging, independent recheck exception
+            decisions &amp; closure proof continuity
+          </h2>
+          <p>
+            Review open or overdue source-linked evidence rechecks. A finance
+            owner other than the independent rechecker can submit gap evidence,
+            renew an escalation or acknowledge verified closure proof. The
+            database calculates overdue and peer-exception counts and verifies
+            the original owner acknowledgment, independent closeout, independent
+            disposition and replay recheck before accepting closure. These audit
+            decisions do not release holds, transfer assets or move money.
+          </p>
+          <h3>Owner replay-gap follow-up queue</h3>
+          <ul>
+            {report.independentDispositionRechecks.map((r) => (
+              <li key={r.id}>
+                {r.id} · {r.owner_gap_status} · {r.recheck_kind} · replay{" "}
+                {r.observed_replay_is_newer
+                  ? "newer evidence"
+                  : "original evidence"}
+                {r.next_due_at
+                  ? ` · owner due ${new Date(r.next_due_at).toISOString().slice(0, 10)} UTC`
+                  : " · closure proof owner acknowledgment pending"}
+              </li>
+            ))}
+          </ul>
+          <form action={recordIndependentRecheckOwnerDecisionAction}>
+            {pair}
+            <label>
+              Independently rechecked evidence for owner disposition{" "}
+              <select name="independentRecheckId" required defaultValue="">
+                <option value="" disabled>
+                  Choose an independent recheck awaiting owner action
+                </option>
+                {report.independentDispositionRechecks
+                  .filter(
+                    (r) =>
+                      !report.independentRecheckOwnerDecisions.some(
+                        (d) => d.independent_recheck_id === r.id,
+                      ),
+                  )
+                  .map((r) => (
+                    <option key={r.id} value={r.id}>
+                      {r.id} · {r.owner_gap_status}
+                    </option>
+                  ))}
+              </select>
+            </label>
+            <label>
+              Owner replay-gap exception decision{" "}
+              <select name="decisionKind" required>
+                <option value="continue_replay_followup">
+                  Continue timely unchanged replay follow-up
+                </option>
+                <option value="submit_replay_gap_evidence">
+                  Submit evidence for the replay gap
+                </option>
+                <option value="renew_escalation_exception">
+                  Renew independent recheck escalation exception
+                </option>
+                <option value="acknowledge_closure_proof">
+                  Acknowledge independently verified closure proof (only if
+                  clear)
+                </option>
+              </select>
+            </label>
+            <p>
+              Open replay-gap decisions require a future UTC follow-up within 90
+              days. Leave the date empty only for verified closure proof.
+              Recurrent, escalated and 30-day-overdue gaps require explicit
+              escalation renewal. Only the database decides if closure proof is
+              complete and free of unresolved peer exceptions.
+            </p>
+            <label>
+              Next owner replay-gap follow-up due (UTC){" "}
+              <input type="date" name="nextDueAt" />
+            </label>
+            <label>
+              Replay evidence gap or closure proof reference{" "}
+              <input
+                name="evidenceReference"
+                minLength={8}
+                maxLength={400}
+                required
+              />
+            </label>
+            <label>
+              Owner exception decision rationale{" "}
+              <textarea
+                name="decisionNote"
+                minLength={12}
+                maxLength={800}
+                required
+              />
+            </label>
+            <button
+              type="submit"
+              disabled={
+                !report.independentDispositionRechecks.some(
+                  (r) =>
+                    !report.independentRecheckOwnerDecisions.some(
+                      (d) => d.independent_recheck_id === r.id,
+                    ),
+                )
+              }
+            >
+              Record immutable replay-gap owner decision
+            </button>
+          </form>
+          <h3>Replay gap, escalation and closure proof snapshots</h3>
+          <ul>
+            {report.independentRecheckOwnerDecisions.map((d) => (
+              <li key={d.id}>
+                {d.decision_kind} · independent recheck{" "}
+                {d.independent_recheck_id}· replay{" "}
+                {d.observed_replay_is_newer ? "newer" : "original"} · closure
+                proof{" "}
+                {d.observed_closure_proof_chain_complete
+                  ? "complete"
+                  : "not independently established"}{" "}
+                · {d.observed_recheck_days_overdue} days overdue ·{" "}
+                {d.observed_peer_open_rechecks} peer rechecks open ·{" "}
+                {d.observed_peer_overdue_rechecks} peer rechecks overdue ·{" "}
+                {d.observed_prior_escalation_decisions} earlier escalation
+                decisions · {d.observed_recent_independent_escalations} recent
+                independent escalations — {d.decision_note}
               </li>
             ))}
           </ul>

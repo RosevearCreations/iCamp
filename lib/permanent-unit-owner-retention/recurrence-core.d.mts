@@ -249,3 +249,21 @@ export function classifyIndependentDispositionRecheckAging(
   recheck: { recheck_kind: string } | null,
   now?: Date,
 ): string;
+export function normalizeIndependentRecheckOwnerDecision(
+  raw: Record<string, unknown>,
+  now?: Date,
+): {
+  id: string;
+  independentRecheckId: string;
+  sourceCampgroundId: string;
+  targetCampgroundId: string;
+  decisionKind: string;
+  nextDueAt: string | null;
+  evidenceReference: string;
+  decisionNote: string;
+};
+export function classifyOwnerReplayGapAging(
+  recheck: { recheck_kind: string; next_due_at?: Date | string | null },
+  decision: { decision_kind: string } | null,
+  now?: Date,
+): string;
