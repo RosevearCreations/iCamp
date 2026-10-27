@@ -311,3 +311,28 @@ export function classifyClosureRecurrenceStatus(
   nextEvent: { outcome_kind: string } | null,
   now?: Date,
 ): string;
+export function normalizeReopenedExceptionAgingReview(
+  raw: Record<string, unknown>,
+  now?: Date,
+): {
+  id: string;
+  reopenEventId: string;
+  priorReviewId: string | null;
+  verifiedFollowupEventId: string | null;
+  sourceCampgroundId: string;
+  targetCampgroundId: string;
+  reviewKind: string;
+  outcomeKind: string;
+  nextDueAt: string | null;
+  evidenceReference: string;
+  reviewNote: string;
+};
+export function classifyReopenedExceptionAgingStatus(
+  review: {
+    review_kind: string;
+    outcome_kind: string;
+    next_due_at?: Date | string | null;
+  },
+  nextReview: { id: string } | null,
+  now?: Date,
+): string;

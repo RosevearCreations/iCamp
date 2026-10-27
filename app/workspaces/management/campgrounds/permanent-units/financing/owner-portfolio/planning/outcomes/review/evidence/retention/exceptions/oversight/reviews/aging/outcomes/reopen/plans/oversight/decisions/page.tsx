@@ -23,6 +23,7 @@ import {
   recordIndependentRecheckOwnerDecisionAction,
   recordIndependentProofContinuityReviewAction,
   recordClosureRecurrenceEventAction,
+  recordReopenedExceptionAgingReviewAction,
 } from "./actions";
 const previous =
   "/workspaces/management/campgrounds/permanent-units/financing/owner-portfolio/planning/outcomes/review/evidence/retention/exceptions/oversight/reviews/aging/outcomes/reopen/plans/oversight";
@@ -2078,6 +2079,215 @@ export default async function RecurrenceDecisionsPage({
                   : " · proof incomplete"}
                 {" — "}
                 {e.event_note}
+              </li>
+            ))}
+          </ul>
+        </section>
+        <section>
+          <h2>
+            Reopened exception aging &amp; independent continuity oversight
+          </h2>
+          <p>
+            Build 131 tracks how long a reopened evidence exception has waited,
+            requires a separate reviewer to reassess its follow-up, and leaves a
+            source-linked continuity recurrence audit trail. Verified audit
+            receipts never release operational holds or change payments.
+          </p>
+          <h3>Independent reassessment of reopened owner evidence</h3>
+          {report.closureRecurrenceEvents
+            .filter(
+              (e) =>
+                e.event_kind === "owner_exception_reopen" &&
+                !report.reopenedExceptionAgingReviews.some(
+                  (r) =>
+                    r.reopen_event_id === e.id &&
+                    r.review_kind === "independent_followup_reassessment",
+                ),
+            )
+            .slice(0, 20)
+            .map((e) => (
+              <form
+                key={e.id}
+                action={recordReopenedExceptionAgingReviewAction}
+              >
+                {pair}
+                <input type="hidden" name="reopenEventId" value={e.id} />
+                <input
+                  type="hidden"
+                  name="reviewKind"
+                  value="independent_followup_reassessment"
+                />
+                <p>
+                  Reopening {e.id} · {e.recurrence_status} · {e.outcome_kind}
+                </p>
+                <label>
+                  Independent evidence aging outcome{" "}
+                  <select name="outcomeKind" required>
+                    <option value="evidence_gap_pending">
+                      New evidence still pending
+                    </option>
+                    <option value="evidence_aging_escalated">
+                      Escalate overdue or unresolved evidence
+                    </option>
+                    <option value="followup_evidence_reassessed">
+                      Reassess independently verified follow-up evidence
+                    </option>
+                  </select>
+                </label>
+                <label>
+                  Verified Build 130 follow-up receipt (for reassessed evidence
+                  only){" "}
+                  <select name="verifiedFollowupEventId" defaultValue="">
+                    <option value="">No verified receipt yet</option>
+                    {report.closureRecurrenceEvents
+                      .filter(
+                        (receipt) =>
+                          receipt.root_reopen_id === e.id &&
+                          receipt.outcome_kind === "verify_followup_evidence",
+                      )
+                      .map((receipt) => (
+                        <option value={receipt.id} key={receipt.id}>
+                          {receipt.id} · source-linked independent receipt
+                        </option>
+                      ))}
+                  </select>
+                </label>
+                <label>
+                  Next independent review due (UTC){" "}
+                  <input type="date" name="nextDueAt" required />
+                </label>
+                <label>
+                  Evidence source reference{" "}
+                  <input
+                    name="evidenceReference"
+                    minLength={8}
+                    maxLength={400}
+                    required
+                  />
+                </label>
+                <label>
+                  Independent aging finding{" "}
+                  <textarea
+                    name="reviewNote"
+                    minLength={12}
+                    maxLength={800}
+                    required
+                  />
+                </label>
+                <button type="submit">
+                  Record independent evidence reassessment
+                </button>
+              </form>
+            ))}
+          <h3>Independent closure continuity recurrence checks</h3>
+          {report.reopenedExceptionAgingReviews
+            .filter(
+              (r) =>
+                r.outcome_kind !== "continuity_recheck_verified" &&
+                !report.reopenedExceptionAgingReviews.some(
+                  (child) => child.prior_review_id === r.id,
+                ),
+            )
+            .slice(0, 20)
+            .map((r) => (
+              <form
+                key={r.id}
+                action={recordReopenedExceptionAgingReviewAction}
+              >
+                {pair}
+                <input
+                  type="hidden"
+                  name="reopenEventId"
+                  value={r.reopen_event_id}
+                />
+                <input type="hidden" name="priorReviewId" value={r.id} />
+                <input
+                  type="hidden"
+                  name="reviewKind"
+                  value="continuity_recurrence_oversight"
+                />
+                <p>
+                  Prior independent review {r.id} · {r.aging_status} ·{" "}
+                  {r.observed_reopen_days_aging} days since reopening ·{" "}
+                  {r.observed_prior_days_overdue} days overdue when recorded
+                </p>
+                <label>
+                  Recurrence oversight outcome{" "}
+                  <select name="outcomeKind" required>
+                    <option value="continuity_watch_open">
+                      Continue evidence continuity watch
+                    </option>
+                    <option value="recurrence_exception_detected">
+                      Record new recurrence concern
+                    </option>
+                    <option value="continuity_escalation_renewed">
+                      Renew independent escalation
+                    </option>
+                    <option value="continuity_recheck_verified">
+                      Independently verify source-linked continuity
+                    </option>
+                  </select>
+                </label>
+                <label>
+                  Verified Build 130 receipt (only for verified closure){" "}
+                  <select name="verifiedFollowupEventId" defaultValue="">
+                    <option value="">No verified receipt yet</option>
+                    {report.closureRecurrenceEvents
+                      .filter(
+                        (receipt) =>
+                          receipt.root_reopen_id === r.reopen_event_id &&
+                          receipt.outcome_kind === "verify_followup_evidence",
+                      )
+                      .map((receipt) => (
+                        <option value={receipt.id} key={receipt.id}>
+                          {receipt.id} · independent follow-up proof
+                        </option>
+                      ))}
+                  </select>
+                </label>
+                <label>
+                  Next monitoring due (UTC; blank only when verified){" "}
+                  <input type="date" name="nextDueAt" />
+                </label>
+                <label>
+                  Evidence source reference{" "}
+                  <input
+                    name="evidenceReference"
+                    minLength={8}
+                    maxLength={400}
+                    required
+                  />
+                </label>
+                <label>
+                  Independent oversight rationale{" "}
+                  <textarea
+                    name="reviewNote"
+                    minLength={12}
+                    maxLength={800}
+                    required
+                  />
+                </label>
+                <button type="submit">
+                  Record continuity recurrence oversight
+                </button>
+              </form>
+            ))}
+          <h3>Immutable reopened exception aging and continuity history</h3>
+          <ul>
+            {report.reopenedExceptionAgingReviews.map((r) => (
+              <li key={r.id}>
+                {r.review_kind} · {r.outcome_kind} · {r.aging_status} · reopened{" "}
+                {r.reopen_event_id}
+                {r.prior_review_id ? ` · follows ${r.prior_review_id}` : ""}
+                {r.verified_followup_event_id
+                  ? ` · verified receipt ${r.verified_followup_event_id}`
+                  : ""}
+                {` · ${r.observed_reopen_days_aging} reopening days · ${r.observed_prior_days_overdue} prior days overdue · ${r.observed_open_peer_recurrences} unresolved recurrence peers · ${r.observed_open_owner_dispositions} open owner dispositions · ${r.observed_recent_owner_escalations} recent owner escalations`}
+                {r.observed_verified_followup_linked
+                  ? " · source-linked evidence verified"
+                  : " · evidence still under review"}
+                {" — "}
+                {r.review_note}
               </li>
             ))}
           </ul>
