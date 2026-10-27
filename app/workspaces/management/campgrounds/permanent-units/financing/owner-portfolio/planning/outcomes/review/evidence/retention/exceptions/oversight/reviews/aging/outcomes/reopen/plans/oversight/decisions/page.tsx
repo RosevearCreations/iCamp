@@ -19,6 +19,7 @@ import {
   recordOwnerSignoffIndependentCloseoutAction,
   recordIndependentCloseoutOwnerOutcomeAction,
   recordOwnerEvidenceIndependentDispositionAction,
+  recordIndependentDispositionRecheckAction,
 } from "./actions";
 const previous =
   "/workspaces/management/campgrounds/permanent-units/financing/owner-portfolio/planning/outcomes/review/evidence/retention/exceptions/oversight/reviews/aging/outcomes/reopen/plans/oversight";
@@ -1413,6 +1414,150 @@ export default async function RecurrenceDecisionsPage({
                 {d.observed_recent_owner_renewals} recent owner renewals ·{" "}
                 {d.observed_recent_independent_escalations} recent independent
                 escalations — {d.disposition_note}
+              </li>
+            ))}
+          </ul>
+        </section>
+        <section>
+          <h2>
+            Independent escalation follow-up aging, owner evidence replay &amp;
+            closure continuity recheck
+          </h2>
+          <p>
+            Recheck an existing independent evidence disposition against its
+            original owner outcome or a newer owner evidence refresh. The
+            database verifies the complete campground-pair evidence chain and
+            records whether the replay is newer. The rechecker must differ from
+            the prior independent reviewer and both evidence owners. Escalated,
+            recurring or 30-day-overdue cases must remain explicitly escalated.
+            Closure continuity can only be reconfirmed without open peer
+            dispositions or recent renewals.
+          </p>
+          <h3>Independent disposition follow-up queue</h3>
+          <ul>
+            {report.ownerEvidenceIndependentDispositions.map((d) => (
+              <li key={d.id}>
+                {d.id} · {d.independent_recheck_status} · {d.disposition_kind}
+                {d.next_due_at
+                  ? ` · recheck due ${new Date(d.next_due_at).toISOString().slice(0, 10)} UTC`
+                  : " · closure continuity reconfirmation pending"}
+              </li>
+            ))}
+          </ul>
+          <form action={recordIndependentDispositionRecheckAction}>
+            {pair}
+            <label>
+              Independent disposition to recheck{" "}
+              <select name="independentDispositionId" required defaultValue="">
+                <option value="" disabled>
+                  Choose an unreviewed independent disposition
+                </option>
+                {report.ownerEvidenceIndependentDispositions
+                  .filter(
+                    (d) =>
+                      !report.independentDispositionRechecks.some(
+                        (r) => r.independent_disposition_id === d.id,
+                      ),
+                  )
+                  .map((d) => (
+                    <option key={d.id} value={d.id}>
+                      {d.id} · source owner {d.owner_outcome_id} ·{" "}
+                      {d.independent_recheck_status}
+                    </option>
+                  ))}
+              </select>
+            </label>
+            <label>
+              Source-linked owner evidence to replay{" "}
+              <select name="replayOwnerOutcomeId" required defaultValue="">
+                <option value="" disabled>
+                  Choose the source owner outcome or a newer owner refresh
+                </option>
+                {report.independentCloseoutOwnerOutcomes.map((o) => (
+                  <option key={o.id} value={o.id}>
+                    {o.id} · {o.outcome_kind} ·{" "}
+                    {new Date(o.recorded_at).toISOString().slice(0, 10)} UTC
+                  </option>
+                ))}
+              </select>
+            </label>
+            <p>
+              Replaying a different outcome requires evidence recorded later
+              than the original, marked as refreshed evidence or escalation
+              renewal. Choosing the original replays the existing receipt.
+              Closure continuity must use the original acknowledged outcome.
+            </p>
+            <label>
+              Independent recheck outcome{" "}
+              <select name="recheckKind" required>
+                <option value="continue_followup_watch">
+                  Recheck timely evidence monitoring
+                </option>
+                <option value="request_owner_renewal_replay">
+                  Request another owner renewal evidence replay
+                </option>
+                <option value="renew_escalation_recheck">
+                  Renew independent escalation and follow-up
+                </option>
+                <option value="confirm_closure_continuity_recheck">
+                  Reconfirm independently verified closure (only if clear)
+                </option>
+              </select>
+            </label>
+            <p>
+              Open rechecks need a future UTC follow-up within 90 days. Only a
+              closed audit reconfirmation has no due date. Rechecks never
+              authorize live hold releases, transfers or payments.
+            </p>
+            <label>
+              Next independent recheck due (UTC){" "}
+              <input type="date" name="nextDueAt" />
+            </label>
+            <label>
+              Evidence replay receipt or reference{" "}
+              <input
+                name="evidenceReference"
+                minLength={8}
+                maxLength={400}
+                required
+              />
+            </label>
+            <label>
+              Independent recheck rationale{" "}
+              <textarea
+                name="recheckNote"
+                minLength={12}
+                maxLength={800}
+                required
+              />
+            </label>
+            <button
+              type="submit"
+              disabled={
+                !report.ownerEvidenceIndependentDispositions.some(
+                  (d) =>
+                    !report.independentDispositionRechecks.some(
+                      (r) => r.independent_disposition_id === d.id,
+                    ),
+                )
+              }
+            >
+              Record immutable independent recheck
+            </button>
+          </form>
+          <h3>Replay, independent escalation and continuity audit snapshots</h3>
+          <ul>
+            {report.independentDispositionRechecks.map((r) => (
+              <li key={r.id}>
+                {r.recheck_kind} · disposition {r.independent_disposition_id} ·
+                owner evidence {r.replay_owner_outcome_id} · replay{" "}
+                {r.observed_replay_is_newer ? "newer" : "original"} ·{" "}
+                {r.observed_disposition_days_overdue} days overdue ·{" "}
+                {r.observed_peer_pending_dispositions} pending peer dispositions
+                · {r.observed_peer_overdue_dispositions} overdue peer
+                dispositions · {r.observed_recent_escalation_rechecks} recent
+                escalation rechecks · {r.observed_recent_owner_renewals} recent
+                owner renewals — {r.recheck_note}
               </li>
             ))}
           </ul>

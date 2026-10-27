@@ -227,3 +227,25 @@ export function classifyOwnerEvidenceRenewalDisposition(
   disposition: { disposition_kind: string } | null,
   now?: Date,
 ): string;
+export function normalizeIndependentDispositionRecheck(
+  raw: Record<string, unknown>,
+  now?: Date,
+): {
+  id: string;
+  independentDispositionId: string;
+  replayOwnerOutcomeId: string;
+  sourceCampgroundId: string;
+  targetCampgroundId: string;
+  recheckKind: string;
+  nextDueAt: string | null;
+  evidenceReference: string;
+  recheckNote: string;
+};
+export function classifyIndependentDispositionRecheckAging(
+  disposition: {
+    disposition_kind: string;
+    next_due_at?: Date | string | null;
+  },
+  recheck: { recheck_kind: string } | null,
+  now?: Date,
+): string;
