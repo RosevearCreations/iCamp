@@ -277,6 +277,24 @@ export interface RecurrenceLedger {
     oversight_note: string;
     oversight_status: string;
   }>;
+  escalationResolutionRenewals: Array<{
+    id: string;
+    resolved_oversight_id: string;
+    prior_renewal_id: string | null;
+    renewal_evidence_event_id: string | null;
+    renewal_kind: string;
+    outcome_kind: string;
+    next_due_at: Date;
+    observed_resolution_age_days: number;
+    observed_prior_days_overdue: number;
+    observed_new_reopenings: number;
+    observed_open_peer_recurrences: number;
+    observed_open_owner_dispositions: number;
+    observed_recent_owner_escalations: number;
+    observed_fresh_renewal_verified: boolean;
+    renewal_note: string;
+    renewal_status: string;
+  }>;
   limited: boolean;
 }
 export function getRecurrenceLedger(
@@ -348,5 +366,8 @@ export function recordVerifiedClosureMonitor(
   raw: Record<string, unknown> & { actorUserId: string },
 ): Promise<{ id: string }>;
 export function recordReopeningFollowupOversight(
+  raw: Record<string, unknown> & { actorUserId: string },
+): Promise<{ id: string }>;
+export function recordEscalationResolutionRenewal(
   raw: Record<string, unknown> & { actorUserId: string },
 ): Promise<{ id: string }>;
