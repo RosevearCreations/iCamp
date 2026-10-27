@@ -128,6 +128,19 @@ export interface RecurrenceLedger {
     observed_peer_overdue_reviews: number;
     observed_prior_independent_escalations: number;
     observed_prior_exception_renewals: number;
+    independent_disposition_status: string;
+  }>;
+  ownerEvidenceIndependentDispositions: Array<{
+    id: string;
+    owner_outcome_id: string;
+    disposition_kind: string;
+    next_due_at: Date | null;
+    disposition_note: string;
+    observed_owner_days_overdue: number;
+    observed_peer_pending_outcomes: number;
+    observed_peer_overdue_outcomes: number;
+    observed_recent_owner_renewals: number;
+    observed_recent_independent_escalations: number;
   }>;
   limited: boolean;
 }
@@ -173,5 +186,8 @@ export function recordOwnerSignoffIndependentCloseout(
   raw: Record<string, unknown> & { actorUserId: string },
 ): Promise<{ id: string }>;
 export function recordIndependentCloseoutOwnerOutcome(
+  raw: Record<string, unknown> & { actorUserId: string },
+): Promise<{ id: string }>;
+export function recordOwnerEvidenceIndependentDisposition(
   raw: Record<string, unknown> & { actorUserId: string },
 ): Promise<{ id: string }>;

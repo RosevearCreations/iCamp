@@ -209,3 +209,21 @@ export function classifyIndependentCloseoutOutcomeAging(
   outcome: { outcome_kind: string } | null,
   now?: Date,
 ): string;
+export function normalizeOwnerEvidenceIndependentDisposition(
+  raw: Record<string, unknown>,
+  now?: Date,
+): {
+  id: string;
+  ownerOutcomeId: string;
+  sourceCampgroundId: string;
+  targetCampgroundId: string;
+  dispositionKind: string;
+  nextDueAt: string | null;
+  evidenceReference: string;
+  dispositionNote: string;
+};
+export function classifyOwnerEvidenceRenewalDisposition(
+  outcome: { outcome_kind: string; next_due_at?: Date | string | null },
+  disposition: { disposition_kind: string } | null,
+  now?: Date,
+): string;
