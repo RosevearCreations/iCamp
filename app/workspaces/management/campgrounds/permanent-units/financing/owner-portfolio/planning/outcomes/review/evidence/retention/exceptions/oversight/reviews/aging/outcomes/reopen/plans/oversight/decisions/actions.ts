@@ -23,6 +23,7 @@ import {
   recordIndependentProofContinuityReview,
   recordClosureRecurrenceEvent,
   recordReopenedExceptionAgingReview,
+  recordContinuityResolutionFollowup,
 } from "@/lib/permanent-unit-owner-retention/recurrence-postgres.mjs";
 const path =
   "/workspaces/management/campgrounds/permanent-units/financing/owner-portfolio/planning/outcomes/review/evidence/retention/exceptions/oversight/reviews/aging/outcomes/reopen/plans/oversight/decisions";
@@ -578,6 +579,40 @@ export async function recordReopenedExceptionAgingReviewAction(form: FormData) {
       error instanceof Error
         ? error.message
         : "Independent aging review rejected.";
+  }
+  revalidatePath(path);
+  redirect(
+    `${path}?source=${encodeURIComponent(source)}&target=${encodeURIComponent(target)}&${kind}=${encodeURIComponent(message.slice(0, 180))}`,
+  );
+}
+export async function recordContinuityResolutionFollowupAction(form: FormData) {
+  const session = await requireStaff(path);
+  const source = field(form, "sourceCampgroundId"),
+    target = field(form, "targetCampgroundId");
+  let kind = "saved",
+    message =
+      "Independent continuity, overdue resolution and closure follow-up recorded.";
+  try {
+    await recordContinuityResolutionFollowup({
+      actorUserId: session.user.id,
+      id: randomUUID(),
+      sourceCampgroundId: source,
+      targetCampgroundId: target,
+      agingReviewId: field(form, "agingReviewId"),
+      priorFollowupId: field(form, "priorFollowupId"),
+      verifiedFollowupEventId: field(form, "verifiedFollowupEventId"),
+      followupKind: field(form, "followupKind"),
+      outcomeKind: field(form, "outcomeKind"),
+      nextDueAt: field(form, "nextDueAt"),
+      evidenceReference: field(form, "evidenceReference"),
+      followupNote: field(form, "followupNote"),
+    });
+  } catch (error) {
+    kind = "error";
+    message =
+      error instanceof Error
+        ? error.message
+        : "Independent follow-up rejected.";
   }
   revalidatePath(path);
   redirect(

@@ -24,7 +24,51 @@ import {
   recordIndependentProofContinuityReviewAction,
   recordClosureRecurrenceEventAction,
   recordReopenedExceptionAgingReviewAction,
+  recordContinuityResolutionFollowupAction,
 } from "./actions";
+const resolutionOptions: Record<
+  string,
+  Array<{ value: string; label: string }>
+> = {
+  independent_continuity_recheck: [
+    {
+      value: "continuity_watch_renewed",
+      label: "Renew independent continuity watch",
+    },
+    {
+      value: "recurrence_gap_escalated",
+      label: "Escalate recurrence or overdue gap",
+    },
+    {
+      value: "continuity_recheck_confirmed",
+      label: "Confirm independent source-linked recheck",
+    },
+  ],
+  overdue_exception_resolution: [
+    {
+      value: "resolution_evidence_pending",
+      label: "Resolution evidence pending",
+    },
+    {
+      value: "overdue_exception_escalated",
+      label: "Renew overdue exception escalation",
+    },
+    {
+      value: "resolution_evidence_verified",
+      label: "Independently verify resolved evidence",
+    },
+  ],
+  verified_closure_followup: [
+    {
+      value: "closure_followup_pending",
+      label: "Continue closure proof follow-up",
+    },
+    {
+      value: "closure_followup_verified",
+      label: "Verify closure follow-up against source evidence",
+    },
+  ],
+};
 const previous =
   "/workspaces/management/campgrounds/permanent-units/financing/owner-portfolio/planning/outcomes/review/evidence/retention/exceptions/oversight/reviews/aging/outcomes/reopen/plans/oversight";
 export const dynamic = "force-dynamic";
@@ -66,6 +110,49 @@ export default async function RecurrenceDecisionsPage({
       <input type="hidden" name="targetCampgroundId" value={params.target} />
     </>
   );
+  const resolutionQueue = [
+    ...report.reopenedExceptionAgingReviews
+      .filter(
+        (r) =>
+          !report.reopenedExceptionAgingReviews.some(
+            (child) => child.prior_review_id === r.id,
+          ) &&
+          !report.continuityResolutionFollowups.some(
+            (f) => f.aging_review_id === r.id,
+          ),
+      )
+      .map((r) => ({
+        id: r.id,
+        agingReviewId: r.id,
+        priorFollowupId: "",
+        followupKind: "independent_continuity_recheck",
+        status: r.aging_status,
+      })),
+    ...report.continuityResolutionFollowups
+      .filter(
+        (r) =>
+          r.outcome_kind !== "closure_followup_verified" &&
+          !report.continuityResolutionFollowups.some(
+            (child) => child.prior_followup_id === r.id,
+          ),
+      )
+      .map((r) => ({
+        id: r.id,
+        agingReviewId: r.aging_review_id,
+        priorFollowupId: r.id,
+        followupKind:
+          r.followup_kind === "independent_continuity_recheck"
+            ? r.outcome_kind === "continuity_recheck_confirmed"
+              ? "overdue_exception_resolution"
+              : "independent_continuity_recheck"
+            : r.followup_kind === "overdue_exception_resolution"
+              ? r.outcome_kind === "resolution_evidence_verified"
+                ? "verified_closure_followup"
+                : "overdue_exception_resolution"
+              : "verified_closure_followup",
+        status: r.resolution_status,
+      })),
+  ];
   return (
     <AppShell>
       <main className="page-stack">
@@ -2272,6 +2359,117 @@ export default async function RecurrenceDecisionsPage({
                 </button>
               </form>
             ))}
+          <h3>
+            Build 132 independent recurrence recheck, overdue resolution &amp;
+            verified closure follow-up
+          </h3>
+          <p>
+            Complete independent rechecks first, document overdue resolution
+            next, and only then verify closure follow-up. A different reviewer
+            must sign each successive receipt. Evidence and audit closure never
+            release a real hold. Select a verified Build 130 receipt only for a
+            verified outcome, and leave the next date empty only for final
+            verified closure.
+          </p>
+          {resolutionQueue.slice(0, 20).map((item) => {
+            const reopenId = report.reopenedExceptionAgingReviews.find(
+              (r) => r.id === item.agingReviewId,
+            )?.reopen_event_id;
+            return (
+              <form
+                key={item.id}
+                action={recordContinuityResolutionFollowupAction}
+              >
+                {pair}
+                <input
+                  type="hidden"
+                  name="agingReviewId"
+                  value={item.agingReviewId}
+                />
+                <input
+                  type="hidden"
+                  name="priorFollowupId"
+                  value={item.priorFollowupId}
+                />
+                <input
+                  type="hidden"
+                  name="followupKind"
+                  value={item.followupKind}
+                />
+                <p>
+                  {item.followupKind} · {item.status} · review {item.id}
+                </p>
+                <label>
+                  Independent decision outcome{" "}
+                  <select name="outcomeKind" required>
+                    {resolutionOptions[item.followupKind].map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label>
+                  Verified same-reopening follow-up receipt (verified outcomes
+                  only){" "}
+                  <select name="verifiedFollowupEventId" defaultValue="">
+                    <option value="">No verified receipt</option>
+                    {report.closureRecurrenceEvents
+                      .filter(
+                        (e) =>
+                          e.root_reopen_id === reopenId &&
+                          e.outcome_kind === "verify_followup_evidence",
+                      )
+                      .map((e) => (
+                        <option key={e.id} value={e.id}>
+                          {e.id}
+                        </option>
+                      ))}
+                  </select>
+                </label>
+                <label>
+                  Next review due (UTC; blank for verified closure only){" "}
+                  <input type="date" name="nextDueAt" />
+                </label>
+                <label>
+                  Source evidence reference{" "}
+                  <input
+                    name="evidenceReference"
+                    minLength={8}
+                    maxLength={400}
+                    required
+                  />
+                </label>
+                <label>
+                  Independent resolution / closure reasoning{" "}
+                  <textarea
+                    name="followupNote"
+                    minLength={12}
+                    maxLength={800}
+                    required
+                  />
+                </label>
+                <button type="submit">
+                  Record independent Build 132 follow-up
+                </button>
+              </form>
+            );
+          })}
+          <h3>Immutable independent continuity resolution history</h3>
+          <ul>
+            {report.continuityResolutionFollowups.map((r) => (
+              <li key={r.id}>
+                {r.followup_kind} · {r.outcome_kind} · {r.resolution_status}
+                {` · aging ${r.aging_review_id} · ${r.observed_prior_days_overdue} days overdue · ${r.observed_open_peer_recurrences} unresolved recurrence peers · ${r.observed_open_owner_dispositions} open owner dispositions · ${r.observed_recent_owner_escalations} recent escalations`}
+                {r.verified_followup_event_id
+                  ? ` · evidence ${r.verified_followup_event_id}`
+                  : ""}
+                {r.prior_followup_id ? ` · follows ${r.prior_followup_id}` : ""}
+                {" — "}
+                {r.followup_note}
+              </li>
+            ))}
+          </ul>
           <h3>Immutable reopened exception aging and continuity history</h3>
           <ul>
             {report.reopenedExceptionAgingReviews.map((r) => (
