@@ -26,7 +26,55 @@ import {
   recordReopenedExceptionAgingReviewAction,
   recordContinuityResolutionFollowupAction,
   recordVerifiedClosureMonitorAction,
+  recordReopeningFollowupOversightAction,
 } from "./actions";
+const reopeningOversightOptions: Record<
+  string,
+  Array<{ value: string; label: string }>
+> = {
+  independent_reopening_followup: [
+    {
+      value: "reopening_evidence_current",
+      label: "Independent reopening evidence current",
+    },
+    {
+      value: "reopening_evidence_gap",
+      label: "Reopening evidence gap requires follow-up",
+    },
+    {
+      value: "reopening_followup_escalated",
+      label: "Escalate overdue or incomplete reopening proof",
+    },
+  ],
+  closure_recurrence_decision_replay: [
+    {
+      value: "replay_continuity_confirmed",
+      label: "Source-verified recurrence decision replay",
+    },
+    {
+      value: "replay_source_drift",
+      label: "Replay finds new source discrepancy",
+    },
+    {
+      value: "replay_owner_recheck_required",
+      label: "Replay requires independent owner recheck",
+    },
+  ],
+  owner_escalation_oversight: [
+    {
+      value: "owner_escalation_pending",
+      label: "Owner escalation evidence pending",
+    },
+    {
+      value: "owner_escalation_renewed",
+      label: "Renew overdue owner escalation",
+    },
+    {
+      value: "owner_escalation_resolved",
+      label: "Independently verify source-linked escalation resolution",
+    },
+  ],
+};
 const verifiedClosureOptions: Record<
   string,
   Array<{ value: string; label: string }>
@@ -238,6 +286,45 @@ export default async function RecurrenceDecisionsPage({
                   : "independent_evidence_renewal"
               : "overdue_exception_reopening_audit",
         status: r.monitoring_status,
+      })),
+  ];
+  const reopeningOversightQueue = [
+    ...report.verifiedClosureMonitors
+      .filter(
+        (m) =>
+          m.outcome_kind === "verified_reopening_linked" &&
+          !report.reopeningFollowupOversights.some(
+            (r) => r.verified_monitor_id === m.id,
+          ),
+      )
+      .map((m) => ({
+        id: m.id,
+        verifiedMonitorId: m.id,
+        priorOversightId: "",
+        oversightKind: "independent_reopening_followup",
+        status: m.monitoring_status,
+      })),
+    ...report.reopeningFollowupOversights
+      .filter(
+        (r) =>
+          r.outcome_kind !== "owner_escalation_resolved" &&
+          !report.reopeningFollowupOversights.some(
+            (child) => child.prior_oversight_id === r.id,
+          ),
+      )
+      .map((r) => ({
+        id: r.id,
+        verifiedMonitorId: r.verified_monitor_id,
+        priorOversightId: r.id,
+        oversightKind:
+          r.oversight_kind === "independent_reopening_followup"
+            ? "closure_recurrence_decision_replay"
+            : r.oversight_kind === "closure_recurrence_decision_replay"
+              ? r.outcome_kind === "replay_continuity_confirmed"
+                ? "independent_reopening_followup"
+                : "owner_escalation_oversight"
+              : "owner_escalation_oversight",
+        status: r.oversight_status,
       })),
   ];
   return (
@@ -2685,6 +2772,127 @@ export default async function RecurrenceDecisionsPage({
                 {r.prior_monitor_id ? ` · follows ${r.prior_monitor_id}` : ""}
                 {" — "}
                 {r.monitor_note}
+              </li>
+            ))}
+          </ul>
+        </section>
+        <section>
+          <h2>
+            Build 134 — Independent reopening follow-up, decision replay &amp;
+            owner escalation oversight
+          </h2>
+          <p>
+            This audit begins only after Build 133 independently links a real
+            owner reopening. Each follow-up passes to a different reviewer,
+            compares the original same-campground evidence, and escalates
+            overdue discrepancies. Source-linked resolution must reference a
+            real, independent Build 130 follow-up for that exact reopening.
+            These receipts do not release holds or contact another business.
+          </p>
+          <h3>Reopening evidence aging and independent replay queue</h3>
+          {reopeningOversightQueue.slice(0, 20).map((item) => {
+            const monitor = report.verifiedClosureMonitors.find(
+              (r) => r.id === item.verifiedMonitorId,
+            );
+            return (
+              <form
+                key={item.id}
+                action={recordReopeningFollowupOversightAction}
+              >
+                {pair}
+                <input
+                  type="hidden"
+                  name="verifiedMonitorId"
+                  value={item.verifiedMonitorId}
+                />
+                <input
+                  type="hidden"
+                  name="priorOversightId"
+                  value={item.priorOversightId}
+                />
+                <input
+                  type="hidden"
+                  name="oversightKind"
+                  value={item.oversightKind}
+                />
+                <p>
+                  {item.oversightKind} · {item.status} · receipt {item.id}
+                </p>
+                <label>
+                  Independent follow-up outcome{" "}
+                  <select name="outcomeKind" required>
+                    {reopeningOversightOptions[item.oversightKind].map(
+                      (option) => (
+                        <option key={option.value} value={option.value}>
+                          {option.label}
+                        </option>
+                      ),
+                    )}
+                  </select>
+                </label>
+                <label>
+                  Verified source resolution (only for confirmed replay or
+                  resolved escalation){" "}
+                  <select name="verifiedResolutionEventId" defaultValue="">
+                    <option value="">No verified resolution link</option>
+                    {report.closureRecurrenceEvents
+                      .filter(
+                        (e) =>
+                          e.event_kind === "independent_followup_verify" &&
+                          e.outcome_kind === "verify_followup_evidence" &&
+                          monitor &&
+                          e.root_reopen_id === monitor.linked_reopen_event_id,
+                      )
+                      .map((e) => (
+                        <option key={e.id} value={e.id}>
+                          {e.id} · independent source proof
+                        </option>
+                      ))}
+                  </select>
+                </label>
+                <label>
+                  Next independent review due (UTC; blank only for resolved
+                  owner escalation) <input name="nextDueAt" type="date" />
+                </label>
+                <label>
+                  Source evidence and decision replay reference{" "}
+                  <input
+                    name="evidenceReference"
+                    minLength={8}
+                    maxLength={400}
+                    required
+                  />
+                </label>
+                <label>
+                  Reopening aging, independent replay or owner oversight
+                  findings{" "}
+                  <textarea
+                    name="oversightNote"
+                    minLength={12}
+                    maxLength={800}
+                    required
+                  />
+                </label>
+                <button type="submit">
+                  Record Build 134 independent follow-up
+                </button>
+              </form>
+            );
+          })}
+          <h3>Immutable reopening oversight and escalation history</h3>
+          <ul>
+            {report.reopeningFollowupOversights.map((r) => (
+              <li key={r.id}>
+                {r.oversight_kind} · {r.outcome_kind} · {r.oversight_status}
+                {` · reopening ${r.verified_monitor_id} · ${r.observed_reopen_age_days} reopening days aged · ${r.observed_prior_days_overdue} overdue days · ${r.observed_open_peer_recurrences} open peer recurrences · ${r.observed_open_owner_dispositions} open owner decisions · ${r.observed_recent_owner_escalations} recent owner escalations`}
+                {r.verified_resolution_event_id
+                  ? ` · verified source resolution ${r.verified_resolution_event_id}`
+                  : ""}
+                {r.prior_oversight_id
+                  ? ` · follows ${r.prior_oversight_id}`
+                  : ""}
+                {" — "}
+                {r.oversight_note}
               </li>
             ))}
           </ul>
