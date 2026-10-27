@@ -22,6 +22,7 @@ import {
   recordIndependentDispositionRecheckAction,
   recordIndependentRecheckOwnerDecisionAction,
   recordIndependentProofContinuityReviewAction,
+  recordClosureRecurrenceEventAction,
 } from "./actions";
 const previous =
   "/workspaces/management/campgrounds/permanent-units/financing/owner-portfolio/planning/outcomes/review/evidence/retention/exceptions/oversight/reviews/aging/outcomes/reopen/plans/oversight";
@@ -1827,6 +1828,256 @@ export default async function RecurrenceDecisionsPage({
                   : " · proof chain open"}
                 {" — "}
                 {r.review_note}
+              </li>
+            ))}
+          </ul>
+        </section>
+        <section>
+          <h2>
+            Independent recurrence monitoring, owner exception reopening &amp;
+            audit follow-up
+          </h2>
+          <p>
+            Closure confirmation is a point-in-time audit, not a permanent
+            waiver. An independent reviewer can identify a recurring evidence
+            gap; a separate owner must explicitly reopen it; and a third
+            independent reviewer must verify new source-linked owner evidence or
+            request further follow-up. Nothing here automatically changes holds,
+            payments, transfers, or customer records.
+          </p>
+          <h3>Monitor previously confirmed proof continuity</h3>
+          <form action={recordClosureRecurrenceEventAction}>
+            {pair}
+            <input
+              type="hidden"
+              name="eventKind"
+              value="independent_recurrence_check"
+            />
+            <label>
+              Verified independent proof review{" "}
+              <select name="proofReviewId" required defaultValue="">
+                <option value="" disabled>
+                  Choose confirmed proof for independent monitoring
+                </option>
+                {report.independentProofContinuityReviews
+                  .filter((r) => r.review_kind === "confirm_proof_continuity")
+                  .map((r) => (
+                    <option value={r.id} key={r.id}>
+                      {r.id} · verified closure proof
+                    </option>
+                  ))}
+              </select>
+            </label>
+            <label>
+              Recurrence finding{" "}
+              <select name="outcomeKind" required>
+                <option value="continuity_stable">
+                  Proof continuity stable — monitor again
+                </option>
+                <option value="recurrence_gap">
+                  Recurrent evidence gap — owner reopening needed
+                </option>
+                <option value="recurrence_escalated">
+                  Escalated recurrence — owner escalation needed
+                </option>
+              </select>
+            </label>
+            <label>
+              Next independent monitoring due (UTC){" "}
+              <input type="date" name="nextDueAt" required />
+            </label>
+            <label>
+              Source-linked evidence reference{" "}
+              <input
+                name="evidenceReference"
+                minLength={8}
+                maxLength={400}
+                required
+              />
+            </label>
+            <label>
+              Independent recurrence rationale{" "}
+              <textarea
+                name="eventNote"
+                minLength={12}
+                maxLength={800}
+                required
+              />
+            </label>
+            <button
+              type="submit"
+              disabled={
+                !report.independentProofContinuityReviews.some(
+                  (r) => r.review_kind === "confirm_proof_continuity",
+                )
+              }
+            >
+              Record independent recurrence check
+            </button>
+          </form>
+          <h3>Owner exception reopening queue</h3>
+          {report.closureRecurrenceEvents
+            .filter(
+              (e) =>
+                e.event_kind === "independent_recurrence_check" &&
+                e.outcome_kind !== "continuity_stable" &&
+                !report.closureRecurrenceEvents.some(
+                  (child) => child.prior_event_id === e.id,
+                ),
+            )
+            .slice(0, 20)
+            .map((e) => (
+              <form key={e.id} action={recordClosureRecurrenceEventAction}>
+                {pair}
+                <input
+                  type="hidden"
+                  name="eventKind"
+                  value="owner_exception_reopen"
+                />
+                <input type="hidden" name="priorEventId" value={e.id} />
+                <input
+                  type="hidden"
+                  name="proofReviewId"
+                  value={e.proof_review_id}
+                />
+                <p>
+                  {e.id} · {e.recurrence_status} · {e.outcome_kind}
+                </p>
+                <label>
+                  Owner reopening decision{" "}
+                  <select name="outcomeKind" required>
+                    <option value="reopen_evidence">
+                      Reopen for refreshed owner evidence
+                    </option>
+                    <option value="reopen_escalation">
+                      Reopen with explicit escalation renewal
+                    </option>
+                  </select>
+                </label>
+                <label>
+                  Next owner follow-up due (UTC){" "}
+                  <input type="date" name="nextDueAt" required />
+                </label>
+                <label>
+                  Evidence reference{" "}
+                  <input
+                    name="evidenceReference"
+                    minLength={8}
+                    maxLength={400}
+                    required
+                  />
+                </label>
+                <label>
+                  Owner reopening rationale{" "}
+                  <textarea
+                    name="eventNote"
+                    minLength={12}
+                    maxLength={800}
+                    required
+                  />
+                </label>
+                <button type="submit">Record immutable owner reopening</button>
+              </form>
+            ))}
+          <h3>Independent audit follow-up after reopening</h3>
+          {report.closureRecurrenceEvents
+            .filter(
+              (e) =>
+                (e.event_kind === "owner_exception_reopen" ||
+                  (e.event_kind === "independent_followup_verify" &&
+                    e.outcome_kind !== "verify_followup_evidence")) &&
+                !report.closureRecurrenceEvents.some(
+                  (child) => child.prior_event_id === e.id,
+                ),
+            )
+            .slice(0, 20)
+            .map((e) => (
+              <form key={e.id} action={recordClosureRecurrenceEventAction}>
+                {pair}
+                <input
+                  type="hidden"
+                  name="eventKind"
+                  value="independent_followup_verify"
+                />
+                <input type="hidden" name="priorEventId" value={e.id} />
+                <input
+                  type="hidden"
+                  name="proofReviewId"
+                  value={e.proof_review_id}
+                />
+                <p>
+                  Reopened exception / pending follow-up {e.id} ·{" "}
+                  {e.recurrence_status} · {e.outcome_kind}
+                </p>
+                <label>
+                  Independent follow-up finding{" "}
+                  <select name="outcomeKind" required>
+                    <option value="request_more_followup_evidence">
+                      Request additional evidence
+                    </option>
+                    <option value="renew_followup_escalation">
+                      Renew independent follow-up escalation
+                    </option>
+                    <option value="verify_followup_evidence">
+                      Verify newer linked owner evidence (audit receipt only)
+                    </option>
+                  </select>
+                </label>
+                <label>
+                  New owner evidence disposition (required only for verified
+                  receipt){" "}
+                  <select name="ownerEvidenceDecisionId" defaultValue="">
+                    <option value="">No linked evidence yet</option>
+                    {report.independentRecheckOwnerDecisions.map((d) => (
+                      <option value={d.id} key={d.id}>
+                        {d.id} · {d.decision_kind}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label>
+                  Next follow-up due (UTC; blank only when verified){" "}
+                  <input type="date" name="nextDueAt" />
+                </label>
+                <label>
+                  Verified source receipt/reference{" "}
+                  <input
+                    name="evidenceReference"
+                    minLength={8}
+                    maxLength={400}
+                    required
+                  />
+                </label>
+                <label>
+                  Independent follow-up rationale{" "}
+                  <textarea
+                    name="eventNote"
+                    minLength={12}
+                    maxLength={800}
+                    required
+                  />
+                </label>
+                <button type="submit">
+                  Record independent follow-up result
+                </button>
+              </form>
+            ))}
+          <h3>Immutable recurrence, reopening and follow-up history</h3>
+          <ul>
+            {report.closureRecurrenceEvents.map((e) => (
+              <li key={e.id}>
+                {e.event_kind} · {e.outcome_kind} · {e.recurrence_status} ·
+                proof {e.proof_review_id}
+                {e.prior_event_id ? ` · follows ${e.prior_event_id}` : ""}
+                {e.owner_evidence_decision_id
+                  ? ` · linked owner ${e.owner_evidence_decision_id}`
+                  : ""}
+                {` · ${e.observed_prior_days_overdue} prior days overdue · ${e.observed_open_peer_recurrences} open recurrence peers · ${e.observed_open_owner_dispositions} open owner dispositions · ${e.observed_recent_owner_escalations} recent escalations`}
+                {e.observed_original_proof_verified
+                  ? " · original proof verified"
+                  : " · proof incomplete"}
+                {" — "}
+                {e.event_note}
               </li>
             ))}
           </ul>
