@@ -190,6 +190,22 @@ export interface RecurrenceLedger {
     observed_replay_is_newer: boolean;
     observed_prior_chain_complete: boolean;
   }>;
+  closureRecurrenceEvents: Array<{
+    id: string;
+    proof_review_id: string;
+    prior_event_id: string | null;
+    event_kind: string;
+    outcome_kind: string;
+    owner_evidence_decision_id: string | null;
+    next_due_at: Date | null;
+    event_note: string;
+    observed_prior_days_overdue: number;
+    observed_open_peer_recurrences: number;
+    observed_open_owner_dispositions: number;
+    observed_recent_owner_escalations: number;
+    observed_original_proof_verified: boolean;
+    recurrence_status: string;
+  }>;
   limited: boolean;
 }
 export function getRecurrenceLedger(
@@ -246,5 +262,8 @@ export function recordIndependentRecheckOwnerDecision(
   raw: Record<string, unknown> & { actorUserId: string },
 ): Promise<{ id: string }>;
 export function recordIndependentProofContinuityReview(
+  raw: Record<string, unknown> & { actorUserId: string },
+): Promise<{ id: string }>;
+export function recordClosureRecurrenceEvent(
   raw: Record<string, unknown> & { actorUserId: string },
 ): Promise<{ id: string }>;

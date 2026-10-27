@@ -21,6 +21,7 @@ import {
   recordIndependentDispositionRecheck,
   recordIndependentRecheckOwnerDecision,
   recordIndependentProofContinuityReview,
+  recordClosureRecurrenceEvent,
 } from "@/lib/permanent-unit-owner-retention/recurrence-postgres.mjs";
 const path =
   "/workspaces/management/campgrounds/permanent-units/financing/owner-portfolio/planning/outcomes/review/evidence/retention/exceptions/oversight/reviews/aging/outcomes/reopen/plans/oversight/decisions";
@@ -511,6 +512,37 @@ export async function recordIndependentProofContinuityReviewAction(
       error instanceof Error
         ? error.message
         : "Independent proof audit rejected.";
+  }
+  revalidatePath(path);
+  redirect(
+    `${path}?source=${encodeURIComponent(source)}&target=${encodeURIComponent(target)}&${kind}=${encodeURIComponent(message.slice(0, 180))}`,
+  );
+}
+export async function recordClosureRecurrenceEventAction(form: FormData) {
+  const session = await requireStaff(path);
+  const source = field(form, "sourceCampgroundId"),
+    target = field(form, "targetCampgroundId");
+  let kind = "saved",
+    message = "Immutable closure recurrence and follow-up audit recorded.";
+  try {
+    await recordClosureRecurrenceEvent({
+      actorUserId: session.user.id,
+      id: randomUUID(),
+      sourceCampgroundId: source,
+      targetCampgroundId: target,
+      proofReviewId: field(form, "proofReviewId"),
+      priorEventId: field(form, "priorEventId"),
+      eventKind: field(form, "eventKind"),
+      outcomeKind: field(form, "outcomeKind"),
+      ownerEvidenceDecisionId: field(form, "ownerEvidenceDecisionId"),
+      nextDueAt: field(form, "nextDueAt"),
+      evidenceReference: field(form, "evidenceReference"),
+      eventNote: field(form, "eventNote"),
+    });
+  } catch (error) {
+    kind = "error";
+    message =
+      error instanceof Error ? error.message : "Recurrence audit rejected.";
   }
   revalidatePath(path);
   redirect(
