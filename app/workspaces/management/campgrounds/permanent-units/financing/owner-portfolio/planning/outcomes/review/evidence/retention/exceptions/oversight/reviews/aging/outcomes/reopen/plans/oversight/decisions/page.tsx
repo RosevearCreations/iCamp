@@ -27,7 +27,55 @@ import {
   recordContinuityResolutionFollowupAction,
   recordVerifiedClosureMonitorAction,
   recordReopeningFollowupOversightAction,
+  recordEscalationResolutionRenewalAction,
 } from "./actions";
+const escalationRenewalOptions: Record<
+  string,
+  Array<{ value: string; label: string }>
+> = {
+  independent_resolution_followup: [
+    {
+      value: "resolution_evidence_current",
+      label: "Independent fresh resolution evidence confirmed",
+    },
+    {
+      value: "resolution_evidence_gap",
+      label: "Resolution follow-up evidence incomplete",
+    },
+    {
+      value: "resolution_followup_escalated",
+      label: "Escalate unresolved resolution follow-up",
+    },
+  ],
+  reopening_recurrence_watch: [
+    {
+      value: "recurrence_watch_stable",
+      label: "Independent new-proof recurrence watch stable",
+    },
+    {
+      value: "reopening_recurrence_detected",
+      label: "Later owner reopening or recurrence detected",
+    },
+    {
+      value: "recurrence_escalation_required",
+      label: "Recurrence requires owner escalation",
+    },
+  ],
+  owner_evidence_renewal: [
+    {
+      value: "owner_evidence_renewed",
+      label: "Independently verify fresh owner evidence renewal",
+    },
+    {
+      value: "owner_evidence_pending",
+      label: "Owner evidence renewal remains pending",
+    },
+    {
+      value: "owner_evidence_escalated",
+      label: "Renew owner evidence escalation",
+    },
+  ],
+};
 const reopeningOversightOptions: Record<
   string,
   Array<{ value: string; label: string }>
@@ -325,6 +373,44 @@ export default async function RecurrenceDecisionsPage({
                 : "owner_escalation_oversight"
               : "owner_escalation_oversight",
         status: r.oversight_status,
+      })),
+  ];
+  const escalationRenewalQueue = [
+    ...report.reopeningFollowupOversights
+      .filter(
+        (r) =>
+          r.outcome_kind === "owner_escalation_resolved" &&
+          !report.escalationResolutionRenewals.some(
+            (renewal) => renewal.resolved_oversight_id === r.id,
+          ),
+      )
+      .map((r) => ({
+        id: r.id,
+        resolvedOversightId: r.id,
+        priorRenewalId: "",
+        renewalKind: "independent_resolution_followup",
+        status: r.oversight_status,
+      })),
+    ...report.escalationResolutionRenewals
+      .filter(
+        (r) =>
+          !report.escalationResolutionRenewals.some(
+            (child) => child.prior_renewal_id === r.id,
+          ),
+      )
+      .map((r) => ({
+        id: r.id,
+        resolvedOversightId: r.resolved_oversight_id,
+        priorRenewalId: r.id,
+        renewalKind:
+          r.renewal_kind === "independent_resolution_followup"
+            ? "reopening_recurrence_watch"
+            : r.renewal_kind === "reopening_recurrence_watch"
+              ? "owner_evidence_renewal"
+              : r.outcome_kind === "owner_evidence_pending"
+                ? "owner_evidence_renewal"
+                : "independent_resolution_followup",
+        status: r.renewal_status,
       })),
   ];
   return (
@@ -2893,6 +2979,142 @@ export default async function RecurrenceDecisionsPage({
                   : ""}
                 {" — "}
                 {r.oversight_note}
+              </li>
+            ))}
+          </ul>
+        </section>
+        <section>
+          <h2>
+            Build 135 — Independent escalation resolution follow-up, reopening
+            recurrence watch &amp; owner evidence renewal
+          </h2>
+          <p>
+            A new independent audit begins only after Build 134 verifies an
+            owner escalation resolution. Follow-up, recurrence watch and owner
+            renewal are recorded in order with independent reviewers. A stable
+            result requires new same-reopening source proof, not recycled
+            closure evidence. Later owner reopenings and unresolved peer/owner
+            exceptions block stable results; overdue proof must be explicitly
+            escalated. These receipts never release campground holds or send
+            messages.
+          </p>
+          <h3>Verified resolution follow-up and renewal queue</h3>
+          {escalationRenewalQueue.slice(0, 20).map((item) => {
+            const resolved = report.reopeningFollowupOversights.find(
+              (r) => r.id === item.resolvedOversightId,
+            );
+            const monitor = report.verifiedClosureMonitors.find(
+              (r) => r.id === resolved?.verified_monitor_id,
+            );
+            const baseline = report.closureRecurrenceEvents.find(
+              (e) => e.id === resolved?.verified_resolution_event_id,
+            );
+            return (
+              <form
+                key={item.id}
+                action={recordEscalationResolutionRenewalAction}
+              >
+                {pair}
+                <input
+                  type="hidden"
+                  name="resolvedOversightId"
+                  value={item.resolvedOversightId}
+                />
+                <input
+                  type="hidden"
+                  name="priorRenewalId"
+                  value={item.priorRenewalId}
+                />
+                <input
+                  type="hidden"
+                  name="renewalKind"
+                  value={item.renewalKind}
+                />
+                <p>
+                  {item.renewalKind} · {item.status} · receipt {item.id}
+                </p>
+                <label>
+                  Independent renewal outcome{" "}
+                  <select name="outcomeKind" required>
+                    {escalationRenewalOptions[item.renewalKind].map(
+                      (option) => (
+                        <option key={option.value} value={option.value}>
+                          {option.label}
+                        </option>
+                      ),
+                    )}
+                  </select>
+                </label>
+                <label>
+                  New same-root source proof (required for current, stable or
+                  renewed outcome){" "}
+                  <select name="renewalEvidenceEventId" defaultValue="">
+                    <option value="">No independently renewed proof yet</option>
+                    {report.closureRecurrenceEvents
+                      .filter(
+                        (event) =>
+                          event.event_kind === "independent_followup_verify" &&
+                          event.outcome_kind === "verify_followup_evidence" &&
+                          event.root_reopen_id ===
+                            monitor?.linked_reopen_event_id &&
+                          baseline &&
+                          new Date(event.recorded_at).getTime() >
+                            new Date(baseline.recorded_at).getTime() &&
+                          !report.escalationResolutionRenewals.some(
+                            (used) =>
+                              used.renewal_evidence_event_id === event.id,
+                          ),
+                      )
+                      .map((event) => (
+                        <option key={event.id} value={event.id}>
+                          {event.id} · fresh independent source evidence
+                        </option>
+                      ))}
+                  </select>
+                </label>
+                <label>
+                  Next independent renewal due (UTC, within 90 days){" "}
+                  <input name="nextDueAt" type="date" required />
+                </label>
+                <label>
+                  Source evidence reference{" "}
+                  <input
+                    name="evidenceReference"
+                    minLength={8}
+                    maxLength={400}
+                    required
+                  />
+                </label>
+                <label>
+                  Resolution follow-up, recurrence and owner renewal findings{" "}
+                  <textarea
+                    name="renewalNote"
+                    minLength={12}
+                    maxLength={800}
+                    required
+                  />
+                </label>
+                <button type="submit">
+                  Record Build 135 independent renewal
+                </button>
+              </form>
+            );
+          })}
+          <h3>Immutable escalation resolution and renewal history</h3>
+          <ul>
+            {report.escalationResolutionRenewals.map((record) => (
+              <li key={record.id}>
+                {record.renewal_kind} · {record.outcome_kind} ·{" "}
+                {record.renewal_status}
+                {` · resolved escalation ${record.resolved_oversight_id} · ${record.observed_resolution_age_days} days since resolution · ${record.observed_prior_days_overdue} days overdue · ${record.observed_new_reopenings} newer reopenings · ${record.observed_open_peer_recurrences} open peer recurrences · ${record.observed_open_owner_dispositions} open owner decisions · ${record.observed_recent_owner_escalations} recent escalations`}
+                {record.renewal_evidence_event_id
+                  ? ` · independent fresh proof ${record.renewal_evidence_event_id}`
+                  : ""}
+                {record.prior_renewal_id
+                  ? ` · follows ${record.prior_renewal_id}`
+                  : ""}
+                {" — "}
+                {record.renewal_note}
               </li>
             ))}
           </ul>

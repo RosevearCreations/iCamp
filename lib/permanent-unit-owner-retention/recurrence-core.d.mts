@@ -411,3 +411,24 @@ export function classifyReopeningFollowupStatus(
   next: { id: string } | null,
   now?: Date,
 ): string;
+export function normalizeEscalationResolutionRenewal(
+  raw: Record<string, unknown>,
+  now?: Date,
+): {
+  id: string;
+  resolvedOversightId: string;
+  priorRenewalId: string | null;
+  renewalEvidenceEventId: string | null;
+  sourceCampgroundId: string;
+  targetCampgroundId: string;
+  renewalKind: string;
+  outcomeKind: string;
+  nextDueAt: string;
+  evidenceReference: string;
+  renewalNote: string;
+};
+export function classifyEscalationResolutionRenewalStatus(
+  record: { renewal_kind: string; next_due_at?: Date | string | null },
+  next: { id: string } | null,
+  now?: Date,
+): string;
