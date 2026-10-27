@@ -286,3 +286,28 @@ export function classifyOwnerProofContinuityAging(
   review: { review_kind: string } | null,
   now?: Date,
 ): string;
+export function normalizeClosureRecurrenceEvent(
+  raw: Record<string, unknown>,
+  now?: Date,
+): {
+  id: string;
+  proofReviewId: string;
+  priorEventId: string | null;
+  ownerEvidenceDecisionId: string | null;
+  sourceCampgroundId: string;
+  targetCampgroundId: string;
+  eventKind: string;
+  outcomeKind: string;
+  nextDueAt: string | null;
+  evidenceReference: string;
+  eventNote: string;
+};
+export function classifyClosureRecurrenceStatus(
+  event: {
+    event_kind: string;
+    outcome_kind: string;
+    next_due_at?: Date | string | null;
+  },
+  nextEvent: { outcome_kind: string } | null,
+  now?: Date,
+): string;
