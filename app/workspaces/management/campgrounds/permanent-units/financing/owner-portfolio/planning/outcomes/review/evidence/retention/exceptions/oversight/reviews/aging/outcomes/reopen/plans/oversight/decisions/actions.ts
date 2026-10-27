@@ -24,6 +24,7 @@ import {
   recordClosureRecurrenceEvent,
   recordReopenedExceptionAgingReview,
   recordContinuityResolutionFollowup,
+  recordVerifiedClosureMonitor,
 } from "@/lib/permanent-unit-owner-retention/recurrence-postgres.mjs";
 const path =
   "/workspaces/management/campgrounds/permanent-units/financing/owner-portfolio/planning/outcomes/review/evidence/retention/exceptions/oversight/reviews/aging/outcomes/reopen/plans/oversight/decisions";
@@ -613,6 +614,40 @@ export async function recordContinuityResolutionFollowupAction(form: FormData) {
       error instanceof Error
         ? error.message
         : "Independent follow-up rejected.";
+  }
+  revalidatePath(path);
+  redirect(
+    `${path}?source=${encodeURIComponent(source)}&target=${encodeURIComponent(target)}&${kind}=${encodeURIComponent(message.slice(0, 180))}`,
+  );
+}
+export async function recordVerifiedClosureMonitorAction(form: FormData) {
+  const session = await requireStaff(path);
+  const source = field(form, "sourceCampgroundId"),
+    target = field(form, "targetCampgroundId");
+  let kind = "saved",
+    message =
+      "Verified closure recurrence, independent renewal or reopening audit recorded.";
+  try {
+    await recordVerifiedClosureMonitor({
+      actorUserId: session.user.id,
+      id: randomUUID(),
+      sourceCampgroundId: source,
+      targetCampgroundId: target,
+      closureFollowupId: field(form, "closureFollowupId"),
+      priorMonitorId: field(form, "priorMonitorId"),
+      linkedReopenEventId: field(form, "linkedReopenEventId"),
+      monitorKind: field(form, "monitorKind"),
+      outcomeKind: field(form, "outcomeKind"),
+      nextDueAt: field(form, "nextDueAt"),
+      evidenceReference: field(form, "evidenceReference"),
+      monitorNote: field(form, "monitorNote"),
+    });
+  } catch (error) {
+    kind = "error";
+    message =
+      error instanceof Error
+        ? error.message
+        : "Independent closure monitoring rejected.";
   }
   revalidatePath(path);
   redirect(

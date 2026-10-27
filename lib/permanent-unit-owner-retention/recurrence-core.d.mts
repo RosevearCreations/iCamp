@@ -361,3 +361,28 @@ export function classifyContinuityResolutionStatus(
   next: { id: string } | null,
   now?: Date,
 ): string;
+export function normalizeVerifiedClosureMonitor(
+  raw: Record<string, unknown>,
+  now?: Date,
+): {
+  id: string;
+  closureFollowupId: string;
+  priorMonitorId: string | null;
+  linkedReopenEventId: string | null;
+  sourceCampgroundId: string;
+  targetCampgroundId: string;
+  monitorKind: string;
+  outcomeKind: string;
+  nextDueAt: string | null;
+  evidenceReference: string;
+  monitorNote: string;
+};
+export function classifyVerifiedClosureMonitorStatus(
+  record: {
+    monitor_kind: string;
+    outcome_kind: string;
+    next_due_at?: Date | string | null;
+  },
+  next: { id: string } | null,
+  now?: Date,
+): string;
