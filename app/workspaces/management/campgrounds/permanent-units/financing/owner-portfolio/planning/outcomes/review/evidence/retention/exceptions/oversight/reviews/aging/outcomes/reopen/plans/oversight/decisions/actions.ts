@@ -34,6 +34,7 @@ import {
   recordOwnerProofGatewayReview,
   recordGatewayHoldReceiptReview,
   recordQl245SourcePinHoldReview,
+  recordQl246ExceptionPinHoldDecision,
 } from "@/lib/permanent-unit-owner-retention/recurrence-postgres.mjs";
 const path =
   "/workspaces/management/campgrounds/permanent-units/financing/owner-portfolio/planning/outcomes/review/evidence/retention/exceptions/oversight/reviews/aging/outcomes/reopen/plans/oversight/decisions";
@@ -982,6 +983,52 @@ export async function recordQl245SourcePinHoldReviewAction(form: FormData) {
       error instanceof Error
         ? error.message
         : "Build 142 independent follow-up rejected.";
+  }
+  revalidatePath(path);
+  redirect(
+    `${path}?source=${encodeURIComponent(source)}&target=${encodeURIComponent(target)}&${kind}=${encodeURIComponent(message.slice(0, 180))}`,
+  );
+}
+export async function recordQl246ExceptionPinHoldDecisionAction(
+  form: FormData,
+) {
+  const session = await requireStaff(path);
+  const source = field(form, "sourceCampgroundId");
+  const target = field(form, "targetCampgroundId");
+  let kind = "saved";
+  let message =
+    "Build 143 independent QL-246 exception/pin/hold review recorded. Phase B, pilot and gateway remain NOT AUTHORIZED / HOLD.";
+  try {
+    await recordQl246ExceptionPinHoldDecision({
+      actorUserId: session.user.id,
+      id: randomUUID(),
+      sourceCampgroundId: source,
+      targetCampgroundId: target,
+      sourcePinReviewId: field(form, "sourcePinReviewId"),
+      priorReviewId: field(form, "priorReviewId"),
+      reviewKind: field(form, "reviewKind"),
+      outcomeKind: field(form, "outcomeKind"),
+      sourceSystem: field(form, "sourceSystem"),
+      repository: field(form, "repository"),
+      sourceProofStatus: field(form, "sourceProofStatus") || "MISSING",
+      sourceRevision: field(form, "sourceRevision"),
+      ciRunUrl: field(form, "ciRunUrl"),
+      proofRawJsonSha256: field(form, "proofRawJsonSha256"),
+      publicSignerSpkiSha256: field(form, "publicSignerSpkiSha256"),
+      outOfBandSpkiSha256: field(form, "outOfBandSpkiSha256"),
+      outOfBandReference: field(form, "outOfBandReference"),
+      operatorChallengeId: field(form, "operatorChallengeId"),
+      operatorChallengeSha256: field(form, "operatorChallengeSha256"),
+      nextDueAt: field(form, "nextDueAt"),
+      evidenceReference: field(form, "evidenceReference"),
+      reviewNote: field(form, "reviewNote"),
+    });
+  } catch (error) {
+    kind = "error";
+    message =
+      error instanceof Error
+        ? error.message
+        : "Build 143 independent review rejected.";
   }
   revalidatePath(path);
   redirect(

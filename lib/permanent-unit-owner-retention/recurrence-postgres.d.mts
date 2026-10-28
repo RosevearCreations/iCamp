@@ -457,6 +457,42 @@ export interface RecurrenceLedger {
     review_note: string;
     review_status: string;
   }>;
+  ql246ExceptionPinHoldDecisions: Array<{
+    id: string;
+    source_pin_review_id: string;
+    prior_review_id: string | null;
+    source_system: string;
+    repository: string;
+    review_kind: string;
+    outcome_kind: string;
+    next_due_at: Date;
+    source_revision: string | null;
+    ci_run_url: string | null;
+    source_proof_status: "MISSING" | "BLOCKED" | "PRESENT_UNVERIFIED";
+    proof_raw_json_sha256: string | null;
+    public_signer_spki_sha256: string | null;
+    out_of_band_spki_sha256: string | null;
+    out_of_band_reference: string | null;
+    operator_challenge_id: string | null;
+    operator_challenge_sha256: string | null;
+    observed_public_pin_string_match: boolean;
+    observed_prior_overdue_days: number;
+    observed_open_142_exceptions: number;
+    observed_overdue_142_leaves: number;
+    observed_six_app_source_kinds: number;
+    observed_six_app_proofs_independently_verified: 0;
+    source_proof_signature_verified: false;
+    independent_pin_channel_verified: false;
+    seven_denials_witnessed: false;
+    nonproduction_gateway_get_verified: false;
+    phase_b_test_authorized: false;
+    owner_pilot_authorized: false;
+    dispatch_enabled: false;
+    connection_state: "DISCONNECTED";
+    gate_state: "HOLD";
+    review_note: string;
+    review_status: string;
+  }>;
   limited: boolean;
 }
 export function getRecurrenceLedger(
@@ -552,5 +588,8 @@ export function recordGatewayHoldReceiptReview(
   raw: Record<string, unknown> & { actorUserId: string },
 ): Promise<{ id: string }>;
 export function recordQl245SourcePinHoldReview(
+  raw: Record<string, unknown> & { actorUserId: string },
+): Promise<{ id: string }>;
+export function recordQl246ExceptionPinHoldDecision(
   raw: Record<string, unknown> & { actorUserId: string },
 ): Promise<{ id: string }>;
