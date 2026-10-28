@@ -493,6 +493,44 @@ export interface RecurrenceLedger {
     review_note: string;
     review_status: string;
   }>;
+  ql247TestReceiptHoldWatches: Array<{
+    id: string;
+    ql246_hold_decision_id: string;
+    prior_review_id: string | null;
+    source_system: string;
+    repository: string;
+    review_kind: string;
+    outcome_kind: string;
+    next_due_at: Date;
+    authorization_reference_status: "NOT_GIVEN" | "REFERENCE_UNVERIFIED";
+    two_sha_agreement_status: "NOT_AGREED" | "REFERENCE_UNVERIFIED";
+    test_authorization_reference: string | null;
+    two_sha_agreement_reference: string | null;
+    source_revision_sha: string | null;
+    proof_commit_sha: string | null;
+    proof_sha256: string | null;
+    ci_run_url: string | null;
+    denial_receipt_ids: string[];
+    denial_witness_reference: string | null;
+    rollback_reference: string | null;
+    revocation_reference: string | null;
+    observed_denial_receipt_ids_provided: number;
+    observed_prior_overdue_days: number;
+    observed_open_143_exceptions: number;
+    observed_overdue_143_leaves: number;
+    phase_b_test_authorized: false;
+    seven_denials_independently_witnessed: false;
+    source_proof_signature_verified: false;
+    two_sha_origin_verified: false;
+    original_gateway_receipts_verified: false;
+    scoped_key_revocation_verified: false;
+    owner_pilot_authorized: false;
+    dispatch_enabled: false;
+    connection_state: "DISCONNECTED";
+    gate_state: "HOLD";
+    review_note: string;
+    review_status: string;
+  }>;
   limited: boolean;
 }
 export function getRecurrenceLedger(
@@ -591,5 +629,8 @@ export function recordQl245SourcePinHoldReview(
   raw: Record<string, unknown> & { actorUserId: string },
 ): Promise<{ id: string }>;
 export function recordQl246ExceptionPinHoldDecision(
+  raw: Record<string, unknown> & { actorUserId: string },
+): Promise<{ id: string }>;
+export function recordQl247TestReceiptHoldWatch(
   raw: Record<string, unknown> & { actorUserId: string },
 ): Promise<{ id: string }>;
