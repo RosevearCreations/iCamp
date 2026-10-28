@@ -623,3 +623,38 @@ export function classifyQl246ExceptionPinHoldStatus(
   next: { id: string } | null,
   now?: Date,
 ): string;
+export const ql247DenialKinds: ReadonlyArray<string>;
+export function normalizeQl247TestReceiptHoldWatch(
+  raw: Record<string, unknown>,
+  now?: Date,
+): {
+  id: string;
+  ql246HoldDecisionId: string;
+  priorReviewId: string | null;
+  sourceCampgroundId: string;
+  targetCampgroundId: string;
+  sourceSystem: string;
+  repository: string;
+  reviewKind: string;
+  outcomeKind: string;
+  testAuthorizationReference: string | null;
+  authorizationReferenceStatus: string;
+  twoShaAgreementStatus: string;
+  twoShaAgreementReference: string | null;
+  sourceRevisionSha: string | null;
+  proofCommitSha: string | null;
+  proofSha256: string | null;
+  ciRunUrl: string | null;
+  denialReceiptIds: string[];
+  denialWitnessReference: string | null;
+  rollbackReference: string | null;
+  revocationReference: string | null;
+  nextDueAt: string;
+  evidenceReference: string;
+  reviewNote: string;
+};
+export function classifyQl247TestReceiptHoldStatus(
+  record: { review_kind: string; next_due_at?: Date | string | null },
+  next: { id: string } | null,
+  now?: Date,
+): string;
