@@ -36,6 +36,7 @@ import {
   recordQl245SourcePinHoldReview,
   recordQl246ExceptionPinHoldDecision,
   recordQl247TestReceiptHoldWatch,
+  recordQl248ProvenanceGapHoldRenewal,
 } from "@/lib/permanent-unit-owner-retention/recurrence-postgres.mjs";
 const path =
   "/workspaces/management/campgrounds/permanent-units/financing/owner-portfolio/planning/outcomes/review/evidence/retention/exceptions/oversight/reviews/aging/outcomes/reopen/plans/oversight/decisions";
@@ -1089,6 +1090,69 @@ export async function recordQl247TestReceiptHoldWatchAction(form: FormData) {
     kind = "error";
     message =
       error instanceof Error ? error.message : "Build 144 review rejected.";
+  }
+  revalidatePath(path);
+  redirect(
+    `${path}?source=${encodeURIComponent(source)}&target=${encodeURIComponent(target)}&${kind}=${encodeURIComponent(message.slice(0, 180))}`,
+  );
+}
+
+export async function recordQl248ProvenanceGapHoldRenewalAction(
+  form: FormData,
+) {
+  const session = await requireStaff(path);
+  const source = field(form, "sourceCampgroundId");
+  const target = field(form, "targetCampgroundId");
+  let kind = "saved";
+  let message =
+    "Build 145 public-proof/denial-gap/HOLD review recorded. Gateway stays DISCONNECTED / HOLD; no owner authorization granted.";
+  try {
+    await recordQl248ProvenanceGapHoldRenewal({
+      actorUserId: session.user.id,
+      id: randomUUID(),
+      sourceCampgroundId: source,
+      targetCampgroundId: target,
+      ql247WatchId: field(form, "ql247WatchId"),
+      priorReviewId: field(form, "priorReviewId"),
+      sourceSystem: field(form, "sourceSystem"),
+      repository: field(form, "repository"),
+      reviewKind: field(form, "reviewKind"),
+      outcomeKind: field(form, "outcomeKind"),
+      proofPublicReference: field(form, "proofPublicReference"),
+      sourceRevisionSha: field(form, "sourceRevisionSha"),
+      proofCommitSha: field(form, "proofCommitSha"),
+      proofSha256: field(form, "proofSha256"),
+      sourceCiRunUrl: field(form, "sourceCiRunUrl"),
+      signerPinSha256: field(form, "signerPinSha256"),
+      signerPinReference: field(form, "signerPinReference"),
+      consumerAgreementReference: field(form, "consumerAgreementReference"),
+      denialReceiptIds: [
+        "nonce_replay_denied",
+        "stale_request_denied",
+        "cross_business_denied",
+        "cross_tenant_denied",
+        "revoked_key_denied",
+        "write_denied",
+        "dispatch_denied",
+      ].map((key) => {
+        const receipt = field(form, `denial_${key}`);
+        return receipt ? `${key}|${receipt}` : "";
+      }),
+      denialWitnessReference: field(form, "denialWitnessReference"),
+      ownerTestAuthorizationReference: field(
+        form,
+        "ownerTestAuthorizationReference",
+      ),
+      rollbackReference: field(form, "rollbackReference"),
+      revocationReference: field(form, "revocationReference"),
+      nextDueAt: field(form, "nextDueAt"),
+      evidenceReference: field(form, "evidenceReference"),
+      reviewNote: field(form, "reviewNote"),
+    });
+  } catch (error) {
+    kind = "error";
+    message =
+      error instanceof Error ? error.message : "Build 145 review rejected.";
   }
   revalidatePath(path);
   redirect(

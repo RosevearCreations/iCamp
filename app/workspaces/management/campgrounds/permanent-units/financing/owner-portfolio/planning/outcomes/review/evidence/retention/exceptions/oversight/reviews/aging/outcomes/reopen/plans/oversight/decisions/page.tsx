@@ -42,6 +42,7 @@ import {
   recordQl245SourcePinHoldReviewAction,
   recordQl246ExceptionPinHoldDecisionAction,
   recordQl247TestReceiptHoldWatchAction,
+  recordQl248ProvenanceGapHoldRenewalAction,
 } from "./actions";
 const gatewayHoldReceiptOptions: Record<
   string,
@@ -236,6 +237,50 @@ const ql247TestReviewOptions: Record<
     {
       value: "hold_rollback_watch_due",
       label: "Renew revocation / rollback proof watch; remain HOLD",
+    },
+  ],
+};
+const ql248ReviewOptions: Record<
+  string,
+  Array<{ value: string; label: string }>
+> = {
+  two_sha_public_proof_provenance_recheck: [
+    { value: "public_proof_missing", label: "Public signed proof absent" },
+    {
+      value: "two_sha_reference_unverified",
+      label: "Distinct source and proof SHAs supplied — origin UNVERIFIED",
+    },
+    {
+      value: "provenance_mismatch_escalated",
+      label: "Escalate mismatched or untrusted provenance",
+    },
+  ],
+  seven_denial_source_receipt_gap_aging: [
+    {
+      value: "seven_denials_missing",
+      label: "Original seven source denials missing",
+    },
+    {
+      value: "denial_source_references_unverified",
+      label: "Seven original IDs supplied — source witness UNVERIFIED",
+    },
+    {
+      value: "denial_gap_escalated",
+      label: "Escalate incomplete or contradictory source receipts",
+    },
+  ],
+  independent_authorization_hold_renewal: [
+    {
+      value: "authorization_not_given_hold_renewed",
+      label: "Owner authorization NOT GIVEN — renew HOLD",
+    },
+    {
+      value: "authorization_reference_unverified_hold",
+      label: "Unverified owner reference — remain HOLD",
+    },
+    {
+      value: "authorization_exception_escalated",
+      label: "Escalate authorization or rollback evidence gap",
     },
   ],
 };
@@ -1193,6 +1238,46 @@ export default async function RecurrenceDecisionsPage({
                 "independent_seven_denial_receipt_reconciliation"
               ? "reversible_hold_decision_watch"
               : "nonproduction_test_authorization_evidence_intake",
+        status: r.review_status,
+      })),
+  ];
+  const ql248ProvenanceGapQueue = [
+    ...report.ql247TestReceiptHoldWatches
+      .filter((r) => r.review_kind === "reversible_hold_decision_watch")
+      .filter(
+        (r) =>
+          !report.ql248ProvenanceGapHoldRenewals.some(
+            (child) => child.ql247_watch_id === r.id && !child.prior_review_id,
+          ),
+      )
+      .map((r) => ({
+        id: r.id,
+        ql247WatchId: r.id,
+        priorReviewId: "",
+        sourceSystem: r.source_system,
+        repository: r.repository,
+        reviewKind: "two_sha_public_proof_provenance_recheck",
+        status: r.review_status,
+      })),
+    ...report.ql248ProvenanceGapHoldRenewals
+      .filter(
+        (r) =>
+          !report.ql248ProvenanceGapHoldRenewals.some(
+            (child) => child.prior_review_id === r.id,
+          ),
+      )
+      .map((r) => ({
+        id: r.id,
+        ql247WatchId: r.ql247_watch_id,
+        priorReviewId: r.id,
+        sourceSystem: r.source_system,
+        repository: r.repository,
+        reviewKind:
+          r.review_kind === "two_sha_public_proof_provenance_recheck"
+            ? "seven_denial_source_receipt_gap_aging"
+            : r.review_kind === "seven_denial_source_receipt_gap_aging"
+              ? "independent_authorization_hold_renewal"
+              : "two_sha_public_proof_provenance_recheck",
         status: r.review_status,
       })),
   ];
@@ -5385,6 +5470,245 @@ export default async function RecurrenceDecisionsPage({
                   : ""}
                 {r.denial_receipt_ids.length
                   ? ` · original receipt IDs ${r.denial_receipt_ids.join(", ")}`
+                  : ""}
+                {r.prior_review_id ? ` · follows ${r.prior_review_id}` : ""}
+                {` — ${r.review_note}`}
+              </li>
+            ))}
+          </ul>
+        </section>
+        <section>
+          <h2>
+            Build 145 — QL-248 two-SHA public provenance, denial receipt gap
+            aging and independent HOLD renewal
+          </h2>
+          <p>
+            This is a three-stage, owner-only, independently reviewed evidence
+            queue. A public proof SHA is not the audited source SHA; the later
+            proof commit must contain the exact raw signed JSON, and its signer
+            pin and original CI run must be checked independently. No source
+            proof, denial receipt or approval is presumed to exist. Even seven
+            submitted receipt references do not prove independently witnessed
+            denials. The external gateway remains{" "}
+            <strong>DISCONNECTED / HOLD</strong>.
+          </p>
+          <p>
+            Only nonsecret evidence index IDs are allowed. Never enter keys,
+            challenges, tokens, customer data or private network details. This
+            form cannot grant Phase B tests, Phase C pilots or dispatch.
+          </p>
+          <h3>Independent provenance → seven-gap → authorization HOLD queue</h3>
+          {ql248ProvenanceGapQueue.slice(0, 24).map((item) => (
+            <form
+              key={`${item.id}-${item.reviewKind}`}
+              action={recordQl248ProvenanceGapHoldRenewalAction}
+            >
+              {pair}
+              <input
+                type="hidden"
+                name="ql247WatchId"
+                value={item.ql247WatchId}
+              />
+              <input
+                type="hidden"
+                name="priorReviewId"
+                value={item.priorReviewId}
+              />
+              <input
+                type="hidden"
+                name="sourceSystem"
+                value={item.sourceSystem}
+              />
+              <input type="hidden" name="repository" value={item.repository} />
+              <input type="hidden" name="reviewKind" value={item.reviewKind} />
+              <p>
+                {item.sourceSystem} · {item.repository} ·{" "}
+                {item.reviewKind.replaceAll("_", " ")} · {item.status}
+              </p>
+              <label>
+                Documentary outcome{" "}
+                <select name="outcomeKind" required>
+                  {ql248ReviewOptions[item.reviewKind].map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              {item.reviewKind ===
+                "two_sha_public_proof_provenance_recheck" && (
+                <>
+                  <p>
+                    Leave the fields blank when public proof is absent. If
+                    genuine public evidence exists, enter its distinct earlier
+                    source revision, later proof commit and exact raw digest. An
+                    independently obtained signer pin needs its own index.
+                  </p>
+                  <label>
+                    Public proof nonsecret index (if published){" "}
+                    <input
+                      name="proofPublicReference"
+                      placeholder="np-..."
+                      maxLength={160}
+                    />
+                  </label>
+                  <label>
+                    Earlier audited source SHA{" "}
+                    <input
+                      name="sourceRevisionSha"
+                      maxLength={40}
+                      pattern="[a-f0-9]{40}"
+                    />
+                  </label>
+                  <label>
+                    Later proof-bearing commit SHA{" "}
+                    <input
+                      name="proofCommitSha"
+                      maxLength={40}
+                      pattern="[a-f0-9]{40}"
+                    />
+                  </label>
+                  <label>
+                    Exact raw signed JSON SHA256{" "}
+                    <input
+                      name="proofSha256"
+                      maxLength={64}
+                      pattern="[a-f0-9]{64}"
+                    />
+                  </label>
+                  <label>
+                    Earlier source SHA GitHub Actions CI run{" "}
+                    <input name="sourceCiRunUrl" type="url" maxLength={155} />
+                  </label>
+                  <label>
+                    Independently retrieved Ed25519 SPKI pin SHA256{" "}
+                    <input
+                      name="signerPinSha256"
+                      maxLength={64}
+                      pattern="[a-f0-9]{64}"
+                    />
+                  </label>
+                  <label>
+                    Separate independent signer pin evidence index{" "}
+                    <input
+                      name="signerPinReference"
+                      placeholder="np-..."
+                      maxLength={160}
+                    />
+                  </label>
+                  <label>
+                    AI consumer two-SHA agreement index (UNVERIFIED){" "}
+                    <input
+                      name="consumerAgreementReference"
+                      placeholder="np-..."
+                      maxLength={160}
+                    />
+                  </label>
+                </>
+              )}
+              {item.reviewKind === "seven_denial_source_receipt_gap_aging" && (
+                <>
+                  <p>
+                    The database records 7 minus supplied original IDs as the
+                    source receipt gap and ages it since the Build 144 HOLD
+                    review. Missing IDs must stay blank, not synthetic.
+                  </p>
+                  {ql247DenialKinds.map((denial) => (
+                    <label key={denial}>
+                      {denial.replaceAll("_", " ")}{" "}
+                      <input
+                        name={`denial_${denial}`}
+                        placeholder="np-..."
+                        maxLength={160}
+                      />
+                    </label>
+                  ))}
+                  <label>
+                    Independent source-of-truth witness index{" "}
+                    <input
+                      name="denialWitnessReference"
+                      placeholder="np-..."
+                      maxLength={160}
+                    />
+                  </label>
+                </>
+              )}
+              {item.reviewKind === "independent_authorization_hold_renewal" && (
+                <>
+                  <p>
+                    Renew reversible HOLD while original nonproduction owner
+                    approval, rollback and key revocation evidence are absent or
+                    unverified. References never change authorization state.
+                  </p>
+                  <label>
+                    Owner Phase B reference index, if genuinely received
+                    (UNVERIFIED){" "}
+                    <input
+                      name="ownerTestAuthorizationReference"
+                      placeholder="np-..."
+                      maxLength={160}
+                    />
+                  </label>
+                  <label>
+                    Rollback evidence index{" "}
+                    <input
+                      name="rollbackReference"
+                      placeholder="np-..."
+                      maxLength={160}
+                    />
+                  </label>
+                  <label>
+                    Key revocation evidence index{" "}
+                    <input
+                      name="revocationReference"
+                      placeholder="np-..."
+                      maxLength={160}
+                    />
+                  </label>
+                </>
+              )}
+              <label>
+                Next independent UTC recheck within 90 days{" "}
+                <input type="date" name="nextDueAt" required />
+              </label>
+              <label>
+                Original nonsecret evidence index{" "}
+                <input
+                  name="evidenceReference"
+                  minLength={8}
+                  maxLength={400}
+                  required
+                />
+              </label>
+              <label>
+                Independent findings and outstanding gaps{" "}
+                <textarea
+                  name="reviewNote"
+                  minLength={12}
+                  maxLength={800}
+                  required
+                />
+              </label>
+              <button type="submit">
+                Record Build 145 independent HOLD review
+              </button>
+            </form>
+          ))}
+          <h3>
+            Immutable Build 145 history — origin and original receipts still
+            unverified
+          </h3>
+          <ul>
+            {report.ql248ProvenanceGapHoldRenewals.map((r) => (
+              <li key={r.id}>
+                {r.source_system} · {r.review_kind} · {r.outcome_kind} ·{" "}
+                {r.review_status}
+                {` · source gap age ${r.observed_gap_age_days} days · prior overdue ${r.observed_prior_overdue_days} days · observed open Build 144 exceptions ${r.observed_open_144_exceptions} · overdue Build 144 leaves ${r.observed_overdue_144_leaves} · original denial gap ${r.observed_denial_gap_count ?? "not assessed"}/7 · origin independently verified ${r.public_source_origin_verified} · original gateway receipts verified ${r.original_gateway_receipts_verified} · Phase B authorized ${r.phase_b_test_authorized} · Phase C authorized ${r.owner_pilot_authorized} · ${r.connection_state} / ${r.gate_state}`}
+                {r.source_revision_sha
+                  ? ` · source ${r.source_revision_sha}`
+                  : ""}
+                {r.proof_commit_sha
+                  ? ` · proof commit ${r.proof_commit_sha}`
                   : ""}
                 {r.prior_review_id ? ` · follows ${r.prior_review_id}` : ""}
                 {` — ${r.review_note}`}
