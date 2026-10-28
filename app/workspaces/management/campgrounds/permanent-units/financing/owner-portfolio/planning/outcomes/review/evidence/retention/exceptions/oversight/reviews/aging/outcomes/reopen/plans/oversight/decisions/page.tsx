@@ -4,7 +4,10 @@ import { redirect } from "next/navigation";
 import { AppShell } from "@/components/app-shell";
 import { requireStaff } from "@/lib/auth/current-session";
 import { getRecurrenceLedger } from "@/lib/permanent-unit-owner-retention/recurrence-postgres.mjs";
-import { gatewayHoldReceiptKinds } from "@/lib/permanent-unit-owner-retention/recurrence-core.mjs";
+import {
+  gatewayHoldReceiptKinds,
+  ql247SourceRepositories,
+} from "@/lib/permanent-unit-owner-retention/recurrence-core.mjs";
 import {
   recordRecurrenceReviewAction,
   recordRecurrenceDecisionAction,
@@ -36,6 +39,7 @@ import {
   recordOwnerProofGatewayReviewAction,
   recordGatewayHoldReceiptReviewAction,
   recordQl245SourcePinHoldReviewAction,
+  recordQl246ExceptionPinHoldDecisionAction,
 } from "./actions";
 const gatewayHoldReceiptOptions: Record<
   string,
@@ -129,6 +133,57 @@ const ql245SourcePinOptions: Record<
     {
       value: "owner_evidence_requested",
       label: "Request new independent owner-safe proof",
+    },
+  ],
+};
+const ql246ExceptionPinOptions: Record<
+  string,
+  Array<{ value: string; label: string }>
+> = {
+  independent_source_proof_exception_intake: [
+    {
+      value: "proof_missing",
+      label: "QL-246 source proof MISSING — no signed claims",
+    },
+    {
+      value: "proof_blocked",
+      label: "QL-246 proof BLOCKED — prerequisites missing",
+    },
+    {
+      value: "proof_unverified",
+      label: "Public proof exists, but is UNVERIFIED",
+    },
+    {
+      value: "proof_exception_escalated",
+      label: "Escalate unverified or blocked source proof",
+    },
+  ],
+  out_of_band_pin_challenge_reconciliation: [
+    {
+      value: "pin_not_provisioned",
+      label: "No approved Ed25519 signer pin or challenge",
+    },
+    {
+      value: "pin_independence_unverified",
+      label: "Public fingerprints match; independent channel unverified",
+    },
+    {
+      value: "pin_mismatch_escalated",
+      label: "Distinct public pin fingerprints — escalate",
+    },
+  ],
+  multi_application_hold_gate_decision: [
+    {
+      value: "six_app_hold_reaffirmed",
+      label: "Maintain six-app HOLD without authorizing a pilot",
+    },
+    {
+      value: "six_app_exception_escalated",
+      label: "Escalate observed Build 142 recurrence/overdue gap",
+    },
+    {
+      value: "owner_test_authorization_absent",
+      label: "Phase B nonproduction test permission NOT GIVEN",
     },
   ],
 };
@@ -999,6 +1054,52 @@ export default async function RecurrenceDecisionsPage({
             : r.review_kind === "trusted_pin_provenance_followup"
               ? "gateway_hold_recurrence_escalation"
               : "independent_source_receipt_comparison",
+        status: r.review_status,
+      })),
+  ];
+  const ql246ExceptionPinQueue = [
+    ...report.sourcePinHoldReviews
+      .filter((r) => r.review_kind === "gateway_hold_recurrence_escalation")
+      .flatMap((r) =>
+        Object.entries(ql247SourceRepositories)
+          .filter(
+            ([system]) =>
+              !report.ql246ExceptionPinHoldDecisions.some(
+                (q) =>
+                  q.source_pin_review_id === r.id &&
+                  q.source_system === system &&
+                  !q.prior_review_id,
+              ),
+          )
+          .map(([sourceSystem, repository]) => ({
+            id: `${r.id}-${sourceSystem}`,
+            sourcePinReviewId: r.id,
+            priorReviewId: "",
+            sourceSystem,
+            repository,
+            reviewKind: "independent_source_proof_exception_intake",
+            status: r.review_status,
+          })),
+      ),
+    ...report.ql246ExceptionPinHoldDecisions
+      .filter(
+        (r) =>
+          !report.ql246ExceptionPinHoldDecisions.some(
+            (child) => child.prior_review_id === r.id,
+          ),
+      )
+      .map((r) => ({
+        id: r.id,
+        sourcePinReviewId: r.source_pin_review_id,
+        priorReviewId: r.id,
+        sourceSystem: r.source_system,
+        repository: r.repository,
+        reviewKind:
+          r.review_kind === "independent_source_proof_exception_intake"
+            ? "out_of_band_pin_challenge_reconciliation"
+            : r.review_kind === "out_of_band_pin_challenge_reconciliation"
+              ? "multi_application_hold_gate_decision"
+              : "independent_source_proof_exception_intake",
         status: r.review_status,
       })),
   ];
@@ -4746,6 +4847,208 @@ export default async function RecurrenceDecisionsPage({
                   : ""}
                 {r.pin_provenance_ref
                   ? ` · public pin source ${r.pin_provenance_ref}`
+                  : ""}
+                {r.prior_review_id ? ` · follows ${r.prior_review_id}` : ""}
+                {` — ${r.review_note}`}
+              </li>
+            ))}
+          </ul>
+        </section>
+        <section>
+          <h2>
+            Build 143 — QL-246 source proof exceptions, separate public pin
+            challenge and six-app HOLD gate
+          </h2>
+          <p>
+            ⓘ QL-247 Phase A is public source preparation only. Phase B requires
+            a new, specific owner-approved nonproduction GET test with scoped
+            secret issuance and an independent reviewer. Phase C read-only pilot
+            needs a separate later authorization. None has been granted. A
+            GitHub account shared by six apps is <strong>not</strong> service
+            authentication. Here we record only owner-safe public metadata;
+            iCamp remains DISCONNECTED / HOLD. Never enter signing keys, HMAC
+            credentials, challenge nonces, customer data, private runner
+            addresses, network locations, payment information or device secrets.
+          </p>
+          <h3>Independent six-app exception and pin provenance queue</h3>
+          {ql246ExceptionPinQueue.slice(0, 24).map((item) => (
+            <form
+              key={`${item.id}-${item.reviewKind}`}
+              action={recordQl246ExceptionPinHoldDecisionAction}
+            >
+              {pair}
+              <input
+                type="hidden"
+                name="sourcePinReviewId"
+                value={item.sourcePinReviewId}
+              />
+              <input
+                type="hidden"
+                name="priorReviewId"
+                value={item.priorReviewId}
+              />
+              <input type="hidden" name="reviewKind" value={item.reviewKind} />
+              <input
+                type="hidden"
+                name="sourceSystem"
+                value={item.sourceSystem}
+              />
+              <input type="hidden" name="repository" value={item.repository} />
+              <p>
+                {item.sourceSystem} · {item.repository} ·{" "}
+                {item.reviewKind.replaceAll("_", " ")} · {item.status}
+              </p>
+              <label>
+                Independent documentary outcome{" "}
+                <select name="outcomeKind" required>
+                  {ql246ExceptionPinOptions[item.reviewKind].map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              {item.reviewKind ===
+                "independent_source_proof_exception_intake" && (
+                <>
+                  <p>
+                    A missing or blocked QL-246 proof is an honest outcome
+                    during Phase A. Record the source SHA/CI and raw public JSON
+                    SHA256 only if they were actually retrieved and
+                    independently reviewed; no fabricated green CI runs or proof
+                    digests.
+                  </p>
+                  <label>
+                    Source proof state{" "}
+                    <select name="sourceProofStatus" required>
+                      <option value="MISSING">MISSING</option>
+                      <option value="BLOCKED">BLOCKED</option>
+                      <option value="PRESENT_UNVERIFIED">
+                        PRESENT / UNVERIFIED
+                      </option>
+                    </select>
+                  </label>
+                  <label>
+                    Exact 40-character source commit SHA (when available){" "}
+                    <input
+                      name="sourceRevision"
+                      maxLength={40}
+                      pattern="[a-f0-9]{40}"
+                    />
+                  </label>
+                  <label>
+                    Real source-commit GitHub Actions run URL{" "}
+                    <input type="url" name="ciRunUrl" maxLength={155} />
+                  </label>
+                  <label>
+                    Observed raw public signed JSON SHA256 (only if a proof
+                    exists){" "}
+                    <input
+                      name="proofRawJsonSha256"
+                      maxLength={64}
+                      pattern="[a-f0-9]{64}"
+                    />
+                  </label>
+                </>
+              )}
+              {item.reviewKind ===
+                "out_of_band_pin_challenge_reconciliation" && (
+                <>
+                  <p>
+                    Compare two <strong>public</strong> Ed25519 SPKI SHA256
+                    fingerprints and an independently obtained nonsecret source
+                    reference. Matching strings do not prove channel
+                    independence. Only the operator-issued challenge ID and its
+                    SHA256 digest belong here—never the original nonce or a
+                    signing private key.
+                  </p>
+                  <label>
+                    Public source signer SPKI SHA256 (if supplied){" "}
+                    <input
+                      name="publicSignerSpkiSha256"
+                      maxLength={64}
+                      pattern="[a-f0-9]{64}"
+                    />
+                  </label>
+                  <label>
+                    Separately supplied public signer SPKI SHA256{" "}
+                    <input
+                      name="outOfBandSpkiSha256"
+                      maxLength={64}
+                      pattern="[a-f0-9]{64}"
+                    />
+                  </label>
+                  <label>
+                    Nonsecret independent-channel reference{" "}
+                    <input
+                      name="outOfBandReference"
+                      maxLength={160}
+                      pattern="np-[A-Za-z0-9._:-]{5,157}"
+                    />
+                  </label>
+                  <label>
+                    One-time nonsecret operator challenge ID (optional){" "}
+                    <input
+                      name="operatorChallengeId"
+                      maxLength={160}
+                      pattern="np-[A-Za-z0-9._:-]{5,157}"
+                    />
+                  </label>
+                  <label>
+                    SHA256 of operator challenge nonce (never the nonce){" "}
+                    <input
+                      name="operatorChallengeSha256"
+                      maxLength={64}
+                      pattern="[a-f0-9]{64}"
+                    />
+                  </label>
+                </>
+              )}
+              {item.reviewKind === "multi_application_hold_gate_decision" && (
+                <p>
+                  HOLD cannot be released from this form. Source proof
+                  signatures, seven real denial cases, durable gateway audit,
+                  nonproduction test approval, and separate owner pilot
+                  authorization all remain UNVERIFIED / NOT GIVEN.
+                </p>
+              )}
+              <label>
+                Next independent UTC recheck within 90 days{" "}
+                <input type="date" name="nextDueAt" required />
+              </label>
+              <label>
+                Nonsecret source evidence index{" "}
+                <input
+                  name="evidenceReference"
+                  minLength={8}
+                  maxLength={400}
+                  required
+                />
+              </label>
+              <label>
+                Exception and independent reviewer findings{" "}
+                <textarea
+                  name="reviewNote"
+                  minLength={12}
+                  maxLength={800}
+                  required
+                />
+              </label>
+              <button type="submit">
+                Record Build 143 independent HOLD decision
+              </button>
+            </form>
+          ))}
+          <h3>Immutable Build 143 UNVERIFIED / DISCONNECTED history</h3>
+          <ul>
+            {report.ql246ExceptionPinHoldDecisions.map((r) => (
+              <li key={r.id}>
+                {r.source_system} · {r.repository} · {r.review_kind} ·{" "}
+                {r.outcome_kind} · {r.review_status}
+                {` · proof ${r.source_proof_status} · observed public pin equality ${r.observed_public_pin_string_match} · signature verified ${r.source_proof_signature_verified} · independent pin ${r.independent_pin_channel_verified} · seven denials ${r.seven_denials_witnessed} · Phase B authorized ${r.phase_b_test_authorized} · owner pilot ${r.owner_pilot_authorized} · gate ${r.gate_state} · connection ${r.connection_state} · overdue ${r.observed_prior_overdue_days} days · open Build 142 exceptions ${r.observed_open_142_exceptions} · overdue Build 142 leaves ${r.observed_overdue_142_leaves} · previously indexed application types ${r.observed_six_app_source_kinds}/6 · independently verified source proofs ${r.observed_six_app_proofs_independently_verified}/6`}
+                {r.source_revision ? ` · source SHA ${r.source_revision}` : ""}
+                {r.out_of_band_reference
+                  ? ` · public pin provenance ${r.out_of_band_reference}`
                   : ""}
                 {r.prior_review_id ? ` · follows ${r.prior_review_id}` : ""}
                 {` — ${r.review_note}`}
