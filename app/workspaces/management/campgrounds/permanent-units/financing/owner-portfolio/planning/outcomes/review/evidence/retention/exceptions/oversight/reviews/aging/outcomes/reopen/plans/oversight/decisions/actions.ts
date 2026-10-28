@@ -31,6 +31,7 @@ import {
   recordContinuityRecurrenceRecheck,
   recordOwnerRecheckRenewalWatch,
   recordContinuityEvidenceReconciliation,
+  recordOwnerProofGatewayReview,
 } from "@/lib/permanent-unit-owner-retention/recurrence-postgres.mjs";
 const path =
   "/workspaces/management/campgrounds/permanent-units/financing/owner-portfolio/planning/outcomes/review/evidence/retention/exceptions/oversight/reviews/aging/outcomes/reopen/plans/oversight/decisions";
@@ -860,6 +861,50 @@ export async function recordContinuityEvidenceReconciliationAction(
       error instanceof Error
         ? error.message
         : "Independent owner proof reconciliation rejected.";
+  }
+  revalidatePath(path);
+  redirect(
+    `${path}?source=${encodeURIComponent(source)}&target=${encodeURIComponent(target)}&${kind}=${encodeURIComponent(message.slice(0, 180))}`,
+  );
+}
+export async function recordOwnerProofGatewayReviewAction(form: FormData) {
+  const session = await requireStaff(path);
+  const source = field(form, "sourceCampgroundId"),
+    target = field(form, "targetCampgroundId");
+  let kind = "saved",
+    message =
+      "Independent owner proof renewal, aged exception or read-only HOLD gate review recorded.";
+  try {
+    await recordOwnerProofGatewayReview({
+      actorUserId: session.user.id,
+      id: randomUUID(),
+      sourceCampgroundId: source,
+      targetCampgroundId: target,
+      ownerReconciliationId: field(form, "ownerReconciliationId"),
+      priorReviewId: field(form, "priorReviewId"),
+      verifiedRenewalEventId: field(form, "verifiedRenewalEventId"),
+      reviewKind: field(form, "reviewKind"),
+      outcomeKind: field(form, "outcomeKind"),
+      nextDueAt: field(form, "nextDueAt"),
+      gatewayHealthReceiptRef: field(form, "gatewayHealthReceiptRef"),
+      gatewayCapabilitiesReceiptRef: field(
+        form,
+        "gatewayCapabilitiesReceiptRef",
+      ),
+      gatewayAuditReceiptRef: field(form, "gatewayAuditReceiptRef"),
+      independentWitnessAttestationRef: field(
+        form,
+        "independentWitnessAttestationRef",
+      ),
+      evidenceReference: field(form, "evidenceReference"),
+      reviewNote: field(form, "reviewNote"),
+    });
+  } catch (error) {
+    kind = "error";
+    message =
+      error instanceof Error
+        ? error.message
+        : "Owner proof renewal and gateway HOLD review rejected.";
   }
   revalidatePath(path);
   redirect(
