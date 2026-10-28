@@ -591,3 +591,35 @@ export function classifyQl245SourcePinHoldStatus(
   next: { id: string } | null,
   now?: Date,
 ): string;
+export const ql247SourceRepositories: Readonly<Record<string, string>>;
+export function normalizeQl246ExceptionPinHoldDecision(
+  raw: Record<string, unknown>,
+  now?: Date,
+): {
+  id: string;
+  sourcePinReviewId: string;
+  priorReviewId: string | null;
+  sourceCampgroundId: string;
+  targetCampgroundId: string;
+  sourceSystem: string;
+  repository: string;
+  reviewKind: string;
+  outcomeKind: string;
+  sourceRevision: string | null;
+  ciRunUrl: string | null;
+  proofRawJsonSha256: string | null;
+  sourceProofStatus: string;
+  publicSignerSpkiSha256: string | null;
+  outOfBandSpkiSha256: string | null;
+  outOfBandReference: string | null;
+  operatorChallengeId: string | null;
+  operatorChallengeSha256: string | null;
+  nextDueAt: string;
+  evidenceReference: string;
+  reviewNote: string;
+};
+export function classifyQl246ExceptionPinHoldStatus(
+  record: { review_kind: string; next_due_at?: Date | string | null },
+  next: { id: string } | null,
+  now?: Date,
+): string;
