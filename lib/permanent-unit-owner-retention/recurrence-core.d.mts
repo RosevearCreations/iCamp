@@ -566,3 +566,28 @@ export function classifyGatewayHoldReceiptReviewStatus(
   next: { id: string } | null,
   now?: Date,
 ): string;
+export function normalizeQl245SourcePinHoldReview(
+  raw: Record<string, unknown>,
+  now?: Date,
+): {
+  id: string;
+  receiptReviewId: string;
+  priorReviewId: string | null;
+  sourceCampgroundId: string;
+  targetCampgroundId: string;
+  reviewKind: string;
+  outcomeKind: string;
+  nextDueAt: string;
+  comparisonSourceRevision: string | null;
+  comparisonCiRunUrl: string | null;
+  publicSourcePinSha256: string | null;
+  separatelySourcedPinSha256: string | null;
+  pinProvenanceRef: string | null;
+  evidenceReference: string;
+  reviewNote: string;
+};
+export function classifyQl245SourcePinHoldStatus(
+  record: { review_kind: string; next_due_at?: Date | string | null },
+  next: { id: string } | null,
+  now?: Date,
+): string;

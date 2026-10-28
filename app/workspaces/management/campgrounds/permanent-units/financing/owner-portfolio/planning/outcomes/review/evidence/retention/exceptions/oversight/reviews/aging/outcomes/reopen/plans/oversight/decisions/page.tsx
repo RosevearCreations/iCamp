@@ -35,6 +35,7 @@ import {
   recordContinuityEvidenceReconciliationAction,
   recordOwnerProofGatewayReviewAction,
   recordGatewayHoldReceiptReviewAction,
+  recordQl245SourcePinHoldReviewAction,
 } from "./actions";
 const gatewayHoldReceiptOptions: Record<
   string,
@@ -81,6 +82,53 @@ const gatewayHoldReceiptOptions: Record<
     {
       value: "receipt_escalated",
       label: "Escalate for independent original proof",
+    },
+  ],
+};
+const ql245SourcePinOptions: Record<
+  string,
+  Array<{ value: string; label: string }>
+> = {
+  independent_source_receipt_comparison: [
+    {
+      value: "source_metadata_unverified",
+      label: "Original source receipt not independently verified",
+    },
+    {
+      value: "source_metadata_syntax_aligned",
+      label: "Source SHA and CI URL match the recorded reference (syntax only)",
+    },
+    {
+      value: "source_metadata_mismatch",
+      label: "Source SHA differs — investigate and escalate",
+    },
+  ],
+  trusted_pin_provenance_followup: [
+    {
+      value: "pin_not_provisioned",
+      label: "Independent signer public pin not provisioned",
+    },
+    {
+      value: "pin_reference_unverified",
+      label: "Two public fingerprints match; trust source unverified",
+    },
+    {
+      value: "pin_mismatch_escalated",
+      label: "Distinct public signer fingerprints — escalate",
+    },
+  ],
+  gateway_hold_recurrence_escalation: [
+    {
+      value: "hold_renewal_documented",
+      label: "Document HOLD renewal without gateway acceptance",
+    },
+    {
+      value: "hold_recurrence_escalated",
+      label: "Escalate database-observed receipt recurrence",
+    },
+    {
+      value: "owner_evidence_requested",
+      label: "Request new independent owner-safe proof",
     },
   ],
 };
@@ -917,6 +965,42 @@ export default async function RecurrenceDecisionsPage({
           status: r.review_status,
         })),
       ),
+  ];
+  const ql245SourcePinQueue = [
+    ...report.gatewayHoldReceiptReviews
+      .filter(
+        (r) =>
+          r.review_kind === "owner_safe_receipt_verification_queue" &&
+          !report.sourcePinHoldReviews.some(
+            (q) => q.receipt_review_id === r.id,
+          ),
+      )
+      .map((r) => ({
+        id: r.id,
+        receiptReviewId: r.id,
+        priorReviewId: "",
+        reviewKind: "independent_source_receipt_comparison",
+        status: r.review_status,
+      })),
+    ...report.sourcePinHoldReviews
+      .filter(
+        (r) =>
+          !report.sourcePinHoldReviews.some(
+            (child) => child.prior_review_id === r.id,
+          ),
+      )
+      .map((r) => ({
+        id: r.id,
+        receiptReviewId: r.receipt_review_id,
+        priorReviewId: r.id,
+        reviewKind:
+          r.review_kind === "independent_source_receipt_comparison"
+            ? "trusted_pin_provenance_followup"
+            : r.review_kind === "trusted_pin_provenance_followup"
+              ? "gateway_hold_recurrence_escalation"
+              : "independent_source_receipt_comparison",
+        status: r.review_status,
+      })),
   ];
   return (
     <AppShell>
@@ -4512,6 +4596,159 @@ export default async function RecurrenceDecisionsPage({
                   : ""}
                 {" — "}
                 {record.review_note}
+              </li>
+            ))}
+          </ul>
+        </section>
+        <section>
+          <h2>
+            Build 142 — QL-245/QL-246 independent receipt-source comparison,
+            public signer pin provenance &amp; gateway HOLD recurrence
+          </h2>
+          <p>
+            ⓘ These records compare source metadata and independently supplied{" "}
+            <strong>public</strong> SHA256 fingerprints, track overdue review
+            receipts and escalate unresolved gaps. Equality does not establish
+            Ed25519 signature authenticity, independent pin provenance or an
+            external gateway response. The QL-246 six-application handoff
+            requires genuine operator keys, challenge, seven witnessed negative
+            tests and authenticated nonproduction GET receipts. No live
+            connection is authorized.{" "}
+            <strong>DISCONNECTED / HOLD / owner approval NOT GIVEN.</strong>
+            Never enter private keys, challenge nonces, credentials or customer
+            information.
+          </p>
+          <h3>Independent source / trusted-pin / HOLD follow-up queue</h3>
+          {ql245SourcePinQueue.slice(0, 20).map((item) => (
+            <form
+              key={`${item.id}-${item.reviewKind}`}
+              action={recordQl245SourcePinHoldReviewAction}
+            >
+              {pair}
+              <input
+                type="hidden"
+                name="receiptReviewId"
+                value={item.receiptReviewId}
+              />
+              <input
+                type="hidden"
+                name="priorReviewId"
+                value={item.priorReviewId}
+              />
+              <input type="hidden" name="reviewKind" value={item.reviewKind} />
+              <p>
+                {item.reviewKind.replaceAll("_", " ")} · {item.status} · QL-245
+                queue {item.receiptReviewId}
+              </p>
+              <label>
+                Independent review outcome{" "}
+                <select name="outcomeKind" required>
+                  {ql245SourcePinOptions[item.reviewKind].map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              {item.reviewKind === "independent_source_receipt_comparison" && (
+                <>
+                  <p>
+                    Only supply an observed immutable source commit SHA and
+                    corresponding actual GitHub Actions run URL. A matching
+                    string is not a verified source signature.
+                  </p>
+                  <label>
+                    Observed iCamp source SHA (if actually witnessed){" "}
+                    <input
+                      name="comparisonSourceRevision"
+                      maxLength={40}
+                      pattern="[a-f0-9]{40}"
+                    />
+                  </label>
+                  <label>
+                    Observed CI run URL (paired with source SHA){" "}
+                    <input
+                      name="comparisonCiRunUrl"
+                      type="url"
+                      maxLength={130}
+                    />
+                  </label>
+                </>
+              )}
+              {item.reviewKind === "trusted_pin_provenance_followup" && (
+                <>
+                  <p>
+                    Record only public signing-key SPKI SHA256 fingerprints from
+                    two genuinely separate sources. This form never certifies
+                    the out-of-band trust channel.
+                  </p>
+                  <label>
+                    Observed source public SPKI SHA256 (hex){" "}
+                    <input
+                      name="publicSourcePinSha256"
+                      maxLength={64}
+                      pattern="[a-f0-9]{64}"
+                    />
+                  </label>
+                  <label>
+                    Separately provided public SPKI SHA256 (hex){" "}
+                    <input
+                      name="separatelySourcedPinSha256"
+                      maxLength={64}
+                      pattern="[a-f0-9]{64}"
+                    />
+                  </label>
+                  <label>
+                    Nonsecret pin provenance reference (if available){" "}
+                    <input
+                      name="pinProvenanceRef"
+                      maxLength={160}
+                      pattern="np-[A-Za-z0-9._:-]{5,157}"
+                    />
+                  </label>
+                </>
+              )}
+              <label>
+                Next independent UTC review date (within 90 days){" "}
+                <input type="date" name="nextDueAt" required />
+              </label>
+              <label>
+                Nonsecret evidence index{" "}
+                <input
+                  name="evidenceReference"
+                  minLength={8}
+                  maxLength={400}
+                  required
+                />
+              </label>
+              <label>
+                Independent findings and escalation reason{" "}
+                <textarea
+                  name="reviewNote"
+                  minLength={12}
+                  maxLength={800}
+                  required
+                />
+              </label>
+              <button type="submit">
+                Record Build 142 documentary HOLD review
+              </button>
+            </form>
+          ))}
+          <h3>Immutable Build 142 source/pin evidence review history</h3>
+          <ul>
+            {report.sourcePinHoldReviews.map((r) => (
+              <li key={r.id}>
+                {r.review_kind} · {r.outcome_kind} · {r.review_status}
+                {` · source metadata syntax match ${r.observed_source_metadata_match} · public pin string match ${r.observed_public_pin_fingerprint_match} · original signature verified ${r.source_signature_verified} · independently trusted pin ${r.independently_trusted_pin_verified} · source age ${r.observed_base_receipt_age_days} days · proof age ${r.observed_proof_age_days} days · prior overdue ${r.observed_prior_overdue_days} days · open Build 141 exceptions ${r.observed_open_141_exceptions} · overdue Build 141 leaves ${r.observed_overdue_141_leaves} · newer same-kind receipts ${r.observed_newer_same_kind_receipts} · gate ${r.gate_state} · connection ${r.connection_state} · owner pilot NOT GIVEN · dispatch disabled`}
+                {r.comparison_source_revision
+                  ? ` · observed SHA ${r.comparison_source_revision}`
+                  : ""}
+                {r.pin_provenance_ref
+                  ? ` · public pin source ${r.pin_provenance_ref}`
+                  : ""}
+                {r.prior_review_id ? ` · follows ${r.prior_review_id}` : ""}
+                {` — ${r.review_note}`}
               </li>
             ))}
           </ul>
