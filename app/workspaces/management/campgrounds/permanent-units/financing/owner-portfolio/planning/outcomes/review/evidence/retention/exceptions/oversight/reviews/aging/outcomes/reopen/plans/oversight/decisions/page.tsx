@@ -28,7 +28,52 @@ import {
   recordVerifiedClosureMonitorAction,
   recordReopeningFollowupOversightAction,
   recordEscalationResolutionRenewalAction,
+  recordRenewalFreshnessDecisionAction,
 } from "./actions";
+const renewalFreshnessOptions: Record<
+  string,
+  Array<{ value: string; label: string }>
+> = {
+  independent_renewal_freshness_comparison: [
+    {
+      value: "freshness_verified",
+      label: "New independent same-root evidence verified",
+    },
+    { value: "freshness_stale", label: "Evidence is stale or not renewed" },
+    {
+      value: "freshness_gap_escalated",
+      label: "Escalate missing or overdue new proof",
+    },
+  ],
+  reopening_watch_exception_reassessment: [
+    {
+      value: "watch_no_exception",
+      label: "Recheck confirms no new reopening exception",
+    },
+    {
+      value: "watch_reopened_exception",
+      label: "Recheck identifies newer reopening or discrepancy",
+    },
+    {
+      value: "watch_escalation_required",
+      label: "Independent recheck requires owner escalation",
+    },
+  ],
+  owner_continuity_decision_audit: [
+    {
+      value: "owner_continuity_confirmed",
+      label: "Audit independent exception-free continuity",
+    },
+    {
+      value: "owner_evidence_renewal_due",
+      label: "Owner evidence renewal still due",
+    },
+    {
+      value: "owner_continuity_escalated",
+      label: "Escalate owner's unresolved continuity exception",
+    },
+  ],
+};
 const escalationRenewalOptions: Record<
   string,
   Array<{ value: string; label: string }>
@@ -411,6 +456,42 @@ export default async function RecurrenceDecisionsPage({
                 ? "owner_evidence_renewal"
                 : "independent_resolution_followup",
         status: r.renewal_status,
+      })),
+  ];
+  const renewalFreshnessQueue = [
+    ...report.escalationResolutionRenewals
+      .filter(
+        (r) =>
+          r.renewal_kind === "owner_evidence_renewal" &&
+          !report.renewalFreshnessDecisions.some(
+            (audit) => audit.owner_renewal_id === r.id,
+          ),
+      )
+      .map((r) => ({
+        id: r.id,
+        ownerRenewalId: r.id,
+        priorAuditId: "",
+        auditKind: "independent_renewal_freshness_comparison",
+        status: r.renewal_status,
+      })),
+    ...report.renewalFreshnessDecisions
+      .filter(
+        (r) =>
+          !report.renewalFreshnessDecisions.some(
+            (child) => child.prior_audit_id === r.id,
+          ),
+      )
+      .map((r) => ({
+        id: r.id,
+        ownerRenewalId: r.owner_renewal_id,
+        priorAuditId: r.id,
+        auditKind:
+          r.audit_kind === "independent_renewal_freshness_comparison"
+            ? "reopening_watch_exception_reassessment"
+            : r.audit_kind === "reopening_watch_exception_reassessment"
+              ? "owner_continuity_decision_audit"
+              : "independent_renewal_freshness_comparison",
+        status: r.audit_status,
       })),
   ];
   return (
@@ -3115,6 +3196,140 @@ export default async function RecurrenceDecisionsPage({
                   : ""}
                 {" — "}
                 {record.renewal_note}
+              </li>
+            ))}
+          </ul>
+        </section>
+        <section>
+          <h2>
+            Build 136 — Independent renewal evidence freshness, reopening watch
+            exceptions &amp; owner continuity decision
+          </h2>
+          <p>
+            Each review compares a Build 135 owner renewal against its verified
+            source proof. Only a new, separately verified proof can be marked
+            fresh. A distinct reviewer then rechecks later reopenings and open
+            peer/owner exceptions before the owner continuity decision. Thirty
+            days overdue requires escalation, and the audit never changes
+            campground holds, reservations, customers or outside applications.
+          </p>
+          <h3>Freshness comparison and independent reassessment queue</h3>
+          {renewalFreshnessQueue.slice(0, 20).map((item) => {
+            const ownerRenewal = report.escalationResolutionRenewals.find(
+              (r) => r.id === item.ownerRenewalId,
+            );
+            const resolved = report.reopeningFollowupOversights.find(
+              (r) => r.id === ownerRenewal?.resolved_oversight_id,
+            );
+            const monitor = report.verifiedClosureMonitors.find(
+              (r) => r.id === resolved?.verified_monitor_id,
+            );
+            const baseline = report.closureRecurrenceEvents.find(
+              (r) =>
+                r.id ===
+                (ownerRenewal?.renewal_evidence_event_id ??
+                  resolved?.verified_resolution_event_id),
+            );
+            return (
+              <form key={item.id} action={recordRenewalFreshnessDecisionAction}>
+                {pair}
+                <input
+                  type="hidden"
+                  name="ownerRenewalId"
+                  value={item.ownerRenewalId}
+                />
+                <input
+                  type="hidden"
+                  name="priorAuditId"
+                  value={item.priorAuditId}
+                />
+                <input type="hidden" name="auditKind" value={item.auditKind} />
+                <p>
+                  {item.auditKind} · {item.status} · receipt {item.id}
+                </p>
+                <label>
+                  Independent audit outcome{" "}
+                  <select name="outcomeKind" required>
+                    {renewalFreshnessOptions[item.auditKind].map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label>
+                  Newer verified source evidence (only for freshness verified){" "}
+                  <select name="comparisonEvidenceEventId" defaultValue="">
+                    <option value="">No new source evidence to claim</option>
+                    {item.auditKind ===
+                      "independent_renewal_freshness_comparison" &&
+                      report.closureRecurrenceEvents
+                        .filter(
+                          (event) =>
+                            event.event_kind ===
+                              "independent_followup_verify" &&
+                            event.outcome_kind === "verify_followup_evidence" &&
+                            event.root_reopen_id ===
+                              monitor?.linked_reopen_event_id &&
+                            baseline &&
+                            new Date(event.recorded_at).getTime() >
+                              new Date(baseline.recorded_at).getTime() &&
+                            !report.renewalFreshnessDecisions.some(
+                              (used) =>
+                                used.comparison_evidence_event_id === event.id,
+                            ),
+                        )
+                        .map((event) => (
+                          <option key={event.id} value={event.id}>
+                            {event.id} · later independent source proof
+                          </option>
+                        ))}
+                  </select>
+                </label>
+                <label>
+                  Next UTC continuity audit due (within 90 days){" "}
+                  <input type="date" name="nextDueAt" required />
+                </label>
+                <label>
+                  Evidence reference{" "}
+                  <input
+                    name="evidenceReference"
+                    minLength={8}
+                    maxLength={400}
+                    required
+                  />
+                </label>
+                <label>
+                  Freshness comparison, exception recheck or owner decision
+                  findings{" "}
+                  <textarea
+                    name="auditNote"
+                    minLength={12}
+                    maxLength={800}
+                    required
+                  />
+                </label>
+                <button type="submit">
+                  Record Build 136 independent audit
+                </button>
+              </form>
+            );
+          })}
+          <h3>Immutable renewal freshness and continuity decision history</h3>
+          <ul>
+            {report.renewalFreshnessDecisions.map((record) => (
+              <li key={record.id}>
+                {record.audit_kind} · {record.outcome_kind} ·{" "}
+                {record.audit_status}
+                {` · owner renewal ${record.owner_renewal_id} · ${record.observed_proof_age_days} evidence days old · ${record.observed_prior_days_overdue} overdue days · ${record.observed_new_reopenings} later reopenings · ${record.observed_open_peer_recurrences} peer exceptions · ${record.observed_open_owner_dispositions} owner exceptions · ${record.observed_recent_owner_escalations} recent escalations`}
+                {record.comparison_evidence_event_id
+                  ? ` · verified new proof ${record.comparison_evidence_event_id}`
+                  : ""}
+                {record.prior_audit_id
+                  ? ` · follows ${record.prior_audit_id}`
+                  : ""}
+                {" — "}
+                {record.audit_note}
               </li>
             ))}
           </ul>
