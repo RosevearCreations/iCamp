@@ -137,6 +137,7 @@ test("QL-245 allows precisely two GET scopes and queues all seven real denial ca
   assert.ok(
     cfg.includes('env.ICAMP_INTEGRATION_V1_ENVIRONMENT === "nonproduction"'),
   );
+  assert.ok(cfg.includes('env.ICAMP_APPLICATION_VERSION ?? "build-141"'));
   assert.ok(cfg.includes('"GET"'));
   const route = readFileSync(
     new URL("../lib/integration-v1/route.ts", import.meta.url),
