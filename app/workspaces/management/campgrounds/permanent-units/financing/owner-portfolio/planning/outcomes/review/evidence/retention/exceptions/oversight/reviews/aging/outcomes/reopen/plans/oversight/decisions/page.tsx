@@ -29,7 +29,55 @@ import {
   recordReopeningFollowupOversightAction,
   recordEscalationResolutionRenewalAction,
   recordRenewalFreshnessDecisionAction,
+  recordContinuityRecurrenceRecheckAction,
 } from "./actions";
+const continuityRecheckOptions: Record<
+  string,
+  Array<{ value: string; label: string }>
+> = {
+  independent_continuity_recurrence_watch: [
+    {
+      value: "continuity_stable",
+      label: "Continuity stable: evidence and exceptions current",
+    },
+    {
+      value: "continuity_recurrence_detected",
+      label: "New reopening or continuity recurrence detected",
+    },
+    {
+      value: "continuity_escalation_required",
+      label: "Independent owner escalation required",
+    },
+  ],
+  renewal_exception_followup_aging: [
+    {
+      value: "renewal_evidence_current",
+      label: "Renewal exception follow-up evidence is current",
+    },
+    {
+      value: "renewal_exception_overdue",
+      label: "Renewal exception overdue or evidence missing",
+    },
+    {
+      value: "renewal_exception_escalated",
+      label: "Escalate overdue renewal exception",
+    },
+  ],
+  verified_owner_audit_recheck: [
+    {
+      value: "owner_audit_reverified",
+      label: "Reverified using newer independent same-root proof",
+    },
+    {
+      value: "owner_audit_on_hold",
+      label: "Maintain owner audit exception for review",
+    },
+    {
+      value: "owner_audit_escalated",
+      label: "Escalate owner audit proof failure",
+    },
+  ],
+};
 const renewalFreshnessOptions: Record<
   string,
   Array<{ value: string; label: string }>
@@ -492,6 +540,42 @@ export default async function RecurrenceDecisionsPage({
               ? "owner_continuity_decision_audit"
               : "independent_renewal_freshness_comparison",
         status: r.audit_status,
+      })),
+  ];
+  const continuityRecheckQueue = [
+    ...report.renewalFreshnessDecisions
+      .filter(
+        (r) =>
+          r.audit_kind === "owner_continuity_decision_audit" &&
+          !report.continuityRecurrenceRechecks.some(
+            (check) => check.owner_continuity_id === r.id,
+          ),
+      )
+      .map((r) => ({
+        id: r.id,
+        ownerContinuityId: r.id,
+        priorRecheckId: "",
+        recheckKind: "independent_continuity_recurrence_watch",
+        status: r.audit_status,
+      })),
+    ...report.continuityRecurrenceRechecks
+      .filter(
+        (r) =>
+          !report.continuityRecurrenceRechecks.some(
+            (child) => child.prior_recheck_id === r.id,
+          ),
+      )
+      .map((r) => ({
+        id: r.id,
+        ownerContinuityId: r.owner_continuity_id,
+        priorRecheckId: r.id,
+        recheckKind:
+          r.recheck_kind === "independent_continuity_recurrence_watch"
+            ? "renewal_exception_followup_aging"
+            : r.recheck_kind === "renewal_exception_followup_aging"
+              ? "verified_owner_audit_recheck"
+              : "independent_continuity_recurrence_watch",
+        status: r.recheck_status,
       })),
   ];
   return (
@@ -3330,6 +3414,144 @@ export default async function RecurrenceDecisionsPage({
                   : ""}
                 {" — "}
                 {record.audit_note}
+              </li>
+            ))}
+          </ul>
+        </section>
+        <section>
+          <h2>
+            Build 137 — Continuity recurrence watch, renewal exception aging and
+            verified owner audit recheck
+          </h2>
+          <p>
+            Recheck the Build 136 owner continuity decision independently, then
+            record whether renewal exceptions are overdue. Reverify an owner
+            audit only with a newer same-root source event, a different reviewer
+            and no unresolved recurrence or owner exception. Thirty-day overdue
+            reviews require explicit exception or escalation. All receipts are
+            immutable; none releases holds or sends messages to other systems.
+          </p>
+          <h3>Independent recurrence and owner audit queue</h3>
+          {continuityRecheckQueue.slice(0, 20).map((item) => {
+            const owner = report.renewalFreshnessDecisions.find(
+              (r) => r.id === item.ownerContinuityId,
+            );
+            const watch = report.renewalFreshnessDecisions.find(
+              (r) => r.id === owner?.prior_audit_id,
+            );
+            const comparison = report.renewalFreshnessDecisions.find(
+              (r) => r.id === watch?.prior_audit_id,
+            );
+            const baseline = report.closureRecurrenceEvents.find(
+              (r) => r.id === comparison?.comparison_evidence_event_id,
+            );
+            return (
+              <form
+                key={item.id}
+                action={recordContinuityRecurrenceRecheckAction}
+              >
+                {pair}
+                <input
+                  type="hidden"
+                  name="ownerContinuityId"
+                  value={item.ownerContinuityId}
+                />
+                <input
+                  type="hidden"
+                  name="priorRecheckId"
+                  value={item.priorRecheckId}
+                />
+                <input
+                  type="hidden"
+                  name="recheckKind"
+                  value={item.recheckKind}
+                />
+                <p>
+                  {item.recheckKind} · {item.status} · source receipt {item.id}
+                </p>
+                <label>
+                  Independent recheck outcome{" "}
+                  <select name="outcomeKind" required>
+                    {continuityRecheckOptions[item.recheckKind].map(
+                      (option) => (
+                        <option key={option.value} value={option.value}>
+                          {option.label}
+                        </option>
+                      ),
+                    )}
+                  </select>
+                </label>
+                <label>
+                  New independent source proof (only for verified owner audit){" "}
+                  <select name="verifiedFollowupEventId" defaultValue="">
+                    <option value="">No new verified proof claimed</option>
+                    {item.recheckKind === "verified_owner_audit_recheck" &&
+                      report.closureRecurrenceEvents
+                        .filter(
+                          (event) =>
+                            event.event_kind ===
+                              "independent_followup_verify" &&
+                            event.outcome_kind === "verify_followup_evidence" &&
+                            event.observed_original_proof_verified &&
+                            baseline &&
+                            event.root_reopen_id === baseline.root_reopen_id &&
+                            new Date(event.recorded_at).getTime() >
+                              new Date(baseline.recorded_at).getTime() &&
+                            !report.continuityRecurrenceRechecks.some(
+                              (used) =>
+                                used.verified_followup_event_id === event.id,
+                            ),
+                        )
+                        .map((event) => (
+                          <option key={event.id} value={event.id}>
+                            {event.id} · newer verified same-root evidence
+                          </option>
+                        ))}
+                  </select>
+                </label>
+                <label>
+                  Next independent UTC recheck date (within 90 days){" "}
+                  <input type="date" name="nextDueAt" required />
+                </label>
+                <label>
+                  Evidence reference{" "}
+                  <input
+                    name="evidenceReference"
+                    minLength={8}
+                    maxLength={400}
+                    required
+                  />
+                </label>
+                <label>
+                  Recurrence, renewal age or owner audit findings{" "}
+                  <textarea
+                    name="recheckNote"
+                    minLength={12}
+                    maxLength={800}
+                    required
+                  />
+                </label>
+                <button type="submit">
+                  Record Build 137 independent recheck
+                </button>
+              </form>
+            );
+          })}
+          <h3>Immutable independent continuity recheck history</h3>
+          <ul>
+            {report.continuityRecurrenceRechecks.map((record) => (
+              <li key={record.id}>
+                {record.recheck_kind} · {record.outcome_kind} ·{" "}
+                {record.recheck_status}
+                {` · owner decision ${record.owner_continuity_id} · source proof ${record.observed_proof_age_days} days old · ${record.observed_prior_days_overdue} overdue days · ${record.observed_new_reopenings} newer reopenings · ${record.observed_open_peer_recurrences} peer recurrences · ${record.observed_open_owner_dispositions} owner dispositions · ${record.observed_recent_owner_escalations} escalations · ${record.observed_open_renewal_exceptions} renewal exceptions · ${record.observed_overdue_renewal_reviews} overdue renewals`}
+                {record.verified_followup_event_id
+                  ? ` · verified source proof ${record.verified_followup_event_id}`
+                  : ""}
+                {record.prior_recheck_id
+                  ? ` · follows ${record.prior_recheck_id}`
+                  : ""}
+                {" — "}
+                {record.recheck_note}
               </li>
             ))}
           </ul>
