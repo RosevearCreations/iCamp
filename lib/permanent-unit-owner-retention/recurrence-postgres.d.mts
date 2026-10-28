@@ -333,6 +333,26 @@ export interface RecurrenceLedger {
     recheck_note: string;
     recheck_status: string;
   }>;
+  ownerRecheckRenewalWatches: Array<{
+    id: string;
+    owner_recheck_id: string;
+    prior_watch_id: string | null;
+    verified_evidence_event_id: string | null;
+    watch_kind: string;
+    outcome_kind: string;
+    next_due_at: Date;
+    observed_days_since_owner_recheck: number;
+    observed_prior_days_overdue: number;
+    observed_evidence_age_days: number;
+    observed_new_reopenings: number;
+    observed_open_peer_recurrences: number;
+    observed_open_owner_dispositions: number;
+    observed_open_recheck_exceptions: number;
+    observed_overdue_owner_rechecks: number;
+    observed_verified_continuity_proof: boolean;
+    watch_note: string;
+    watch_status: string;
+  }>;
   limited: boolean;
 }
 export function getRecurrenceLedger(
@@ -413,5 +433,8 @@ export function recordRenewalFreshnessDecision(
   raw: Record<string, unknown> & { actorUserId: string },
 ): Promise<{ id: string }>;
 export function recordContinuityRecurrenceRecheck(
+  raw: Record<string, unknown> & { actorUserId: string },
+): Promise<{ id: string }>;
+export function recordOwnerRecheckRenewalWatch(
   raw: Record<string, unknown> & { actorUserId: string },
 ): Promise<{ id: string }>;
