@@ -33,6 +33,7 @@ import {
   recordContinuityEvidenceReconciliation,
   recordOwnerProofGatewayReview,
   recordGatewayHoldReceiptReview,
+  recordQl245SourcePinHoldReview,
 } from "@/lib/permanent-unit-owner-retention/recurrence-postgres.mjs";
 const path =
   "/workspaces/management/campgrounds/permanent-units/financing/owner-portfolio/planning/outcomes/review/evidence/retention/exceptions/oversight/reviews/aging/outcomes/reopen/plans/oversight/decisions";
@@ -943,6 +944,44 @@ export async function recordGatewayHoldReceiptReviewAction(form: FormData) {
       error instanceof Error
         ? error.message
         : "Build 141 documentary review rejected.";
+  }
+  revalidatePath(path);
+  redirect(
+    `${path}?source=${encodeURIComponent(source)}&target=${encodeURIComponent(target)}&${kind}=${encodeURIComponent(message.slice(0, 180))}`,
+  );
+}
+export async function recordQl245SourcePinHoldReviewAction(form: FormData) {
+  const session = await requireStaff(path);
+  const source = field(form, "sourceCampgroundId");
+  const target = field(form, "targetCampgroundId");
+  let kind = "saved";
+  let message =
+    "Build 142 independent documentary source/pin/HOLD review recorded. Gateway remains HOLD / DISCONNECTED.";
+  try {
+    await recordQl245SourcePinHoldReview({
+      actorUserId: session.user.id,
+      id: randomUUID(),
+      sourceCampgroundId: source,
+      targetCampgroundId: target,
+      receiptReviewId: field(form, "receiptReviewId"),
+      priorReviewId: field(form, "priorReviewId"),
+      reviewKind: field(form, "reviewKind"),
+      outcomeKind: field(form, "outcomeKind"),
+      nextDueAt: field(form, "nextDueAt"),
+      comparisonSourceRevision: field(form, "comparisonSourceRevision"),
+      comparisonCiRunUrl: field(form, "comparisonCiRunUrl"),
+      publicSourcePinSha256: field(form, "publicSourcePinSha256"),
+      separatelySourcedPinSha256: field(form, "separatelySourcedPinSha256"),
+      pinProvenanceRef: field(form, "pinProvenanceRef"),
+      evidenceReference: field(form, "evidenceReference"),
+      reviewNote: field(form, "reviewNote"),
+    });
+  } catch (error) {
+    kind = "error";
+    message =
+      error instanceof Error
+        ? error.message
+        : "Build 142 independent follow-up rejected.";
   }
   revalidatePath(path);
   redirect(

@@ -426,6 +426,37 @@ export interface RecurrenceLedger {
     review_note: string;
     review_status: string;
   }>;
+  sourcePinHoldReviews: Array<{
+    id: string;
+    receipt_review_id: string;
+    prior_review_id: string | null;
+    review_kind: string;
+    outcome_kind: string;
+    next_due_at: Date;
+    comparison_source_revision: string | null;
+    comparison_ci_run_url: string | null;
+    public_source_pin_sha256: string | null;
+    separately_sourced_pin_sha256: string | null;
+    pin_provenance_ref: string | null;
+    observed_base_receipt_age_days: number;
+    observed_proof_age_days: number;
+    observed_prior_overdue_days: number;
+    observed_open_141_exceptions: number;
+    observed_overdue_141_leaves: number;
+    observed_newer_same_kind_receipts: number;
+    observed_source_metadata_match: boolean;
+    observed_public_pin_fingerprint_match: boolean;
+    source_signature_verified: false;
+    independently_trusted_pin_verified: false;
+    original_gateway_get_verified: false;
+    owner_identity_verified: false;
+    owner_pilot_authorized: false;
+    dispatch_enabled: false;
+    connection_state: "DISCONNECTED";
+    gate_state: "HOLD";
+    review_note: string;
+    review_status: string;
+  }>;
   limited: boolean;
 }
 export function getRecurrenceLedger(
@@ -518,5 +549,8 @@ export function recordOwnerProofGatewayReview(
   raw: Record<string, unknown> & { actorUserId: string },
 ): Promise<{ id: string }>;
 export function recordGatewayHoldReceiptReview(
+  raw: Record<string, unknown> & { actorUserId: string },
+): Promise<{ id: string }>;
+export function recordQl245SourcePinHoldReview(
   raw: Record<string, unknown> & { actorUserId: string },
 ): Promise<{ id: string }>;
