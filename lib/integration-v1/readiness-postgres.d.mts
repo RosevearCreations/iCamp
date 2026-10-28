@@ -7,3 +7,7 @@ export function recordReadinessHandshake(data: {
   path: string;
   allowed: boolean;
 }): Promise<boolean>;
+export function recordReadinessDenial(
+  path: string,
+  reasonCode: string,
+): Promise<void>;

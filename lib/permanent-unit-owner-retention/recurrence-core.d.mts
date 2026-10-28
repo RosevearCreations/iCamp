@@ -495,3 +495,24 @@ export function classifyOwnerRecheckRenewalWatchStatus(
   next: { id: string } | null,
   now?: Date,
 ): string;
+export function normalizeContinuityEvidenceReconciliation(
+  raw: Record<string, unknown>,
+  now?: Date,
+): {
+  id: string;
+  continuityWatchId: string;
+  priorReconciliationId: string | null;
+  verifiedSourceEventId: string | null;
+  sourceCampgroundId: string;
+  targetCampgroundId: string;
+  reviewKind: string;
+  outcomeKind: string;
+  nextDueAt: string;
+  evidenceReference: string;
+  reviewNote: string;
+};
+export function classifyContinuityEvidenceReconciliationStatus(
+  record: { review_kind: string; next_due_at?: Date | string | null },
+  next: { id: string } | null,
+  now?: Date,
+): string;
