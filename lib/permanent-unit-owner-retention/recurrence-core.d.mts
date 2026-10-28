@@ -432,3 +432,24 @@ export function classifyEscalationResolutionRenewalStatus(
   next: { id: string } | null,
   now?: Date,
 ): string;
+export function normalizeRenewalFreshnessDecision(
+  raw: Record<string, unknown>,
+  now?: Date,
+): {
+  id: string;
+  ownerRenewalId: string;
+  priorAuditId: string | null;
+  comparisonEvidenceEventId: string | null;
+  sourceCampgroundId: string;
+  targetCampgroundId: string;
+  auditKind: string;
+  outcomeKind: string;
+  nextDueAt: string;
+  evidenceReference: string;
+  auditNote: string;
+};
+export function classifyRenewalFreshnessDecisionStatus(
+  record: { audit_kind: string; next_due_at?: Date | string | null },
+  next: { id: string } | null,
+  now?: Date,
+): string;
