@@ -26,8 +26,11 @@ do $$ begin
   where n.nspname='icamp_private' and c.relname='integration_ql243_denial_receipts'
    and c.relrowsecurity and c.relforcerowsecurity) then
   raise exception 'QL-243 denial ledger forced RLS missing'; end if;
- if has_table_privilege('anon','icamp_private.integration_ql243_request_receipts','SELECT,INSERT,UPDATE,DELETE')
-  or has_table_privilege('authenticated','icamp_private.integration_ql243_request_receipts','SELECT,INSERT,UPDATE,DELETE') then
+ if exists(select 1 from pg_roles where rolname='anon') and
+  has_table_privilege('anon','icamp_private.integration_ql243_request_receipts','SELECT,INSERT,UPDATE,DELETE') then
+  raise exception 'QL-243 request ledger exposed to browser roles'; end if;
+ if exists(select 1 from pg_roles where rolname='authenticated') and
+  has_table_privilege('authenticated','icamp_private.integration_ql243_request_receipts','SELECT,INSERT,UPDATE,DELETE') then
   raise exception 'QL-243 request ledger exposed to browser roles'; end if;
  if has_table_privilege('icamp_app','icamp_private.integration_ql243_request_receipts','UPDATE,DELETE')
   or has_table_privilege('icamp_app','icamp_private.integration_ql243_denial_receipts','UPDATE,DELETE') then
