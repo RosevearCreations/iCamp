@@ -373,6 +373,34 @@ export interface RecurrenceLedger {
     review_note: string;
     reconciliation_status: string;
   }>;
+  ownerProofGatewayReviews: Array<{
+    id: string;
+    owner_reconciliation_id: string;
+    prior_review_id: string | null;
+    verified_renewal_event_id: string | null;
+    review_kind: string;
+    outcome_kind: string;
+    next_due_at: Date;
+    observed_reconciliation_age_days: number;
+    observed_prior_overdue_days: number;
+    observed_proof_age_days: number;
+    observed_later_reopenings: number;
+    observed_open_peer_recurrences: number;
+    observed_open_owner_dispositions: number;
+    observed_open_139_exceptions: number;
+    observed_overdue_139_reviews: number;
+    observed_independent_renewal_proof: boolean;
+    observed_gateway_metadata_complete: boolean;
+    gateway_health_receipt_ref: string | null;
+    gateway_capabilities_receipt_ref: string | null;
+    gateway_audit_receipt_ref: string | null;
+    independent_witness_attestation_ref: string | null;
+    gate_state: "HOLD";
+    owner_pilot_authorized: false;
+    dispatch_enabled: false;
+    review_note: string;
+    review_status: string;
+  }>;
   limited: boolean;
 }
 export function getRecurrenceLedger(
@@ -459,5 +487,8 @@ export function recordOwnerRecheckRenewalWatch(
   raw: Record<string, unknown> & { actorUserId: string },
 ): Promise<{ id: string }>;
 export function recordContinuityEvidenceReconciliation(
+  raw: Record<string, unknown> & { actorUserId: string },
+): Promise<{ id: string }>;
+export function recordOwnerProofGatewayReview(
   raw: Record<string, unknown> & { actorUserId: string },
 ): Promise<{ id: string }>;

@@ -516,3 +516,28 @@ export function classifyContinuityEvidenceReconciliationStatus(
   next: { id: string } | null,
   now?: Date,
 ): string;
+export function normalizeOwnerProofGatewayReview(
+  raw: Record<string, unknown>,
+  now?: Date,
+): {
+  id: string;
+  ownerReconciliationId: string;
+  priorReviewId: string | null;
+  verifiedRenewalEventId: string | null;
+  sourceCampgroundId: string;
+  targetCampgroundId: string;
+  reviewKind: string;
+  outcomeKind: string;
+  nextDueAt: string;
+  gatewayHealthReceiptRef: string | null;
+  gatewayCapabilitiesReceiptRef: string | null;
+  gatewayAuditReceiptRef: string | null;
+  independentWitnessAttestationRef: string | null;
+  evidenceReference: string;
+  reviewNote: string;
+};
+export function classifyOwnerProofGatewayReviewStatus(
+  record: { review_kind: string; next_due_at?: Date | string | null },
+  next: { id: string } | null,
+  now?: Date,
+): string;
