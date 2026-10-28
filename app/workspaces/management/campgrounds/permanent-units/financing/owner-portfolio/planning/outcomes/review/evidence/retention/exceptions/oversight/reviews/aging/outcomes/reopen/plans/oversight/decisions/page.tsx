@@ -32,7 +32,55 @@ import {
   recordContinuityRecurrenceRecheckAction,
   recordOwnerRecheckRenewalWatchAction,
   recordContinuityEvidenceReconciliationAction,
+  recordOwnerProofGatewayReviewAction,
 } from "./actions";
+const ownerProofGateOptions: Record<
+  string,
+  Array<{ value: string; label: string }>
+> = {
+  independent_owner_proof_renewal: [
+    {
+      value: "renewal_current",
+      label: "New independent same-root proof is current",
+    },
+    {
+      value: "renewal_source_drift",
+      label: "Proof source drift or recurrence detected",
+    },
+    {
+      value: "renewal_escalated",
+      label: "Independent owner proof needs escalation",
+    },
+  ],
+  aged_exception_disposition: [
+    {
+      value: "aged_exception_reconciled",
+      label: "Independent aged exception reconciled",
+    },
+    {
+      value: "aged_exception_overdue",
+      label: "Verified aged exception remains overdue",
+    },
+    {
+      value: "aged_exception_escalated",
+      label: "Escalate aging source exception",
+    },
+  ],
+  cross_system_read_only_gate_review: [
+    {
+      value: "gateway_documented_hold",
+      label: "Reference IDs documented; connection remains HOLD",
+    },
+    {
+      value: "gateway_evidence_missing",
+      label: "Missing independent gateway/witness receipts; HOLD",
+    },
+    {
+      value: "gateway_review_escalated",
+      label: "Escalate read-only gate blockers; HOLD",
+    },
+  ],
+};
 const evidenceReconciliationOutcomes: Record<
   string,
   Array<{ value: string; label: string }>
@@ -741,6 +789,42 @@ export default async function RecurrenceDecisionsPage({
               ? "owner_audit_proof_reconciliation"
               : "independent_continuity_evidence_recurrence_review",
         status: r.reconciliation_status,
+      })),
+  ];
+  const ownerProofGatewayQueue = [
+    ...report.continuityEvidenceReconciliations
+      .filter(
+        (r) =>
+          r.review_kind === "owner_audit_proof_reconciliation" &&
+          !report.ownerProofGatewayReviews.some(
+            (review) => review.owner_reconciliation_id === r.id,
+          ),
+      )
+      .map((r) => ({
+        id: r.id,
+        ownerReconciliationId: r.id,
+        priorReviewId: "",
+        reviewKind: "independent_owner_proof_renewal",
+        status: r.reconciliation_status,
+      })),
+    ...report.ownerProofGatewayReviews
+      .filter(
+        (r) =>
+          !report.ownerProofGatewayReviews.some(
+            (child) => child.prior_review_id === r.id,
+          ),
+      )
+      .map((r) => ({
+        id: r.id,
+        ownerReconciliationId: r.owner_reconciliation_id,
+        priorReviewId: r.id,
+        reviewKind:
+          r.review_kind === "independent_owner_proof_renewal"
+            ? "aged_exception_disposition"
+            : r.review_kind === "aged_exception_disposition"
+              ? "cross_system_read_only_gate_review"
+              : "independent_owner_proof_renewal",
+        status: r.review_status,
       })),
   ];
   return (
@@ -3997,6 +4081,194 @@ export default async function RecurrenceDecisionsPage({
                   : ""}
                 {record.prior_reconciliation_id
                   ? ` · follows ${record.prior_reconciliation_id}`
+                  : ""}
+                {" — "}
+                {record.review_note}
+              </li>
+            ))}
+          </ul>
+        </section>
+        <section>
+          <h2>
+            Build 140 — Independent owner proof renewal, aged exception
+            disposition &amp; cross-system read-only gate
+          </h2>
+          <p>
+            Follow a Build 139 owner proof reconciliation through independent
+            renewal, observed aging disposition, and a documentary integration
+            gate review. Newer independently verified same-root evidence is
+            required for a current renewal. Cross-system source IDs are
+            references, not independent signature verification or owner
+            authorization. The gateway, customer records, reservations, messages
+            and gate controls remain DISCONNECTED / HOLD.
+          </p>
+          <h3>Owner proof and read-only HOLD queue</h3>
+          {ownerProofGatewayQueue.slice(0, 20).map((item) => {
+            const base = report.continuityEvidenceReconciliations.find(
+              (r) => r.id === item.ownerReconciliationId,
+            );
+            const original = report.closureRecurrenceEvents.find(
+              (r) => r.id === base?.verified_source_event_id,
+            );
+            const latest = Math.max(
+              original ? new Date(original.recorded_at).getTime() : 0,
+              ...report.ownerProofGatewayReviews
+                .filter(
+                  (r) =>
+                    r.owner_reconciliation_id === item.ownerReconciliationId,
+                )
+                .flatMap((r) =>
+                  report.closureRecurrenceEvents.filter(
+                    (event) => event.id === r.verified_renewal_event_id,
+                  ),
+                )
+                .map((event) => new Date(event.recorded_at).getTime()),
+            );
+            return (
+              <form key={item.id} action={recordOwnerProofGatewayReviewAction}>
+                {pair}
+                <input
+                  type="hidden"
+                  name="ownerReconciliationId"
+                  value={item.ownerReconciliationId}
+                />
+                <input
+                  type="hidden"
+                  name="priorReviewId"
+                  value={item.priorReviewId}
+                />
+                <input
+                  type="hidden"
+                  name="reviewKind"
+                  value={item.reviewKind}
+                />
+                <p>
+                  {item.reviewKind} · {item.status} · root receipt {item.id}
+                </p>
+                <label>
+                  Independent review outcome{" "}
+                  <select name="outcomeKind" required>
+                    {ownerProofGateOptions[item.reviewKind].map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label>
+                  Newer verified same-root proof (required for current renewal){" "}
+                  <select name="verifiedRenewalEventId" defaultValue="">
+                    <option value="">No new proof claimed</option>
+                    {item.reviewKind === "independent_owner_proof_renewal" &&
+                      report.closureRecurrenceEvents
+                        .filter(
+                          (e) =>
+                            original &&
+                            e.root_reopen_id === original.root_reopen_id &&
+                            e.event_kind === "independent_followup_verify" &&
+                            e.outcome_kind === "verify_followup_evidence" &&
+                            e.observed_original_proof_verified &&
+                            new Date(e.recorded_at).getTime() > latest &&
+                            !report.ownerProofGatewayReviews.some(
+                              (used) => used.verified_renewal_event_id === e.id,
+                            ),
+                        )
+                        .map((e) => (
+                          <option key={e.id} value={e.id}>
+                            {e.id} · independently verified source
+                          </option>
+                        ))}
+                  </select>
+                </label>
+                {item.reviewKind === "cross_system_read_only_gate_review" && (
+                  <>
+                    <p>
+                      Optional reference IDs only; no passwords, API keys,
+                      tokens, URLs, personal data or invented evidence. All four
+                      are required only for a documented HOLD review. They do
+                      not authorize a pilot.
+                    </p>
+                    <label>
+                      Gateway signed health receipt ID{" "}
+                      <input
+                        name="gatewayHealthReceiptRef"
+                        minLength={8}
+                        maxLength={160}
+                        pattern="[A-Za-z0-9._:-]{8,160}"
+                      />
+                    </label>
+                    <label>
+                      Gateway signed capabilities receipt ID{" "}
+                      <input
+                        name="gatewayCapabilitiesReceiptRef"
+                        minLength={8}
+                        maxLength={160}
+                        pattern="[A-Za-z0-9._:-]{8,160}"
+                      />
+                    </label>
+                    <label>
+                      Independent durable gateway audit ID{" "}
+                      <input
+                        name="gatewayAuditReceiptRef"
+                        minLength={8}
+                        maxLength={160}
+                        pattern="[A-Za-z0-9._:-]{8,160}"
+                      />
+                    </label>
+                    <label>
+                      Separately witnessed owner identity attestation ID{" "}
+                      <input
+                        name="independentWitnessAttestationRef"
+                        minLength={8}
+                        maxLength={160}
+                        pattern="[A-Za-z0-9._:-]{8,160}"
+                      />
+                    </label>
+                  </>
+                )}
+                <label>
+                  Next independent UTC review (within 90 days){" "}
+                  <input type="date" name="nextDueAt" required />
+                </label>
+                <label>
+                  Evidence reference{" "}
+                  <input
+                    name="evidenceReference"
+                    minLength={8}
+                    maxLength={400}
+                    required
+                  />
+                </label>
+                <label>
+                  Renewal, aging or gateway HOLD findings{" "}
+                  <textarea
+                    name="reviewNote"
+                    minLength={12}
+                    maxLength={800}
+                    required
+                  />
+                </label>
+                <button type="submit">
+                  Record Build 140 owner-safe review
+                </button>
+              </form>
+            );
+          })}
+          <h3>Immutable proof renewal and cross-system HOLD history</h3>
+          <ul>
+            {report.ownerProofGatewayReviews.map((record) => (
+              <li key={record.id}>
+                {record.review_kind} · {record.outcome_kind} ·{" "}
+                {record.review_status}
+                {` · gate ${record.gate_state} · owner pilot ${record.owner_pilot_authorized ? "authorized" : "not authorized"} · dispatch ${record.dispatch_enabled ? "enabled" : "disabled"} · Build 139 receipt ${record.owner_reconciliation_id} · reconciliation age ${record.observed_reconciliation_age_days} days · prior overdue ${record.observed_prior_overdue_days} days · proof age ${record.observed_proof_age_days} days · later reopenings ${record.observed_later_reopenings} · peer recurrences ${record.observed_open_peer_recurrences} · owner dispositions ${record.observed_open_owner_dispositions} · open Build 139 exceptions ${record.observed_open_139_exceptions} · overdue Build 139 reviews ${record.observed_overdue_139_reviews}`}
+                {record.verified_renewal_event_id
+                  ? ` · newer proof ${record.verified_renewal_event_id}`
+                  : ""}
+                {record.observed_gateway_metadata_complete
+                  ? " · four documentary references recorded (not independently verified)"
+                  : ""}
+                {record.prior_review_id
+                  ? ` · follows ${record.prior_review_id}`
                   : ""}
                 {" — "}
                 {record.review_note}
