@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { AppShell } from "@/components/app-shell";
 import { requireStaff } from "@/lib/auth/current-session";
 import { getRecurrenceLedger } from "@/lib/permanent-unit-owner-retention/recurrence-postgres.mjs";
+import { gatewayHoldReceiptKinds } from "@/lib/permanent-unit-owner-retention/recurrence-core.mjs";
 import {
   recordRecurrenceReviewAction,
   recordRecurrenceDecisionAction,
@@ -33,7 +34,56 @@ import {
   recordOwnerRecheckRenewalWatchAction,
   recordContinuityEvidenceReconciliationAction,
   recordOwnerProofGatewayReviewAction,
+  recordGatewayHoldReceiptReviewAction,
 } from "./actions";
+const gatewayHoldReceiptOptions: Record<
+  string,
+  Array<{ value: string; label: string }>
+> = {
+  independent_gateway_hold_freshness_review: [
+    {
+      value: "hold_evidence_unverified",
+      label: "Read-only HOLD evidence unverified",
+    },
+    {
+      value: "hold_evidence_stale",
+      label: "Source proof or independent review overdue",
+    },
+    {
+      value: "hold_evidence_missing",
+      label: "Independent original evidence missing",
+    },
+  ],
+  aged_exception_recurrence_watch: [
+    {
+      value: "no_new_exception_observed",
+      label: "No open/overdue exception observed by database",
+    },
+    {
+      value: "exception_recurrence_detected",
+      label: "Observed open or overdue recurrence",
+    },
+    {
+      value: "exception_recurrence_escalated",
+      label: "Escalate unresolved evidence exception",
+    },
+  ],
+  owner_safe_receipt_verification_queue: [
+    { value: "receipt_missing", label: "Not yet received — missing" },
+    {
+      value: "receipt_not_provisioned",
+      label: "Not provisioned — no test/key",
+    },
+    {
+      value: "receipt_reference_unverified",
+      label: "Nonsecret receipt reference supplied, not verified",
+    },
+    {
+      value: "receipt_escalated",
+      label: "Escalate for independent original proof",
+    },
+  ],
+};
 const ownerProofGateOptions: Record<
   string,
   Array<{ value: string; label: string }>
@@ -826,6 +876,47 @@ export default async function RecurrenceDecisionsPage({
               : "independent_owner_proof_renewal",
         status: r.review_status,
       })),
+  ];
+  const gatewayHoldReceiptQueue = [
+    ...report.ownerProofGatewayReviews
+      .filter(
+        (r) =>
+          r.review_kind === "cross_system_read_only_gate_review" &&
+          !report.gatewayHoldReceiptReviews.some(
+            (q) => q.gateway_review_id === r.id,
+          ),
+      )
+      .map((r) => ({
+        id: r.id,
+        gatewayReviewId: r.id,
+        priorReviewId: "",
+        reviewKind: "independent_gateway_hold_freshness_review",
+        status: r.review_status,
+      })),
+    ...report.gatewayHoldReceiptReviews
+      .filter(
+        (r) =>
+          !report.gatewayHoldReceiptReviews.some(
+            (child) => child.prior_review_id === r.id,
+          ),
+      )
+      .flatMap((r) =>
+        (r.review_kind === "independent_gateway_hold_freshness_review"
+          ? ["aged_exception_recurrence_watch"]
+          : r.review_kind === "aged_exception_recurrence_watch"
+            ? ["owner_safe_receipt_verification_queue"]
+            : [
+                "owner_safe_receipt_verification_queue",
+                "independent_gateway_hold_freshness_review",
+              ]
+        ).map((reviewKind) => ({
+          id: `${r.id}-${reviewKind}`,
+          gatewayReviewId: r.gateway_review_id,
+          priorReviewId: r.id,
+          reviewKind,
+          status: r.review_status,
+        })),
+      ),
   ];
   return (
     <AppShell>
@@ -4266,6 +4357,155 @@ export default async function RecurrenceDecisionsPage({
                   : ""}
                 {record.observed_gateway_metadata_complete
                   ? " · four documentary references recorded (not independently verified)"
+                  : ""}
+                {record.prior_review_id
+                  ? ` · follows ${record.prior_review_id}`
+                  : ""}
+                {" — "}
+                {record.review_note}
+              </li>
+            ))}
+          </ul>
+        </section>
+        <section>
+          <h2>
+            Build 141 — Independent gateway HOLD freshness, aged exception
+            recurrence &amp; QL-245 receipt queue
+          </h2>
+          <p>
+            ⓘ The revised QL-245 six-app handoff requests actual nonproduction
+            server-only, signed GET evidence, seven real denial traces, a
+            separately pinned public signer, a genuine 40-character source SHA
+            and a GREEN CI run. These fields are a private documentary follow-up
+            queue <strong>only</strong>: entered references remain UNVERIFIED
+            until an independent reviewer examines the originals. iCamp remains
+            DISCONNECTED / HOLD. No keys, bearer tokens, customer data, real
+            calls, payments, messages or device commands belong in this form.
+          </p>
+          <p>
+            QL-245 permits only read_health and read_capabilities through the
+            two authenticated nonproduction GET routes. The public offline
+            Ed25519 packet, distinct trust-channel pins, real negative tests and
+            source/gateway audit receipts are not produced by this owner screen.
+            Missing evidence stays NOT PROVISIONED or UNVERIFIED, and owner
+            pilot approval remains NOT GIVEN.
+          </p>
+          <h3>Independent owner HOLD verification queue</h3>
+          {gatewayHoldReceiptQueue.slice(0, 20).map((item) => (
+            <form key={item.id} action={recordGatewayHoldReceiptReviewAction}>
+              {pair}
+              <input
+                type="hidden"
+                name="gatewayReviewId"
+                value={item.gatewayReviewId}
+              />
+              <input
+                type="hidden"
+                name="priorReviewId"
+                value={item.priorReviewId}
+              />
+              <input type="hidden" name="reviewKind" value={item.reviewKind} />
+              <p>
+                {item.reviewKind} · {item.status} · source gate{" "}
+                {item.gatewayReviewId}
+              </p>
+              <label>
+                Independent documentary outcome{" "}
+                <select name="outcomeKind" required>
+                  {gatewayHoldReceiptOptions[item.reviewKind].map((option) => (
+                    <option value={option.value} key={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              {item.reviewKind === "owner_safe_receipt_verification_queue" && (
+                <>
+                  <label>
+                    QL-245 receipt to check{" "}
+                    <select name="receiptKind" required>
+                      <option value="">
+                        Select a single source or denial evidence type
+                      </option>
+                      {gatewayHoldReceiptKinds.map((kind) => (
+                        <option key={kind} value={kind}>
+                          {kind.replaceAll("_", " ")}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                  <p>
+                    ⓘ For an unverified receipt, use an actual nonsecret np-
+                    identifier. Leave the field empty if NOT PROVISIONED or
+                    missing. For a source CI revision, supply both the exact SHA
+                    and matching Actions URL. Never paste private signing
+                    material or a packet.
+                  </p>
+                  <label>
+                    Nonsecret np- source/registry/denial receipt ID (if actually
+                    received){" "}
+                    <input
+                      name="receiptReference"
+                      maxLength={160}
+                      pattern="np-[A-Za-z0-9._:-]{5,157}"
+                    />
+                  </label>
+                  <label>
+                    iCamp exact 40-character source SHA (source CI item only){" "}
+                    <input
+                      name="sourceRevision"
+                      maxLength={40}
+                      pattern="[0-9a-f]{40}"
+                    />
+                  </label>
+                  <label>
+                    Actual GREEN GitHub Actions run URL (source CI item only){" "}
+                    <input name="ciRunUrl" type="url" maxLength={130} />
+                  </label>
+                </>
+              )}
+              <label>
+                Next independent UTC follow-up date (within 90 days){" "}
+                <input type="date" name="nextDueAt" required />
+              </label>
+              <label>
+                Nonsecret evidence index{" "}
+                <input
+                  name="evidenceReference"
+                  minLength={8}
+                  maxLength={400}
+                  required
+                />
+              </label>
+              <label>
+                Freshness, aging or receipt verification findings{" "}
+                <textarea
+                  name="reviewNote"
+                  minLength={12}
+                  maxLength={800}
+                  required
+                />
+              </label>
+              <button type="submit">
+                Record Build 141 independent HOLD follow-up
+              </button>
+            </form>
+          ))}
+          <h3>Immutable Build 141 UNVERIFIED/DISCONNECTED audit history</h3>
+          <ul>
+            {report.gatewayHoldReceiptReviews.map((record) => (
+              <li key={record.id}>
+                {record.review_kind} · {record.outcome_kind} ·{" "}
+                {record.review_status}
+                {` · gate ${record.gate_state} · connection ${record.connection_state} · proof ${record.receipt_proof_state} · owner pilot NOT GIVEN · dispatch disabled · Build 140 gateway ${record.gateway_review_id} · source age ${record.observed_gateway_review_age_days} days · proof age ${record.observed_proof_age_days} days · prior overdue ${record.observed_prior_overdue_days} days · open Build 140 exceptions ${record.observed_open_140_exceptions} · overdue Build 140 leaves ${record.observed_overdue_140_leaves} · newer same-root gates ${record.observed_newer_gateway_reviews}`}
+                {record.receipt_kind
+                  ? ` · queued proof ${record.receipt_kind}`
+                  : ""}
+                {record.receipt_reference
+                  ? ` · nonsecret reference ${record.receipt_reference}`
+                  : ""}
+                {record.source_revision
+                  ? ` · claimed source SHA ${record.source_revision}`
                   : ""}
                 {record.prior_review_id
                   ? ` · follows ${record.prior_review_id}`

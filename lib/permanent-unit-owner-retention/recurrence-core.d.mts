@@ -541,3 +541,28 @@ export function classifyOwnerProofGatewayReviewStatus(
   next: { id: string } | null,
   now?: Date,
 ): string;
+export const gatewayHoldReceiptKinds: string[];
+export function normalizeGatewayHoldReceiptReview(
+  raw: Record<string, unknown>,
+  now?: Date,
+): {
+  id: string;
+  gatewayReviewId: string;
+  priorReviewId: string | null;
+  sourceCampgroundId: string;
+  targetCampgroundId: string;
+  reviewKind: string;
+  outcomeKind: string;
+  nextDueAt: string;
+  receiptKind: string | null;
+  receiptReference: string | null;
+  sourceRevision: string | null;
+  ciRunUrl: string | null;
+  evidenceReference: string;
+  reviewNote: string;
+};
+export function classifyGatewayHoldReceiptReviewStatus(
+  record: { review_kind: string; next_due_at?: Date | string | null },
+  next: { id: string } | null,
+  now?: Date,
+): string;

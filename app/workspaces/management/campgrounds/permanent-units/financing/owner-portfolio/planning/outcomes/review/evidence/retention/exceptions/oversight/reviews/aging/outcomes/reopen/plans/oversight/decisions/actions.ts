@@ -32,6 +32,7 @@ import {
   recordOwnerRecheckRenewalWatch,
   recordContinuityEvidenceReconciliation,
   recordOwnerProofGatewayReview,
+  recordGatewayHoldReceiptReview,
 } from "@/lib/permanent-unit-owner-retention/recurrence-postgres.mjs";
 const path =
   "/workspaces/management/campgrounds/permanent-units/financing/owner-portfolio/planning/outcomes/review/evidence/retention/exceptions/oversight/reviews/aging/outcomes/reopen/plans/oversight/decisions";
@@ -905,6 +906,43 @@ export async function recordOwnerProofGatewayReviewAction(form: FormData) {
       error instanceof Error
         ? error.message
         : "Owner proof renewal and gateway HOLD review rejected.";
+  }
+  revalidatePath(path);
+  redirect(
+    `${path}?source=${encodeURIComponent(source)}&target=${encodeURIComponent(target)}&${kind}=${encodeURIComponent(message.slice(0, 180))}`,
+  );
+}
+export async function recordGatewayHoldReceiptReviewAction(form: FormData) {
+  const session = await requireStaff(path);
+  const source = field(form, "sourceCampgroundId"),
+    target = field(form, "targetCampgroundId");
+  let kind = "saved",
+    message =
+      "Independent Build 141 documentary HOLD receipt follow-up recorded; no connection or pilot authorized.";
+  try {
+    await recordGatewayHoldReceiptReview({
+      actorUserId: session.user.id,
+      id: randomUUID(),
+      sourceCampgroundId: source,
+      targetCampgroundId: target,
+      gatewayReviewId: field(form, "gatewayReviewId"),
+      priorReviewId: field(form, "priorReviewId"),
+      reviewKind: field(form, "reviewKind"),
+      outcomeKind: field(form, "outcomeKind"),
+      nextDueAt: field(form, "nextDueAt"),
+      receiptKind: field(form, "receiptKind"),
+      receiptReference: field(form, "receiptReference"),
+      sourceRevision: field(form, "sourceRevision"),
+      ciRunUrl: field(form, "ciRunUrl"),
+      evidenceReference: field(form, "evidenceReference"),
+      reviewNote: field(form, "reviewNote"),
+    });
+  } catch (error) {
+    kind = "error";
+    message =
+      error instanceof Error
+        ? error.message
+        : "Build 141 documentary review rejected.";
   }
   revalidatePath(path);
   redirect(
