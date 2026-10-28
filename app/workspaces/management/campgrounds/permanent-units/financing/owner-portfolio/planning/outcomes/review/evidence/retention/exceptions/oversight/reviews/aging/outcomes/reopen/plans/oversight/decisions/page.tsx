@@ -7,6 +7,7 @@ import { getRecurrenceLedger } from "@/lib/permanent-unit-owner-retention/recurr
 import {
   gatewayHoldReceiptKinds,
   ql247SourceRepositories,
+  ql247DenialKinds,
 } from "@/lib/permanent-unit-owner-retention/recurrence-core.mjs";
 import {
   recordRecurrenceReviewAction,
@@ -40,6 +41,7 @@ import {
   recordGatewayHoldReceiptReviewAction,
   recordQl245SourcePinHoldReviewAction,
   recordQl246ExceptionPinHoldDecisionAction,
+  recordQl247TestReceiptHoldWatchAction,
 } from "./actions";
 const gatewayHoldReceiptOptions: Record<
   string,
@@ -184,6 +186,56 @@ const ql246ExceptionPinOptions: Record<
     {
       value: "owner_test_authorization_absent",
       label: "Phase B nonproduction test permission NOT GIVEN",
+    },
+  ],
+};
+const ql247TestReviewOptions: Record<
+  string,
+  Array<{ value: string; label: string }>
+> = {
+  nonproduction_test_authorization_evidence_intake: [
+    {
+      value: "authorization_not_given",
+      label: "Nonproduction test NOT AUTHORIZED — no source claim",
+    },
+    {
+      value: "authorization_reference_unverified",
+      label:
+        "Possible approval reference exists; owner authorization UNVERIFIED",
+    },
+    {
+      value: "two_sha_transport_pending",
+      label: "QL-248 two-SHA agreement or proof transport pending",
+    },
+    {
+      value: "authorization_exception_escalated",
+      label: "Escalate missing or contradictory test authorization",
+    },
+  ],
+  independent_seven_denial_receipt_reconciliation: [
+    {
+      value: "seven_denials_missing",
+      label: "Seven real denial receipts MISSING",
+    },
+    {
+      value: "denial_references_unverified",
+      label:
+        "Seven distinct original receipt references supplied, NOT VERIFIED",
+    },
+    {
+      value: "denial_mismatch_escalated",
+      label: "Escalate independently observed denial reference mismatch",
+    },
+  ],
+  reversible_hold_decision_watch: [
+    { value: "hold_reaffirmed", label: "Reaffirm DISCONNECTED / HOLD" },
+    {
+      value: "hold_exception_escalated",
+      label: "Escalate observed Build 143 open or overdue exception",
+    },
+    {
+      value: "hold_rollback_watch_due",
+      label: "Renew revocation / rollback proof watch; remain HOLD",
     },
   ],
 };
@@ -1100,6 +1152,47 @@ export default async function RecurrenceDecisionsPage({
             : r.review_kind === "out_of_band_pin_challenge_reconciliation"
               ? "multi_application_hold_gate_decision"
               : "independent_source_proof_exception_intake",
+        status: r.review_status,
+      })),
+  ];
+  const ql247TestWatchQueue = [
+    ...report.ql246ExceptionPinHoldDecisions
+      .filter((r) => r.review_kind === "multi_application_hold_gate_decision")
+      .filter(
+        (r) =>
+          !report.ql247TestReceiptHoldWatches.some(
+            (q) => q.ql246_hold_decision_id === r.id && !q.prior_review_id,
+          ),
+      )
+      .map((r) => ({
+        id: r.id,
+        ql246HoldDecisionId: r.id,
+        priorReviewId: "",
+        sourceSystem: r.source_system,
+        repository: r.repository,
+        reviewKind: "nonproduction_test_authorization_evidence_intake",
+        status: r.review_status,
+      })),
+    ...report.ql247TestReceiptHoldWatches
+      .filter(
+        (r) =>
+          !report.ql247TestReceiptHoldWatches.some(
+            (child) => child.prior_review_id === r.id,
+          ),
+      )
+      .map((r) => ({
+        id: r.id,
+        ql246HoldDecisionId: r.ql246_hold_decision_id,
+        priorReviewId: r.id,
+        sourceSystem: r.source_system,
+        repository: r.repository,
+        reviewKind:
+          r.review_kind === "nonproduction_test_authorization_evidence_intake"
+            ? "independent_seven_denial_receipt_reconciliation"
+            : r.review_kind ===
+                "independent_seven_denial_receipt_reconciliation"
+              ? "reversible_hold_decision_watch"
+              : "nonproduction_test_authorization_evidence_intake",
         status: r.review_status,
       })),
   ];
@@ -5049,6 +5142,249 @@ export default async function RecurrenceDecisionsPage({
                 {r.source_revision ? ` · source SHA ${r.source_revision}` : ""}
                 {r.out_of_band_reference
                   ? ` · public pin provenance ${r.out_of_band_reference}`
+                  : ""}
+                {r.prior_review_id ? ` · follows ${r.prior_review_id}` : ""}
+                {` — ${r.review_note}`}
+              </li>
+            ))}
+          </ul>
+        </section>
+        <section>
+          <h2>
+            Build 144 — QL-247 authorization evidence, seven original denial
+            receipts and reversible gateway HOLD
+          </h2>
+          <p>
+            ⓘ This is a documentary review queue,{" "}
+            <strong>not a button to connect systems</strong>. The QL-248
+            amendment distinguishes an earlier independently tested
+            <code> source_revision </code> from the later immutable
+            <code> proofCommitSha </code> containing the public signed JSON. The
+            raw JSON SHA256 and an independently authenticated signer pin must
+            be verified separately. Neither a matching SHA nor an entered
+            receipt ID proves an original gateway test. The AI Data Platform
+            consumer must separately agree to this amendment before acceptance.
+            We have no owner authorization for Phase B or Phase C. All six
+            systems remain <strong>DISCONNECTED / HOLD</strong>.
+          </p>
+          <p>
+            Never enter HMAC keys, private Ed25519 keys, raw challenges,
+            personal identity, customer data, private endpoints, home network
+            addresses, or device/vault information. Only owner-safe reference
+            IDs belong here; seven denials still require an independent witness
+            and genuine source-of-truth gateway audit after restart.
+          </p>
+          <h3>Independent three-stage six-application review queue</h3>
+          {ql247TestWatchQueue.slice(0, 24).map((item) => (
+            <form
+              key={`${item.id}-${item.reviewKind}`}
+              action={recordQl247TestReceiptHoldWatchAction}
+            >
+              {pair}
+              <input
+                type="hidden"
+                name="ql246HoldDecisionId"
+                value={item.ql246HoldDecisionId}
+              />
+              <input
+                type="hidden"
+                name="priorReviewId"
+                value={item.priorReviewId}
+              />
+              <input type="hidden" name="reviewKind" value={item.reviewKind} />
+              <input
+                type="hidden"
+                name="sourceSystem"
+                value={item.sourceSystem}
+              />
+              <input type="hidden" name="repository" value={item.repository} />
+              <p>
+                {item.sourceSystem} · {item.repository} ·{" "}
+                {item.reviewKind.replaceAll("_", " ")} · {item.status}
+              </p>
+              <label>
+                Documentary outcome{" "}
+                <select name="outcomeKind" required>
+                  {ql247TestReviewOptions[item.reviewKind].map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              {item.reviewKind ===
+                "nonproduction_test_authorization_evidence_intake" && (
+                <>
+                  <p>
+                    QL-248 is a proposed two-SHA clarification, not
+                    authorization. All public identity fields below remain
+                    unverified until original evidence is independently
+                    inspected.
+                  </p>
+                  <label>
+                    Phase B authorization evidence reference state{" "}
+                    <select name="authorizationReferenceStatus">
+                      <option value="NOT_GIVEN">NOT GIVEN</option>
+                      <option value="REFERENCE_UNVERIFIED">
+                        Nonsecret reference supplied — UNVERIFIED
+                      </option>
+                    </select>
+                  </label>
+                  <label>
+                    Nonsecret owner test authorization reference (only if
+                    actually received){" "}
+                    <input
+                      name="testAuthorizationReference"
+                      placeholder="np-..."
+                      maxLength={160}
+                    />
+                  </label>
+                  <label>
+                    Two-SHA amendment agreement state{" "}
+                    <select name="twoShaAgreementStatus">
+                      <option value="NOT_AGREED">NOT AGREED / PENDING</option>
+                      <option value="REFERENCE_UNVERIFIED">
+                        Agreement reference supplied — UNVERIFIED
+                      </option>
+                    </select>
+                  </label>
+                  <label>
+                    Nonsecret source and AI consumer agreement reference{" "}
+                    <input
+                      name="twoShaAgreementReference"
+                      placeholder="np-..."
+                      maxLength={160}
+                    />
+                  </label>
+                  <label>
+                    Earlier audited source commit SHA (40 lowercase hex){" "}
+                    <input
+                      name="sourceRevisionSha"
+                      maxLength={40}
+                      pattern="[a-f0-9]{40}"
+                    />
+                  </label>
+                  <label>
+                    Later proof-bearing GitHub commit SHA (40 lowercase hex){" "}
+                    <input
+                      name="proofCommitSha"
+                      maxLength={40}
+                      pattern="[a-f0-9]{40}"
+                    />
+                  </label>
+                  <label>
+                    Raw public QL-246 proof JSON SHA256 (64 lowercase hex){" "}
+                    <input
+                      name="proofSha256"
+                      maxLength={64}
+                      pattern="[a-f0-9]{64}"
+                    />
+                  </label>
+                  <label>
+                    Original source-commit green GitHub Actions CI run URL{" "}
+                    <input name="ciRunUrl" type="url" maxLength={155} />
+                  </label>
+                </>
+              )}
+              {item.reviewKind ===
+                "independent_seven_denial_receipt_reconciliation" && (
+                <>
+                  <p>
+                    Enter only genuine, independently observed, nonsecret
+                    original gateway trace IDs. Seven labels must each map to
+                    their own distinct <code>np-</code> receipt ID. Even
+                    complete references remain UNVERIFIED in this form.
+                  </p>
+                  {ql247DenialKinds.map((denial) => (
+                    <label key={denial}>
+                      {denial.replaceAll("_", " ")}{" "}
+                      <input
+                        name={`denial_${denial}`}
+                        placeholder="np-..."
+                        maxLength={160}
+                      />
+                    </label>
+                  ))}
+                  <label>
+                    Separate independent witness evidence index (nonsecret){" "}
+                    <input
+                      name="denialWitnessReference"
+                      placeholder="np-..."
+                      maxLength={160}
+                    />
+                  </label>
+                </>
+              )}
+              {item.reviewKind === "reversible_hold_decision_watch" && (
+                <>
+                  <p>
+                    Record rollback and key-revocation follow-up reference IDs
+                    if genuine; never execute or authorize a live rollback here.
+                    The gateway and phone/SMS/dispatch stay OFF.
+                  </p>
+                  <label>
+                    Nonsecret rollback proof index{" "}
+                    <input
+                      name="rollbackReference"
+                      placeholder="np-..."
+                      maxLength={160}
+                    />
+                  </label>
+                  <label>
+                    Nonsecret key revocation proof index{" "}
+                    <input
+                      name="revocationReference"
+                      placeholder="np-..."
+                      maxLength={160}
+                    />
+                  </label>
+                </>
+              )}
+              <label>
+                Next independent UTC recheck within 90 days{" "}
+                <input type="date" name="nextDueAt" required />
+              </label>
+              <label>
+                Original nonsecret evidence index{" "}
+                <input
+                  name="evidenceReference"
+                  minLength={8}
+                  maxLength={400}
+                  required
+                />
+              </label>
+              <label>
+                Separate reviewer findings and remaining HOLD exceptions{" "}
+                <textarea
+                  name="reviewNote"
+                  minLength={12}
+                  maxLength={800}
+                  required
+                />
+              </label>
+              <button type="submit">
+                Record Build 144 independent HOLD audit
+              </button>
+            </form>
+          ))}
+          <h3>
+            Immutable Build 144 review history — Phase B and Phase C NOT
+            AUTHORIZED
+          </h3>
+          <ul>
+            {report.ql247TestReceiptHoldWatches.map((r) => (
+              <li key={r.id}>
+                {r.source_system} · {r.review_kind} · {r.outcome_kind} ·{" "}
+                {r.review_status}
+                {` · test reference ${r.authorization_reference_status} · QL-248 agreement ${r.two_sha_agreement_status} · denial references ${r.observed_denial_receipt_ids_provided}/7 (independently witnessed ${r.seven_denials_independently_witnessed}) · source origin checked ${r.two_sha_origin_verified} · Phase B approved ${r.phase_b_test_authorized} · Phase C approved ${r.owner_pilot_authorized} · gate ${r.gate_state} · connection ${r.connection_state} · previous overdue ${r.observed_prior_overdue_days} days · open Build 143 exceptions ${r.observed_open_143_exceptions} · overdue Build 143 leaves ${r.observed_overdue_143_leaves}`}
+                {r.source_revision_sha
+                  ? ` · earlier source ${r.source_revision_sha}`
+                  : ""}
+                {r.proof_commit_sha
+                  ? ` · later proof commit ${r.proof_commit_sha}`
+                  : ""}
+                {r.denial_receipt_ids.length
+                  ? ` · original receipt IDs ${r.denial_receipt_ids.join(", ")}`
                   : ""}
                 {r.prior_review_id ? ` · follows ${r.prior_review_id}` : ""}
                 {` — ${r.review_note}`}

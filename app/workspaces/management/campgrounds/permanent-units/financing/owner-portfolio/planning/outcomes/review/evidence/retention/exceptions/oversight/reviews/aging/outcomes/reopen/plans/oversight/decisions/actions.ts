@@ -35,6 +35,7 @@ import {
   recordGatewayHoldReceiptReview,
   recordQl245SourcePinHoldReview,
   recordQl246ExceptionPinHoldDecision,
+  recordQl247TestReceiptHoldWatch,
 } from "@/lib/permanent-unit-owner-retention/recurrence-postgres.mjs";
 const path =
   "/workspaces/management/campgrounds/permanent-units/financing/owner-portfolio/planning/outcomes/review/evidence/retention/exceptions/oversight/reviews/aging/outcomes/reopen/plans/oversight/decisions";
@@ -1029,6 +1030,65 @@ export async function recordQl246ExceptionPinHoldDecisionAction(
       error instanceof Error
         ? error.message
         : "Build 143 independent review rejected.";
+  }
+  revalidatePath(path);
+  redirect(
+    `${path}?source=${encodeURIComponent(source)}&target=${encodeURIComponent(target)}&${kind}=${encodeURIComponent(message.slice(0, 180))}`,
+  );
+}
+
+export async function recordQl247TestReceiptHoldWatchAction(form: FormData) {
+  const session = await requireStaff(path);
+  const source = field(form, "sourceCampgroundId");
+  const target = field(form, "targetCampgroundId");
+  let kind = "saved";
+  let message =
+    "Build 144 documentary test/denial HOLD review recorded; no Phase B, pilot, or dispatch authorization was granted.";
+  try {
+    await recordQl247TestReceiptHoldWatch({
+      actorUserId: session.user.id,
+      id: randomUUID(),
+      sourceCampgroundId: source,
+      targetCampgroundId: target,
+      ql246HoldDecisionId: field(form, "ql246HoldDecisionId"),
+      priorReviewId: field(form, "priorReviewId"),
+      reviewKind: field(form, "reviewKind"),
+      outcomeKind: field(form, "outcomeKind"),
+      sourceSystem: field(form, "sourceSystem"),
+      repository: field(form, "repository"),
+      authorizationReferenceStatus:
+        field(form, "authorizationReferenceStatus") || "NOT_GIVEN",
+      testAuthorizationReference: field(form, "testAuthorizationReference"),
+      twoShaAgreementStatus:
+        field(form, "twoShaAgreementStatus") || "NOT_AGREED",
+      twoShaAgreementReference: field(form, "twoShaAgreementReference"),
+      sourceRevisionSha: field(form, "sourceRevisionSha"),
+      proofCommitSha: field(form, "proofCommitSha"),
+      proofSha256: field(form, "proofSha256"),
+      ciRunUrl: field(form, "ciRunUrl"),
+      denialReceiptIds: [
+        "nonce_replay_denied",
+        "stale_request_denied",
+        "cross_business_denied",
+        "cross_tenant_denied",
+        "revoked_key_denied",
+        "write_denied",
+        "dispatch_denied",
+      ].map((key) => {
+        const receipt = field(form, `denial_${key}`);
+        return receipt ? `${key}|${receipt}` : "";
+      }),
+      denialWitnessReference: field(form, "denialWitnessReference"),
+      rollbackReference: field(form, "rollbackReference"),
+      revocationReference: field(form, "revocationReference"),
+      nextDueAt: field(form, "nextDueAt"),
+      evidenceReference: field(form, "evidenceReference"),
+      reviewNote: field(form, "reviewNote"),
+    });
+  } catch (error) {
+    kind = "error";
+    message =
+      error instanceof Error ? error.message : "Build 144 review rejected.";
   }
   revalidatePath(path);
   redirect(
