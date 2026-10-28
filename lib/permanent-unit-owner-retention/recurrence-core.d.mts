@@ -474,3 +474,24 @@ export function classifyContinuityRecurrenceRecheckStatus(
   next: { id: string } | null,
   now?: Date,
 ): string;
+export function normalizeOwnerRecheckRenewalWatch(
+  raw: Record<string, unknown>,
+  now?: Date,
+): {
+  id: string;
+  ownerRecheckId: string;
+  priorWatchId: string | null;
+  verifiedEvidenceEventId: string | null;
+  sourceCampgroundId: string;
+  targetCampgroundId: string;
+  watchKind: string;
+  outcomeKind: string;
+  nextDueAt: string;
+  evidenceReference: string;
+  watchNote: string;
+};
+export function classifyOwnerRecheckRenewalWatchStatus(
+  record: { watch_kind: string; next_due_at?: Date | string | null },
+  next: { id: string } | null,
+  now?: Date,
+): string;

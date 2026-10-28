@@ -30,7 +30,55 @@ import {
   recordEscalationResolutionRenewalAction,
   recordRenewalFreshnessDecisionAction,
   recordContinuityRecurrenceRecheckAction,
+  recordOwnerRecheckRenewalWatchAction,
 } from "./actions";
+const ownerRecheckRenewalOptions: Record<
+  string,
+  Array<{ value: string; label: string }>
+> = {
+  independent_owner_recheck_recurrence_renewal: [
+    {
+      value: "renewal_stable",
+      label: "Independent recurrence renewal remains stable",
+    },
+    {
+      value: "recurrence_detected",
+      label: "Renewal recurrence or source discrepancy detected",
+    },
+    {
+      value: "recurrence_escalated",
+      label: "Renewal recurrence needs owner escalation",
+    },
+  ],
+  overdue_exception_disposition: [
+    {
+      value: "exception_reconciled",
+      label: "No unresolved overdue exception; reconciled",
+    },
+    {
+      value: "exception_overdue",
+      label: "Source-verified exception is overdue",
+    },
+    {
+      value: "exception_escalated",
+      label: "Escalate unresolved overdue exception",
+    },
+  ],
+  continuity_evidence_watch: [
+    {
+      value: "continuity_evidence_verified",
+      label: "Newer independent same-root evidence verified",
+    },
+    {
+      value: "continuity_evidence_stale",
+      label: "Evidence is missing or out of date",
+    },
+    {
+      value: "continuity_evidence_escalated",
+      label: "Escalate continuity evidence shortfall",
+    },
+  ],
+};
 const continuityRecheckOptions: Record<
   string,
   Array<{ value: string; label: string }>
@@ -576,6 +624,42 @@ export default async function RecurrenceDecisionsPage({
               ? "verified_owner_audit_recheck"
               : "independent_continuity_recurrence_watch",
         status: r.recheck_status,
+      })),
+  ];
+  const ownerRecheckRenewalQueue = [
+    ...report.continuityRecurrenceRechecks
+      .filter(
+        (r) =>
+          r.recheck_kind === "verified_owner_audit_recheck" &&
+          !report.ownerRecheckRenewalWatches.some(
+            (watch) => watch.owner_recheck_id === r.id,
+          ),
+      )
+      .map((r) => ({
+        id: r.id,
+        ownerRecheckId: r.id,
+        priorWatchId: "",
+        watchKind: "independent_owner_recheck_recurrence_renewal",
+        status: r.recheck_status,
+      })),
+    ...report.ownerRecheckRenewalWatches
+      .filter(
+        (r) =>
+          !report.ownerRecheckRenewalWatches.some(
+            (child) => child.prior_watch_id === r.id,
+          ),
+      )
+      .map((r) => ({
+        id: r.id,
+        ownerRecheckId: r.owner_recheck_id,
+        priorWatchId: r.id,
+        watchKind:
+          r.watch_kind === "independent_owner_recheck_recurrence_renewal"
+            ? "overdue_exception_disposition"
+            : r.watch_kind === "overdue_exception_disposition"
+              ? "continuity_evidence_watch"
+              : "independent_owner_recheck_recurrence_renewal",
+        status: r.watch_status,
       })),
   ];
   return (
@@ -3552,6 +3636,158 @@ export default async function RecurrenceDecisionsPage({
                   : ""}
                 {" — "}
                 {record.recheck_note}
+              </li>
+            ))}
+          </ul>
+        </section>
+        <section>
+          <h2>
+            Build 138 — Independent owner recheck renewal, overdue exception
+            disposition &amp; continuity evidence watch
+          </h2>
+          <p>
+            Start with an existing Build 137 owner audit recheck. An independent
+            reviewer records recurrence findings, then the overdue exception
+            disposition, followed by another source-linked evidence watch.
+            Positive findings need current verified evidence and no open
+            owner/peer exceptions. A new same-root proof must be independently
+            verified for a positive continuity watch. Thirty-day overdue
+            follow-ups require explicit exception or escalation. Nothing here
+            releases a hold, changes customer data or dispatches other systems.
+          </p>
+          <h3>Owner recheck renewal and exception disposition queue</h3>
+          {ownerRecheckRenewalQueue.slice(0, 20).map((item) => {
+            const ownerRecheck = report.continuityRecurrenceRechecks.find(
+              (r) => r.id === item.ownerRecheckId,
+            );
+            const ownerContinuity = report.renewalFreshnessDecisions.find(
+              (r) => r.id === ownerRecheck?.owner_continuity_id,
+            );
+            const ownerWatch = report.renewalFreshnessDecisions.find(
+              (r) => r.id === ownerContinuity?.prior_audit_id,
+            );
+            const comparison = report.renewalFreshnessDecisions.find(
+              (r) => r.id === ownerWatch?.prior_audit_id,
+            );
+            const baseline = report.closureRecurrenceEvents.find(
+              (r) =>
+                r.id ===
+                (ownerRecheck?.verified_followup_event_id ??
+                  comparison?.comparison_evidence_event_id),
+            );
+            const priorProofTimes = report.ownerRecheckRenewalWatches
+              .filter((r) => r.owner_recheck_id === item.ownerRecheckId)
+              .flatMap((r) =>
+                report.closureRecurrenceEvents.filter(
+                  (event) => event.id === r.verified_evidence_event_id,
+                ),
+              )
+              .map((event) => new Date(event.recorded_at).getTime());
+            const latestProofTime = Math.max(
+              baseline ? new Date(baseline.recorded_at).getTime() : 0,
+              ...priorProofTimes,
+            );
+            return (
+              <form key={item.id} action={recordOwnerRecheckRenewalWatchAction}>
+                {pair}
+                <input
+                  type="hidden"
+                  name="ownerRecheckId"
+                  value={item.ownerRecheckId}
+                />
+                <input
+                  type="hidden"
+                  name="priorWatchId"
+                  value={item.priorWatchId}
+                />
+                <input type="hidden" name="watchKind" value={item.watchKind} />
+                <p>
+                  {item.watchKind} · {item.status} · source receipt {item.id}
+                </p>
+                <label>
+                  Independent renewal / disposition outcome{" "}
+                  <select name="outcomeKind" required>
+                    {ownerRecheckRenewalOptions[item.watchKind].map(
+                      (option) => (
+                        <option key={option.value} value={option.value}>
+                          {option.label}
+                        </option>
+                      ),
+                    )}
+                  </select>
+                </label>
+                <label>
+                  Newer verified same-root evidence (only for verified
+                  continuity){" "}
+                  <select name="verifiedEvidenceEventId" defaultValue="">
+                    <option value="">No fresh source evidence claimed</option>
+                    {item.watchKind === "continuity_evidence_watch" &&
+                      report.closureRecurrenceEvents
+                        .filter(
+                          (event) =>
+                            event.event_kind ===
+                              "independent_followup_verify" &&
+                            event.outcome_kind === "verify_followup_evidence" &&
+                            event.observed_original_proof_verified &&
+                            baseline &&
+                            event.root_reopen_id === baseline.root_reopen_id &&
+                            new Date(event.recorded_at).getTime() >
+                              latestProofTime &&
+                            !report.ownerRecheckRenewalWatches.some(
+                              (used) =>
+                                used.verified_evidence_event_id === event.id,
+                            ),
+                        )
+                        .map((event) => (
+                          <option key={event.id} value={event.id}>
+                            {event.id} · later independently verified proof
+                          </option>
+                        ))}
+                  </select>
+                </label>
+                <label>
+                  Next independent UTC follow-up date (within 90 days){" "}
+                  <input type="date" name="nextDueAt" required />
+                </label>
+                <label>
+                  Evidence reference{" "}
+                  <input
+                    name="evidenceReference"
+                    minLength={8}
+                    maxLength={400}
+                    required
+                  />
+                </label>
+                <label>
+                  Recurrence, exception or continuity evidence findings{" "}
+                  <textarea
+                    name="watchNote"
+                    minLength={12}
+                    maxLength={800}
+                    required
+                  />
+                </label>
+                <button type="submit">
+                  Record Build 138 independent renewal watch
+                </button>
+              </form>
+            );
+          })}
+          <h3>Immutable owner recheck renewal and continuity history</h3>
+          <ul>
+            {report.ownerRecheckRenewalWatches.map((record) => (
+              <li key={record.id}>
+                {record.watch_kind} · {record.outcome_kind} ·{" "}
+                {record.watch_status}
+                {` · owner recheck ${record.owner_recheck_id} · ${record.observed_days_since_owner_recheck} days since audit · ${record.observed_prior_days_overdue} overdue days · proof ${record.observed_evidence_age_days} days old · ${record.observed_new_reopenings} new reopenings · ${record.observed_open_peer_recurrences} peer recurrences · ${record.observed_open_owner_dispositions} owner dispositions · ${record.observed_open_recheck_exceptions} recheck exceptions · ${record.observed_overdue_owner_rechecks} overdue owner rechecks`}
+                {record.verified_evidence_event_id
+                  ? ` · independent proof ${record.verified_evidence_event_id}`
+                  : ""}
+                {record.prior_watch_id
+                  ? ` · follows ${record.prior_watch_id}`
+                  : ""}
+                {" — "}
+                {record.watch_note}
               </li>
             ))}
           </ul>
