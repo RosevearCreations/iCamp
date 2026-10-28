@@ -2,8 +2,8 @@ export const INTEGRATION_CONTRACT_VERSION: string;
 export type ReadinessConfig = {
   enabled: boolean;
   keyId: string;
-  secret: string;
-  allowedCampgrounds: Set<string>;
+  secret: Buffer;
+  tenantId: string;
   environment: string;
   applicationVersion: string;
 };
@@ -15,6 +15,7 @@ export function canonicalReadinessSignature(data: {
   timestamp: string;
   nonce: string;
   tenantId: string;
+  keyId: string;
 }): string;
 export function verifySignedReadiness(
   headers: Headers,
@@ -26,6 +27,9 @@ export function verifySignedReadiness(
   | {
       ok: true;
       issuer: string;
+      destination: string;
+      business: string;
+      environment: string;
       keyId: string;
       tenantId: string;
       nonce: string;

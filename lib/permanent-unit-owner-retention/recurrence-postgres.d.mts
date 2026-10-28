@@ -353,6 +353,26 @@ export interface RecurrenceLedger {
     watch_note: string;
     watch_status: string;
   }>;
+  continuityEvidenceReconciliations: Array<{
+    id: string;
+    continuity_watch_id: string;
+    prior_reconciliation_id: string | null;
+    verified_source_event_id: string | null;
+    review_kind: string;
+    outcome_kind: string;
+    next_due_at: Date;
+    observed_watch_age_days: number;
+    observed_prior_overdue_days: number;
+    observed_proof_age_days: number;
+    observed_later_reopenings: number;
+    observed_open_peer_recurrences: number;
+    observed_open_owner_dispositions: number;
+    observed_open_renewal_exceptions: number;
+    observed_overdue_renewal_watches: number;
+    observed_independent_proof_verified: boolean;
+    review_note: string;
+    reconciliation_status: string;
+  }>;
   limited: boolean;
 }
 export function getRecurrenceLedger(
@@ -436,5 +456,8 @@ export function recordContinuityRecurrenceRecheck(
   raw: Record<string, unknown> & { actorUserId: string },
 ): Promise<{ id: string }>;
 export function recordOwnerRecheckRenewalWatch(
+  raw: Record<string, unknown> & { actorUserId: string },
+): Promise<{ id: string }>;
+export function recordContinuityEvidenceReconciliation(
   raw: Record<string, unknown> & { actorUserId: string },
 ): Promise<{ id: string }>;
