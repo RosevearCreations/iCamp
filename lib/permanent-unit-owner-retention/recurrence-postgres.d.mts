@@ -401,6 +401,31 @@ export interface RecurrenceLedger {
     review_note: string;
     review_status: string;
   }>;
+  gatewayHoldReceiptReviews: Array<{
+    id: string;
+    gateway_review_id: string;
+    prior_review_id: string | null;
+    review_kind: string;
+    outcome_kind: string;
+    next_due_at: Date;
+    receipt_kind: string | null;
+    receipt_reference: string | null;
+    source_revision: string | null;
+    ci_run_url: string | null;
+    observed_gateway_review_age_days: number;
+    observed_prior_overdue_days: number;
+    observed_proof_age_days: number;
+    observed_open_140_exceptions: number;
+    observed_overdue_140_leaves: number;
+    observed_newer_gateway_reviews: number;
+    receipt_proof_state: "UNVERIFIED";
+    connection_state: "DISCONNECTED";
+    gate_state: "HOLD";
+    owner_pilot_authorized: false;
+    dispatch_enabled: false;
+    review_note: string;
+    review_status: string;
+  }>;
   limited: boolean;
 }
 export function getRecurrenceLedger(
@@ -490,5 +515,8 @@ export function recordContinuityEvidenceReconciliation(
   raw: Record<string, unknown> & { actorUserId: string },
 ): Promise<{ id: string }>;
 export function recordOwnerProofGatewayReview(
+  raw: Record<string, unknown> & { actorUserId: string },
+): Promise<{ id: string }>;
+export function recordGatewayHoldReceiptReview(
   raw: Record<string, unknown> & { actorUserId: string },
 ): Promise<{ id: string }>;
