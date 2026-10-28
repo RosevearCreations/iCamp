@@ -453,3 +453,24 @@ export function classifyRenewalFreshnessDecisionStatus(
   next: { id: string } | null,
   now?: Date,
 ): string;
+export function normalizeContinuityRecurrenceRecheck(
+  raw: Record<string, unknown>,
+  now?: Date,
+): {
+  id: string;
+  ownerContinuityId: string;
+  priorRecheckId: string | null;
+  verifiedFollowupEventId: string | null;
+  sourceCampgroundId: string;
+  targetCampgroundId: string;
+  recheckKind: string;
+  outcomeKind: string;
+  nextDueAt: string;
+  evidenceReference: string;
+  recheckNote: string;
+};
+export function classifyContinuityRecurrenceRecheckStatus(
+  record: { recheck_kind: string; next_due_at?: Date | string | null },
+  next: { id: string } | null,
+  now?: Date,
+): string;
