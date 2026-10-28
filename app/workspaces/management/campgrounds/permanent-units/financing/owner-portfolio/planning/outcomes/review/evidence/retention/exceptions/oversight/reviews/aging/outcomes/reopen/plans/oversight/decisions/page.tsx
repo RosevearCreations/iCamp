@@ -31,7 +31,52 @@ import {
   recordRenewalFreshnessDecisionAction,
   recordContinuityRecurrenceRecheckAction,
   recordOwnerRecheckRenewalWatchAction,
+  recordContinuityEvidenceReconciliationAction,
 } from "./actions";
+const evidenceReconciliationOutcomes: Record<
+  string,
+  Array<{ value: string; label: string }>
+> = {
+  independent_continuity_evidence_recurrence_review: [
+    {
+      value: "recurrence_stable",
+      label: "No new recurrence; source remains verified",
+    },
+    {
+      value: "recurrence_drift",
+      label: "Evidence drift or recurrence detected",
+    },
+    {
+      value: "recurrence_escalated",
+      label: "Escalate independent recurrence review",
+    },
+  ],
+  aging_exception_followup: [
+    {
+      value: "aging_exception_current",
+      label: "Independent aging exception remains current",
+    },
+    {
+      value: "aging_exception_overdue",
+      label: "Verified overdue exception remains open",
+    },
+    { value: "aging_exception_escalated", label: "Escalate overdue follow-up" },
+  ],
+  owner_audit_proof_reconciliation: [
+    {
+      value: "owner_proof_reconciled",
+      label: "New independent same-root owner proof reconciled",
+    },
+    {
+      value: "owner_proof_gap",
+      label: "Owner evidence is incomplete or stale",
+    },
+    {
+      value: "owner_proof_escalated",
+      label: "Escalate unresolved owner proof gap",
+    },
+  ],
+};
 const ownerRecheckRenewalOptions: Record<
   string,
   Array<{ value: string; label: string }>
@@ -660,6 +705,42 @@ export default async function RecurrenceDecisionsPage({
               ? "continuity_evidence_watch"
               : "independent_owner_recheck_recurrence_renewal",
         status: r.watch_status,
+      })),
+  ];
+  const evidenceReconciliationQueue = [
+    ...report.ownerRecheckRenewalWatches
+      .filter(
+        (r) =>
+          r.watch_kind === "continuity_evidence_watch" &&
+          !report.continuityEvidenceReconciliations.some(
+            (audit) => audit.continuity_watch_id === r.id,
+          ),
+      )
+      .map((r) => ({
+        id: r.id,
+        continuityWatchId: r.id,
+        priorReconciliationId: "",
+        reviewKind: "independent_continuity_evidence_recurrence_review",
+        status: r.watch_status,
+      })),
+    ...report.continuityEvidenceReconciliations
+      .filter(
+        (r) =>
+          !report.continuityEvidenceReconciliations.some(
+            (child) => child.prior_reconciliation_id === r.id,
+          ),
+      )
+      .map((r) => ({
+        id: r.id,
+        continuityWatchId: r.continuity_watch_id,
+        priorReconciliationId: r.id,
+        reviewKind:
+          r.review_kind === "independent_continuity_evidence_recurrence_review"
+            ? "aging_exception_followup"
+            : r.review_kind === "aging_exception_followup"
+              ? "owner_audit_proof_reconciliation"
+              : "independent_continuity_evidence_recurrence_review",
+        status: r.reconciliation_status,
       })),
   ];
   return (
@@ -3788,6 +3869,137 @@ export default async function RecurrenceDecisionsPage({
                   : ""}
                 {" — "}
                 {record.watch_note}
+              </li>
+            ))}
+          </ul>
+        </section>
+        <section>
+          <h2>
+            Build 139 — Continuity evidence recurrence, aging exception &amp;
+            owner audit proof reconciliation
+          </h2>
+          <p>
+            Independently review a Build 138 continuity watch, follow up actual
+            exception aging, then reconcile the owner audit against a newer,
+            separately verified same-root source record. All decisions remain
+            campground-isolated and immutable; unresolved evidence stays open.
+            No hold release, guest data, reservation mutation or gate command.
+          </p>
+          <h3>Independent review queue</h3>
+          {evidenceReconciliationQueue.slice(0, 20).map((item) => {
+            const base = report.ownerRecheckRenewalWatches.find(
+              (r) => r.id === item.continuityWatchId,
+            );
+            const original = report.closureRecurrenceEvents.find(
+              (r) => r.id === base?.verified_evidence_event_id,
+            );
+            return (
+              <form
+                key={item.id}
+                action={recordContinuityEvidenceReconciliationAction}
+              >
+                {pair}
+                <input
+                  type="hidden"
+                  name="continuityWatchId"
+                  value={item.continuityWatchId}
+                />
+                <input
+                  type="hidden"
+                  name="priorReconciliationId"
+                  value={item.priorReconciliationId}
+                />
+                <input
+                  type="hidden"
+                  name="reviewKind"
+                  value={item.reviewKind}
+                />
+                <p>
+                  {item.reviewKind} · {item.status} · prior source {item.id}
+                </p>
+                <label>
+                  Independent review outcome{" "}
+                  <select name="outcomeKind" required>
+                    {evidenceReconciliationOutcomes[item.reviewKind].map(
+                      (option) => (
+                        <option key={option.value} value={option.value}>
+                          {option.label}
+                        </option>
+                      ),
+                    )}
+                  </select>
+                </label>
+                <label>
+                  New independent owner proof (only for reconciled outcome){" "}
+                  <select name="verifiedSourceEventId" defaultValue="">
+                    <option value="">No new verified proof</option>
+                    {item.reviewKind === "owner_audit_proof_reconciliation" &&
+                      report.closureRecurrenceEvents
+                        .filter(
+                          (event) =>
+                            original &&
+                            event.root_reopen_id === original.root_reopen_id &&
+                            event.event_kind ===
+                              "independent_followup_verify" &&
+                            event.outcome_kind === "verify_followup_evidence" &&
+                            event.observed_original_proof_verified &&
+                            new Date(event.recorded_at).getTime() >
+                              new Date(original.recorded_at).getTime() &&
+                            !report.continuityEvidenceReconciliations.some(
+                              (used) =>
+                                used.verified_source_event_id === event.id,
+                            ),
+                        )
+                        .map((event) => (
+                          <option key={event.id} value={event.id}>
+                            {event.id} · later verified proof
+                          </option>
+                        ))}
+                  </select>
+                </label>
+                <label>
+                  Next independent UTC review date (within 90 days){" "}
+                  <input type="date" name="nextDueAt" required />
+                </label>
+                <label>
+                  Evidence reference{" "}
+                  <input
+                    name="evidenceReference"
+                    minLength={8}
+                    maxLength={400}
+                    required
+                  />
+                </label>
+                <label>
+                  Source recurrence, aging or owner reconciliation findings{" "}
+                  <textarea
+                    name="reviewNote"
+                    minLength={12}
+                    maxLength={800}
+                    required
+                  />
+                </label>
+                <button type="submit">
+                  Record Build 139 independent evidence review
+                </button>
+              </form>
+            );
+          })}
+          <h3>Immutable independent recurrence and owner proof receipts</h3>
+          <ul>
+            {report.continuityEvidenceReconciliations.map((record) => (
+              <li key={record.id}>
+                {record.review_kind} · {record.outcome_kind} ·{" "}
+                {record.reconciliation_status}
+                {` · Build 138 watch ${record.continuity_watch_id} · watch age ${record.observed_watch_age_days} days · prior overdue ${record.observed_prior_overdue_days} days · proof age ${record.observed_proof_age_days} days · new reopenings ${record.observed_later_reopenings} · peer recurrences ${record.observed_open_peer_recurrences} · owner dispositions ${record.observed_open_owner_dispositions} · renewal exceptions ${record.observed_open_renewal_exceptions} · overdue renewal watches ${record.observed_overdue_renewal_watches}`}
+                {record.verified_source_event_id
+                  ? ` · new independent source ${record.verified_source_event_id}`
+                  : ""}
+                {record.prior_reconciliation_id
+                  ? ` · follows ${record.prior_reconciliation_id}`
+                  : ""}
+                {" — "}
+                {record.review_note}
               </li>
             ))}
           </ul>

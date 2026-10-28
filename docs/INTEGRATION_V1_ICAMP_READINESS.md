@@ -1,45 +1,54 @@
-# iCamp — Rosevear Integration Contract v1 safe gateway readiness
+# iCamp — Rosevear Integration Contract v1 / QL-243
 
-The supplied `ROSEVEAR_INTEGRATION_CONTRACT_V1_HANDOFF` identifies **AI Data Platform** as the only integration gateway. iCamp owns its campground, site, reservation, guest and pass records. This readiness implementation introduces no live cross-business APIs or records.
+The AI Data Platform alone brokers cross-app integration. iCamp provides **only** server-side, authenticated, nonproduction readiness checks and cannot read another company's database. No real inter-app connection, independent owner witness, external call, SMS, reservation lookup, or gate operation has been enabled. **State: DISCONNECTED / HOLD.**
 
-## Disabled by default
-
-The server-only endpoints are:
+## Supported routes and permissions
 
 - `GET /api/integration/v1/health`
-- `GET /api/integration/v1/capabilities`
+- `GET /api/integration/v1/capabilities` (always returns an empty allowlist)
+- All other methods return 405; query strings, redirects and non-GET requests are rejected. No events, commands, customer data, site/reservation lookup, gate controls or outbound integrations.
 
-No authentication success, customer payload, or capabilities are available until server-side owner configuration. To prepare a gated internal TESTING handshake, configure **server environment variables only** (not `NEXT_PUBLIC_*`):
+`GET /api/integration/v1/audit/receipts/{receipt_id}` is an **AI Data Platform** route only. iCamp does not create or verify gateway Ed25519 receipts, independently attest an owner identity, or operate the Comms Hub four-GET test.
 
-| Variable | Requirement |
+## Server-only config (NOT browser variables)
+
+| Environment name | Requirement |
 | --- | --- |
-| `ICAMP_INTEGRATION_V1_ENABLED` | Exact string `true` after owner approval; otherwise HOLD |
-| `ICAMP_INTEGRATION_V1_KEY_ID` | Gateway key identifier, 3–80 characters; rotate with its key |
-| `ICAMP_INTEGRATION_V1_HMAC_SECRET` | At least 32 characters, unique for iCamp and each environment, never shared in browser/UI |
-| `ICAMP_INTEGRATION_V1_ALLOWED_CAMPGROUNDS` | Explicit comma-separated UUID allowlist of campgrounds approved for TESTING |
-| `ICAMP_APPLICATION_VERSION` | Optional non-secret version label |
-| `DATABASE_URL` | Existing server-only iCamp DB connection, used for durable nonce receipts |
+| `ICAMP_INTEGRATION_V1_ENABLED` | `true` **only after separately approved nonproduction setup**; otherwise HOLD |
+| `ICAMP_INTEGRATION_V1_ENVIRONMENT` | Exact `nonproduction` |
+| `ICAMP_INTEGRATION_V1_KEY_ID` | Three–80 character identifier; unique per tenant and test source |
+| `ICAMP_INTEGRATION_V1_TENANT_ID` | One exact lowercase iCamp campground UUID for this configured key |
+| `ICAMP_INTEGRATION_V1_HMAC_KEY_B64` | Base64-encoded **32 random bytes**, provided through an approved server secret manager; never commit, log or place in test fixtures |
+| `VERCEL_ENV` | Must be `preview` or `development`; production is always denied |
+| `DATABASE_URL` | Existing iCamp server-only PostgreSQL connection; private receipt tables must be migrated |
 
-Rotating or revoking the key means changing the server environment and setting `ICAMP_INTEGRATION_V1_ENABLED=false` until a fresh owner-approved handshake. Previously signed requests are not accepted with a rotated key ID/secret.
+Rotate or revoke the configured key by disabling integration, replacing the key ID and secret through a secure process, and separately verifying the new active test scope. Old signed requests fail with mismatched key ID or signature. Only one key/tenant entry per running instance is supported today; the multi-tenant credential registry and independent receipt signing remain AI Data Platform responsibilities.
 
-## Signed request format
+## Canonical QL-243 request
 
-Gateway sends headers `x-rosevear-issuer: ai-data-platform`, `x-rosevear-key-id`, `x-rosevear-timestamp` (UTC ISO 8601 with milliseconds), `x-rosevear-nonce` (new UUID per request), `x-rosevear-tenant-id` (campground UUID) and `x-rosevear-signature: sha256=<lowercase 64-character hex>`.
+Require these exact headers: `X-Rosevear-Contract: rosevear.integration.v1`, `X-Rosevear-Environment: nonproduction`, `X-Rosevear-Source: ai-data-platform`, `X-Rosevear-Destination: icamp`, `X-Rosevear-Business: icamp`, `X-Rosevear-Tenant: <the scoped campground UUID>`, `X-Rosevear-Key-Id`, `X-Rosevear-Timestamp` (13-digit Unix milliseconds), `X-Rosevear-Nonce` (`np-` plus 32 lowercase random hex), `X-Rosevear-Signature` (43-character unpadded base64url HMAC-SHA256).
 
-Compute HMAC-SHA256 over exactly these newline-separated lines (no trailing newline):
+Canonical UTF-8, 12 lines joined with `\n` and no final newline:
 
 ```text
+rosevear.integration.v1
 GET
 /api/integration/v1/health
-<timestamp>
-<nonce>
+<13-digit Unix epoch milliseconds>
+np-<32 lowercase hex>
 ai-data-platform
-<lowercase campground UUID>
+icamp
+icamp
+<the exact campground UUID>
+nonproduction
 e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+<scoped key ID>
 ```
 
-The last line is SHA-256 of the empty GET request body. For `/capabilities`, substitute that exact path. Each request's server timestamp must be within five minutes of receipt. Duplicate `(issuer, key_id, nonce)` is rejected atomically with HTTP 409 by a unique private PostgreSQL receipt. Scoped but unauthorized campground UUIDs return HOLD/403. Missing config returns HOLD/503. Invalid signatures return 401 without leaking the shared secret or a customer record.
+Sign with the 32-byte decoded secret and base64url without padding; verify constant-time. Only requests at most 300 seconds old pass. The gateway must apply DNS/egress/TLS/rate-limit controls separately. Nonproduction GETs do not imply owner authorization for reads or writes. The older Build 134 ad hoc header/hex format is intentionally rejected.
 
-Responses provide iCamp identity, environment, `rosevear.integration.v1`, timestamp and `TESTING` state. Capabilities remain `[]`; no reservation reference lookup has been exposed. Production connection, reservation reference reads, events, commands and Comms Hub dispatch each require separate owner permission and negative tenant tests.
+## Durability and evidence
 
-The database cannot independently rotate an environment secret, so key rotation remains an explicit operator task. For a later phase, add secured owner-managed grant persistence and signed receipt inspection. No automatic service activation is implied by these two endpoints.
+`icamp_private.integration_ql243_request_receipts` uses atomic unique `(source_system,business_id,campground_id,key_id,nonce)` and forced RLS. Private denial receipts contain only status code and exact path (no keys or raw headers), both tables are append-only and visible only to restricted DB roles. `HOLD` is returned even when a valid read-only handshake succeeds. A database outage prevents acceptance.
+
+Proof still **not implemented/independently verified**: live nonproduction origin, gateway's signed health/caps receipts, gateway audit read twice after restart, separate owner/witness/gateway SPKI pins, central per-source credential registry, independent reviewer, owner pilot decision. Do not invent receipt IDs or claim GREEN external connectivity before QL-243's independent owner gates are fulfilled.

@@ -12,58 +12,99 @@ import {
 const now = new Date("2026-10-27T17:00:00.000Z");
 const tenantA = "c3333333-3333-4333-8333-333333333333";
 const tenantB = "d4444444-4444-4444-8444-444444444444";
-const nonce = "e5555555-5555-4555-8555-555555555555";
-const secret = Array.from({ length: 48 }, (_, i) =>
-  String.fromCharCode(97 + (i % 26)),
-).join("");
+const nonce = `np-${"a".repeat(32)}`;
+const secret = Buffer.alloc(32, 37);
+const keyId = "icamp-np-tenant-a-key";
 const config = loadIntegrationReadinessConfig({
   ICAMP_INTEGRATION_V1_ENABLED: "true",
-  ICAMP_INTEGRATION_V1_KEY_ID: "gateway-test-key",
-  ICAMP_INTEGRATION_V1_HMAC_SECRET: secret,
-  ICAMP_INTEGRATION_V1_ALLOWED_CAMPGROUNDS: tenantA,
-  NODE_ENV: "test",
+  ICAMP_INTEGRATION_V1_ENVIRONMENT: "nonproduction",
+  ICAMP_INTEGRATION_V1_KEY_ID: keyId,
+  ICAMP_INTEGRATION_V1_TENANT_ID: tenantA,
+  ICAMP_INTEGRATION_V1_HMAC_KEY_B64: secret.toString("base64"),
+  VERCEL_ENV: "preview",
 });
 function signedHeaders(
   path,
   tenantId = tenantA,
-  timestamp = now.toISOString(),
+  timestamp = String(now.getTime()),
 ) {
   const signature = createHmac("sha256", secret)
-    .update(canonicalReadinessSignature({ path, timestamp, nonce, tenantId }))
-    .digest("hex");
+    .update(
+      canonicalReadinessSignature({ path, timestamp, nonce, tenantId, keyId }),
+    )
+    .digest("base64url");
   return new Headers({
-    "x-rosevear-issuer": "ai-data-platform",
-    "x-rosevear-key-id": "gateway-test-key",
+    "x-rosevear-contract": INTEGRATION_CONTRACT_VERSION,
+    "x-rosevear-environment": "nonproduction",
+    "x-rosevear-source": "ai-data-platform",
+    "x-rosevear-destination": "icamp",
+    "x-rosevear-business": "icamp",
+    "x-rosevear-tenant": tenantId,
+    "x-rosevear-key-id": keyId,
     "x-rosevear-timestamp": timestamp,
     "x-rosevear-nonce": nonce,
-    "x-rosevear-tenant-id": tenantId,
-    "x-rosevear-signature": `sha256=${signature}`,
+    "x-rosevear-signature": signature,
   });
 }
 
-test("Integration Contract v1 stays disconnected without server-only configuration", () => {
-  assert.equal(INTEGRATION_CONTRACT_VERSION, "rosevear.integration.v1");
-  const absent = loadIntegrationReadinessConfig({});
-  assert.equal(absent.enabled, false);
+test("QL-243 format matches exact 12-line UTF-8 GET canonical and excludes old format", () => {
+  assert.equal(
+    canonicalReadinessSignature({
+      path: "/api/integration/v1/health",
+      timestamp: String(now.getTime()),
+      nonce,
+      tenantId: tenantA,
+      keyId,
+    }).split("\n").length,
+    12,
+  );
+  assert.equal(
+    canonicalReadinessSignature({
+      path: "/api/integration/v1/health",
+      timestamp: String(now.getTime()),
+      nonce,
+      tenantId: tenantA,
+      keyId,
+    }).split("\n")[10],
+    "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  );
+  assert.equal(
+    verifySignedReadiness(
+      new Headers({ "x-rosevear-issuer": "ai-data-platform" }),
+      "/api/integration/v1/health",
+      config,
+      now,
+    ).httpStatus,
+    401,
+  );
+});
+
+test("Integration stays HOLD and will not activate on production hosting", () => {
+  assert.equal(loadIntegrationReadinessConfig({}).enabled, false);
+  assert.equal(config.enabled, true);
+  assert.equal(
+    loadIntegrationReadinessConfig({
+      ICAMP_INTEGRATION_V1_ENABLED: "true",
+      ICAMP_INTEGRATION_V1_ENVIRONMENT: "nonproduction",
+      ICAMP_INTEGRATION_V1_KEY_ID: keyId,
+      ICAMP_INTEGRATION_V1_TENANT_ID: tenantA,
+      ICAMP_INTEGRATION_V1_HMAC_KEY_B64: secret.toString("base64"),
+      VERCEL_ENV: "production",
+    }).enabled,
+    false,
+  );
   assert.equal(
     verifySignedReadiness(
       new Headers(),
       "/api/integration/v1/health",
-      absent,
+      loadIntegrationReadinessConfig({}),
       now,
-    ).httpStatus,
-    503,
-  );
-  assert.equal(
-    loadIntegrationReadinessConfig({
-      ICAMP_INTEGRATION_V1_ENABLED: "true",
-      ICAMP_INTEGRATION_V1_HMAC_SECRET: "short",
-    }).enabled,
-    false,
+    ).code,
+    "INTEGRATION_HOLD",
   );
 });
 
-test("Signed health and capabilities require gateway identity, scoped tenant, and freshness", () => {
+test("QL-243 signed GET authenticates exact app and isolated nonproduction campground", () => {
   for (const path of [
     "/api/integration/v1/health",
     "/api/integration/v1/capabilities",
@@ -73,79 +114,100 @@ test("Signed health and capabilities require gateway identity, scoped tenant, an
       {
         ok: true,
         issuer: "ai-data-platform",
-        keyId: "gateway-test-key",
-        nonce,
+        destination: "icamp",
+        business: "icamp",
+        environment: "nonproduction",
+        keyId,
         tenantId: tenantA,
-        timestamp: now.toISOString(),
+        nonce,
+        timestamp: String(now.getTime()),
         allowed: true,
       },
     );
-    const b = verifySignedReadiness(
+    const wrongTenant = verifySignedReadiness(
       signedHeaders(path, tenantB),
       path,
       config,
       now,
     );
-    assert.equal(b.ok, true);
+    assert.equal(wrongTenant.ok, true);
+    assert.equal(wrongTenant.allowed, false);
+    const forgedTenant = signedHeaders(path);
+    forgedTenant.set("x-rosevear-tenant", tenantB);
     assert.equal(
-      b.allowed,
-      false,
-      "Campground B cannot reuse the access granted to A",
+      verifySignedReadiness(forgedTenant, path, config, now).code,
+      "INVALID_GATEWAY_SIGNATURE",
     );
-    const changedPath = verifySignedReadiness(
-      signedHeaders(path),
-      "/api/integration/v1/nonexistent",
-      config,
-      now,
+    const wrongScope = signedHeaders(path);
+    wrongScope.set("x-rosevear-business", "devilndove");
+    assert.equal(
+      verifySignedReadiness(wrongScope, path, config, now).code,
+      "INVALID_GATEWAY_IDENTITY",
     );
-    assert.equal(changedPath.httpStatus, 404);
+    const wrongEnv = signedHeaders(path);
+    wrongEnv.set("x-rosevear-environment", "production");
+    assert.equal(
+      verifySignedReadiness(wrongEnv, path, config, now).httpStatus,
+      401,
+    );
   }
 });
 
-test("Reject forged, expired, wrong-key and revoked gateway readiness requests", () => {
+test("QL-243 signature, stale time, rotation, source, method and query denials", () => {
   const path = "/api/integration/v1/health";
-  const forged = signedHeaders(path);
-  forged.set("x-rosevear-tenant-id", tenantB);
+  const rotated = signedHeaders(path);
+  rotated.set("x-rosevear-key-id", "revoked-key");
   assert.equal(
-    verifySignedReadiness(forged, path, config, now).httpStatus,
-    401,
-  );
-  const wrongKey = signedHeaders(path);
-  wrongKey.set("x-rosevear-key-id", "rotated-key");
-  assert.equal(
-    verifySignedReadiness(wrongKey, path, config, now).httpStatus,
-    401,
+    verifySignedReadiness(rotated, path, config, now).code,
+    "INVALID_GATEWAY_IDENTITY",
   );
   assert.equal(
     verifySignedReadiness(
-      signedHeaders(path, tenantA, "2026-10-27T16:40:00.000Z"),
+      signedHeaders(path, tenantA, String(now.getTime() - 301000)),
       path,
       config,
       now,
     ).code,
     "EXPIRED_GATEWAY_SIGNATURE",
   );
+  const forged = signedHeaders(path);
+  forged.set("x-rosevear-signature", "x".repeat(43));
   assert.equal(
-    verifySignedReadiness(
-      signedHeaders(path),
-      path,
-      { ...config, enabled: false },
-      now,
-    ).code,
-    "INTEGRATION_HOLD",
+    verifySignedReadiness(forged, path, config, now).code,
+    "INVALID_GATEWAY_SIGNATURE",
   );
-});
-
-test("Durable nonce receipt, negative tenant hold and no live cross-app operations", () => {
-  const sql = readFileSync(
-    new URL(
-      "../database/migrations/0164_independent_reopening_followup_replay_oversight.sql",
-      import.meta.url,
-    ),
-    "utf8",
+  const alteredSource = signedHeaders(path);
+  alteredSource.set("x-rosevear-source", "rosevear-comms-hub");
+  assert.equal(
+    verifySignedReadiness(alteredSource, path, config, now).code,
+    "INVALID_GATEWAY_IDENTITY",
   );
   const route = readFileSync(
     new URL("../lib/integration-v1/route.ts", import.meta.url),
+    "utf8",
+  );
+  for (const assertion of [
+    "QUERY_NOT_ALLOWED",
+    "METHOD_NOT_ALLOWED",
+    "REPLAY_REJECTED",
+    "TENANT_HOLD",
+    'connection_state: "HOLD"',
+    "capabilities: []",
+    "commands_enabled: false",
+    "events_enabled: false",
+  ])
+    assert.ok(
+      route.includes(assertion),
+      `Missing gateway protection ${assertion}`,
+    );
+});
+
+test("QL-243 has private durable atomic replay and sanitized denial receipts", () => {
+  const sql = readFileSync(
+    new URL(
+      "../database/migrations/0169_continuity_evidence_recurrence_owner_reconciliation.sql",
+      import.meta.url,
+    ),
     "utf8",
   );
   const postgres = readFileSync(
@@ -153,20 +215,20 @@ test("Durable nonce receipt, negative tenant hold and no live cross-app operatio
     "utf8",
   );
   for (const required of [
-    "icamp_private.integration_handshake_receipts",
-    "unique(issuer,key_id,nonce)",
+    "icamp_private.integration_ql243_request_receipts",
+    "icamp_private.integration_ql243_denial_receipts",
+    "unique(source_system,business_id,campground_id,key_id,nonce)",
     "force row level security",
     "winterization_append_only",
-    "grant insert on icamp_private.integration_handshake_receipts to icamp_app",
   ])
     assert.ok(
       sql.includes(required),
-      `Missing durable tenant-protected readiness receipt: ${required}`,
+      `Missing QL-243 durable protection ${required}`,
     );
-  assert.ok(postgres.includes("on conflict(issuer,key_id,nonce) do nothing"));
-  assert.ok(route.includes("REPLAY_REJECTED"));
-  assert.ok(route.includes("TENANT_HOLD"));
-  assert.ok(route.includes("capabilities: []"));
-  assert.ok(route.includes("commands_enabled: false"));
-  assert.ok(route.includes("events_enabled: false"));
+  assert.ok(
+    postgres.includes(
+      "on conflict(source_system,business_id,campground_id,key_id,nonce) do nothing",
+    ),
+  );
+  assert.ok(postgres.includes("recordReadinessDenial"));
 });
