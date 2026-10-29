@@ -28,8 +28,8 @@ export default async function PlatformPage() {
           <h1>iCamp application management</h1>
           <p className="hero-panel__lead">
             Verified platform-wide totals. This is separate from a campground
-            owner&apos;s management permissions and requires a reviewed global grant
-            and multi-factor assurance.
+            owner&apos;s management permissions and requires a reviewed global
+            grant and multi-factor assurance.
           </p>
         </section>
         <section className="content-panel">
