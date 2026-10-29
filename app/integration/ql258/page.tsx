@@ -24,10 +24,10 @@ export default function Ql258Page() {
         <section className="content-panel">
           <h2>Verified source checkpoint</h2>
           <p>
-            The original QL-246 proof file returned HTTP 404 on 29 October
-            2026 at immutable Build 153 main commit
-            461cc344c930578806f860702d74517c75038f0d.
-            Later commits require separate verification.
+            The original QL-246 proof file returned HTTP 404 on 29 October 2026
+            at immutable Build 153 main commit
+            461cc344c930578806f860702d74517c75038f0d. Later commits require
+            separate verification.
           </p>
           <p>
             Camp Rosevear remains a synthetic, inactive campground in the
