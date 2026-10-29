@@ -4,6 +4,7 @@ export type AssuranceLevel = "aal1" | "aal2";
 export interface AuthenticatedUser {
   id: string;
   email: string;
+  username?: string | null;
   accountType: AccountType;
   emailVerifiedAt: string | Date | null;
   mfaRequired: boolean;
