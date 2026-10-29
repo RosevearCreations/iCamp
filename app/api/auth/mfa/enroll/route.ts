@@ -8,7 +8,10 @@ export const dynamic = "force-dynamic";
 
 export async function POST(request: NextRequest) {
   if (!isSameOriginMutation(request)) {
-    return NextResponse.json({ error: "Invalid request origin." }, { status: 403 });
+    return NextResponse.json(
+      { error: "Invalid request origin." },
+      { status: 403 },
+    );
   }
   const session = await getCurrentSession();
   if (!session) {
@@ -21,7 +24,10 @@ export async function POST(request: NextRequest) {
     const input = (await request.json()) as { password?: unknown };
     const password = typeof input.password === "string" ? input.password : "";
     if (password.length < 12 || password.length > 128) {
-      return NextResponse.json({ error: "Password verification failed." }, { status: 403 });
+      return NextResponse.json(
+        { error: "Password verification failed." },
+        { status: 403 },
+      );
     }
     const result = await beginTotpEnrollment({
       userId: session.user.id,
@@ -30,9 +36,14 @@ export async function POST(request: NextRequest) {
       password,
     });
     if (!result) {
-      return NextResponse.json({ error: "Password verification failed." }, { status: 403 });
+      return NextResponse.json(
+        { error: "Password verification failed." },
+        { status: 403 },
+      );
     }
-    return NextResponse.json(result, { headers: { "Cache-Control": "no-store" } });
+    return NextResponse.json(result, {
+      headers: { "Cache-Control": "no-store" },
+    });
   } catch {
     return NextResponse.json(
       { error: "Authenticator enrollment unavailable or already completed." },

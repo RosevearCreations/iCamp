@@ -27,11 +27,14 @@ export default async function AccountProfilePage({
           <h1>My iCamp profile</h1>
           <p className="hero-panel__lead">
             Update personal display preferences independently of campground
-            permissions, reservations, staff roles and application administration.
+            permissions, reservations, staff roles and application
+            administration.
           </p>
         </section>
         <section className="content-panel auth-panel">
-          {params.status === "saved" ? <p role="status">Profile saved.</p> : null}
+          {params.status === "saved" ? (
+            <p role="status">Profile saved.</p>
+          ) : null}
           {params.status === "invalid" ? (
             <p role="alert">Profile not saved. Check the supplied values.</p>
           ) : null}
@@ -57,7 +60,9 @@ export default async function AccountProfilePage({
                 <option value="phone">Phone</option>
               </select>
             </label>
-            <button className="primary-button" type="submit">Save profile</button>
+            <button className="primary-button" type="submit">
+              Save profile
+            </button>
           </form>
           <p>
             This does not enroll you in marketing, override booking consent or

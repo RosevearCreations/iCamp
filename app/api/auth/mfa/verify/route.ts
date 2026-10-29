@@ -8,7 +8,10 @@ export const dynamic = "force-dynamic";
 
 export async function POST(request: NextRequest) {
   if (!isSameOriginMutation(request)) {
-    return NextResponse.json({ error: "Invalid request origin." }, { status: 403 });
+    return NextResponse.json(
+      { error: "Invalid request origin." },
+      { status: 403 },
+    );
   }
   const session = await getCurrentSession();
   if (!session) {

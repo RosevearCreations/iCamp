@@ -94,8 +94,12 @@ export default async function AccountPage() {
 
           <section aria-label="Account onboarding">
             <h2>Account and security</h2>
-            <p><Link href="/auth/profile">Update my account profile</Link></p>
-            <p><Link href="/auth/mfa">Set up or verify an authenticator</Link></p>
+            <p>
+              <Link href="/auth/profile">Update my account profile</Link>
+            </p>
+            <p>
+              <Link href="/auth/mfa">Set up or verify an authenticator</Link>
+            </p>
             {session.user.mfaRequired && session.assuranceLevel !== "aal2" ? (
               <p>Privileged actions need fresh authenticator verification.</p>
             ) : null}

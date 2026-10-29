@@ -10,7 +10,8 @@ import {
   totpAtStep,
 } from "../lib/auth/totp.mjs";
 
-const read = (path) => readFileSync(new URL("../" + path, import.meta.url), "utf8");
+const read = (path) =>
+  readFileSync(new URL("../" + path, import.meta.url), "utf8");
 const knownSeed = "GEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQ";
 
 test("TOTP RFC6238 vector, drift tolerance and one-time step replay denial", () => {
@@ -30,7 +31,9 @@ test("TOTP seeds encrypt with per-user authenticated encryption", () => {
 });
 
 test("MFA factor and session state enforce replay, failed attempts and AAL2 freshness", () => {
-  const migration = read("database/migrations/0183_profile_totp_onboarding.sql");
+  const migration = read(
+    "database/migrations/0183_profile_totp_onboarding.sql",
+  );
   const service = read("lib/auth/mfa-postgres.mjs");
   const session = read("lib/auth/postgres.mjs");
   assert.match(migration, /totp_last_accepted_step/u);

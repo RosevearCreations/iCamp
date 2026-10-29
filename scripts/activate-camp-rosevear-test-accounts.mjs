@@ -34,7 +34,10 @@ const credentials = [
   ["rosevear", env.ICAMP_TEST_PLATFORM_PASSWORD],
 ];
 if (
-  credentials.some(([, password]) => !password || password.length < 16 || !validatePassword(password).ok) ||
+  credentials.some(
+    ([, password]) =>
+      !password || password.length < 16 || !validatePassword(password).ok,
+  ) ||
   new Set(credentials.map(([, password]) => password)).size !== 3 ||
   !env.ICAMP_MFA_ENCRYPTION_KEY
 ) {
@@ -83,7 +86,9 @@ try {
       row.rows[0].account_state !== "disabled" ||
       !row.rows[0].email_normalized.endsWith(".invalid")
     ) {
-      throw new Error("A requested user is not an isolated disabled test identity.");
+      throw new Error(
+        "A requested user is not an isolated disabled test identity.",
+      );
     }
     const passwordHash = await hashPassword(password);
     await client.query(
@@ -109,7 +114,10 @@ try {
        and a.campground_id = $1`,
     [scope.rows[0].id],
   );
-  if (manager.rowCount !== 1 || manager.rows[0].role_code !== "campground_manager") {
+  if (
+    manager.rowCount !== 1 ||
+    manager.rows[0].role_code !== "campground_manager"
+  ) {
     throw new Error("Manager role must be uniquely scoped to Camp Rosevear.");
   }
   await client.query(

@@ -29,9 +29,13 @@ export function MfaPanel() {
       setSeed(result.seed);
       setUri(result.setupUri);
       setPassword("");
-      setMessage("Add this one-time key to your authenticator app, then verify a current code.");
+      setMessage(
+        "Add this one-time key to your authenticator app, then verify a current code.",
+      );
     } catch (error) {
-      setMessage(error instanceof Error ? error.message : "Enrollment unavailable.");
+      setMessage(
+        error instanceof Error ? error.message : "Enrollment unavailable.",
+      );
     } finally {
       setBusy(false);
     }
@@ -58,7 +62,9 @@ export function MfaPanel() {
       setCode("");
       window.location.assign("/auth/account");
     } catch (error) {
-      setMessage(error instanceof Error ? error.message : "Verification failed.");
+      setMessage(
+        error instanceof Error ? error.message : "Verification failed.",
+      );
     } finally {
       setBusy(false);
     }
@@ -67,7 +73,11 @@ export function MfaPanel() {
   return (
     <div className="content-panel auth-panel">
       <h2>Set up an authenticator</h2>
-      <p>For a new account, enter your current password to start setup. If you already enrolled, enter a current code below to verify this session. No email or SMS code is sent.</p>
+      <p>
+        For a new account, enter your current password to start setup. If you
+        already enrolled, enter a current code below to verify this session. No
+        email or SMS code is sent.
+      </p>
       <form onSubmit={enroll} className="auth-form">
         <label>
           Current password
@@ -91,7 +101,10 @@ export function MfaPanel() {
           <code>{seed}</code>
           <p>For an authenticator that accepts a setup URI:</p>
           <code style={{ overflowWrap: "anywhere" }}>{uri}</code>
-          <p>Keep this key private. It will not be shown again after you leave this page.</p>
+          <p>
+            Keep this key private. It will not be shown again after you leave
+            this page.
+          </p>
         </section>
       ) : null}
       <form onSubmit={verify} className="auth-form">
