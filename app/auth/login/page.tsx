@@ -38,7 +38,7 @@ export default async function LoginPage({
 
           {error ? (
             <p className="form-message form-message--error" role="alert">
-              The email or password could not be verified.
+              The username, email, or password could not be verified.
             </p>
           ) : null}
 
@@ -60,13 +60,13 @@ export default async function LoginPage({
             <input name="next" type="hidden" value={next} />
 
             <label>
-              <span>Email</span>
+              <span>Username or email</span>
               <input
-                autoComplete="email"
-                inputMode="email"
+                autoComplete="username"
                 name="email"
                 required
-                type="email"
+                type="text"
+                maxLength={320}
               />
             </label>
 

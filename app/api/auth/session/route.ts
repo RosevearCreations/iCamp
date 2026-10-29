@@ -23,6 +23,7 @@ export async function GET() {
       },
       user: {
         email: session.user.email,
+        username: session.user.username ?? null,
         accountType: session.user.accountType,
         emailVerified: Boolean(session.user.emailVerifiedAt),
         mfaRequired: session.user.mfaRequired,
