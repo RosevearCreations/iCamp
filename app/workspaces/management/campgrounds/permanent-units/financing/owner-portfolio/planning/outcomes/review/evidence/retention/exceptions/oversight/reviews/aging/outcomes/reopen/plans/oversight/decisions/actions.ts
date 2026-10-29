@@ -3,6 +3,7 @@ import { randomUUID } from "node:crypto";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { requireStaff } from "@/lib/auth/current-session";
+import { ql247DenialKinds } from "@/lib/permanent-unit-owner-retention/recurrence-core.mjs";
 import {
   recordOwnerRecurrenceReview,
   recordIndependentRecurrenceDecision,
@@ -37,6 +38,7 @@ import {
   recordQl246ExceptionPinHoldDecision,
   recordQl247TestReceiptHoldWatch,
   recordQl248ProvenanceGapHoldRenewal,
+  recordQl248SourceReceiptExceptionReassessment,
 } from "@/lib/permanent-unit-owner-retention/recurrence-postgres.mjs";
 const path =
   "/workspaces/management/campgrounds/permanent-units/financing/owner-portfolio/planning/outcomes/review/evidence/retention/exceptions/oversight/reviews/aging/outcomes/reopen/plans/oversight/decisions";
@@ -1153,6 +1155,50 @@ export async function recordQl248ProvenanceGapHoldRenewalAction(
     kind = "error";
     message =
       error instanceof Error ? error.message : "Build 145 review rejected.";
+  }
+  revalidatePath(path);
+  redirect(
+    `${path}?source=${encodeURIComponent(source)}&target=${encodeURIComponent(target)}&${kind}=${encodeURIComponent(message.slice(0, 180))}`,
+  );
+}
+
+export async function recordQl248SourceReceiptExceptionReassessmentAction(
+  form: FormData,
+) {
+  const session = await requireStaff(path);
+  const source = field(form, "sourceCampgroundId");
+  const target = field(form, "targetCampgroundId");
+  let kind = "saved";
+  let message =
+    "Build 146 original source receipt/HOLD reassessment recorded. External gateway remains DISCONNECTED / HOLD.";
+  try {
+    await recordQl248SourceReceiptExceptionReassessment({
+      actorUserId: session.user.id,
+      id: randomUUID(),
+      sourceCampgroundId: source,
+      targetCampgroundId: target,
+      ql248RenewalId: field(form, "ql248RenewalId"),
+      priorReviewId: field(form, "priorReviewId"),
+      sourceSystem: field(form, "sourceSystem"),
+      repository: field(form, "repository"),
+      reviewKind: field(form, "reviewKind"),
+      outcomeKind: field(form, "outcomeKind"),
+      denialReceiptIds: ql247DenialKinds.map((key) => {
+        const receipt = field(form, `denial_${key}`);
+        return receipt ? `${key}|${receipt}` : "";
+      }),
+      sourceAuditReference: field(form, "sourceAuditReference"),
+      ownerAuthorizationReference: field(form, "ownerAuthorizationReference"),
+      rollbackReference: field(form, "rollbackReference"),
+      revocationReference: field(form, "revocationReference"),
+      nextDueAt: field(form, "nextDueAt"),
+      evidenceReference: field(form, "evidenceReference"),
+      reviewNote: field(form, "reviewNote"),
+    });
+  } catch (error) {
+    kind = "error";
+    message =
+      error instanceof Error ? error.message : "Build 146 review rejected.";
   }
   revalidatePath(path);
   redirect(

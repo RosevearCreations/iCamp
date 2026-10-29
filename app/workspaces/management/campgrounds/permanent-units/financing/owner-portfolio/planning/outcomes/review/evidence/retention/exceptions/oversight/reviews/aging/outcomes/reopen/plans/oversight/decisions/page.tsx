@@ -43,6 +43,7 @@ import {
   recordQl246ExceptionPinHoldDecisionAction,
   recordQl247TestReceiptHoldWatchAction,
   recordQl248ProvenanceGapHoldRenewalAction,
+  recordQl248SourceReceiptExceptionReassessmentAction,
 } from "./actions";
 const gatewayHoldReceiptOptions: Record<
   string,
@@ -1278,6 +1279,45 @@ export default async function RecurrenceDecisionsPage({
             : r.review_kind === "seven_denial_source_receipt_gap_aging"
               ? "independent_authorization_hold_renewal"
               : "two_sha_public_proof_provenance_recheck",
+        status: r.review_status,
+      })),
+  ];
+  const ql248SourceReceiptQueue = [
+    ...report.ql248ProvenanceGapHoldRenewals
+      .filter((r) => r.review_kind === "independent_authorization_hold_renewal")
+      .filter(
+        (r) =>
+          !report.ql248SourceReceiptExceptionReassessments.some(
+            (child) =>
+              child.ql248_renewal_id === r.id && !child.prior_review_id,
+          ),
+      )
+      .map((r) => ({
+        id: r.id,
+        ql248RenewalId: r.id,
+        priorReviewId: "",
+        sourceSystem: r.source_system,
+        repository: r.repository,
+        reviewKind: "original_source_receipt_escalation_followup",
+        status: r.review_status,
+      })),
+    ...report.ql248SourceReceiptExceptionReassessments
+      .filter(
+        (r) =>
+          !report.ql248SourceReceiptExceptionReassessments.some(
+            (child) => child.prior_review_id === r.id,
+          ),
+      )
+      .map((r) => ({
+        id: r.id,
+        ql248RenewalId: r.ql248_renewal_id,
+        priorReviewId: r.id,
+        sourceSystem: r.source_system,
+        repository: r.repository,
+        reviewKind:
+          r.review_kind === "original_source_receipt_escalation_followup"
+            ? "independent_hold_exception_reassessment"
+            : "original_source_receipt_escalation_followup",
         status: r.review_status,
       })),
   ];
@@ -5709,6 +5749,178 @@ export default async function RecurrenceDecisionsPage({
                   : ""}
                 {r.proof_commit_sha
                   ? ` · proof commit ${r.proof_commit_sha}`
+                  : ""}
+                {r.prior_review_id ? ` · follows ${r.prior_review_id}` : ""}
+                {` — ${r.review_note}`}
+              </li>
+            ))}
+          </ul>
+        </section>
+        <section>
+          <h2>
+            Build 146 — QL-248 original source receipt escalation and
+            independent authorization HOLD reassessment
+          </h2>
+          <p>
+            Follow up on the original seven nonproduction denial receipts, their
+            source-of-truth audit indexes and overdue independent review. Only
+            Build 145 independent HOLD renewals may enter this queue. An index
+            does not independently verify a receipt or owner approval.
+            <strong> External gateway: DISCONNECTED / HOLD.</strong> Phase B,
+            pilot approval and dispatch remain disabled.
+          </p>
+          <p>
+            Two separately authored stages alternate. Enter only genuine
+            nonsecret <code>np-</code> evidence indexes; leave absent originals
+            blank. The database independently captures the outstanding gap,
+            elapsed age, overdue days and open Build 145 exceptions.
+          </p>
+          <h3>
+            Original receipt follow-up → separate reviewer HOLD reassessment
+          </h3>
+          {ql248SourceReceiptQueue.slice(0, 24).map((item) => (
+            <form
+              key={`${item.id}-${item.reviewKind}`}
+              action={recordQl248SourceReceiptExceptionReassessmentAction}
+            >
+              {pair}
+              <input
+                type="hidden"
+                name="ql248RenewalId"
+                value={item.ql248RenewalId}
+              />
+              <input
+                type="hidden"
+                name="priorReviewId"
+                value={item.priorReviewId}
+              />
+              <input
+                type="hidden"
+                name="sourceSystem"
+                value={item.sourceSystem}
+              />
+              <input type="hidden" name="repository" value={item.repository} />
+              <input type="hidden" name="reviewKind" value={item.reviewKind} />
+              <p>
+                {item.sourceSystem} · {item.repository} ·{" "}
+                {item.reviewKind.replaceAll("_", " ")} · {item.status}
+              </p>
+              {item.reviewKind ===
+              "original_source_receipt_escalation_followup" ? (
+                <>
+                  <label>
+                    Original source receipt outcome{" "}
+                    <select name="outcomeKind" required>
+                      <option value="original_receipts_missing">
+                        Original receipt indexes absent (0/7)
+                      </option>
+                      <option value="original_references_unverified">
+                        Seven original indexes supplied, not independently
+                        witnessed
+                      </option>
+                      <option value="source_receipt_mismatch_escalated">
+                        Genuine original receipt mismatch escalated
+                      </option>
+                    </select>
+                  </label>
+                  {ql247DenialKinds.map((denial) => (
+                    <label key={denial}>
+                      Original {denial.replaceAll("_", " ")} index{" "}
+                      <input
+                        name={`denial_${denial}`}
+                        placeholder="np-..."
+                        maxLength={160}
+                      />
+                    </label>
+                  ))}
+                  <label>
+                    Independent source-of-truth audit index, if obtained{" "}
+                    <input
+                      name="sourceAuditReference"
+                      placeholder="np-..."
+                      maxLength={160}
+                    />
+                  </label>
+                </>
+              ) : (
+                <>
+                  <label>
+                    Independent authorization HOLD outcome{" "}
+                    <select name="outcomeKind" required>
+                      <option value="hold_reaffirmed_authorization_not_given">
+                        HOLD reaffirmed — owner authorization not given
+                      </option>
+                      <option value="owner_reference_unverified_hold">
+                        Owner evidence index received, authorization unverified
+                        — HOLD
+                      </option>
+                      <option value="hold_exception_escalated">
+                        Independent HOLD exception escalated
+                      </option>
+                    </select>
+                  </label>
+                  <label>
+                    Owner authorization nonsecret index, if actually received{" "}
+                    <input
+                      name="ownerAuthorizationReference"
+                      placeholder="np-..."
+                      maxLength={160}
+                    />
+                  </label>
+                  <label>
+                    Rollback evidence index{" "}
+                    <input
+                      name="rollbackReference"
+                      placeholder="np-..."
+                      maxLength={160}
+                    />
+                  </label>
+                  <label>
+                    Revocation evidence index{" "}
+                    <input
+                      name="revocationReference"
+                      placeholder="np-..."
+                      maxLength={160}
+                    />
+                  </label>
+                </>
+              )}
+              <label>
+                Next independent UTC due date (within 90 days){" "}
+                <input type="date" name="nextDueAt" required />
+              </label>
+              <label>
+                Genuine nonsecret evidence source/index{" "}
+                <input
+                  name="evidenceReference"
+                  minLength={8}
+                  maxLength={400}
+                  required
+                />
+              </label>
+              <label>
+                Independent findings and receipt/authorization gap escalation{" "}
+                <textarea
+                  name="reviewNote"
+                  minLength={12}
+                  maxLength={800}
+                  required
+                />
+              </label>
+              <button type="submit">
+                Record Build 146 immutable HOLD recheck
+              </button>
+            </form>
+          ))}
+          <h3>Immutable Build 146 original-source/HOLD review history</h3>
+          <ul>
+            {report.ql248SourceReceiptExceptionReassessments.map((r) => (
+              <li key={r.id}>
+                {r.source_system} · {r.review_kind} · {r.outcome_kind} ·{" "}
+                {r.review_status}
+                {` · original gap ${r.observed_current_gap_count ?? "HOLD stage"}/7 · prior gap ${r.observed_prior_gap_count}/7 · source gap age ${r.observed_gap_age_days} days · prior overdue ${r.observed_prior_overdue_days} days · open Build 145 exceptions ${r.observed_open_145_exceptions} · overdue Build 145 leaves ${r.observed_overdue_145_leaves} · witnessed ${r.seven_denials_independently_witnessed} · origin verified ${r.public_proof_origin_verified} · owner authorization verified ${r.owner_authorization_verified} · Phase B authorized ${r.phase_b_test_authorized} · pilot authorized ${r.owner_pilot_authorized} · ${r.connection_state} / ${r.gate_state}`}
+                {r.denial_receipt_ids.length
+                  ? ` · indexed original IDs ${r.denial_receipt_ids.join(", ")}`
                   : ""}
                 {r.prior_review_id ? ` · follows ${r.prior_review_id}` : ""}
                 {` — ${r.review_note}`}

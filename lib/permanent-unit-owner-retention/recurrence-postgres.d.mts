@@ -569,6 +569,37 @@ export interface RecurrenceLedger {
     review_note: string;
     review_status: string;
   }>;
+  ql248SourceReceiptExceptionReassessments: Array<{
+    id: string;
+    ql248_renewal_id: string;
+    prior_review_id: string | null;
+    source_system: string;
+    repository: string;
+    review_kind: string;
+    outcome_kind: string;
+    denial_receipt_ids: string[];
+    source_audit_reference: string | null;
+    owner_authorization_reference: string | null;
+    rollback_reference: string | null;
+    revocation_reference: string | null;
+    observed_prior_gap_count: number;
+    observed_current_gap_count: number | null;
+    observed_gap_age_days: number;
+    observed_prior_overdue_days: number;
+    observed_open_145_exceptions: number;
+    observed_overdue_145_leaves: number;
+    original_source_receipts_verified: false;
+    seven_denials_independently_witnessed: false;
+    public_proof_origin_verified: false;
+    owner_authorization_verified: false;
+    phase_b_test_authorized: false;
+    owner_pilot_authorized: false;
+    dispatch_enabled: false;
+    connection_state: "DISCONNECTED";
+    gate_state: "HOLD";
+    review_note: string;
+    review_status: string;
+  }>;
   limited: boolean;
 }
 export function getRecurrenceLedger(
@@ -673,5 +704,8 @@ export function recordQl247TestReceiptHoldWatch(
   raw: Record<string, unknown> & { actorUserId: string },
 ): Promise<{ id: string }>;
 export function recordQl248ProvenanceGapHoldRenewal(
+  raw: Record<string, unknown> & { actorUserId: string },
+): Promise<{ id: string }>;
+export function recordQl248SourceReceiptExceptionReassessment(
   raw: Record<string, unknown> & { actorUserId: string },
 ): Promise<{ id: string }>;
