@@ -44,6 +44,7 @@ import {
   recordQl247TestReceiptHoldWatchAction,
   recordQl248ProvenanceGapHoldRenewalAction,
   recordQl248SourceReceiptExceptionReassessmentAction,
+  recordQl252SourceAuditHoldReviewAction,
 } from "./actions";
 const gatewayHoldReceiptOptions: Record<
   string,
@@ -1318,6 +1319,49 @@ export default async function RecurrenceDecisionsPage({
           r.review_kind === "original_source_receipt_escalation_followup"
             ? "independent_hold_exception_reassessment"
             : "original_source_receipt_escalation_followup",
+        status: r.review_status,
+      })),
+  ];
+  const ql252SourceAuditQueue = [
+    ...report.ql248SourceReceiptExceptionReassessments
+      .filter(
+        (r) => r.review_kind === "independent_hold_exception_reassessment",
+      )
+      .filter(
+        (r) =>
+          !report.ql252ProofDenialHoldReviews.some(
+            (child) =>
+              child.ql248_source_review_id === r.id && !child.prior_review_id,
+          ),
+      )
+      .map((r) => ({
+        id: r.id,
+        ql248SourceReviewId: r.id,
+        priorReviewId: "",
+        sourceSystem: r.source_system,
+        repository: r.repository,
+        reviewKind: "public_source_proof_continuity_audit",
+        status: r.review_status,
+      })),
+    ...report.ql252ProofDenialHoldReviews
+      .filter(
+        (r) =>
+          !report.ql252ProofDenialHoldReviews.some(
+            (child) => child.prior_review_id === r.id,
+          ),
+      )
+      .map((r) => ({
+        id: r.id,
+        ql248SourceReviewId: r.ql248_source_review_id,
+        priorReviewId: r.id,
+        sourceSystem: r.source_system,
+        repository: r.repository,
+        reviewKind:
+          r.review_kind === "public_source_proof_continuity_audit"
+            ? "seven_denial_exception_aging_renewal"
+            : r.review_kind === "seven_denial_exception_aging_renewal"
+              ? "independent_owner_test_authorization_hold_review"
+              : "public_source_proof_continuity_audit",
         status: r.review_status,
       })),
   ];
@@ -5922,6 +5966,252 @@ export default async function RecurrenceDecisionsPage({
                 {r.denial_receipt_ids.length
                   ? ` · indexed original IDs ${r.denial_receipt_ids.join(", ")}`
                   : ""}
+                {r.prior_review_id ? ` · follows ${r.prior_review_id}` : ""}
+                {` — ${r.review_note}`}
+              </li>
+            ))}
+          </ul>
+        </section>
+        <section>
+          <h2>
+            Build 147 — QL-252 original source publication blocker, seven-denial
+            aging renewal &amp; independent owner TEST HOLD
+          </h2>
+          <p>
+            The QL-252 public source-proof path is{" "}
+            <code>docs/integration/ql246-source-proof.json</code>. On the
+            immutable iCamp Build 146 main commit it returned{" "}
+            <strong>404</strong>; green source CI does not publish a signed
+            proof. This three-stage queue records authentic public-origin
+            evidence only if it exists, renews the seven missing-denial
+            exception and requests a separate private owner decision. No
+            receipt, signature, witness or approval is inferred from a
+            successful build.
+          </p>
+          <p>
+            The actual gateway test is <strong>NOT_RUN</strong>; integration is
+            <strong> DISCONNECTED / HOLD</strong>. Do not paste credentials,
+            private signing keys, real customer records, owner identity, private
+            infrastructure addresses, gateway URLs or nonces. Source A must be
+            the tested commit; later proof B (if published) must be a distinct
+            descendant. All signer pins and receipt IDs remain untrusted until
+            separately authenticated outside GitHub.
+          </p>
+          <h3>Original public proof → seven denial gap → owner HOLD queue</h3>
+          {ql252SourceAuditQueue.slice(0, 24).map((item) => (
+            <form
+              key={`${item.id}-${item.reviewKind}`}
+              action={recordQl252SourceAuditHoldReviewAction}
+            >
+              {pair}
+              <input
+                type="hidden"
+                name="ql248SourceReviewId"
+                value={item.ql248SourceReviewId}
+              />
+              <input
+                type="hidden"
+                name="priorReviewId"
+                value={item.priorReviewId}
+              />
+              <input
+                type="hidden"
+                name="sourceSystem"
+                value={item.sourceSystem}
+              />
+              <input type="hidden" name="repository" value={item.repository} />
+              <input type="hidden" name="reviewKind" value={item.reviewKind} />
+              <p>
+                {item.sourceSystem} · {item.repository} ·{" "}
+                {item.reviewKind.replaceAll("_", " ")} · {item.status}
+              </p>
+              {item.reviewKind === "public_source_proof_continuity_audit" ? (
+                <>
+                  <label>
+                    Public original QL-246 publication outcome{" "}
+                    <select name="outcomeKind" required>
+                      <option value="public_ql246_proof_404_reported">
+                        Immutable public proof 404 / NOT_AVAILABLE
+                      </option>
+                      <option value="public_proof_candidate_unverified">
+                        Actual B public proof candidate, origin/custody
+                        UNVERIFIED
+                      </option>
+                      <option value="source_ci_or_proof_origin_exception">
+                        Source CI or proof origin discrepancy escalated
+                      </option>
+                    </select>
+                  </label>
+                  <p>
+                    An actual candidate requires separately checked source A CI,
+                    later B, exact raw-byte SHA-256, public SPKI fingerprint and
+                    genuine nonsecret audit index. For 404, leave B, digest,
+                    signer pin and audit index blank.
+                  </p>
+                  <label>
+                    Audited source SHA A (optional when 404){" "}
+                    <input
+                      name="sourceRevisionSha"
+                      maxLength={40}
+                      pattern="[a-f0-9]{40}"
+                      defaultValue={
+                        item.sourceSystem === "icamp"
+                          ? "5f7caaef37a2f8ec8ba2eb2913564e1a3b3c62c9"
+                          : ""
+                      }
+                    />
+                  </label>
+                  <label>
+                    GREEN CI URL exactly for A (paired with SHA A){" "}
+                    <input
+                      type="url"
+                      name="sourceCiRunUrl"
+                      maxLength={180}
+                      defaultValue={
+                        item.sourceSystem === "icamp"
+                          ? "https://github.com/RosevearCreations/iCamp/actions/runs/40794126949"
+                          : ""
+                      }
+                    />
+                  </label>
+                  <label>
+                    Later genuine public-proof SHA B, if published{" "}
+                    <input
+                      name="proofCommitSha"
+                      maxLength={40}
+                      pattern="[a-f0-9]{40}"
+                    />
+                  </label>
+                  <label>
+                    Exact raw QL-246 JSON SHA-256, if available{" "}
+                    <input
+                      name="proofSha256"
+                      maxLength={64}
+                      pattern="[a-f0-9]{64}"
+                    />
+                  </label>
+                  <label>
+                    Public Ed25519 SPKI SHA-256 (UNTRUSTED){" "}
+                    <input
+                      name="publicSpkiSha256"
+                      maxLength={64}
+                      pattern="[a-f0-9]{64}"
+                    />
+                  </label>
+                  <label>
+                    Independent source/CI comparison nonsecret index{" "}
+                    <input
+                      name="sourceAuditReference"
+                      placeholder="np-..."
+                      maxLength={160}
+                    />
+                  </label>
+                </>
+              ) : item.reviewKind === "seven_denial_exception_aging_renewal" ? (
+                <>
+                  <label>
+                    Original seven-denial gap outcome{" "}
+                    <select name="outcomeKind" required>
+                      <option value="seven_original_denials_missing">
+                        Original denial receipts missing — HOLD
+                      </option>
+                      <option value="original_denial_indexes_unverified">
+                        Seven original indexes supplied, NOT witnessed
+                      </option>
+                      <option value="original_denial_discrepancy_escalated">
+                        Actual original denial mismatch escalated
+                      </option>
+                    </select>
+                  </label>
+                  {ql247DenialKinds.map((denial) => (
+                    <label key={denial}>
+                      Original {denial.replaceAll("_", " ")} source index{" "}
+                      <input
+                        name={`denial_${denial}`}
+                        placeholder="np-..."
+                        maxLength={160}
+                      />
+                    </label>
+                  ))}
+                  <label>
+                    Separate original-source audit index, if received{" "}
+                    <input
+                      name="denialWitnessReference"
+                      placeholder="np-..."
+                      maxLength={160}
+                    />
+                  </label>
+                </>
+              ) : (
+                <>
+                  <label>
+                    Authenticated owner TEST-only decision state{" "}
+                    <select name="outcomeKind" required>
+                      <option value="owner_test_not_given_hold">
+                        NOT GIVEN — remain HOLD
+                      </option>
+                      <option value="owner_private_review_requested_hold">
+                        Private owner decision REQUESTED, not authorized
+                      </option>
+                      <option value="owner_approval_claim_unverified_hold">
+                        Claimed approval index, NOT independently verified
+                      </option>
+                    </select>
+                  </label>
+                  <label>
+                    Genuine private decision receipt index, if any (UNVERIFIED){" "}
+                    <input
+                      name="ownerTestReceiptId"
+                      placeholder="np-..."
+                      maxLength={160}
+                    />
+                  </label>
+                  <p>
+                    Owner TEST scope requires an authenticated future decision
+                    for a nonproduction campground, GET-only paths and a window
+                    no longer than 30 minutes. This form cannot grant
+                    permission, schedule a test, or execute a gateway request.
+                  </p>
+                </>
+              )}
+              <label>
+                Next UTC independent review due within 90 days{" "}
+                <input type="date" name="nextDueAt" required />
+              </label>
+              <label>
+                Original nonsecret source evidence index{" "}
+                <input
+                  name="evidenceReference"
+                  minLength={8}
+                  maxLength={400}
+                  required
+                />
+              </label>
+              <label>
+                Independent findings, missing receipts and escalation plan{" "}
+                <textarea
+                  name="reviewNote"
+                  minLength={12}
+                  maxLength={800}
+                  required
+                />
+              </label>
+              <button type="submit">Record immutable QL-252 HOLD review</button>
+            </form>
+          ))}
+          <h3>
+            Immutable QL-252 history — original source/authorization UNVERIFIED
+          </h3>
+          <ul>
+            {report.ql252ProofDenialHoldReviews.map((r) => (
+              <li key={r.id}>
+                {r.source_system} · {r.review_kind} · {r.outcome_kind} ·{" "}
+                {r.review_status}
+                {` · root gap ${r.observed_root_gap_count}/7 · current gap ${r.observed_current_gap_count ?? "review stage"}/7 · source aging ${r.observed_gap_age_days} days · previous overdue ${r.observed_prior_overdue_days} days · open Build 146 exceptions ${r.observed_open_146_exceptions} · overdue Build 146 leaves ${r.observed_overdue_146_leaves} · origin trusted ${r.original_proof_signature_verified} · original denials witnessed ${r.seven_denials_independently_witnessed} · owner TEST approved ${r.owner_test_authorized} · actual GET ${r.actual_gateway_test} · ${r.connection_state} / ${r.gate_state}`}
+                {r.source_revision_sha
+                  ? ` · audited A ${r.source_revision_sha}`
+                  : ""}
+                {r.proof_commit_sha ? ` · claimed B ${r.proof_commit_sha}` : ""}
                 {r.prior_review_id ? ` · follows ${r.prior_review_id}` : ""}
                 {` — ${r.review_note}`}
               </li>

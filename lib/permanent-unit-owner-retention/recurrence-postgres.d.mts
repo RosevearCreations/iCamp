@@ -600,6 +600,43 @@ export interface RecurrenceLedger {
     review_note: string;
     review_status: string;
   }>;
+  ql252ProofDenialHoldReviews: Array<{
+    id: string;
+    ql248_source_review_id: string;
+    prior_review_id: string | null;
+    source_system: string;
+    repository: string;
+    review_kind: string;
+    outcome_kind: string;
+    source_revision_sha: string | null;
+    source_ci_run_url: string | null;
+    proof_commit_sha: string | null;
+    proof_sha256: string | null;
+    public_spki_sha256: string | null;
+    source_audit_reference: string | null;
+    denial_receipt_ids: string[];
+    denial_witness_reference: string | null;
+    owner_test_receipt_id: string | null;
+    observed_root_gap_count: number;
+    observed_current_gap_count: number | null;
+    observed_gap_age_days: number;
+    observed_prior_overdue_days: number;
+    observed_open_146_exceptions: number;
+    observed_overdue_146_leaves: number;
+    original_proof_signature_verified: false;
+    independent_source_ci_verified: false;
+    proof_ancestry_verified: false;
+    independent_custody_pin_verified: false;
+    seven_denials_independently_witnessed: false;
+    owner_test_authorized: false;
+    owner_pilot_authorized: false;
+    dispatch_enabled: false;
+    actual_gateway_test: "NOT_RUN";
+    connection_state: "DISCONNECTED";
+    gate_state: "HOLD";
+    review_note: string;
+    review_status: string;
+  }>;
   limited: boolean;
 }
 export function getRecurrenceLedger(
@@ -707,5 +744,8 @@ export function recordQl248ProvenanceGapHoldRenewal(
   raw: Record<string, unknown> & { actorUserId: string },
 ): Promise<{ id: string }>;
 export function recordQl248SourceReceiptExceptionReassessment(
+  raw: Record<string, unknown> & { actorUserId: string },
+): Promise<{ id: string }>;
+export function recordQl252SourceAuditHoldReview(
   raw: Record<string, unknown> & { actorUserId: string },
 ): Promise<{ id: string }>;
