@@ -41,6 +41,7 @@ import {
   recordQl248SourceReceiptExceptionReassessment,
   recordQl252SourceAuditHoldReview,
   recordQl253ProofCustodyOwnerHoldReview,
+  recordQl254OriginalProofRegistryOwnerHoldReview,
 } from "@/lib/permanent-unit-owner-retention/recurrence-postgres.mjs";
 const path =
   "/workspaces/management/campgrounds/permanent-units/financing/owner-portfolio/planning/outcomes/review/evidence/retention/exceptions/oversight/reviews/aging/outcomes/reopen/plans/oversight/decisions";
@@ -1300,6 +1301,63 @@ export async function recordQl253ProofCustodyOwnerHoldReviewAction(
     kind = "error";
     message =
       error instanceof Error ? error.message : "QL-253 review rejected.";
+  }
+  revalidatePath(path);
+  redirect(
+    `${path}?source=${encodeURIComponent(source)}&target=${encodeURIComponent(target)}&${kind}=${encodeURIComponent(message.slice(0, 180))}`,
+  );
+}
+
+export async function recordQl254OriginalProofRegistryOwnerHoldReviewAction(
+  form: FormData,
+) {
+  const session = await requireStaff(path);
+  const source = field(form, "sourceCampgroundId");
+  const target = field(form, "targetCampgroundId");
+  let kind = "saved";
+  let message =
+    "QL-254 original public proof, private registry witness and owner TEST continuity recorded. Integration remains DISCONNECTED / HOLD; no relay or gateway test started.";
+  try {
+    await recordQl254OriginalProofRegistryOwnerHoldReview({
+      actorUserId: session.user.id,
+      id: randomUUID(),
+      sourceCampgroundId: source,
+      targetCampgroundId: target,
+      ql253ReviewId: field(form, "ql253ReviewId"),
+      priorReviewId: field(form, "priorReviewId"),
+      sourceSystem: field(form, "sourceSystem"),
+      repository: field(form, "repository"),
+      reviewKind: field(form, "reviewKind"),
+      outcomeKind: field(form, "outcomeKind"),
+      mainRevisionSha: field(form, "mainRevisionSha"),
+      sourceRevisionSha: field(form, "sourceRevisionSha"),
+      sourceCiRunUrl: field(form, "sourceCiRunUrl"),
+      proofCommitSha: field(form, "proofCommitSha"),
+      proofSha256: field(form, "proofSha256"),
+      publicSpkiSha256: field(form, "publicSpkiSha256"),
+      proofHttpStatus: field(form, "proofHttpStatus") || "NOT_CHECKED",
+      sourceAuditReference: field(form, "sourceAuditReference"),
+      registrySnapshotSha256: field(form, "registrySnapshotSha256"),
+      registryReceiptId: field(form, "registryReceiptId"),
+      custodianReceiptId: field(form, "custodianReceiptId"),
+      witnessReceiptId: field(form, "witnessReceiptId"),
+      registryPinSha256: field(form, "registryPinSha256"),
+      nonceChallengeSha256: field(form, "nonceChallengeSha256"),
+      nonceIssuedAt: field(form, "nonceIssuedAt"),
+      nonceExpiresAt: field(form, "nonceExpiresAt"),
+      ownerTestReceiptId: field(form, "ownerTestReceiptId"),
+      testTenantId: field(form, "testTenantId"),
+      testWindowStart: field(form, "testWindowStart"),
+      testWindowEnd: field(form, "testWindowEnd"),
+      relayReadiness: field(form, "relayReadiness") || "NOT_CONFIGURED",
+      nextDueAt: field(form, "nextDueAt"),
+      evidenceReference: field(form, "evidenceReference"),
+      reviewNote: field(form, "reviewNote"),
+    });
+  } catch (error) {
+    kind = "error";
+    message =
+      error instanceof Error ? error.message : "QL-254 review rejected.";
   }
   revalidatePath(path);
   redirect(

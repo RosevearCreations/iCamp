@@ -15,6 +15,7 @@
     "test": "node --test tests/*.test.mjs",
     "audit:ql252-public-proof": "node scripts/ql252-public-proof-audit.mjs",
     "audit:ql253-public-proof": "node scripts/ql253-immutable-public-retest.mjs",
+    "audit:ql254-public-proof": "node scripts/ql254-original-proof-refresh.mjs",
     "format:check": "prettier --check .",
     "verify": "npm run format:check && npm run lint && npm run typecheck && npm test && npm run build",
     "db:migrate": "node scripts/apply-database-migrations.mjs",

@@ -802,3 +802,49 @@ export function classifyQl253HoldReviewStatus(
   next: { id: string } | null,
   now?: Date,
 ): string;
+export const ql254HoldReviewOutcomes: Readonly<
+  Record<string, ReadonlyArray<string>>
+>;
+export function normalizeQl254HoldReview(
+  raw: Record<string, unknown>,
+  now?: Date,
+): {
+  id: string;
+  ql253ReviewId: string;
+  priorReviewId: string | null;
+  sourceCampgroundId: string;
+  targetCampgroundId: string;
+  sourceSystem: string;
+  repository: string;
+  reviewKind: string;
+  outcomeKind: string;
+  mainRevisionSha: string | null;
+  sourceRevisionSha: string | null;
+  sourceCiRunUrl: string | null;
+  proofCommitSha: string | null;
+  proofSha256: string | null;
+  publicSpkiSha256: string | null;
+  proofHttpStatus: string;
+  sourceAuditReference: string | null;
+  registrySnapshotSha256: string | null;
+  registryReceiptId: string | null;
+  custodianReceiptId: string | null;
+  witnessReceiptId: string | null;
+  registryPinSha256: string | null;
+  nonceChallengeSha256: string | null;
+  nonceIssuedAt: string | null;
+  nonceExpiresAt: string | null;
+  ownerTestReceiptId: string | null;
+  testTenantId: string | null;
+  testWindowStart: string | null;
+  testWindowEnd: string | null;
+  relayReadiness: string;
+  nextDueAt: string;
+  evidenceReference: string;
+  reviewNote: string;
+};
+export function classifyQl254HoldReviewStatus(
+  record: { review_kind: string; next_due_at?: Date | string | null },
+  next: { id: string } | null,
+  now?: Date,
+): string;

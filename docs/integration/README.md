@@ -13,3 +13,12 @@ the exact `main` SHA's signed-proof path and genuine proof B ancestry if B is
 actually available. The result cannot establish out-of-band custody trust,
 owner TEST-only authorization or gateway connectivity. See
 `docs/BUILD_148_QL253_IMMUTABLE_PROOF_CUSTODY_OWNER_HOLD.md`.
+
+## QL-254 Build 149 original source and private registry witness follow-up
+
+`npm run audit:ql254-public-proof` is offline unless `--public-get` is
+explicitly supplied. Only public GitHub commits, CI and immutable proof bytes
+are fetched. Registry snapshot digests and custodian/witness receipt IDs are
+not authenticated by this command. No gateway, test tenant or Rosevear AI Hub
+is contacted, and all owner decisions stay separate and HELD. See
+`docs/BUILD_149_QL254_ORIGINAL_PROOF_REGISTRY_OWNER_HOLD.md`.
