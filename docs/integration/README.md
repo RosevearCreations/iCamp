@@ -22,3 +22,14 @@ are fetched. Registry snapshot digests and custodian/witness receipt IDs are
 not authenticated by this command. No gateway, test tenant or Rosevear AI Hub
 is contacted, and all owner decisions stay separate and HELD. See
 `docs/BUILD_149_QL254_ORIGINAL_PROOF_REGISTRY_OWNER_HOLD.md`.
+
+## QL-255 Build 150 six-application proof and private witness escalation
+
+`npm run audit:ql255-six-app-proof` makes **zero network requests** unless
+explicit `--public-get` is given. That opt-in checks only public GitHub
+`main` and exact immutable QL-246 proof paths for the six allowlisted apps,
+never any private gateway or Rosevear AI Hub machine. The new independent
+owner-only reviewer ledger also records private registry/witness exception
+aging and synthetic, reversible private relay *planning* while original proof,
+custody and owner TEST-only authorization remain strictly **HELD**. See
+`docs/BUILD_150_QL255_SIX_APP_PROOF_WITNESS_PRIVATE_RELAY_HOLD.md`.

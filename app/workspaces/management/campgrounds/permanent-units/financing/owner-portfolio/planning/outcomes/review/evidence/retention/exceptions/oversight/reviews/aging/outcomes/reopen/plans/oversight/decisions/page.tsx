@@ -47,6 +47,7 @@ import {
   recordQl252SourceAuditHoldReviewAction,
   recordQl253ProofCustodyOwnerHoldReviewAction,
   recordQl254OriginalProofRegistryOwnerHoldReviewAction,
+  recordQl255SixAppProofWitnessRelayHoldReviewAction,
 } from "./actions";
 const gatewayHoldReceiptOptions: Record<
   string,
@@ -1450,6 +1451,46 @@ export default async function RecurrenceDecisionsPage({
             : r.review_kind === "private_registry_custody_witness_aging"
               ? "private_owner_test_decision_continuity"
               : "original_immutable_source_proof_refresh",
+        status: r.review_status,
+      })),
+  ];
+  const ql255ReviewQueue = [
+    ...report.ql254OriginalProofRegistryOwnerHoldReviews
+      .filter((r) => r.review_kind === "private_owner_test_decision_continuity")
+      .filter(
+        (r) =>
+          !report.ql255SixAppProofWitnessRelayHoldReviews.some(
+            (child) => child.ql254_review_id === r.id && !child.prior_review_id,
+          ),
+      )
+      .map((r) => ({
+        id: r.id,
+        ql254ReviewId: r.id,
+        priorReviewId: "",
+        sourceSystem: r.source_system,
+        repository: r.repository,
+        reviewKind: "six_app_original_proof_disposition",
+        status: r.review_status,
+      })),
+    ...report.ql255SixAppProofWitnessRelayHoldReviews
+      .filter(
+        (r) =>
+          !report.ql255SixAppProofWitnessRelayHoldReviews.some(
+            (child) => child.prior_review_id === r.id,
+          ),
+      )
+      .map((r) => ({
+        id: r.id,
+        ql254ReviewId: r.ql254_review_id,
+        priorReviewId: r.id,
+        sourceSystem: r.source_system,
+        repository: r.repository,
+        reviewKind:
+          r.review_kind === "six_app_original_proof_disposition"
+            ? "private_witness_custody_exception_escalation"
+            : r.review_kind === "private_witness_custody_exception_escalation"
+              ? "reversible_private_relay_test_readiness"
+              : "six_app_original_proof_disposition",
         status: r.review_status,
       })),
   ];
@@ -6911,6 +6952,338 @@ export default async function RecurrenceDecisionsPage({
                 {` · original gap ${r.observed_original_denial_gap}/7 · private receipt index gap ${r.observed_private_receipt_index_gap}/3 (indexed ≠ verified) · custody age ${r.observed_custody_evidence_age_days} days · overdue ${r.observed_prior_overdue_days} days · registry independently verified ${r.private_pin_registry_independently_verified} · owner TEST approved ${r.owner_test_authorized} · relay ${r.relay_readiness} / running ${r.relay_running} · ${r.actual_gateway_test} / ${r.connection_state} / ${r.gate_state}`}
                 {r.proof_http_status !== "NOT_CHECKED"
                   ? ` · HTTP ${r.proof_http_status}`
+                  : ""}
+                {r.prior_review_id ? ` · follows ${r.prior_review_id}` : ""}
+                {` — ${r.review_note}`}
+              </li>
+            ))}
+          </ul>
+        </section>
+        <section>
+          <h2>
+            Build 150 — QL-255 six-app source proof, private witness escalation
+            &amp; reversible relay TEST readiness
+          </h2>
+          <p>
+            The Comms Hub QL-254 snapshot (28 October 2026, 11:42 p.m. Eastern)
+            found{" "}
+            <strong>six of six original signed source proofs HTTP 404</strong>,
+            including iCamp main{" "}
+            <code>19db62c90a12bf48da74e4e063fb16c3b6f6c1ce</code>. Newer commits
+            require a new public immutable GET; use{" "}
+            <code>npm run audit:ql255-six-app-proof -- --public-get</code>. That
+            command reads only six public GitHub repositories. A public JSON 200
+            is a candidate, not independent signer custody.
+          </p>
+          <p>
+            Independent private registry, custodian and witness receipts are
+            separate original evidence: record only opaque nonsecret references,
+            separate signer/witness public SPKI digests and a maximum
+            five-minute challenge digest. Never put private keys, owner
+            identity, raw nonce, home IPs, vault/device data or gateway
+            credentials here.
+          </p>
+          <p>
+            The Rosevear AI Hub Windows PC is a{" "}
+            <strong>possible future outbound-only private connector</strong>.
+            This build models a synthetic kill switch/rollback, not an installed
+            Windows service. A private owner TEST request may name only a
+            nonproduction campground, GET health/capabilities and a future UTC
+            window at most 30 minutes. No approval, daemon, gateway test,
+            booking write or gate action is granted:{" "}
+            <strong>NOT_RUN / DISCONNECTED / HOLD</strong>.
+          </p>
+          <h3>
+            Six-source disposition → independent witness → private relay
+            planning queue
+          </h3>
+          {ql255ReviewQueue.slice(0, 24).map((item) => (
+            <form
+              key={`${item.id}-${item.reviewKind}`}
+              action={recordQl255SixAppProofWitnessRelayHoldReviewAction}
+            >
+              {pair}
+              <input
+                type="hidden"
+                name="ql254ReviewId"
+                value={item.ql254ReviewId}
+              />
+              <input
+                type="hidden"
+                name="priorReviewId"
+                value={item.priorReviewId}
+              />
+              <input
+                type="hidden"
+                name="sourceSystem"
+                value={item.sourceSystem}
+              />
+              <input type="hidden" name="repository" value={item.repository} />
+              <input type="hidden" name="reviewKind" value={item.reviewKind} />
+              <p>
+                {item.sourceSystem} · {item.repository} ·{" "}
+                {item.reviewKind.replaceAll("_", " ")} · {item.status}
+              </p>
+              {item.reviewKind === "six_app_original_proof_disposition" ? (
+                <>
+                  <label>
+                    Actual original proof outcome
+                    <select name="outcomeKind" required>
+                      <option value="immutable_original_proof_404_hold">
+                        New immutable public 404, HOLD
+                      </option>
+                      <option value="public_json_candidate_untrusted_hold">
+                        200 JSON candidate, original custody UNTRUSTED
+                      </option>
+                      <option value="public_source_origin_exception_hold">
+                        Original public SHA/CI/ancestry exception
+                      </option>
+                    </select>
+                  </label>
+                  <label>
+                    Observed current immutable main SHA (recheck before
+                    recording)
+                    <input
+                      name="observedMainSha"
+                      maxLength={40}
+                      pattern="[a-f0-9]{40}"
+                      required
+                    />
+                  </label>
+                  <label>
+                    Original tested source A SHA, if genuinely verified
+                    <input
+                      name="sourceShaA"
+                      maxLength={40}
+                      pattern="[a-f0-9]{40}"
+                    />
+                  </label>
+                  <label>
+                    Original successful source A CI URL, exact same repository
+                    <input name="sourceCiRunUrl" type="url" maxLength={180} />
+                  </label>
+                  <label>
+                    Actual public proof HTTP response
+                    <select name="proofHttpStatus">
+                      <option value="404">404</option>
+                      <option value="200">200</option>
+                      <option value="UNAVAILABLE">
+                        UNAVAILABLE (not a witnessed 404)
+                      </option>
+                    </select>
+                  </label>
+                  <label>
+                    Genuine proof commit B SHA, only if independently published
+                    <input
+                      name="proofCommitShaB"
+                      maxLength={40}
+                      pattern="[a-f0-9]{40}"
+                    />
+                  </label>
+                  <label>
+                    Exact raw immutable B bytes SHA-256, only for 200
+                    <input
+                      name="proofSha256"
+                      maxLength={64}
+                      pattern="[a-f0-9]{64}"
+                    />
+                  </label>
+                  <label>
+                    Original public source audit reference, if applicable
+                    <input
+                      name="publicAuditReference"
+                      placeholder="np-..."
+                      maxLength={160}
+                    />
+                  </label>
+                </>
+              ) : item.reviewKind ===
+                "private_witness_custody_exception_escalation" ? (
+                <>
+                  <label>
+                    Independent private signer/witness outcome
+                    <select name="outcomeKind" required>
+                      <option value="original_witness_missing_hold">
+                        Original witness or registry evidence missing
+                      </option>
+                      <option value="witness_receipts_claimed_unverified_hold">
+                        Original receipt indexes claimed, private provenance
+                        UNVERIFIED
+                      </option>
+                      <option value="signer_witness_pin_discrepancy_hold">
+                        Independent signer/witness mismatch escalated
+                      </option>
+                    </select>
+                  </label>
+                  <label>
+                    Original private registry snapshot SHA-256 (digest only)
+                    <input
+                      name="registrySnapshotSha256"
+                      maxLength={64}
+                      pattern="[a-f0-9]{64}"
+                    />
+                  </label>
+                  <label>
+                    Signer public Ed25519 SPKI SHA-256
+                    <input
+                      name="signerPinSha256"
+                      maxLength={64}
+                      pattern="[a-f0-9]{64}"
+                    />
+                  </label>
+                  <label>
+                    Separate independent witness public SPKI SHA-256
+                    <input
+                      name="witnessPinSha256"
+                      maxLength={64}
+                      pattern="[a-f0-9]{64}"
+                    />
+                  </label>
+                  <label>
+                    Registry original nonsecret receipt ID
+                    <input
+                      name="registryReceiptId"
+                      placeholder="np-..."
+                      maxLength={160}
+                    />
+                  </label>
+                  <label>
+                    Custodian independently authenticated receipt ID
+                    <input
+                      name="custodianReceiptId"
+                      placeholder="np-..."
+                      maxLength={160}
+                    />
+                  </label>
+                  <label>
+                    Distinct independent witness receipt ID
+                    <input
+                      name="witnessReceiptId"
+                      placeholder="np-..."
+                      maxLength={160}
+                    />
+                  </label>
+                  <label>
+                    Five-minute nonce challenge SHA-256, never raw nonce
+                    <input
+                      name="nonceChallengeSha256"
+                      maxLength={64}
+                      pattern="[a-f0-9]{64}"
+                    />
+                  </label>
+                  <label>
+                    Actual nonce issued at UTC ISO (.000Z)
+                    <input name="nonceIssuedAt" maxLength={24} />
+                  </label>
+                  <label>
+                    Actual nonce expiry UTC ISO (.000Z), maximum five minutes
+                    later
+                    <input name="nonceExpiresAt" maxLength={24} />
+                  </label>
+                </>
+              ) : (
+                <>
+                  <label>
+                    Private relay TEST readiness, all outcomes remain HOLD
+                    <select name="outcomeKind" required>
+                      <option value="private_relay_not_configured_hold">
+                        No private relay configured
+                      </option>
+                      <option value="synthetic_rollback_plan_only_hold">
+                        Synthetic in-memory rollback planning only
+                      </option>
+                      <option value="private_owner_review_requested_hold">
+                        Private owner TEST review requested, NOT APPROVED
+                      </option>
+                    </select>
+                  </label>
+                  <label>
+                    Private relay *planning* only — no service installed
+                    <select name="relayPlanKind">
+                      <option value="NOT_CONFIGURED">NOT_CONFIGURED</option>
+                      <option value="OUTBOUND_PLAN_ONLY">
+                        OUTBOUND_PLAN_ONLY
+                      </option>
+                      <option value="SYNTHETIC_ROLLBACK_REHEARSED">
+                        SYNTHETIC_ROLLBACK_REHEARSED (in-memory only)
+                      </option>
+                    </select>
+                  </label>
+                  <label>
+                    Nonsecret private relay design/rollback plan index, only if
+                    planned
+                    <input
+                      name="relayPlanReference"
+                      placeholder="np-..."
+                      maxLength={160}
+                    />
+                  </label>
+                  <label>
+                    Proposed health check interval 30–300 seconds (not running)
+                    <input
+                      type="number"
+                      name="healthIntervalSeconds"
+                      min={30}
+                      max={300}
+                    />
+                  </label>
+                  <label>
+                    Named nonproduction campground tenant, only for private
+                    owner review
+                    <input
+                      name="testTenantId"
+                      placeholder="np-..."
+                      maxLength={160}
+                    />
+                  </label>
+                  <label>
+                    Requested future TEST-only UTC window start (ISO with .000Z)
+                    <input name="testWindowStart" maxLength={24} />
+                  </label>
+                  <label>
+                    Requested future TEST-only UTC end, maximum 30 minutes
+                    <input name="testWindowEnd" maxLength={24} />
+                  </label>
+                </>
+              )}
+              <label>
+                Next independent follow-up due within 90 days UTC
+                <input type="date" name="nextDueAt" required />
+              </label>
+              <label>
+                Original nonsecret evidence reference
+                <input
+                  name="evidenceReference"
+                  minLength={8}
+                  maxLength={400}
+                  required
+                />
+              </label>
+              <label>
+                Independent finding and escalation action
+                <textarea
+                  name="reviewNote"
+                  minLength={12}
+                  maxLength={800}
+                  required
+                />
+              </label>
+              <button type="submit">
+                Record QL-255 DISCONNECTED / HOLD evidence only
+              </button>
+            </form>
+          ))}
+          <h3>
+            Immutable QL-255 source, witness and private relay HOLD history
+          </h3>
+          <ul>
+            {report.ql255SixAppProofWitnessRelayHoldReviews.map((r) => (
+              <li key={r.id}>
+                {r.source_system} · {r.review_kind} · {r.outcome_kind} ·{" "}
+                {r.review_status}
+                {` · 7-denial gap ${r.observed_original_denial_gap}/7 · private receipt index gap ${r.observed_private_receipt_index_gap}/3 · custody evidence age ${r.observed_custody_age_days} days · overdue ${r.observed_prior_overdue_days} days · signer trusted ${r.source_proof_independently_trusted} · witness independently verified ${r.witness_real_world_identity_verified} · owner TEST approved ${r.owner_test_authorized} · relay installed/running ${r.relay_installed}/${r.relay_running} · ${r.actual_gateway_test} / ${r.connection_state} / ${r.gate_state}`}
+                {r.proof_http_status !== "NOT_CHECKED"
+                  ? ` · public ${r.proof_http_status}`
                   : ""}
                 {r.prior_review_id ? ` · follows ${r.prior_review_id}` : ""}
                 {` — ${r.review_note}`}

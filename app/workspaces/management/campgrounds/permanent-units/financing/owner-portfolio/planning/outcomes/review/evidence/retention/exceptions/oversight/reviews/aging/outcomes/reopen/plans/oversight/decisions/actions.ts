@@ -42,6 +42,7 @@ import {
   recordQl252SourceAuditHoldReview,
   recordQl253ProofCustodyOwnerHoldReview,
   recordQl254OriginalProofRegistryOwnerHoldReview,
+  recordQl255SixAppProofWitnessRelayHoldReview,
 } from "@/lib/permanent-unit-owner-retention/recurrence-postgres.mjs";
 const path =
   "/workspaces/management/campgrounds/permanent-units/financing/owner-portfolio/planning/outcomes/review/evidence/retention/exceptions/oversight/reviews/aging/outcomes/reopen/plans/oversight/decisions";
@@ -1358,6 +1359,64 @@ export async function recordQl254OriginalProofRegistryOwnerHoldReviewAction(
     kind = "error";
     message =
       error instanceof Error ? error.message : "QL-254 review rejected.";
+  }
+  revalidatePath(path);
+  redirect(
+    `${path}?source=${encodeURIComponent(source)}&target=${encodeURIComponent(target)}&${kind}=${encodeURIComponent(message.slice(0, 180))}`,
+  );
+}
+
+export async function recordQl255SixAppProofWitnessRelayHoldReviewAction(
+  form: FormData,
+) {
+  const session = await requireStaff(path);
+  const source = field(form, "sourceCampgroundId");
+  const target = field(form, "targetCampgroundId");
+  let kind = "saved";
+  let message =
+    "QL-255 original public proof, independent private witness and synthetic relay readiness recorded. No TEST was authorized and no home server or gateway was contacted.";
+  try {
+    await recordQl255SixAppProofWitnessRelayHoldReview({
+      actorUserId: session.user.id,
+      id: randomUUID(),
+      sourceCampgroundId: source,
+      targetCampgroundId: target,
+      ql254ReviewId: field(form, "ql254ReviewId"),
+      priorReviewId: field(form, "priorReviewId"),
+      sourceSystem: field(form, "sourceSystem"),
+      repository: field(form, "repository"),
+      reviewKind: field(form, "reviewKind"),
+      outcomeKind: field(form, "outcomeKind"),
+      observedMainSha: field(form, "observedMainSha"),
+      sourceShaA: field(form, "sourceShaA"),
+      sourceCiRunUrl: field(form, "sourceCiRunUrl"),
+      proofCommitShaB: field(form, "proofCommitShaB"),
+      proofSha256: field(form, "proofSha256"),
+      proofHttpStatus: field(form, "proofHttpStatus") || "NOT_CHECKED",
+      publicAuditReference: field(form, "publicAuditReference"),
+      registrySnapshotSha256: field(form, "registrySnapshotSha256"),
+      signerPinSha256: field(form, "signerPinSha256"),
+      witnessPinSha256: field(form, "witnessPinSha256"),
+      custodianReceiptId: field(form, "custodianReceiptId"),
+      witnessReceiptId: field(form, "witnessReceiptId"),
+      registryReceiptId: field(form, "registryReceiptId"),
+      nonceChallengeSha256: field(form, "nonceChallengeSha256"),
+      nonceIssuedAt: field(form, "nonceIssuedAt"),
+      nonceExpiresAt: field(form, "nonceExpiresAt"),
+      relayPlanKind: field(form, "relayPlanKind") || "NOT_CONFIGURED",
+      relayPlanReference: field(form, "relayPlanReference"),
+      healthIntervalSeconds: field(form, "healthIntervalSeconds"),
+      testTenantId: field(form, "testTenantId"),
+      testWindowStart: field(form, "testWindowStart"),
+      testWindowEnd: field(form, "testWindowEnd"),
+      nextDueAt: field(form, "nextDueAt"),
+      evidenceReference: field(form, "evidenceReference"),
+      reviewNote: field(form, "reviewNote"),
+    });
+  } catch (error) {
+    kind = "error";
+    message =
+      error instanceof Error ? error.message : "QL-255 review rejected.";
   }
   revalidatePath(path);
   redirect(
