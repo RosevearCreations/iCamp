@@ -39,6 +39,7 @@ import {
   recordQl247TestReceiptHoldWatch,
   recordQl248ProvenanceGapHoldRenewal,
   recordQl248SourceReceiptExceptionReassessment,
+  recordQl252SourceAuditHoldReview,
 } from "@/lib/permanent-unit-owner-retention/recurrence-postgres.mjs";
 const path =
   "/workspaces/management/campgrounds/permanent-units/financing/owner-portfolio/planning/outcomes/review/evidence/retention/exceptions/oversight/reviews/aging/outcomes/reopen/plans/oversight/decisions";
@@ -1199,6 +1200,52 @@ export async function recordQl248SourceReceiptExceptionReassessmentAction(
     kind = "error";
     message =
       error instanceof Error ? error.message : "Build 146 review rejected.";
+  }
+  revalidatePath(path);
+  redirect(
+    `${path}?source=${encodeURIComponent(source)}&target=${encodeURIComponent(target)}&${kind}=${encodeURIComponent(message.slice(0, 180))}`,
+  );
+}
+
+export async function recordQl252SourceAuditHoldReviewAction(form: FormData) {
+  const session = await requireStaff(path);
+  const source = field(form, "sourceCampgroundId");
+  const target = field(form, "targetCampgroundId");
+  let kind = "saved";
+  let message =
+    "Build 147 QL-252 public-source/denial/owner HOLD follow-up recorded. No gateway test has run; connection stays DISCONNECTED / HOLD.";
+  try {
+    await recordQl252SourceAuditHoldReview({
+      actorUserId: session.user.id,
+      id: randomUUID(),
+      sourceCampgroundId: source,
+      targetCampgroundId: target,
+      ql248SourceReviewId: field(form, "ql248SourceReviewId"),
+      priorReviewId: field(form, "priorReviewId"),
+      sourceSystem: field(form, "sourceSystem"),
+      repository: field(form, "repository"),
+      reviewKind: field(form, "reviewKind"),
+      outcomeKind: field(form, "outcomeKind"),
+      sourceRevisionSha: field(form, "sourceRevisionSha"),
+      sourceCiRunUrl: field(form, "sourceCiRunUrl"),
+      proofCommitSha: field(form, "proofCommitSha"),
+      proofSha256: field(form, "proofSha256"),
+      publicSpkiSha256: field(form, "publicSpkiSha256"),
+      sourceAuditReference: field(form, "sourceAuditReference"),
+      denialReceiptIds: ql247DenialKinds.map((denial) => {
+        const index = field(form, `denial_${denial}`);
+        return index ? `${denial}|${index}` : "";
+      }),
+      denialWitnessReference: field(form, "denialWitnessReference"),
+      ownerTestReceiptId: field(form, "ownerTestReceiptId"),
+      nextDueAt: field(form, "nextDueAt"),
+      evidenceReference: field(form, "evidenceReference"),
+      reviewNote: field(form, "reviewNote"),
+    });
+  } catch (error) {
+    kind = "error";
+    message =
+      error instanceof Error ? error.message : "Build 147 review rejected.";
   }
   revalidatePath(path);
   redirect(
