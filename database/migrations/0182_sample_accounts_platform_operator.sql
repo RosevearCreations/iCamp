@@ -33,7 +33,7 @@ create table icamp_private.platform_operator_grants (
 alter table icamp_private.platform_operator_grants enable row level security;
 alter table icamp_private.platform_operator_grants force row level security;
 revoke all on icamp_private.platform_operator_grants from public;
-do $
+do $icamp$
 begin
   if exists (select 1 from pg_roles where rolname = 'anon') then
     revoke all on icamp_private.platform_operator_grants from anon;
@@ -42,7 +42,7 @@ begin
     revoke all on icamp_private.platform_operator_grants from authenticated;
   end if;
 end
-$;
+$icamp$;
 
 comment on table icamp_private.platform_operator_grants is
   'Explicit global platform roles, separate from any campground owner_admin. Provisioned pending by default. Activation needs independently reviewed record and verified MFA; no client grants.';
