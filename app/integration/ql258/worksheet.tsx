@@ -3,7 +3,11 @@
 import { useState } from "react";
 
 import { CHECKPOINTS } from "@/lib/integration/ql258-checkpoints.mjs";
-import { STATUS, defaults, makeReport } from "@/lib/integration/ql258-contract.mjs";
+import {
+  STATUS,
+  defaults,
+  makeReport,
+} from "@/lib/integration/ql258-contract.mjs";
 
 export function Worksheet() {
   const [progress, setProgress] = useState(defaults);
@@ -22,7 +26,10 @@ export function Worksheet() {
   return (
     <section className="content-panel">
       <h2>Seven owner action checkpoints</h2>
-      <p>Choose only fixed, unverified progress states. This local worksheet resets on refresh.</p>
+      <p>
+        Choose only fixed, unverified progress states. This local worksheet
+        resets on refresh.
+      </p>
       {CHECKPOINTS.map(([id, title]) => (
         <label key={id}>
           <strong>{title}</strong>
@@ -30,17 +37,28 @@ export function Worksheet() {
             aria-label={title}
             value={progress[id]}
             onChange={(event) => {
-              if (!STATUS.includes(event.target.value as (typeof STATUS)[number])) return;
-              setProgress((prior) => ({ ...prior, [id]: event.target.value as (typeof STATUS)[number] }));
+              if (
+                !STATUS.includes(event.target.value as (typeof STATUS)[number])
+              )
+                return;
+              setProgress((prior) => ({
+                ...prior,
+                [id]: event.target.value as (typeof STATUS)[number],
+              }));
             }}
           >
             {STATUS.map((value) => (
-              <option value={value} key={value}>{value.replaceAll("_", " ")}</option>
+              <option value={value} key={value}>
+                {value.replaceAll("_", " ")}
+              </option>
             ))}
           </select>
         </label>
       ))}
-      <p>No identities, keys, customer records, credentials or authorization details are entered.</p>
+      <p>
+        No identities, keys, customer records, credentials or authorization
+        details are entered.
+      </p>
       <button type="button" className="primary-button" onClick={copy}>
         Copy sanitized iCamp handoff
       </button>
