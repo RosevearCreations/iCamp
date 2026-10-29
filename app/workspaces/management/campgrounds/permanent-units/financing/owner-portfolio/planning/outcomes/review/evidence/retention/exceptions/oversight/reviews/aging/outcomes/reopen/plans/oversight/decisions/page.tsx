@@ -45,6 +45,7 @@ import {
   recordQl248ProvenanceGapHoldRenewalAction,
   recordQl248SourceReceiptExceptionReassessmentAction,
   recordQl252SourceAuditHoldReviewAction,
+  recordQl253ProofCustodyOwnerHoldReviewAction,
 } from "./actions";
 const gatewayHoldReceiptOptions: Record<
   string,
@@ -1362,6 +1363,49 @@ export default async function RecurrenceDecisionsPage({
             : r.review_kind === "seven_denial_exception_aging_renewal"
               ? "independent_owner_test_authorization_hold_review"
               : "public_source_proof_continuity_audit",
+        status: r.review_status,
+      })),
+  ];
+  const ql253ReviewQueue = [
+    ...report.ql252ProofDenialHoldReviews
+      .filter(
+        (r) =>
+          r.review_kind === "independent_owner_test_authorization_hold_review",
+      )
+      .filter(
+        (r) =>
+          !report.ql253ProofCustodyOwnerHoldReviews.some(
+            (child) => child.ql252_review_id === r.id && !child.prior_review_id,
+          ),
+      )
+      .map((r) => ({
+        id: r.id,
+        ql252ReviewId: r.id,
+        priorReviewId: "",
+        sourceSystem: r.source_system,
+        repository: r.repository,
+        reviewKind: "immutable_proof_publication_retest",
+        status: r.review_status,
+      })),
+    ...report.ql253ProofCustodyOwnerHoldReviews
+      .filter(
+        (r) =>
+          !report.ql253ProofCustodyOwnerHoldReviews.some(
+            (child) => child.prior_review_id === r.id,
+          ),
+      )
+      .map((r) => ({
+        id: r.id,
+        ql252ReviewId: r.ql252_review_id,
+        priorReviewId: r.id,
+        sourceSystem: r.source_system,
+        repository: r.repository,
+        reviewKind:
+          r.review_kind === "immutable_proof_publication_retest"
+            ? "independent_custody_pin_challenge_renewal"
+            : r.review_kind === "independent_custody_pin_challenge_renewal"
+              ? "owner_test_only_authorization_hold_reconciliation"
+              : "immutable_proof_publication_retest",
         status: r.review_status,
       })),
   ];
@@ -6212,6 +6256,286 @@ export default async function RecurrenceDecisionsPage({
                   ? ` · audited A ${r.source_revision_sha}`
                   : ""}
                 {r.proof_commit_sha ? ` · claimed B ${r.proof_commit_sha}` : ""}
+                {r.prior_review_id ? ` · follows ${r.prior_review_id}` : ""}
+                {` — ${r.review_note}`}
+              </li>
+            ))}
+          </ul>
+        </section>
+        <section>
+          <h2>
+            Build 148 — QL-253 immutable proof, custody pin and owner TEST-only
+            HOLD
+          </h2>
+          <p>
+            Independent public GitHub proof/CI retesting is not an authenticated
+            connection. A public 404 means proof B and its digest are
+            <strong> NOT_AVAILABLE</strong>. A public candidate remains
+            untrusted until an independently authenticated custodian, distinct
+            witness and out-of-band pin challenge are confirmed. This ledger
+            stores only nonsecret evidence indexes and SHA-256 digests, never
+            private keys, raw nonces, identities or gateway URLs.
+          </p>
+          <p>
+            The private owner decision is a separate step for a named
+            nonproduction campground, GET only on the two designated health and
+            capabilities paths, in a future UTC window of at most 30 minutes.
+            Merely entering a receipt here grants <strong>no</strong>
+            authorization. All integration requests remain{" "}
+            <strong>NOT_RUN</strong>
+            and DISCONNECTED / HOLD.
+          </p>
+          <h3>
+            Independent immutable proof → custody-pin → TEST decision queue
+          </h3>
+          {ql253ReviewQueue.slice(0, 24).map((item) => (
+            <form
+              key={`${item.id}-${item.reviewKind}`}
+              action={recordQl253ProofCustodyOwnerHoldReviewAction}
+            >
+              {pair}
+              <input
+                type="hidden"
+                name="ql252ReviewId"
+                value={item.ql252ReviewId}
+              />
+              <input
+                type="hidden"
+                name="priorReviewId"
+                value={item.priorReviewId}
+              />
+              <input
+                type="hidden"
+                name="sourceSystem"
+                value={item.sourceSystem}
+              />
+              <input type="hidden" name="repository" value={item.repository} />
+              <input type="hidden" name="reviewKind" value={item.reviewKind} />
+              <p>
+                {item.sourceSystem} · {item.reviewKind.replaceAll("_", " ")} ·{" "}
+                {item.status}
+              </p>
+              {item.reviewKind === "immutable_proof_publication_retest" ? (
+                <>
+                  <label>
+                    Immutable public proof recheck outcome
+                    <select name="outcomeKind" required>
+                      <option value="immutable_public_proof_404">
+                        Original proof still HTTP 404 — HOLD
+                      </option>
+                      <option value="published_candidate_origin_unverified">
+                        Actual proof B 200, custody still UNVERIFIED
+                      </option>
+                      <option value="immutable_origin_or_ci_mismatch">
+                        Original public proof/CI source mismatch
+                      </option>
+                    </select>
+                  </label>
+                  <label>
+                    Observed public HTTP status
+                    <select name="proofHttpStatus">
+                      <option value="404">404</option>
+                      <option value="200">200</option>
+                      <option value="NOT_CHECKED">NOT_CHECKED</option>
+                    </select>
+                  </label>
+                  <label>
+                    Tested source commit A (40 hex)
+                    <input
+                      name="sourceRevisionSha"
+                      maxLength={40}
+                      pattern="[a-f0-9]{40}"
+                      defaultValue={
+                        item.sourceSystem === "icamp"
+                          ? "5f7caaef37a2f8ec8ba2eb2913564e1a3b3c62c9"
+                          : ""
+                      }
+                    />
+                  </label>
+                  <label>
+                    Exact A GitHub green CI run URL
+                    <input
+                      name="sourceCiRunUrl"
+                      type="url"
+                      maxLength={180}
+                      defaultValue={
+                        item.sourceSystem === "icamp"
+                          ? "https://github.com/RosevearCreations/iCamp/actions/runs/40794126949"
+                          : ""
+                      }
+                    />
+                  </label>
+                  <label>
+                    Genuine proof commit B, only if published
+                    <input
+                      name="proofCommitSha"
+                      maxLength={40}
+                      pattern="[a-f0-9]{40}"
+                    />
+                  </label>
+                  <label>
+                    Exact raw proof bytes SHA-256, only if published
+                    <input
+                      name="proofSha256"
+                      maxLength={64}
+                      pattern="[a-f0-9]{64}"
+                    />
+                  </label>
+                  <label>
+                    Public SPKI SHA-256 (not independently trusted)
+                    <input
+                      name="publicSpkiSha256"
+                      maxLength={64}
+                      pattern="[a-f0-9]{64}"
+                    />
+                  </label>
+                  <label>
+                    Original source/CI/ancestry audit index
+                    <input
+                      name="sourceAuditReference"
+                      placeholder="np-..."
+                      maxLength={160}
+                    />
+                  </label>
+                </>
+              ) : item.reviewKind ===
+                "independent_custody_pin_challenge_renewal" ? (
+                <>
+                  <label>
+                    Independent custody challenge outcome
+                    <select name="outcomeKind" required>
+                      <option value="authenticated_custody_witness_missing">
+                        Custodian or separate witness missing — HOLD
+                      </option>
+                      <option value="five_minute_nonce_claim_unverified">
+                        Five-minute nonce claim, private origin UNVERIFIED
+                      </option>
+                      <option value="custody_witness_pin_mismatch_escalated">
+                        Original custody/witness pin discrepancy escalated
+                      </option>
+                    </select>
+                  </label>
+                  <label>
+                    Custodian private receipt ID (not the private attestation)
+                    <input
+                      name="custodianReceiptId"
+                      placeholder="np-..."
+                      maxLength={160}
+                    />
+                  </label>
+                  <label>
+                    Distinct witness private receipt ID
+                    <input
+                      name="distinctWitnessReceiptId"
+                      placeholder="np-..."
+                      maxLength={160}
+                    />
+                  </label>
+                  <label>
+                    Challenge SHA-256 digest only
+                    <input
+                      name="challengeSha256"
+                      maxLength={64}
+                      pattern="[a-f0-9]{64}"
+                    />
+                  </label>
+                  <label>
+                    Claimed public custody pin SPKI SHA-256
+                    <input
+                      name="custodyPinSha256"
+                      maxLength={64}
+                      pattern="[a-f0-9]{64}"
+                    />
+                  </label>
+                  <label>
+                    Challenge issued UTC (ISO, e.g. 2026-10-29T20:00:00.000Z)
+                    <input name="challengeIssuedAt" maxLength={24} />
+                  </label>
+                  <label>
+                    Challenge expires UTC, no more than 5 minutes later
+                    <input name="challengeExpiresAt" maxLength={24} />
+                  </label>
+                </>
+              ) : (
+                <>
+                  <label>
+                    Separate owner TEST-only decision
+                    <select name="outcomeKind" required>
+                      <option value="owner_test_not_given_hold">
+                        NOT GIVEN — HOLD
+                      </option>
+                      <option value="private_owner_test_review_requested_hold">
+                        Requested private TEST review, NOT APPROVED
+                      </option>
+                      <option value="owner_approval_receipt_claim_unverified_hold">
+                        Claimed receipt, origin NOT VERIFIED
+                      </option>
+                    </select>
+                  </label>
+                  <label>
+                    Original owner receipt index, only for an unverified claim
+                    <input
+                      name="ownerTestReceiptId"
+                      placeholder="np-..."
+                      maxLength={160}
+                    />
+                  </label>
+                  <label>
+                    Named nonproduction campground tenant index
+                    <input
+                      name="testTenantId"
+                      placeholder="np-..."
+                      maxLength={160}
+                    />
+                  </label>
+                  <label>
+                    Future UTC GET window start, ISO with .000Z
+                    <input name="testWindowStart" maxLength={24} />
+                  </label>
+                  <label>
+                    Future UTC GET window end, at most 30 minutes later
+                    <input name="testWindowEnd" maxLength={24} />
+                  </label>
+                </>
+              )}
+              <label>
+                Independent UTC follow-up due within 90 days
+                <input name="nextDueAt" type="date" required />
+              </label>
+              <label>
+                Real nonsecret evidence reference
+                <input
+                  name="evidenceReference"
+                  minLength={8}
+                  maxLength={400}
+                  required
+                />
+              </label>
+              <label>
+                Independent reviewer findings and next escalation
+                <textarea
+                  name="reviewNote"
+                  minLength={12}
+                  maxLength={800}
+                  required
+                />
+              </label>
+              <button type="submit">Record immutable QL-253 HOLD review</button>
+            </form>
+          ))}
+          <h3>Immutable QL-253 history — NO gateway release</h3>
+          <ul>
+            {report.ql253ProofCustodyOwnerHoldReviews.map((r) => (
+              <li key={r.id}>
+                {r.source_system} · {r.review_kind} · {r.outcome_kind} ·{" "}
+                {r.review_status}
+                {` · original gap ${r.observed_ql252_gap_count}/7 · source age ${r.observed_ql252_gap_age_days} days · prior overdue ${r.observed_prior_overdue_days} days · signature trusted ${r.signed_proof_independently_trusted} · custody verified ${r.independent_custody_pin_verified} · TEST authorized ${r.owner_test_authorized} · ${r.actual_gateway_test} / ${r.connection_state} / ${r.gate_state}`}
+                {r.proof_http_status !== "NOT_CHECKED"
+                  ? ` · HTTP ${r.proof_http_status}`
+                  : ""}
+                {r.proof_commit_sha
+                  ? ` · B candidate ${r.proof_commit_sha}`
+                  : ""}
                 {r.prior_review_id ? ` · follows ${r.prior_review_id}` : ""}
                 {` — ${r.review_note}`}
               </li>
