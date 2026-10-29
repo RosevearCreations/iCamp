@@ -315,9 +315,17 @@ test("QL-255 reviewer aging and migration contract preserve owner-only immutable
   ])
     assert.ok(sql.includes(marker), marker);
   assert.ok(verify.includes("relay_installed or relay_running"));
-  const binding = readFileSync(new URL("../database/migrations/0181_ql255_private_witness_source_binding.sql", import.meta.url), "utf8");
+  const binding = readFileSync(
+    new URL(
+      "../database/migrations/0181_ql255_private_witness_source_binding.sql",
+      import.meta.url,
+    ),
+    "utf8",
+  );
   assert.ok(binding.includes("proof_commit_sha_b is null"));
-  assert.ok(binding.includes("nonce_issued_at<checked_at-interval '5 minutes'"));
+  assert.ok(
+    binding.includes("nonce_issued_at<checked_at-interval '5 minutes'"),
+  );
   const page = readFileSync(
     new URL(
       "../app/workspaces/management/campgrounds/permanent-units/financing/owner-portfolio/planning/outcomes/review/evidence/retention/exceptions/oversight/reviews/aging/outcomes/reopen/plans/oversight/decisions/page.tsx",
