@@ -12,7 +12,10 @@ export const dynamic = "force-dynamic";
 
 export default async function PlatformPage() {
   const session = await requireStaff("/platform");
-  const summary = await getPlatformOverview(session.user.id, session.assuranceLevel);
+  const summary = await getPlatformOverview(
+    session.user.id,
+    session.assuranceLevel,
+  );
   if (!summary) {
     redirect("/auth/not-authorized");
   }
