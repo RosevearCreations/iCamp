@@ -73,17 +73,22 @@ export default async function AccountPage() {
               <ul>
                 {campgrounds.map((campground) => (
                   <li key={campground.campgroundId}>
-                    {campground.campgroundName} — {campground.roleCodes.join(", ")}
+                    {campground.campgroundName} —{" "}
+                    {campground.roleCodes.join(", ")}
                   </li>
                 ))}
               </ul>
-              <Link href="/workspaces/management/campgrounds">Open campground workspace</Link>
+              <Link href="/workspaces/management/campgrounds">
+                Open campground workspace
+              </Link>
             </section>
           ) : null}
 
           {session.user.accountType === "staff" ? (
             <p>
-              <Link href="/platform">Platform administration (verified operators only)</Link>
+              <Link href="/platform">
+                Platform administration (verified operators only)
+              </Link>
             </p>
           ) : null}
 
