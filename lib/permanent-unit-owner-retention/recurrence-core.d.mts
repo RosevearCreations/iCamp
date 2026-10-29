@@ -696,3 +696,33 @@ export function classifyQl248ProvenanceGapHoldStatus(
   next: { id: string } | null,
   now?: Date,
 ): string;
+export const ql248SourceReceiptReassessmentOutcomes: Readonly<
+  Record<string, ReadonlyArray<string>>
+>;
+export function normalizeQl248SourceReceiptExceptionReassessment(
+  raw: Record<string, unknown>,
+  now?: Date,
+): {
+  id: string;
+  ql248RenewalId: string;
+  priorReviewId: string | null;
+  sourceCampgroundId: string;
+  targetCampgroundId: string;
+  sourceSystem: string;
+  repository: string;
+  reviewKind: string;
+  outcomeKind: string;
+  denialReceiptIds: string[];
+  sourceAuditReference: string | null;
+  ownerAuthorizationReference: string | null;
+  rollbackReference: string | null;
+  revocationReference: string | null;
+  nextDueAt: string;
+  evidenceReference: string;
+  reviewNote: string;
+};
+export function classifyQl248SourceReceiptReassessmentStatus(
+  record: { review_kind: string; next_due_at?: Date | string | null },
+  next: { id: string } | null,
+  now?: Date,
+): string;
