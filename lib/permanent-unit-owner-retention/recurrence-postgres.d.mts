@@ -723,6 +723,56 @@ export interface RecurrenceLedger {
     review_note: string;
     review_status: string;
   }>;
+  ql255SixAppProofWitnessRelayHoldReviews: Array<{
+    id: string;
+    ql254_review_id: string;
+    prior_review_id: string | null;
+    source_system: string;
+    repository: string;
+    review_kind: string;
+    outcome_kind: string;
+    observed_main_sha: string | null;
+    source_sha_a: string | null;
+    source_ci_run_url: string | null;
+    proof_commit_sha_b: string | null;
+    proof_sha256: string | null;
+    proof_http_status: string;
+    public_audit_reference: string | null;
+    registry_snapshot_sha256: string | null;
+    signer_pin_sha256: string | null;
+    witness_pin_sha256: string | null;
+    custodian_receipt_id: string | null;
+    witness_receipt_id: string | null;
+    registry_receipt_id: string | null;
+    nonce_challenge_sha256: string | null;
+    nonce_issued_at: Date | null;
+    nonce_expires_at: Date | null;
+    relay_plan_kind:
+      "NOT_CONFIGURED" | "OUTBOUND_PLAN_ONLY" | "SYNTHETIC_ROLLBACK_REHEARSED";
+    relay_plan_reference: string | null;
+    health_interval_seconds: number | null;
+    test_tenant_id: string | null;
+    test_window_start: Date | null;
+    test_window_end: Date | null;
+    observed_original_denial_gap: number;
+    observed_private_receipt_index_gap: number;
+    observed_custody_age_days: number;
+    observed_prior_overdue_days: number;
+    source_proof_independently_trusted: false;
+    custody_privately_verified: false;
+    witness_real_world_identity_verified: false;
+    owner_test_authorized: false;
+    owner_pilot_authorized: false;
+    relay_installed: false;
+    relay_running: false;
+    home_endpoint_exposed: false;
+    dispatch_enabled: false;
+    actual_gateway_test: "NOT_RUN";
+    connection_state: "DISCONNECTED";
+    gate_state: "HOLD";
+    review_note: string;
+    review_status: string;
+  }>;
   limited: boolean;
 }
 export function getRecurrenceLedger(
@@ -839,5 +889,8 @@ export function recordQl253ProofCustodyOwnerHoldReview(
   raw: Record<string, unknown> & { actorUserId: string },
 ): Promise<{ id: string }>;
 export function recordQl254OriginalProofRegistryOwnerHoldReview(
+  raw: Record<string, unknown> & { actorUserId: string },
+): Promise<{ id: string }>;
+export function recordQl255SixAppProofWitnessRelayHoldReview(
   raw: Record<string, unknown> & { actorUserId: string },
 ): Promise<{ id: string }>;
