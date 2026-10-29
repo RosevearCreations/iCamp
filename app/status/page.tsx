@@ -75,6 +75,11 @@ export default function StatusPage() {
             reference. Authorized I.T. staff will later use that reference to
             correlate a report with protected diagnostic events.
           </p>
+          <p>
+            <Link href="/integration/ql258">
+              QL-258 owner action and activation HOLD worksheet
+            </Link>
+          </p>
           <Link className="primary-link primary-link--dark" href="/">
             Return to iCamp
           </Link>
