@@ -1,8 +1,10 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export function MfaPanel() {
+  const router = useRouter();
   const [password, setPassword] = useState("");
   const [seed, setSeed] = useState("");
   const [uri, setUri] = useState("");
@@ -60,7 +62,8 @@ export function MfaPanel() {
       setSeed("");
       setUri("");
       setCode("");
-      window.location.assign("/auth/account");
+      router.push("/auth/account");
+      router.refresh();
     } catch (error) {
       setMessage(
         error instanceof Error ? error.message : "Verification failed.",
