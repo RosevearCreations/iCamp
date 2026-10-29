@@ -3,7 +3,11 @@ import test from "node:test";
 import { readFileSync } from "node:fs";
 
 import { CHECKPOINTS } from "../lib/integration/ql258-checkpoints.mjs";
-import { STATUS, defaults, makeReport } from "../lib/integration/ql258-contract.mjs";
+import {
+  STATUS,
+  defaults,
+  makeReport,
+} from "../lib/integration/ql258-contract.mjs";
 
 test("QL-258 has exactly seven fixed progress checkpoints", () => {
   assert.equal(CHECKPOINTS.length, 7);
@@ -30,7 +34,10 @@ test("Unknown progress, fields, and missing states are rejected", () => {
 });
 
 test("The worksheet copies a local export without sending requests", () => {
-  const path = new URL("../app/integration/ql258/worksheet.tsx", import.meta.url);
+  const path = new URL(
+    "../app/integration/ql258/worksheet.tsx",
+    import.meta.url,
+  );
   const ui = readFileSync(path, "utf8");
   assert.match(ui, /navigator.clipboard.writeText\(packet\)/u);
   assert.doesNotMatch(ui, /fetch\(|localStorage|sessionStorage/u);
