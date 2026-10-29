@@ -760,3 +760,45 @@ export function classifyQl252SourceAuditHoldStatus(
   next: { id: string } | null,
   now?: Date,
 ): string;
+export const ql253HoldReviewOutcomes: Readonly<
+  Record<string, ReadonlyArray<string>>
+>;
+export function normalizeQl253HoldReview(
+  raw: Record<string, unknown>,
+  now?: Date,
+): {
+  id: string;
+  ql252ReviewId: string;
+  priorReviewId: string | null;
+  sourceCampgroundId: string;
+  targetCampgroundId: string;
+  sourceSystem: string;
+  repository: string;
+  reviewKind: string;
+  outcomeKind: string;
+  sourceRevisionSha: string | null;
+  sourceCiRunUrl: string | null;
+  proofCommitSha: string | null;
+  proofSha256: string | null;
+  publicSpkiSha256: string | null;
+  proofHttpStatus: string;
+  sourceAuditReference: string | null;
+  custodianReceiptId: string | null;
+  distinctWitnessReceiptId: string | null;
+  challengeSha256: string | null;
+  custodyPinSha256: string | null;
+  challengeIssuedAt: string | null;
+  challengeExpiresAt: string | null;
+  ownerTestReceiptId: string | null;
+  testTenantId: string | null;
+  testWindowStart: string | null;
+  testWindowEnd: string | null;
+  nextDueAt: string;
+  evidenceReference: string;
+  reviewNote: string;
+};
+export function classifyQl253HoldReviewStatus(
+  record: { review_kind: string; next_due_at?: Date | string | null },
+  next: { id: string } | null,
+  now?: Date,
+): string;

@@ -637,6 +637,45 @@ export interface RecurrenceLedger {
     review_note: string;
     review_status: string;
   }>;
+  ql253ProofCustodyOwnerHoldReviews: Array<{
+    id: string;
+    ql252_review_id: string;
+    prior_review_id: string | null;
+    source_system: string;
+    repository: string;
+    review_kind: string;
+    outcome_kind: string;
+    source_revision_sha: string | null;
+    source_ci_run_url: string | null;
+    proof_commit_sha: string | null;
+    proof_sha256: string | null;
+    public_spki_sha256: string | null;
+    proof_http_status: string;
+    source_audit_reference: string | null;
+    custodian_receipt_id: string | null;
+    distinct_witness_receipt_id: string | null;
+    challenge_sha256: string | null;
+    custody_pin_sha256: string | null;
+    challenge_issued_at: Date | null;
+    challenge_expires_at: Date | null;
+    owner_test_receipt_id: string | null;
+    test_tenant_id: string | null;
+    test_window_start: Date | null;
+    test_window_end: Date | null;
+    observed_ql252_gap_count: number;
+    observed_ql252_gap_age_days: number;
+    observed_prior_overdue_days: number;
+    signed_proof_independently_trusted: false;
+    independent_custody_pin_verified: false;
+    owner_test_authorized: false;
+    owner_pilot_authorized: false;
+    dispatch_enabled: false;
+    actual_gateway_test: "NOT_RUN";
+    connection_state: "DISCONNECTED";
+    gate_state: "HOLD";
+    review_note: string;
+    review_status: string;
+  }>;
   limited: boolean;
 }
 export function getRecurrenceLedger(
@@ -747,5 +786,8 @@ export function recordQl248SourceReceiptExceptionReassessment(
   raw: Record<string, unknown> & { actorUserId: string },
 ): Promise<{ id: string }>;
 export function recordQl252SourceAuditHoldReview(
+  raw: Record<string, unknown> & { actorUserId: string },
+): Promise<{ id: string }>;
+export function recordQl253ProofCustodyOwnerHoldReview(
   raw: Record<string, unknown> & { actorUserId: string },
 ): Promise<{ id: string }>;
