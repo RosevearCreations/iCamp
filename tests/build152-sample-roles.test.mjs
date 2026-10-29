@@ -6,9 +6,14 @@ const base = new URL("../", import.meta.url);
 const read = (path) => readFileSync(new URL(path, base), "utf8");
 
 test("Build 152 usernames remain private, distinct, and normalized", () => {
-  const migration = read("database/migrations/0182_sample_accounts_platform_operator.sql");
+  const migration = read(
+    "database/migrations/0182_sample_accounts_platform_operator.sql",
+  );
   assert.match(migration, /username_normalized text/u);
-  assert.match(migration, /unique index user_accounts_username_normalized_unique/u);
+  assert.match(
+    migration,
+    /unique index user_accounts_username_normalized_unique/u,
+  );
   assert.match(migration, /grant_state text not null default 'pending'/u);
   assert.match(migration, /reviewed_by <> user_id/u);
   assert.match(migration, /force row level security/u);
