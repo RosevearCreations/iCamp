@@ -30,6 +30,8 @@ export default function LaunchReadinessPage() {
           </p>
           <Link href="/pilot/acceptance">Pilot acceptance</Link>
           {" · "}
+          <Link href="/launch/audit">Build 158 billing and evidence audit</Link>
+          {" · "}
           <Link href="/integration/comms-hub">Connection review</Link>
         </section>
       </main>
