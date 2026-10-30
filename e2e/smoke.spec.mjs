@@ -8,12 +8,30 @@ test.describe("Build 016 browser end-to-end harness", () => {
 
     await expect(
       page.getByRole("heading", {
-        name: "One campground platform. Every operating surface.",
+        name: "More fresh air. Less admin.",
       }),
     ).toBeVisible();
     await expect(
       page.getByRole("link", { name: "Open demo campground" }),
     ).toBeVisible();
+  });
+
+  test("Standard meadow theme and the HELD subscription dashboard render", async ({
+    page,
+  }) => {
+    const response = await page.goto("/launch/subscriptions");
+    expect(response?.ok()).toBe(true);
+    await expect(
+      page.getByRole("heading", {
+        name: "Subscription & connection readiness",
+      }),
+    ).toBeVisible();
+    await expect(page.getByText("DISCONNECTED / HOLD")).toBeVisible();
+    await expect(
+      page.getByRole("progressbar", {
+        name: "Owner-reported reviewed checkpoints",
+      }),
+    ).toHaveAttribute("aria-valuenow", "0");
   });
 
   test("synthetic demo campground renders the fixture catalogue", async ({

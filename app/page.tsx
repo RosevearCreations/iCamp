@@ -12,12 +12,12 @@ export default function HomePage() {
     <AppShell>
       <div className="page-stack">
         <section className="hero-panel">
-          <p className="eyebrow">Build 003 · Data, refresh & contextual help</p>
-          <h1>One campground platform. Every operating surface.</h1>
+          <p className="eyebrow">iCamp Standard · Meadow & evergreen</p>
+          <h1>More fresh air. Less admin.</h1>
           <p className="hero-panel__lead">
-            iCamp is being built as a flexible, free-first development platform
-            that can scale to larger infrastructure without replacing its core
-            campground logic.
+            One welcoming place for campers, reservations, campground teams and
+            management. A modern outdoors-inspired workspace, built for the
+            whole camping experience.
           </p>
           <div className="hero-actions">
             <Link className="primary-link" href="/workspaces/public">
@@ -32,6 +32,48 @@ export default function HomePage() {
               </Link>
             ) : null}
           </div>
+        </section>
+
+        <section
+          className="ops-kpi-grid"
+          aria-label="Quick access to the campground"
+        >
+          <Link className="ops-kpi ops-kpi--link" href="/booking/map">
+            <span className="ops-kpi__icon" aria-hidden="true">
+              ⌖
+            </span>
+            <span>
+              <span>Explore</span>
+              <strong>Campground map</strong>
+              <small>See sites and availability</small>
+            </span>
+          </Link>
+          <Link className="ops-kpi ops-kpi--link" href="/workspaces/management">
+            <span
+              className="ops-kpi__icon ops-kpi__icon--amber"
+              aria-hidden="true"
+            >
+              ▦
+            </span>
+            <span>
+              <span>Operations</span>
+              <strong>Management</strong>
+              <small>Campground workspace</small>
+            </span>
+          </Link>
+          <Link className="ops-kpi ops-kpi--link" href="/launch/subscriptions">
+            <span
+              className="ops-kpi__icon ops-kpi__icon--blue"
+              aria-hidden="true"
+            >
+              ↔
+            </span>
+            <span>
+              <span>Connections</span>
+              <strong>Readiness centre</strong>
+              <small>Billing and evidence gates</small>
+            </span>
+          </Link>
         </section>
 
         <section className="content-panel" aria-labelledby="principles-heading">

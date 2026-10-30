@@ -32,6 +32,10 @@ export default function LaunchReadinessPage() {
           {" · "}
           <Link href="/launch/audit">Build 158 billing and evidence audit</Link>
           {" · "}
+          <Link href="/launch/subscriptions">
+            Build 159 subscription and evidence centre
+          </Link>
+          {" · "}
           <Link href="/integration/comms-hub">Connection review</Link>
         </section>
       </main>

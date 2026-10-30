@@ -3,6 +3,7 @@ import type { Metadata, Viewport } from "next";
 import { ServiceWorkerRegistration } from "@/components/service-worker-registration";
 
 import "./globals.css";
+import "./standard-theme.css";
 
 export const metadata: Metadata = {
   applicationName: "iCamp",
@@ -16,7 +17,7 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   colorScheme: "light",
-  themeColor: "#173f35",
+  themeColor: "#0b2420",
   width: "device-width",
   initialScale: 1,
 };
