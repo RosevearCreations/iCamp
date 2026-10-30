@@ -3,13 +3,32 @@ import Link from "next/link";
 import { EnvironmentBanner } from "@/components/environment-banner";
 import { workspaces } from "@/lib/workspaces";
 
+const navGroups = [
+  { label: "Explore & stay", slugs: ["public", "guest"] },
+  {
+    label: "Campground operations",
+    slugs: [
+      "front-desk",
+      "maintenance",
+      "security",
+      "store",
+      "staff",
+      "foreman",
+    ],
+  },
+  {
+    label: "Management & I.T.",
+    slugs: ["management", "finance", "it-analysis"],
+  },
+] as const;
+
 export function AppShell({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <div className="app-shell">
+    <div className="app-shell" data-theme="standard">
       <a className="skip-link" href="#main-content">
         Skip to main content
       </a>
@@ -23,37 +42,80 @@ export function AppShell({
           </span>
           <span>
             <strong>iCamp</strong>
-            <small>iCamp2027</small>
+            <small>Campgrounds, connected · Standard</small>
           </span>
         </Link>
 
+        <nav className="topbar__quicklinks" aria-label="Quick navigation">
+          <Link href="/">Overview</Link>
+          <Link href="/booking/map">Site map</Link>
+          <Link href="/workspaces/management">Management</Link>
+          <Link href="/launch/subscriptions">I.T. & Billing</Link>
+          <Link href="/status">Status</Link>
+        </nav>
+
         <div className="topbar__status" aria-label="Build status">
-          <span className="status-dot" aria-hidden="true" />
-          Operations workbench · live application
+          <span className="theme-marker" aria-hidden="true">
+            ✦
+          </span>
+          Standard / Meadow
         </div>
       </header>
 
       <div className="shell-grid">
         <aside className="sidebar" aria-label="iCamp workspaces">
-          <p className="sidebar__label">Workspaces</p>
+          <p className="sidebar__label">Navigation</p>
           <nav>
-            <ul className="workspace-nav">
-              {workspaces.map((workspace) => (
-                <li key={workspace.slug}>
-                  <Link href={`/workspaces/${workspace.slug}`}>
-                    {workspace.shortTitle}
+            {navGroups.map((group) => (
+              <div className="sidebar__group" key={group.label}>
+                <p className="sidebar__group-label">{group.label}</p>
+                <ul className="workspace-nav">
+                  {group.slugs.map((slug) => {
+                    const workspace = workspaces.find(
+                      (item) => item.slug === slug,
+                    );
+                    if (!workspace) return null;
+                    return (
+                      <li key={slug}>
+                        <Link href={`/workspaces/${slug}`}>
+                          {workspace.shortTitle}
+                        </Link>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+            ))}
+            <div className="sidebar__group">
+              <p className="sidebar__group-label">Connectivity & launch</p>
+              <ul className="workspace-nav">
+                <li>
+                  <Link href="/integration/comms-hub">
+                    Comms Hub connections
                   </Link>
                 </li>
-              ))}
-              <li>
-                <Link href="/integration/comms-hub">I.T. · Comms Hub</Link>
-              </li>
-            </ul>
+                <li>
+                  <Link href="/launch/subscriptions">
+                    Subscriptions & evidence
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/launch/readiness">Launch readiness</Link>
+                </li>
+                <li>
+                  <Link href="/status">System status</Link>
+                </li>
+              </ul>
+            </div>
           </nav>
 
           <div className="sidebar__principle">
-            <strong>Free-first. Scale-ready.</strong>
-            <span>Provider-neutral by design.</span>
+            <strong>🌱 Standard theme</strong>
+            <span>Meadow & evergreen · Build 159</span>
+            <span className="sidebar__principle-subtle">
+              Future themes will use the same status meanings and accessible
+              layouts.
+            </span>
           </div>
         </aside>
 
