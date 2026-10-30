@@ -40,7 +40,9 @@ export function AcceptanceWorksheet() {
             value={results[id]}
             onChange={(event) => {
               const value = event.target.value;
-              if (!PILOT_STATES.includes(value as (typeof PILOT_STATES)[number]))
+              if (
+                !PILOT_STATES.includes(value as (typeof PILOT_STATES)[number])
+              )
                 return;
               setResults((previous) => ({
                 ...previous,

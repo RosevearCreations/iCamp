@@ -38,7 +38,9 @@ export function LaunchWorksheet() {
             value={checks[id]}
             onChange={(event) => {
               const value = event.target.value;
-              if (!LAUNCH_STATES.includes(value as (typeof LAUNCH_STATES)[number]))
+              if (
+                !LAUNCH_STATES.includes(value as (typeof LAUNCH_STATES)[number])
+              )
                 return;
               setChecks((prior) => ({
                 ...prior,
