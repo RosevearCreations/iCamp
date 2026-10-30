@@ -25,14 +25,16 @@ export default function PilotAcceptancePage() {
         <section className="content-panel">
           <h2>Remediation and release boundary</h2>
           <p>
-            Each failed or blocked check requires a tracked defect, an owner,
-            a retest and independent acceptance before the pilot can close.
-            Actual hardware, payment and cross-browser testing must happen in
-            an approved isolated environment. Never enter private customer
-            details, credentials or device identifiers in this worksheet.
+            Each failed or blocked check requires a tracked defect, an owner, a
+            retest and independent acceptance before the pilot can close. Actual
+            hardware, payment and cross-browser testing must happen in an
+            approved isolated environment. Never enter private customer details,
+            credentials or device identifiers in this worksheet.
           </p>
           <p>
-            <Link href="/integration/comms-hub">Comms Hub connection review</Link>
+            <Link href="/integration/comms-hub">
+              Comms Hub connection review
+            </Link>
             {" · "}
             <Link href="/status">Application status</Link>
           </p>
