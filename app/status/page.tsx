@@ -22,9 +22,9 @@ export default function StatusPage() {
 
   return (
     <AppShell>
-      <div className="page-stack">
-        <section className="hero-panel">
-          <p className="eyebrow">Global client status</p>
+      <div className="page-stack standard-ops-page">
+        <section className="hero-panel meadow-hero">
+          <p className="eyebrow">Global client status · Build 160</p>
           <h1>iCamp system status</h1>
           <p className="hero-panel__lead">
             This page intentionally shows only safe service information.
@@ -32,6 +32,45 @@ export default function StatusPage() {
             are not exposed here.
           </p>
         </section>
+
+        <div className="ops-kpi-grid" aria-label="Public-safe service summary">
+          <article className="ops-kpi">
+            <span className="ops-kpi__icon" aria-hidden="true">
+              ◉
+            </span>
+            <div>
+              <span>Application route</span>
+              <strong>{health.status}</strong>
+              <small>Public route response, not dependency monitoring</small>
+            </div>
+          </article>
+          <article className="ops-kpi">
+            <span
+              className="ops-kpi__icon ops-kpi__icon--blue"
+              aria-hidden="true"
+            >
+              ⌁
+            </span>
+            <div>
+              <span>Current release</span>
+              <strong>{version.releaseId}</strong>
+              <small>Version {version.version}</small>
+            </div>
+          </article>
+          <article className="ops-kpi">
+            <span
+              className="ops-kpi__icon ops-kpi__icon--amber"
+              aria-hidden="true"
+            >
+              ↔
+            </span>
+            <div>
+              <span>External integrations</span>
+              <strong>HELD</strong>
+              <small>Six-app authenticated GET not authorized</small>
+            </div>
+          </article>
+        </div>
 
         <section className="content-panel" aria-labelledby="status-heading">
           <SectionHeading

@@ -3,6 +3,8 @@ import Link from "next/link";
 
 import { AppShell } from "@/components/app-shell";
 import { subscriptionAdapterFoundation } from "@/lib/tenant-subscription/foundation.mjs";
+import { runSandboxLifecycleFixture } from "@/lib/tenant-subscription/sandbox-lifecycle.mjs";
+import { AgreementReviewPreview } from "./agreement-preview";
 import { IndependentEvidenceReview } from "./review";
 
 export const metadata: Metadata = {
@@ -11,11 +13,12 @@ export const metadata: Metadata = {
 
 export default function SubscriptionFoundationPage() {
   const adapter = subscriptionAdapterFoundation();
+  const sandbox = runSandboxLifecycleFixture();
   return (
     <AppShell>
       <div className="page-stack standard-ops-page">
         <section className="hero-panel meadow-hero">
-          <p className="eyebrow">Build 159 · Standard theme</p>
+          <p className="eyebrow">Build 160 · Standard theme</p>
           <h1>Subscription & connection readiness</h1>
           <p className="hero-panel__lead">
             A clearer view of the business side of iCamp: payment foundations,
@@ -155,6 +158,64 @@ export default function SubscriptionFoundationPage() {
             </ol>
           </section>
         </div>
+
+        <section className="content-panel ops-detail-card">
+          <div className="ops-section-heading">
+            <div>
+              <p className="eyebrow">Isolated test fixture · Build 160</p>
+              <h2>Tenant subscription lifecycle replay</h2>
+            </div>
+            <span className="ops-pill ops-pill--hold">
+              SIMULATED · No charges
+            </span>
+          </div>
+          <p>
+            The test fixture replays a sample campground&apos;s checkout,
+            creation, renewal, failed payment, recovery and cancellation without
+            Stripe access, payment capture or database writes. Duplicate events
+            and cross-tenant updates are rejected in automated tests.
+          </p>
+          <div className="ops-kpi-grid">
+            <article className="ops-kpi">
+              <div className="ops-kpi__icon" aria-hidden="true">
+                ↺
+              </div>
+              <div>
+                <span>Fixture events</span>
+                <strong>{sandbox.fixture_events}</strong>
+                <small>Deterministic local replay only</small>
+              </div>
+            </article>
+            <article className="ops-kpi">
+              <div
+                className="ops-kpi__icon ops-kpi__icon--blue"
+                aria-hidden="true"
+              >
+                ▣
+              </div>
+              <div>
+                <span>Fixture final state</span>
+                <strong>{sandbox.subscription_state}</strong>
+                <small>Not a real subscriber record</small>
+              </div>
+            </article>
+            <article className="ops-kpi">
+              <div
+                className="ops-kpi__icon ops-kpi__icon--amber"
+                aria-hidden="true"
+              >
+                ⊘
+              </div>
+              <div>
+                <span>Actual charges</span>
+                <strong>OFF</strong>
+                <small>Provider not configured</small>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <AgreementReviewPreview />
 
         <IndependentEvidenceReview />
         <section className="content-panel ops-detail-card">

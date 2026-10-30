@@ -32,6 +32,17 @@ test.describe("Build 016 browser end-to-end harness", () => {
         name: "Owner-reported reviewed checkpoints",
       }),
     ).toHaveAttribute("aria-valuenow", "0");
+    await expect(
+      page.getByText("Tenant subscription lifecycle replay"),
+    ).toBeVisible();
+    await page
+      .getByRole("button", { name: "Start local review preview" })
+      .click();
+    await page.getByRole("button", { name: "Preview submit" }).click();
+    await page.getByRole("button", { name: "Preview review" }).click();
+    await page.getByRole("button", { name: "Preview approve" }).click();
+    await expect(page.getByText(/Real approval remains HELD/)).toBeVisible();
+    await expect(page.getByText("HELD · No binding decisions")).toBeVisible();
   });
 
   test("synthetic demo campground renders the fixture catalogue", async ({

@@ -690,6 +690,236 @@ body {
   font-size: 0.75rem;
 }
 
+/* Build 160 — information-rich Management / I.T. command surfaces. */
+.standard-command {
+  display: grid;
+  gap: 0.95rem;
+}
+
+.standard-command__heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 0.1rem 0.1rem;
+}
+
+.standard-command__heading h2 {
+  margin: 0 0 0.3rem;
+  color: #f8fff4;
+  font-size: clamp(1.45rem, 2.5vw, 2rem);
+}
+
+.standard-command__heading p:last-child {
+  max-width: 62ch;
+  margin: 0;
+  color: #bed8c4;
+}
+
+.standard-command__metrics {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.7rem;
+}
+
+.standard-command__metric {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 0;
+  min-height: 7.4rem;
+  padding: 0.9rem;
+  border: 1px solid #315c4c;
+  border-radius: 0.95rem;
+  background: linear-gradient(145deg, #15392e, #0b2524);
+  box-shadow: 0 10px 24px rgb(0 0 0 / 13%);
+}
+
+.standard-command__metric-icon {
+  display: grid;
+  width: 2.9rem;
+  height: 2.9rem;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: 0.75rem;
+  background: #215c41;
+  color: #90edaa;
+  font-size: 1.5rem;
+}
+
+.standard-command__metric--hold .standard-command__metric-icon {
+  background: #493820;
+  color: #f9c875;
+}
+
+.standard-command__metric--info .standard-command__metric-icon {
+  background: #204c5c;
+  color: #91def0;
+}
+
+.standard-command__metric > div {
+  display: grid;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+.standard-command__metric > div > span {
+  color: #b6d5bf;
+  font-size: 0.75rem;
+  font-weight: 750;
+}
+
+.standard-command__metric strong {
+  color: #f7fff1;
+  font-size: clamp(0.9rem, 1.35vw, 1.17rem);
+  overflow-wrap: anywhere;
+}
+
+.standard-command__metric small {
+  color: #accbb8;
+  line-height: 1.45;
+}
+
+.standard-command__body {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 0.85rem;
+}
+
+.standard-command__links {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.65rem;
+  margin-top: 1rem;
+}
+
+.standard-command__link {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  min-width: 0;
+  padding: 0.9rem;
+  border: 1px solid #376653;
+  border-radius: 0.7rem;
+  background: linear-gradient(130deg, #1e4c36, #122f29);
+  text-decoration: none;
+}
+
+.standard-command__link:hover,
+.standard-command__link:focus-visible {
+  border-color: #acf181;
+  background: #286043;
+}
+
+.standard-command__link > span:first-child {
+  color: #c0f18f;
+  font-size: 1.5rem;
+}
+
+.standard-command__link > span:nth-child(2) {
+  display: grid;
+  min-width: 0;
+  gap: 0.3rem;
+  flex: 1;
+}
+
+.standard-command__link strong {
+  color: #f1ffe6;
+}
+.standard-command__link small {
+  color: #afcfba;
+  line-height: 1.4;
+}
+.standard-command__link b {
+  color: #b6eb9b;
+}
+
+.agreement-fields,
+.agreement-stage-grid,
+.theme-swatches {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.8rem;
+  margin: 1rem 0;
+}
+
+.agreement-fields {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+}
+.agreement-fields label {
+  display: grid;
+  gap: 0.4rem;
+  color: #d4efcd;
+  font-weight: 700;
+}
+.agreement-fields input {
+  width: 100%;
+  min-width: 0;
+  padding: 0.6rem;
+}
+.agreement-stage {
+  display: grid;
+  gap: 0.5rem;
+  padding: 1rem;
+  border: 1px solid #426b55;
+  border-radius: 0.8rem;
+  background: #173b30;
+}
+.agreement-stage span {
+  color: #b6ef8a;
+  font-weight: 750;
+  text-transform: capitalize;
+}
+.agreement-stage strong {
+  color: #effce8;
+}
+.agreement-stage small {
+  color: #b2cabd;
+}
+.agreement-stage button {
+  justify-self: start;
+}
+.agreement-stage button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.theme-swatches {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+.theme-swatch {
+  display: grid;
+  gap: 0.35rem;
+  padding: 0.75rem;
+  border: 1px solid #426b55;
+  border-radius: 0.7rem;
+  background: #12332b;
+}
+.theme-swatch > span {
+  min-height: 3rem;
+  border: 1px solid #6e9179;
+  border-radius: 0.4rem;
+}
+.theme-swatch strong {
+  text-transform: capitalize;
+}
+.theme-swatch small {
+  color: #b7d0be;
+}
+
+@media (max-width: 80rem) {
+  .standard-command__metrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 65rem) {
+  .standard-command__body {
+    grid-template-columns: 1fr;
+  }
+}
+
 @media (max-width: 85rem) {
   .topbar {
     flex-wrap: wrap;
@@ -734,6 +964,13 @@ body {
 }
 
 @media (max-width: 48rem) {
+  .standard-command__metrics,
+  .standard-command__links,
+  .agreement-fields,
+  .agreement-stage-grid,
+  .theme-swatches {
+    grid-template-columns: 1fr;
+  }
   .topbar__status {
     display: none;
   }
