@@ -45,6 +45,9 @@ export function AppShell({
                   </Link>
                 </li>
               ))}
+              <li>
+                <Link href="/integration/comms-hub">I.T. · Comms Hub</Link>
+              </li>
             </ul>
           </nav>
 
