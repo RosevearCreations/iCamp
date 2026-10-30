@@ -29,7 +29,7 @@ create trigger build160_document_version_identity_guard before update
 create function icamp_private.build160_validate_agreement_review_event() returns trigger
   language plpgsql security invoker set search_path = '' as $$
 declare latest_action text; latest_actor uuid; submit_actor uuid; review_actor uuid;
-declare latest_sequence integer; registered_digest text;
+latest_sequence integer; registered_digest text;
 begin
   -- Lock the source version to serialize simultaneous review attempts.
   select content_sha256 into registered_digest
