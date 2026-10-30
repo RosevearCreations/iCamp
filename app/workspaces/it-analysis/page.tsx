@@ -4,6 +4,7 @@ import Link from "next/link";
 import { AdminRefreshControl } from "@/components/admin-refresh-control";
 import { AppShell } from "@/components/app-shell";
 import { SectionHeading } from "@/components/section-heading";
+import { StandardOpsCommand } from "@/components/standard-ops-command";
 import { requireAnyCampgroundPermission } from "@/lib/authz/current-user";
 import { getCommunicationsHealth } from "@/lib/communications/postgres.mjs";
 import { getMessagingConsentHealth } from "@/lib/consent/postgres.mjs";
@@ -50,9 +51,9 @@ export default async function ItAnalysisPage() {
 
   return (
     <AppShell>
-      <div className="page-stack">
+      <div className="page-stack standard-ops-page">
         <section className="hero-panel">
-          <p className="eyebrow">I.T. & Analysis</p>
+          <p className="eyebrow">I.T. & Analysis · Build 160</p>
           <h1>System health without exposing sensitive information.</h1>
           <p className="hero-panel__lead">
             Runtime health stays sanitized, while authenticated I.T. operators
@@ -60,6 +61,57 @@ export default async function ItAnalysisPage() {
             job payloads, credentials or private infrastructure details.
           </p>
         </section>
+
+        <StandardOpsCommand area="it-analysis" />
+
+        <div
+          className="standard-command__metrics"
+          aria-label="Real I.T. operational readings"
+        >
+          <article className="standard-command__metric standard-command__metric--info">
+            <span className="standard-command__metric-icon" aria-hidden="true">
+              ▦
+            </span>
+            <div>
+              <span>Queue / live snapshot</span>
+              <strong>{queueHealth.jobs.queued} queued</strong>
+              <small>
+                {queueHealth.jobs.overdue} overdue ·{" "}
+                {queueHealth.jobs.deadLetter} dead-letter
+              </small>
+            </div>
+          </article>
+          <article className="standard-command__metric standard-command__metric--good">
+            <span className="standard-command__metric-icon" aria-hidden="true">
+              ◉
+            </span>
+            <div>
+              <span>Active queue workers</span>
+              <strong>{queueHealth.workers.active}</strong>
+              <small>{queueHealth.workers.stalled} stalled workers</small>
+            </div>
+          </article>
+          <article className="standard-command__metric standard-command__metric--info">
+            <span className="standard-command__metric-icon" aria-hidden="true">
+              ↗
+            </span>
+            <div>
+              <span>24h provider events</span>
+              <strong>{communicationsHealth.providers.events24h}</strong>
+              <small>Derived from existing aggregate health data</small>
+            </div>
+          </article>
+          <article className="standard-command__metric standard-command__metric--hold">
+            <span className="standard-command__metric-icon" aria-hidden="true">
+              ☷
+            </span>
+            <div>
+              <span>Failed messages / 24h</span>
+              <strong>{messagingHealth.messages.failed24h}</strong>
+              <small>No phone numbers or message bodies</small>
+            </div>
+          </article>
+        </div>
 
         <section className="content-panel" aria-labelledby="it-health-heading">
           <SectionHeading

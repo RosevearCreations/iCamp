@@ -6,6 +6,7 @@ import { AdminRefreshControl } from "@/components/admin-refresh-control";
 import { AppShell } from "@/components/app-shell";
 import { ChannelSupportSummary } from "@/components/channel-support";
 import { SectionHeading } from "@/components/section-heading";
+import { StandardOpsCommand } from "@/components/standard-ops-command";
 import { requireSignedIn } from "@/lib/auth/current-session";
 import { requireAnyCampgroundPermission } from "@/lib/authz/current-user";
 import { getWorkspace } from "@/lib/workspaces";
@@ -71,6 +72,10 @@ export default async function WorkspacePage({
             Audience: <strong>{workspace.audience}</strong>
           </p>
         </section>
+
+        {workspace.slug === "management" || workspace.slug === "it-analysis" ? (
+          <StandardOpsCommand area={workspace.slug} />
+        ) : null}
 
         <section className="content-panel" aria-labelledby="channel-heading">
           <SectionHeading
