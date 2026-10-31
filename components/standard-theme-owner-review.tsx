@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 
+import { summarizeStandardThemeClosureReadiness } from "@/lib/command-centre/standard-theme-closure-readiness-core.mjs";
+
 const reviews = [
   {
     key: "command",
@@ -194,6 +196,24 @@ export function StandardThemeOwnerReview() {
   const acceptanceOutstanding = acceptanceQueue.filter(
     (item) => item.result !== "passed" || item.followUp === "planned",
   );
+  const closureReadiness = summarizeStandardThemeClosureReadiness({
+    areas: reviews.map((item) => ({
+      key: item.key,
+      reviewed: checked[item.key] === true,
+    })),
+    devices: deviceChecks.map((item) => ({
+      key: item.key,
+      result: deviceResults[item.key] ?? "not_tested",
+      correction: deviceCorrections[item.key] ?? "",
+      retest: deviceRetests[item.key] ?? "not_retested",
+    })),
+    accessibility: accessibilityChecks.map((item) => ({
+      key: item.key,
+      result: accessibilityResults[item.key] ?? "not_tested",
+      followUp: accessibilityFollowUps[item.key] ?? "open",
+      priority: accessibilityPriorities[item.key] ?? "normal",
+    })),
+  });
   const retestQueue = deviceChecks.map((device) => {
     const result = deviceResults[device.key] ?? "not_tested";
     const retest = deviceRetests[device.key] ?? "not_retested";
@@ -217,7 +237,7 @@ export function StandardThemeOwnerReview() {
   );
   const summary = () =>
     [
-      "iCamp Build 169 — Standard Theme Owner Accessibility Acceptance Follow-Up",
+      "iCamp Build 170 — Standard Theme Owner Acceptance Closure Readiness",
       `Reviewed: ${done}/${reviews.length} areas`,
       ...reviews.map(
         (item) =>
@@ -235,6 +255,8 @@ export function StandardThemeOwnerReview() {
           `${item.title}: ${(accessibilityResults[item.key] ?? "not_tested").replaceAll("_", " ")} — ${accessibilityNotes[item.key]?.trim() || "No observation recorded"} | follow-up ${(accessibilityFollowUps[item.key] ?? "open").replaceAll("_", " ")} | priority ${accessibilityPriorities[item.key] ?? "normal"} | next step: ${accessibilityNextSteps[item.key]?.trim() || "not assigned"}`,
       ),
       `Accessibility acceptance follow-ups still requiring review: ${acceptanceOutstanding.length}. Owner retest is not independent acceptance.`,
+      `Closure readiness for requesting separate owner sign-off: ${closureReadiness.canRequestIndependentReview ? "local walkthrough complete" : "not ready"}; ${closureReadiness.blockers.length} local blocker(s)`,
+      ...closureReadiness.blockers.map((item) => `Open: ${item}`),
       "Owner feedback:",
       notes.trim() || "(no feedback entered)",
       "This is owner review feedback, not a billing, integration or production authorization.",
@@ -302,7 +324,7 @@ export function StandardThemeOwnerReview() {
         <div className="ops-section-heading">
           <div>
             <p className="eyebrow">
-              Build 169 · Owner retest and acceptance follow-up
+              Build 170 · Owner acceptance closure readiness
             </p>
             <h3 id="device-review-heading">
               Which screens still need attention?
@@ -443,7 +465,7 @@ export function StandardThemeOwnerReview() {
         <div className="ops-section-heading">
           <div>
             <p className="eyebrow">
-              Build 169 · Owner accessibility acceptance follow-up
+              Build 170 · Owner accessibility closure readiness
             </p>
             <h3 id="owner-accessibility-heading">
               Accessibility retest summary
@@ -483,7 +505,7 @@ export function StandardThemeOwnerReview() {
               className="secondary-button"
               onClick={async () => {
                 const lines = [
-                  "iCamp Build 169 — Local owner accessibility follow-up (manual observations only)",
+                  "iCamp Build 170 — Local owner accessibility follow-up (manual observations only)",
                   ...acceptanceQueue.map(
                     (item) =>
                       `${item.title} | ${item.result} | ${item.priority} | ${item.followUp} | next: ${item.nextStep || "not assigned"}`,
@@ -524,6 +546,78 @@ export function StandardThemeOwnerReview() {
             owner accessibility acceptance. Confirm manually on real devices and
             obtain any required independent sign-off.
           </p>
+        </div>
+        <div
+          className="camp-theme-review__readiness"
+          aria-labelledby="owner-closure-readiness-heading"
+        >
+          <div className="ops-section-heading">
+            <div>
+              <p className="eyebrow">
+                Build 170 · Manual owner acceptance preflight
+              </p>
+              <h4 id="owner-closure-readiness-heading">
+                Owner accessibility closure readiness
+              </h4>
+              <p role="status">
+                {closureReadiness.canRequestIndependentReview
+                  ? "Local walkthrough complete — request separate independent owner sign-off"
+                  : `${closureReadiness.blockers.length} review item(s) still open — not ready for independent sign-off request`}
+              </p>
+              <small>
+                {closureReadiness.areasReviewed}/{closureReadiness.totalAreas}{" "}
+                screens · {closureReadiness.devicePasses}/
+                {closureReadiness.totalDevices} devices ·{" "}
+                {closureReadiness.accessibilityPasses}/
+                {closureReadiness.totalAccessibility} accessibility checks
+                observed as passing
+              </small>
+            </div>
+            <button
+              type="button"
+              className="secondary-button"
+              onClick={async () => {
+                const lines = [
+                  "iCamp Build 170 — Owner closure readiness handoff (NOT APPROVAL)",
+                  `Reviewed screens ${closureReadiness.areasReviewed}/${closureReadiness.totalAreas}; devices ${closureReadiness.devicePasses}/${closureReadiness.totalDevices}; accessibility ${closureReadiness.accessibilityPasses}/${closureReadiness.totalAccessibility}`,
+                  `Ready to request separate independent owner sign-off: ${closureReadiness.canRequestIndependentReview ? "yes, local walkthrough only" : "no"}`,
+                  ...closureReadiness.blockers.map((item) => `Open: ${item}`),
+                  "No formal owner approval, WCAG certification, production authorization or integration activation is recorded here.",
+                ];
+                try {
+                  await navigator.clipboard.writeText(lines.join("\n"));
+                  setCopyState(
+                    "Owner closure readiness handoff copied locally. Nothing was approved or submitted.",
+                  );
+                } catch {
+                  setCopyState(
+                    "Clipboard blocked. Readiness findings remain visible below.",
+                  );
+                }
+              }}
+            >
+              Copy closure readiness handoff
+            </button>
+          </div>
+          {closureReadiness.blockers.length ? (
+            <details>
+              <summary>
+                Review {closureReadiness.blockers.length} outstanding
+                walkthrough items
+              </summary>
+              <ul>
+                {closureReadiness.blockers.map((item) => (
+                  <li key={item}>{item}</li>
+                ))}
+              </ul>
+            </details>
+          ) : (
+            <p className="ops-inline-note">
+              All required browser-local checks were marked complete. An
+              independent owner must still inspect the actual screens and
+              explicitly authorize any formal acceptance outside this checklist.
+            </p>
+          )}
         </div>
         <div className="camp-theme-review__accessibility-grid">
           {accessibilityChecks.map((item) => (
@@ -640,6 +734,9 @@ export function StandardThemeOwnerReview() {
                 retestStorageKey,
                 JSON.stringify({
                   version: 2,
+                  reviewedAreas: reviews
+                    .filter((item) => checked[item.key])
+                    .map((item) => item.key),
                   results: deviceChecks.map((item) => ({
                     key: item.key,
                     result: deviceResults[item.key] ?? "not_tested",
@@ -771,8 +868,20 @@ export function StandardThemeOwnerReview() {
               setAccessibilityFollowUps(accessFollowUps);
               setAccessibilityPriorities(accessPriorities);
               setAccessibilityNextSteps(accessNextSteps);
+              const reviewedDraft =
+                "reviewedAreas" in parsed && Array.isArray(parsed.reviewedAreas)
+                  ? parsed.reviewedAreas
+                  : [];
+              setChecked(
+                Object.fromEntries(
+                  reviews.map((item) => [
+                    item.key,
+                    reviewedDraft.includes(item.key),
+                  ]),
+                ),
+              );
               setCopyState(
-                "Browser-local retest draft restored. Verify it against the current screens before relying on the notes.",
+                "Browser-local retest draft and screen checklist restored. Verify them against the current screens before requesting independent review.",
               );
             } catch {
               setCopyState(

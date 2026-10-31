@@ -17,6 +17,7 @@ import {
   serializeSavedForecastViews,
   sha256Hex,
   upsertSavedForecastView,
+  verifyExportChecksum,
   type ForecastActivityEvent,
   type SavedForecastView,
 } from "@/lib/command-centre/forecast-saved-views-core.mjs";
@@ -58,6 +59,12 @@ export function ForecastSavedViews({
   const [recoveryHash, setRecoveryHash] = useState("");
   const [expectedHash, setExpectedHash] = useState("");
   const [history, setHistory] = useState<ForecastActivityEvent[]>([]);
+  const [verificationFile, setVerificationFile] = useState<File | null>(null);
+  const [verificationExpected, setVerificationExpected] = useState("");
+  const [verificationResult, setVerificationResult] = useState("");
+  const [historyFilter, setHistoryFilter] = useState<
+    "all" | "exports" | "recoveries" | "verifications"
+  >("all");
 
   useEffect(() => {
     const timer = window.setTimeout(() => {
@@ -112,6 +119,15 @@ export function ForecastSavedViews({
   };
 
   const selectedKey = `${current.lookbackMonths}:${current.scenario}`;
+  const visibleHistory = history.filter((item) =>
+    historyFilter === "all"
+      ? true
+      : historyFilter === "exports"
+        ? ["backup", "comparison_csv"].includes(item.action)
+        : historyFilter === "recoveries"
+          ? item.action === "recovery"
+          : item.action.startsWith("verification_"),
+  );
   const linkFor = (view: SavedForecastView) =>
     `/workspaces/management/command/forecast?campground=${encodeURIComponent(campgroundId)}&window=${view.lookbackMonths}&scenario=${view.scenario}`;
 
@@ -123,7 +139,7 @@ export function ForecastSavedViews({
       <div className="ops-section-heading">
         <div>
           <p className="eyebrow">
-            Build 169 · Export integrity and recovery history
+            Build 170 · Checksum verification and recovery activity review
           </p>
           <h2 id="saved-forecast-heading">Saved scenario comparison views</h2>
         </div>
@@ -372,6 +388,97 @@ export function ForecastSavedViews({
           </div>
         ) : null}
         <div
+          className="camp-forecast__verification"
+          aria-labelledby="forecast-verification-heading"
+        >
+          <h4 id="forecast-verification-heading">
+            Verify downloaded export bytes against a checksum
+          </h4>
+          <p className="ops-inline-note">
+            Choose a local iCamp CSV or JSON export (2 MB maximum). Paste its
+            trusted SHA-256 digest or the full companion `.sha256` line.
+            Verification hashes the original file bytes entirely in this
+            browser. A matching digest proves byte equality only—never who
+            created the file.
+          </p>
+          <label htmlFor="forecast-verify-file">
+            Local comparison CSV or preference JSON
+          </label>
+          <input
+            id="forecast-verify-file"
+            type="file"
+            accept=".csv,.json,text/csv,application/json"
+            disabled={!loaded}
+            onChange={(event) => {
+              setVerificationFile(event.target.files?.[0] ?? null);
+              setVerificationResult("");
+            }}
+          />
+          <label htmlFor="forecast-verify-hash">
+            Trusted SHA-256 digest or companion line
+          </label>
+          <textarea
+            id="forecast-verify-hash"
+            rows={2}
+            maxLength={220}
+            spellCheck={false}
+            value={verificationExpected}
+            onChange={(event) => {
+              setVerificationExpected(event.target.value);
+              setVerificationResult("");
+            }}
+            placeholder="64 hex characters or: SHA-256  filename.csv"
+          />
+          <button
+            type="button"
+            className="secondary-button"
+            disabled={
+              !loaded || !verificationFile || !verificationExpected.trim()
+            }
+            onClick={async () => {
+              const file = verificationFile;
+              if (!file) return;
+              if (file.size > 2_000_000 || !/\.(csv|json)$/i.test(file.name)) {
+                setVerificationResult(
+                  "Choose a CSV or JSON file no larger than 2 MB. No history changed.",
+                );
+                return;
+              }
+              try {
+                const result = await verifyExportChecksum(
+                  await file.arrayBuffer(),
+                  verificationExpected,
+                  file.name,
+                );
+                const retained = recordActivity({
+                  action: result.matches
+                    ? "verification_match"
+                    : "verification_mismatch",
+                  occurredAt: new Date().toISOString(),
+                  viewCount: 0,
+                  sha256: result.actualSha256,
+                });
+                setVerificationResult(
+                  `${result.matches ? "SHA-256 MATCH" : "SHA-256 MISMATCH — do not rely on this file"}. Calculated: ${result.actualSha256}. Expected: ${result.expectedSha256}. ${retained ? "Result logged as metadata only." : "Local history unavailable."} Equality does not establish authenticity or approval.`,
+                );
+              } catch (error) {
+                setVerificationResult(
+                  error instanceof Error
+                    ? error.message
+                    : "Checksum verification failed. No files were changed.",
+                );
+              }
+            }}
+          >
+            Verify local export checksum
+          </button>
+          {verificationResult ? (
+            <p role="status" className="ops-inline-note">
+              {verificationResult}
+            </p>
+          ) : null}
+        </div>
+        <div
           className="camp-forecast__history"
           aria-labelledby="forecast-history-heading"
         >
@@ -382,8 +489,8 @@ export function ForecastSavedViews({
               </h4>
               <small>
                 Up to {FORECAST_ACTIVITY_LIMIT} metadata-only entries for this
-                user and campground; not a server audit trail or proof of
-                authenticity.
+                user and campground, including checksum checks;{" "}
+                {"not a server audit trail"} or proof of authenticity.
               </small>
             </div>
             <button
@@ -405,9 +512,53 @@ export function ForecastSavedViews({
               Clear local history
             </button>
           </div>
-          {history.length ? (
+          <div className="camp-forecast__history-tools">
+            <label htmlFor="forecast-history-filter">
+              Activity review
+              <select
+                id="forecast-history-filter"
+                value={historyFilter}
+                onChange={(event) =>
+                  setHistoryFilter(event.target.value as typeof historyFilter)
+                }
+              >
+                <option value="all">All activity</option>
+                <option value="exports">Exports only</option>
+                <option value="recoveries">Recoveries only</option>
+                <option value="verifications">Checksum checks only</option>
+              </select>
+            </label>
+            <button
+              type="button"
+              className="secondary-button"
+              disabled={!visibleHistory.length}
+              onClick={async () => {
+                const lines = [
+                  "iCamp Build 170 — Local checksum and recovery activity review (NOT a server audit)",
+                  ...visibleHistory.map(
+                    (item) =>
+                      `${item.occurredAt} | ${item.action} | ${item.viewCount} saved views | SHA-256 ${item.sha256}`,
+                  ),
+                  "Browser-local, mutable metadata only. No file authenticity or independent ownership was established.",
+                ];
+                try {
+                  await navigator.clipboard.writeText(lines.join("\n"));
+                  setMessage(
+                    "Selected local activity metadata copied. Nothing was transmitted or approved.",
+                  );
+                } catch {
+                  setMessage(
+                    "Clipboard blocked; use the visible activity list.",
+                  );
+                }
+              }}
+            >
+              Copy activity review
+            </button>
+          </div>
+          {visibleHistory.length ? (
             <ol>
-              {history.map((item, index) => (
+              {visibleHistory.map((item, index) => (
                 <li key={`${item.occurredAt}:${index}`}>
                   <strong>{item.action.replaceAll("_", " ")}</strong> ·{" "}
                   {item.viewCount} view(s) · {item.occurredAt}
@@ -417,7 +568,7 @@ export function ForecastSavedViews({
             </ol>
           ) : (
             <p className="ops-inline-note">
-              No locally retained export or recovery history yet.
+              No locally retained activities match this review filter.
             </p>
           )}
         </div>

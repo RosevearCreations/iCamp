@@ -12,6 +12,7 @@ import {
 } from "@/lib/command-centre/escalation-aging-core.mjs";
 import {
   captureEscalationRecheckReceipt,
+  createEscalationDeltaEvidenceHandoff,
   prioritizeEscalationRecheckDeltas,
   type LocalRecheckReceipt,
 } from "@/lib/command-centre/escalation-recheck-receipts-core.mjs";
@@ -53,6 +54,9 @@ export function CamperEscalationAgingBoard({
     [],
   );
   const [recheckStatus, setRecheckStatus] = useState("");
+  const [deltaHandoffFocus, setDeltaHandoffFocus] = useState<"triage" | "all">(
+    "triage",
+  );
   const handoff = useMemo(
     () => summarizeAcknowledgementHandoff(summary),
     [summary],
@@ -216,7 +220,7 @@ export function CamperEscalationAgingBoard({
         <div className="ops-section-heading">
           <div>
             <p className="eyebrow">
-              Build 169 · Prioritized source recheck deltas
+              Build 170 · Source-pinned escalation delta evidence handoff
             </p>
             <h3 id="gap-followup-heading">
               {followUps.count} source discrepancies to review
@@ -333,6 +337,71 @@ export function CamperEscalationAgingBoard({
               observation.{" "}
               {"Missing from active source: not independent closure proof."}
             </p>
+            <div
+              className="camp-aging__delta-handoff"
+              aria-labelledby="delta-handoff-heading"
+            >
+              <h4 id="delta-handoff-heading">
+                Source-pinned delta evidence handoff
+              </h4>
+              <p className="ops-inline-note">
+                Current source UTC: {summary.generatedAt}. Include captured and
+                current source evidence statuses with a direct triage path. This
+                is a local clipboard handoff, not a sent notification or proof
+                of closure.
+              </p>
+              <div className="camp-aging__delta-handoff-actions">
+                <label htmlFor="delta-handoff-focus">
+                  Evidence handoff selection
+                  <select
+                    id="delta-handoff-focus"
+                    value={deltaHandoffFocus}
+                    onChange={(event) =>
+                      setDeltaHandoffFocus(
+                        event.target.value as typeof deltaHandoffFocus,
+                      )
+                    }
+                  >
+                    <option value="triage">
+                      Changed / missing active source only
+                    </option>
+                    <option value="all">
+                      All captured source observations
+                    </option>
+                  </select>
+                </label>
+                <button
+                  type="button"
+                  className="secondary-button"
+                  onClick={async () => {
+                    try {
+                      const handoff = createEscalationDeltaEvidenceHandoff(
+                        summary,
+                        recheckDeltas,
+                        campgroundId,
+                        deltaHandoffFocus,
+                      );
+                      if (!handoff.selectedCount) {
+                        setRecheckStatus(
+                          "No captured source deltas match this handoff selection. Capture or select an observation first.",
+                        );
+                        return;
+                      }
+                      await navigator.clipboard.writeText(handoff.text);
+                      setRecheckStatus(
+                        `${handoff.selectedCount} source-pinned delta observation(s) copied locally; no case or external evidence was changed.`,
+                      );
+                    } catch {
+                      setRecheckStatus(
+                        "Could not copy the source-pinned handoff. Review the visible source status and triage links.",
+                      );
+                    }
+                  }}
+                >
+                  Copy source-pinned delta evidence handoff
+                </button>
+              </div>
+            </div>
             <div className="camp-occupancy__table-scroll">
               <table className="camp-occupancy__table">
                 <caption>
@@ -412,7 +481,7 @@ export function CamperEscalationAgingBoard({
               className="secondary-button"
               onClick={async () => {
                 const lines = [
-                  "iCamp Build 169 — Prioritized source recheck delta observations (NOT independent proof)",
+                  "iCamp Build 170 — Prioritized source recheck delta observations (NOT independent proof)",
                   ...recheckDeltas.items.map(
                     (item) =>
                       `${item.escalationId} | case ${item.caseId} | ${item.kind} | ${item.guidance} | ${item.status} → current ${item.currentStatus ?? "not in active source"} | source observed ${item.sourceObservedAt} | operator noted ${item.operatorRecordedAt}`,
