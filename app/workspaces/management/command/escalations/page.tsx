@@ -71,13 +71,16 @@ export default async function EscalationAgingPage({
           <span>Escalation aging</span>
         </nav>
         <section className="hero-panel camp-command__hero">
-          <p className="eyebrow">Build 166 · Standard / Camper Care</p>
+          <p className="eyebrow">
+            Build 167 · Standard / Evidence Gap Follow-Up
+          </p>
           <h1>Camper Escalation Aging</h1>
           <p className="hero-panel__lead">
             See unresolved escalations, who owns them and how long each has
             waited. Open the source triage desk for an authorized
             acknowledgment; this report never changes a case. Review source
-            acknowledgment timestamps and investigate evidence gaps.
+            acknowledgment timestamps, prioritize evidence gaps, and copy a
+            source-linked follow-up handoff for manual review.
           </p>
           <div className="camp-command__hero-actions">
             <Link

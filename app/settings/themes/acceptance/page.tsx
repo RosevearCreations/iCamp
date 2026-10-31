@@ -29,13 +29,14 @@ export default async function StandardThemeAcceptancePage() {
         </nav>
         <section className="hero-panel camp-command__hero">
           <p className="eyebrow">
-            Build 166 · Standard / Cross-Device Review &amp; Corrections
+            Build 167 · Standard / Cross-Device Review &amp; Owner Retest Queue
           </p>
           <h1>Does iCamp feel right?</h1>
           <p className="hero-panel__lead">
             Review the grass-green campground interface across actual desktop,
             tablet and phone layouts: management, capacity forecasts, camper
-            escalation evidence readback, I.T. and accessible display settings.
+            escalation evidence follow-ups, I.T. and accessible display
+            settings. Record corrections and revisit an owner retest worklist.
           </p>
         </section>
         <StandardThemeOwnerReview />

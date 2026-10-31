@@ -1987,6 +1987,114 @@ html[data-icamp-contrast="high"]
 
 /* Build 163: historical utilization, traceable guest resolutions and
    user-operated accessible Standard theme preferences. */
+/* Build 167: saved comparison presets, source follow-up and owner retest queue. */
+.camp-forecast__save-form {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: 0.75rem;
+  margin: 1rem 0;
+}
+.camp-forecast__save-form label {
+  display: grid;
+  gap: 0.35rem;
+  flex: 1 1 16rem;
+  min-width: 0;
+  font-weight: 700;
+}
+.camp-forecast__save-form input {
+  width: 100%;
+  min-width: 0;
+}
+.camp-forecast__saved-table small {
+  display: block;
+}
+.camp-forecast__saved-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.65rem;
+}
+.camp-aging__followup,
+.camp-device-review__queue {
+  margin: 1.2rem 0;
+  padding: 1rem;
+  border: 1px solid #91bf88;
+  border-radius: 0.8rem;
+  background: #173a2c;
+  overflow-wrap: anywhere;
+}
+.camp-aging__followup .ops-section-heading,
+.camp-device-review__queue .ops-section-heading {
+  flex-wrap: wrap;
+  gap: 0.8rem;
+}
+.camp-aging__followup-list,
+.camp-device-review__queue-list {
+  display: grid;
+  gap: 0.65rem;
+  margin: 1rem 0;
+}
+.camp-aging__followup-item,
+.camp-device-review__queue-list li {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.75rem;
+  border: 1px solid #57806c;
+  border-radius: 0.65rem;
+  padding: 0.75rem;
+  background: #102d25;
+}
+.camp-aging__followup-item div,
+.camp-device-review__queue-list li {
+  min-width: 0;
+}
+.camp-aging__followup-item small,
+.camp-device-review__queue-list small {
+  display: block;
+  color: #d5ead8;
+  overflow-wrap: anywhere;
+}
+.camp-device-review__queue-list {
+  padding-left: 0;
+  list-style: none;
+}
+.camp-device-review__queue-list li {
+  display: grid;
+}
+.camp-device-review__queue select {
+  max-width: 100%;
+}
+.camp-forecast__save-form :focus-visible,
+.camp-forecast__saved :focus-visible,
+.camp-aging__followup :focus-visible,
+.camp-device-review__queue :focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+html[data-icamp-contrast="high"]
+  .app-shell
+  :is(
+    .camp-aging__followup,
+    .camp-aging__followup-item,
+    .camp-device-review__queue,
+    .camp-device-review__queue-list li
+  ) {
+  background: #07190e;
+  color: #fff;
+  border-color: #e4ffc2;
+}
+@media (max-width: 48rem) {
+  .camp-forecast__save-form > button,
+  .camp-aging__followup .ops-section-heading > button {
+    width: 100%;
+  }
+  .camp-aging__followup-item {
+    display: grid;
+  }
+}
+
 .standard-accessibility {
   position: relative;
   flex: 0 0 auto;
