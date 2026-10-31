@@ -1720,6 +1720,117 @@ body {
   }
 }
 
+/* Build 164: flexible segment comparisons and legible escalation attention. */
+.camp-segments__filter {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.65rem;
+  margin: 1rem 0;
+  color: #e8f9db;
+  font-weight: 650;
+}
+.camp-segments__filter select {
+  max-width: 100%;
+}
+.camp-segments__grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.8rem;
+  margin: 1rem 0 1.3rem;
+}
+.camp-segments__card {
+  min-width: 0;
+  padding: 1rem;
+  border: 1px solid #4b8063;
+  border-radius: 0.85rem;
+  background: linear-gradient(145deg, #173f31, #09261f);
+  overflow-wrap: anywhere;
+}
+.camp-segments__card .ops-section-heading {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+.camp-segments__card h3 {
+  margin: 0;
+  font-size: 1rem;
+}
+.camp-segments__card strong {
+  color: #d3ff99;
+  font-size: 1.25rem;
+  font-variant-numeric: tabular-nums;
+}
+.camp-segments__card p {
+  margin: 0.85rem 0 0.5rem;
+  font-size: 0.88rem;
+}
+.camp-segments__card small {
+  display: block;
+  color: #c8dfc8;
+  line-height: 1.5;
+}
+.camp-segments__meter {
+  height: 0.7rem;
+  border-radius: 1rem;
+  background: #365545;
+  overflow: hidden;
+}
+.camp-segments__meter span {
+  display: block;
+  height: 100%;
+  max-width: 100%;
+  border-radius: inherit;
+  background: #a6e46b;
+}
+.camp-aging__table th small,
+.camp-aging__table td small {
+  display: block;
+  margin-top: 0.25rem;
+  color: #d5e8d0;
+  overflow-wrap: anywhere;
+}
+.camp-aging__table th,
+.camp-aging__table td {
+  min-width: 7.5rem;
+  overflow-wrap: anywhere;
+}
+.camp-aging__status {
+  display: inline-block;
+  padding: 0.35rem 0.5rem;
+  border-radius: 0.45rem;
+  border: 1px solid #d3a96c;
+  color: #ffedbe;
+  background: #50371c;
+}
+.camp-aging__status--acknowledged {
+  border-color: #8ac8a6;
+  color: #edffe9;
+  background: #1c4b39;
+}
+html[data-icamp-text="large"] {
+  font-size: 112.5%;
+}
+.app-shell :is(.camp-segments__card, .camp-aging__table) {
+  scroll-margin-top: 6rem;
+}
+html[data-icamp-contrast="high"] .app-shell .camp-segments__card {
+  background: #07190e;
+  border-color: #e4ffc2;
+}
+html[data-icamp-contrast="high"]
+  .app-shell
+  :is(.camp-segments__card small, .camp-aging__table small) {
+  color: #fff;
+}
+@media (max-width: 65rem) {
+  .camp-segments__grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* Build 163: historical utilization, traceable guest resolutions and
    user-operated accessible Standard theme preferences. */
 .standard-accessibility {

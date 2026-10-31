@@ -79,6 +79,12 @@ export default async function SeasonalUtilizationPage({
             </Link>
             <Link
               className="secondary-link"
+              href={`/workspaces/management/command/segments${query}`}
+            >
+              Compare accommodation types ↗
+            </Link>
+            <Link
+              className="secondary-link"
               href="/workspaces/management/command"
             >
               Management Command

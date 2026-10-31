@@ -89,6 +89,12 @@ export default async function ResolutionCommandPage({
             </Link>
             <Link
               className="secondary-link"
+              href={`/workspaces/management/command/escalations${base}`}
+            >
+              Escalation aging ↗
+            </Link>
+            <Link
+              className="secondary-link"
               href="/workspaces/management/command"
             >
               Management Command

@@ -26,6 +26,13 @@ const reviews = [
     href: "/workspaces/management/command/seasonal",
   },
   {
+    key: "segments",
+    title: "Accommodation segment comparisons",
+    detail:
+      "Compare 3 and 6-month campsite, cottage and permanent unit totals; inspect responsive tables at 200% zoom",
+    href: "/workspaces/management/command/segments",
+  },
+  {
     key: "assistance",
     title: "Camper assistance",
     detail:
@@ -38,6 +45,13 @@ const reviews = [
     detail:
       "Case filters, event chronology and links work using keyboard, mouse or touch",
     href: "/workspaces/management/command/resolutions",
+  },
+  {
+    key: "escalations",
+    title: "Camper escalation aging",
+    detail:
+      "Verify accessible filters, 24/72-hour labels, unknown timestamps and case review links",
+    href: "/workspaces/management/command/escalations",
   },
   {
     key: "it",
@@ -57,7 +71,7 @@ const reviews = [
     key: "accessibility",
     title: "Display accessibility",
     detail:
-      "Header Display options switch high contrast and reduced motion; focus states and table headings stay visible",
+      "Header Display options switch high contrast, reduced motion and larger text; Escape closes the options menu",
     href: "/settings/themes/acceptance",
   },
 ] as const;
@@ -72,7 +86,7 @@ export function StandardThemeOwnerReview() {
   );
   const summary = () =>
     [
-      "iCamp Build 163 — Standard Theme Accessibility Follow-Up",
+      "iCamp Build 164 — Standard Theme Accessibility Corrections",
       `Reviewed: ${done}/${reviews.length} areas`,
       ...reviews.map(
         (item) =>
@@ -112,8 +126,8 @@ export function StandardThemeOwnerReview() {
       <p className="ops-inline-note">
         Try Tab, Shift+Tab, Enter and Space; increase your browser zoom to 200%;
         and use the header Display options to test high contrast and reduced
-        motion. Preferences stay on this device and do not alter campground
-        records.
+        motion and larger text; use Escape to close the options. Preferences
+        stay on this device and do not alter campground records.
       </p>
       <div className="camp-theme-review__list">
         {reviews.map((item) => (
