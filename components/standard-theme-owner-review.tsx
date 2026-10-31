@@ -104,12 +104,19 @@ const deviceChecks = [
   },
 ] as const;
 type DeviceResult = "not_tested" | "passed" | "issue";
+type DeviceRetest = "not_retested" | "looks_fixed" | "still_fails";
 
 export function StandardThemeOwnerReview() {
   const [checked, setChecked] = useState<Record<string, boolean>>({});
   const [notes, setNotes] = useState("");
   const [deviceResults, setDeviceResults] = useState<
     Record<string, DeviceResult>
+  >({});
+  const [deviceCorrections, setDeviceCorrections] = useState<
+    Record<string, string>
+  >({});
+  const [deviceRetests, setDeviceRetests] = useState<
+    Record<string, DeviceRetest>
   >({});
   const [copyState, setCopyState] = useState("");
   const done = useMemo(
@@ -118,17 +125,18 @@ export function StandardThemeOwnerReview() {
   );
   const summary = () =>
     [
-      "iCamp Build 165 — Standard Theme Cross-Device Verification",
+      "iCamp Build 166 — Standard Theme Device Correction Review",
       `Reviewed: ${done}/${reviews.length} areas`,
       ...reviews.map(
         (item) =>
           `${checked[item.key] ? "[reviewed]" : "[not yet reviewed]"} ${item.title}`,
       ),
       "Device observations (self-reported; not automatically verified):",
-      ...deviceChecks.map(
-        (device) =>
-          `${device.label}: ${(deviceResults[device.key] ?? "not_tested").replaceAll("_", " ")}`,
-      ),
+      ...deviceChecks.flatMap((device) => [
+        `${device.label}: ${(deviceResults[device.key] ?? "not_tested").replaceAll("_", " ")}`,
+        `Correction / screen: ${deviceCorrections[device.key]?.trim() || "(not entered)"}`,
+        `Manual retest: ${(deviceRetests[device.key] ?? "not_retested").replaceAll("_", " ")}`,
+      ]),
       "Owner feedback:",
       notes.trim() || "(no feedback entered)",
       "This is owner review feedback, not a billing, integration or production authorization.",
@@ -195,23 +203,30 @@ export function StandardThemeOwnerReview() {
       >
         <div className="ops-section-heading">
           <div>
-            <p className="eyebrow">Build 165 · Cross-device check</p>
-            <h3 id="device-review-heading">What have we actually tested?</h3>
+            <p className="eyebrow">
+              Build 166 · Device corrections and rechecks
+            </p>
+            <h3 id="device-review-heading">
+              Which screens still need attention?
+            </h3>
           </div>
         </div>
         <p className="ops-inline-note">
-          Test these widths in a browser or on the actual devices. Check
-          navigation, forecast tables, escalation handoff, display options,
-          contrast and larger text. A simulated viewport does not prove the
-          experience on a physical device.
+          Test these widths in a browser or on actual devices. Record the screen
+          and correction needed, then manually retest after any fix. Check
+          scenario filters, evidence readback, contrast and larger text. A
+          simulated viewport does not prove the experience on a physical device.
         </p>
         <div className="camp-device-review__grid">
           {deviceChecks.map((device) => (
-            <label className="camp-device-review__item" key={device.key}>
+            <div className="camp-device-review__item" key={device.key}>
               <strong>{device.label}</strong>
               <small>{device.guidance}</small>
-              <span>Result</span>
+              <label htmlFor={`device-result-${device.key}`}>
+                Review result
+              </label>
               <select
+                id={`device-result-${device.key}`}
                 value={deviceResults[device.key] ?? "not_tested"}
                 onChange={(event) =>
                   setDeviceResults((state) => ({
@@ -224,7 +239,42 @@ export function StandardThemeOwnerReview() {
                 <option value="passed">Looks good</option>
                 <option value="issue">Needs correction</option>
               </select>
-            </label>
+              <label htmlFor={`device-correction-${device.key}`}>
+                Screen and correction needed
+              </label>
+              <textarea
+                id={`device-correction-${device.key}`}
+                rows={3}
+                maxLength={1000}
+                value={deviceCorrections[device.key] ?? ""}
+                onChange={(event) =>
+                  setDeviceCorrections((state) => ({
+                    ...state,
+                    [device.key]: event.target.value,
+                  }))
+                }
+                placeholder="Example: Forecast filter wraps over Apply at 200% zoom…"
+              />
+              <label htmlFor={`device-retest-${device.key}`}>
+                Manual correction retest
+              </label>
+              <select
+                id={`device-retest-${device.key}`}
+                value={deviceRetests[device.key] ?? "not_retested"}
+                onChange={(event) =>
+                  setDeviceRetests((state) => ({
+                    ...state,
+                    [device.key]: event.target.value as DeviceRetest,
+                  }))
+                }
+              >
+                <option value="not_retested">Not retested</option>
+                <option value="looks_fixed">
+                  Looks corrected on this device
+                </option>
+                <option value="still_fails">Still needs correction</option>
+              </select>
+            </div>
           ))}
         </div>
       </div>
@@ -262,6 +312,8 @@ export function StandardThemeOwnerReview() {
           onClick={() => {
             setChecked({});
             setDeviceResults({});
+            setDeviceCorrections({});
+            setDeviceRetests({});
             setNotes("");
             setCopyState("");
           }}

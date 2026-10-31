@@ -61,3 +61,27 @@ export interface AcknowledgementHandoff {
 export function summarizeAcknowledgementHandoff(
   summary: EscalationAgingSummary,
 ): AcknowledgementHandoff;
+
+export interface AcknowledgementEvidenceRecord {
+  caseId: string;
+  escalationId: string;
+  status:
+    | "recorded"
+    | "pending"
+    | "missing_timestamp"
+    | "invalid_timestamp"
+    | "sequence_unknown"
+    | "state_conflict";
+  raisedAt: string | null;
+  acknowledgedAt: string | null;
+  raisedByLabel: string | null;
+}
+export interface AcknowledgementEvidenceSummary {
+  records: AcknowledgementEvidenceRecord[];
+  recordedCount: number;
+  pendingCount: number;
+  gapCount: number;
+}
+export function summarizeAcknowledgementEvidence(
+  summary: EscalationAgingSummary,
+): AcknowledgementEvidenceSummary;
