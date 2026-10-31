@@ -12,6 +12,7 @@ import {
 } from "@/lib/command-centre/escalation-aging-core.mjs";
 import {
   captureEscalationRecheckReceipt,
+  prioritizeEscalationRecheckDeltas,
   type LocalRecheckReceipt,
 } from "@/lib/command-centre/escalation-recheck-receipts-core.mjs";
 
@@ -63,6 +64,10 @@ export function CamperEscalationAgingBoard({
   const followUps = useMemo(
     () => summarizeEvidenceGapFollowUps(summary),
     [summary],
+  );
+  const recheckDeltas = useMemo(
+    () => prioritizeEscalationRecheckDeltas(recheckReceipts, summary),
+    [recheckReceipts, summary],
   );
   const evidenceByEscalation = useMemo(
     () => new Map(evidence.records.map((item) => [item.escalationId, item])),
@@ -211,7 +216,7 @@ export function CamperEscalationAgingBoard({
         <div className="ops-section-heading">
           <div>
             <p className="eyebrow">
-              Build 168 · Evidence gap source recheck receipts
+              Build 169 · Prioritized source recheck deltas
             </p>
             <h3 id="gap-followup-heading">
               {followUps.count} source discrepancies to review
@@ -318,29 +323,33 @@ export function CamperEscalationAgingBoard({
             aria-labelledby="recheck-receipts-heading"
           >
             <h4 id="recheck-receipts-heading">
-              Local source recheck receipts ({recheckReceipts.length})
+              Prioritized recheck delta worklist ({recheckDeltas.count})
             </h4>
             <p className="ops-inline-note">
-              A changed source status is only an observation. Recheck a record
-              in the authorized triage desk; disappearance from the active queue
-              is not independent closure proof.
+              {recheckDeltas.needsTriageCount} require source triage ·{" "}
+              {recheckDeltas.newSnapshotCount} have a newer unchanged source
+              snapshot. Highest-priority changes and records missing from the
+              active source appear first. A changed source status is only an
+              observation.{" "}
+              {"Missing from active source: not independent closure proof."}
             </p>
             <div className="camp-occupancy__table-scroll">
               <table className="camp-occupancy__table">
                 <caption>
-                  Operator-captured source observations, most recent per
-                  escalation
+                  Operator-captured observations, ordered by source delta
+                  urgency; not independent proof
                 </caption>
                 <thead>
                   <tr>
                     <th scope="col">Source escalation</th>
                     <th scope="col">Prior → observed status</th>
+                    <th scope="col">Latest source delta and priority</th>
                     <th scope="col">Source read at UTC</th>
                     <th scope="col">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {recheckReceipts.map((receipt) => {
+                  {recheckDeltas.items.map((receipt) => {
                     const current = evidenceByEscalation.get(
                       receipt.escalationId,
                     );
@@ -358,6 +367,15 @@ export function CamperEscalationAgingBoard({
                           {receipt.previousStatus ?? "First readback"} →{" "}
                           {receipt.status}
                           <small>{receipt.change}</small>
+                        </td>
+                        <td>
+                          <strong>{receipt.kind.replaceAll("_", " ")}</strong>
+                          <small>
+                            {receipt.currentStatus ?? "Not in active source"} ·{" "}
+                            {receipt.severity} ·{" "}
+                            {receipt.assignedToLabel ?? "unassigned"}
+                          </small>
+                          <small>{receipt.guidance}</small>
                         </td>
                         <td>{receipt.sourceObservedAt}</td>
                         <td className="camp-aging__recheck-row-actions">
@@ -394,10 +412,10 @@ export function CamperEscalationAgingBoard({
               className="secondary-button"
               onClick={async () => {
                 const lines = [
-                  "iCamp Build 168 — Local escalation source recheck observations (NOT independent proof)",
-                  ...recheckReceipts.map(
+                  "iCamp Build 169 — Prioritized source recheck delta observations (NOT independent proof)",
+                  ...recheckDeltas.items.map(
                     (item) =>
-                      `${item.escalationId} | case ${item.caseId} | source observed ${item.sourceObservedAt} | operator noted ${item.operatorRecordedAt} | ${item.previousStatus ?? "first readback"} → ${item.status} | ${item.change}`,
+                      `${item.escalationId} | case ${item.caseId} | ${item.kind} | ${item.guidance} | ${item.status} → current ${item.currentStatus ?? "not in active source"} | source observed ${item.sourceObservedAt} | operator noted ${item.operatorRecordedAt}`,
                   ),
                   "No case, acknowledgment, external receipt, notification or closure was written.",
                 ];

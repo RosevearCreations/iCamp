@@ -7,11 +7,17 @@ import type { CapacityForecastVariance } from "@/lib/command-centre/capacity-for
 import {
   createSavedForecastBackup,
   exportSavedForecastComparisonCsv,
+  FORECAST_ACTIVITY_LIMIT,
   FORECAST_SAVED_LIMIT,
+  parseForecastActivityHistory,
   parseSavedForecastViews,
+  recordForecastActivity,
   recoverSavedForecastBackup,
+  serializeForecastActivityHistory,
   serializeSavedForecastViews,
+  sha256Hex,
   upsertSavedForecastView,
+  type ForecastActivityEvent,
   type SavedForecastView,
 } from "@/lib/command-centre/forecast-saved-views-core.mjs";
 
@@ -41,6 +47,7 @@ export function ForecastSavedViews({
   comparisons: Snapshot[];
 }) {
   const key = `icamp:forecast-saved:v1:${userId}:${campgroundId}`;
+  const historyKey = `icamp:forecast-activity:v1:${userId}:${campgroundId}`;
   const [views, setViews] = useState<SavedForecastView[]>([]);
   const [label, setLabel] = useState("");
   const [loaded, setLoaded] = useState(false);
@@ -48,11 +55,17 @@ export function ForecastSavedViews({
   const [recoveryDraft, setRecoveryDraft] = useState<
     SavedForecastView[] | null
   >(null);
+  const [recoveryHash, setRecoveryHash] = useState("");
+  const [expectedHash, setExpectedHash] = useState("");
+  const [history, setHistory] = useState<ForecastActivityEvent[]>([]);
 
   useEffect(() => {
     const timer = window.setTimeout(() => {
       try {
         setViews(parseSavedForecastViews(window.localStorage.getItem(key)));
+        setHistory(
+          parseForecastActivityHistory(window.localStorage.getItem(historyKey)),
+        );
         setMessage("");
       } catch {
         setViews([]);
@@ -63,7 +76,24 @@ export function ForecastSavedViews({
       setLoaded(true);
     }, 0);
     return () => window.clearTimeout(timer);
-  }, [key]);
+  }, [key, historyKey]);
+
+  const recordActivity = (event: ForecastActivityEvent) => {
+    try {
+      const updated = recordForecastActivity(
+        parseForecastActivityHistory(window.localStorage.getItem(historyKey)),
+        event,
+      );
+      window.localStorage.setItem(
+        historyKey,
+        serializeForecastActivityHistory(updated),
+      );
+      setHistory(updated);
+      return true;
+    } catch {
+      return false;
+    }
+  };
 
   const write = (updated: SavedForecastView[]) => {
     try {
@@ -72,10 +102,12 @@ export function ForecastSavedViews({
       setMessage(
         "Saved in this browser only. Historical figures are recalculated from the current authorized source.",
       );
+      return true;
     } catch {
       setMessage(
         "Unable to save in this browser. Your existing views were not changed.",
       );
+      return false;
     }
   };
 
@@ -90,7 +122,9 @@ export function ForecastSavedViews({
     >
       <div className="ops-section-heading">
         <div>
-          <p className="eyebrow">Build 168 · Saved view recovery and export</p>
+          <p className="eyebrow">
+            Build 169 · Export integrity and recovery history
+          </p>
           <h2 id="saved-forecast-heading">Saved scenario comparison views</h2>
         </div>
         <span className="ops-pill">
@@ -157,18 +191,35 @@ export function ForecastSavedViews({
             type="button"
             className="secondary-button"
             disabled={!loaded || !views.length}
-            onClick={() => {
+            onClick={async () => {
               try {
+                const filename = "icamp-scenario-preferences.json";
+                const contents = createSavedForecastBackup(views, {
+                  userId,
+                  campgroundId,
+                });
+                const sha256 = await sha256Hex(contents);
+                downloadText(filename, contents, "application/json");
                 downloadText(
-                  "icamp-scenario-preferences.json",
-                  createSavedForecastBackup(views, { userId, campgroundId }),
-                  "application/json",
+                  `${filename}.sha256`,
+                  `${sha256}  ${filename}\n`,
+                  "text/plain",
                 );
+                const retained = recordActivity({
+                  action: "backup",
+                  occurredAt: new Date().toISOString(),
+                  viewCount: views.length,
+                  sha256,
+                });
                 setMessage(
-                  "Preference backup downloaded locally. Keep the file private; it contains the account and campground scope IDs.",
+                  `Preference backup and SHA-256 checksum downloaded. SHA-256: ${sha256}. ${retained ? "Logged locally." : "Browser history unavailable."} Keep the scope IDs private; this checksum is not a signature.`,
                 );
-              } catch {
-                setMessage("Unable to create a saved-view backup.");
+              } catch (error) {
+                setMessage(
+                  error instanceof Error
+                    ? error.message
+                    : "Unable to create a saved-view backup.",
+                );
               }
             }}
           >
@@ -178,18 +229,35 @@ export function ForecastSavedViews({
             type="button"
             className="secondary-button"
             disabled={!loaded || !views.length}
-            onClick={() => {
+            onClick={async () => {
               try {
+                const filename = "icamp-historical-comparisons.csv";
+                const contents = exportSavedForecastComparisonCsv(
+                  views,
+                  comparisons,
+                );
+                const sha256 = await sha256Hex(contents);
+                downloadText(filename, contents, "text/csv;charset=utf-8");
                 downloadText(
-                  "icamp-historical-comparisons.csv",
-                  exportSavedForecastComparisonCsv(views, comparisons),
-                  "text/csv;charset=utf-8",
+                  `${filename}.sha256`,
+                  `${sha256}  ${filename}\n`,
+                  "text/plain",
                 );
+                const retained = recordActivity({
+                  action: "comparison_csv",
+                  occurredAt: new Date().toISOString(),
+                  viewCount: views.length,
+                  sha256,
+                });
                 setMessage(
-                  "Historical comparison CSV downloaded. It is a source snapshot, not a future-demand forecast.",
+                  `Historical comparison CSV and SHA-256 checksum downloaded. SHA-256: ${sha256}. ${retained ? "Logged locally." : "Browser history unavailable."} This is a historical snapshot, not a future-demand forecast or signature.`,
                 );
-              } catch {
-                setMessage("Unable to export the current source comparison.");
+              } catch (error) {
+                setMessage(
+                  error instanceof Error
+                    ? error.message
+                    : "Unable to export the current source comparison.",
+                );
               }
             }}
           >
@@ -207,6 +275,7 @@ export function ForecastSavedViews({
           onChange={async (event) => {
             const file = event.target.files?.[0];
             setRecoveryDraft(null);
+            setRecoveryHash("");
             if (!file) return;
             if (file.size > 8_000) {
               setMessage(
@@ -216,13 +285,16 @@ export function ForecastSavedViews({
               return;
             }
             try {
-              const restored = recoverSavedForecastBackup(await file.text(), {
+              const contents = await file.text();
+              const restored = recoverSavedForecastBackup(contents, {
                 userId,
                 campgroundId,
               });
+              const sha256 = await sha256Hex(contents);
               setRecoveryDraft(restored);
+              setRecoveryHash(sha256);
               setMessage(
-                `${restored.length} valid saved view(s) ready to restore. Confirm replacement below.`,
+                `${restored.length} valid saved view(s) ready. Backup SHA-256: ${sha256}. Verify independently against a trusted checksum before restoring.`,
               );
             } catch (error) {
               setMessage(
@@ -244,12 +316,42 @@ export function ForecastSavedViews({
               Restore {recoveryDraft.length} view(s) and replace the{" "}
               {views.length} current browser-local view(s)?
             </p>
+            <label htmlFor="forecast-expected-hash">
+              Optional trusted backup SHA-256 (64 lowercase hexadecimal
+              characters)
+              <input
+                id="forecast-expected-hash"
+                value={expectedHash}
+                maxLength={64}
+                spellCheck={false}
+                onChange={(event) =>
+                  setExpectedHash(event.target.value.trim().toLowerCase())
+                }
+                placeholder="Paste independently verified checksum"
+              />
+            </label>
             <button
               type="button"
               className="secondary-button"
+              disabled={Boolean(expectedHash) && expectedHash !== recoveryHash}
               onClick={() => {
-                write(recoveryDraft);
-                setRecoveryDraft(null);
+                if (expectedHash && expectedHash !== recoveryHash) {
+                  setMessage("Checksum mismatch. No saved views were changed.");
+                  return;
+                }
+                if (write(recoveryDraft)) {
+                  const retained = recordActivity({
+                    action: "recovery",
+                    occurredAt: new Date().toISOString(),
+                    viewCount: recoveryDraft.length,
+                    sha256: recoveryHash,
+                  });
+                  setMessage(
+                    `Browser-local restore completed. SHA-256: ${recoveryHash}. ${retained ? "Recovery recorded in local activity history." : "Browser activity history unavailable."} No independent authenticity was established.`,
+                  );
+                  setRecoveryDraft(null);
+                  setExpectedHash("");
+                }
               }}
             >
               Confirm local restore
@@ -259,6 +361,7 @@ export function ForecastSavedViews({
               className="secondary-button"
               onClick={() => {
                 setRecoveryDraft(null);
+                setExpectedHash("");
                 setMessage(
                   "Recovery canceled; local saved views were not changed.",
                 );
@@ -268,6 +371,56 @@ export function ForecastSavedViews({
             </button>
           </div>
         ) : null}
+        <div
+          className="camp-forecast__history"
+          aria-labelledby="forecast-history-heading"
+        >
+          <div className="ops-section-heading">
+            <div>
+              <h4 id="forecast-history-heading">
+                Browser-local export and recovery history
+              </h4>
+              <small>
+                Up to {FORECAST_ACTIVITY_LIMIT} metadata-only entries for this
+                user and campground; not a server audit trail or proof of
+                authenticity.
+              </small>
+            </div>
+            <button
+              type="button"
+              className="secondary-button"
+              disabled={!history.length}
+              onClick={() => {
+                try {
+                  window.localStorage.removeItem(historyKey);
+                  setHistory([]);
+                  setMessage(
+                    "Local export and recovery history cleared; downloaded files and saved views are unchanged.",
+                  );
+                } catch {
+                  setMessage("Unable to clear browser-local history.");
+                }
+              }}
+            >
+              Clear local history
+            </button>
+          </div>
+          {history.length ? (
+            <ol>
+              {history.map((item, index) => (
+                <li key={`${item.occurredAt}:${index}`}>
+                  <strong>{item.action.replaceAll("_", " ")}</strong> ·{" "}
+                  {item.viewCount} view(s) · {item.occurredAt}
+                  <code>SHA-256 {item.sha256}</code>
+                </li>
+              ))}
+            </ol>
+          ) : (
+            <p className="ops-inline-note">
+              No locally retained export or recovery history yet.
+            </p>
+          )}
+        </div>
       </div>
       {!loaded ? (
         <p role="status">Loading saved views from this browser…</p>

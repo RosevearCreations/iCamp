@@ -132,6 +132,8 @@ const accessibilityChecks = [
 type DeviceResult = "not_tested" | "passed" | "issue";
 type DeviceRetest = "not_retested" | "looks_fixed" | "still_fails";
 type AccessibilityResult = "not_tested" | "passed" | "needs_fix";
+type AccessibilityFollowUp = "open" | "planned" | "owner_retested";
+type AccessibilityPriority = "normal" | "urgent";
 const retestStorageKey = "icamp:standard-theme-retest:v1";
 
 export function StandardThemeOwnerReview() {
@@ -153,6 +155,15 @@ export function StandardThemeOwnerReview() {
   const [accessibilityNotes, setAccessibilityNotes] = useState<
     Record<string, string>
   >({});
+  const [accessibilityFollowUps, setAccessibilityFollowUps] = useState<
+    Record<string, AccessibilityFollowUp>
+  >({});
+  const [accessibilityPriorities, setAccessibilityPriorities] = useState<
+    Record<string, AccessibilityPriority>
+  >({});
+  const [accessibilityNextSteps, setAccessibilityNextSteps] = useState<
+    Record<string, string>
+  >({});
   const [retestFilter, setRetestFilter] = useState<"open" | "all" | "observed">(
     "open",
   );
@@ -166,6 +177,23 @@ export function StandardThemeOwnerReview() {
   const accessibilityIssues = accessibilityChecks.filter(
     (item) => accessibilityResults[item.key] === "needs_fix",
   ).length;
+  const acceptanceQueue = accessibilityChecks
+    .map((item) => ({
+      ...item,
+      result: accessibilityResults[item.key] ?? "not_tested",
+      followUp: accessibilityFollowUps[item.key] ?? "open",
+      priority: accessibilityPriorities[item.key] ?? "normal",
+      nextStep: accessibilityNextSteps[item.key]?.trim() ?? "",
+    }))
+    .sort(
+      (a, b) =>
+        Number(b.result === "needs_fix") - Number(a.result === "needs_fix") ||
+        Number(b.priority === "urgent") - Number(a.priority === "urgent") ||
+        a.title.localeCompare(b.title),
+    );
+  const acceptanceOutstanding = acceptanceQueue.filter(
+    (item) => item.result !== "passed" || item.followUp === "planned",
+  );
   const retestQueue = deviceChecks.map((device) => {
     const result = deviceResults[device.key] ?? "not_tested";
     const retest = deviceRetests[device.key] ?? "not_retested";
@@ -189,7 +217,7 @@ export function StandardThemeOwnerReview() {
   );
   const summary = () =>
     [
-      "iCamp Build 168 — Standard Theme Accessibility Retest Summary",
+      "iCamp Build 169 — Standard Theme Owner Accessibility Acceptance Follow-Up",
       `Reviewed: ${done}/${reviews.length} areas`,
       ...reviews.map(
         (item) =>
@@ -204,8 +232,9 @@ export function StandardThemeOwnerReview() {
       `Accessibility owner retest summary: ${accessibilityPassed} passed, ${accessibilityIssues} need correction, ${accessibilityChecks.length - accessibilityPassed - accessibilityIssues} not tested`,
       ...accessibilityChecks.map(
         (item) =>
-          `${item.title}: ${(accessibilityResults[item.key] ?? "not_tested").replaceAll("_", " ")} — ${accessibilityNotes[item.key]?.trim() || "No observation recorded"}`,
+          `${item.title}: ${(accessibilityResults[item.key] ?? "not_tested").replaceAll("_", " ")} — ${accessibilityNotes[item.key]?.trim() || "No observation recorded"} | follow-up ${(accessibilityFollowUps[item.key] ?? "open").replaceAll("_", " ")} | priority ${accessibilityPriorities[item.key] ?? "normal"} | next step: ${accessibilityNextSteps[item.key]?.trim() || "not assigned"}`,
       ),
+      `Accessibility acceptance follow-ups still requiring review: ${acceptanceOutstanding.length}. Owner retest is not independent acceptance.`,
       "Owner feedback:",
       notes.trim() || "(no feedback entered)",
       "This is owner review feedback, not a billing, integration or production authorization.",
@@ -273,7 +302,7 @@ export function StandardThemeOwnerReview() {
         <div className="ops-section-heading">
           <div>
             <p className="eyebrow">
-              Build 168 · Owner retest queue and accessibility summary
+              Build 169 · Owner retest and acceptance follow-up
             </p>
             <h3 id="device-review-heading">
               Which screens still need attention?
@@ -413,7 +442,9 @@ export function StandardThemeOwnerReview() {
       >
         <div className="ops-section-heading">
           <div>
-            <p className="eyebrow">Build 168 · Owner-observed accessibility</p>
+            <p className="eyebrow">
+              Build 169 · Owner accessibility acceptance follow-up
+            </p>
             <h3 id="owner-accessibility-heading">
               Accessibility retest summary
             </h3>
@@ -432,6 +463,68 @@ export function StandardThemeOwnerReview() {
           results are owner observations only—not automated WCAG certification
           or production authorization.
         </p>
+        <div
+          className="camp-theme-review__followup"
+          aria-labelledby="accessibility-followup-heading"
+        >
+          <div className="ops-section-heading">
+            <div>
+              <h4 id="accessibility-followup-heading">
+                Manual accessibility acceptance follow-up queue
+              </h4>
+              <p role="status">
+                {acceptanceOutstanding.length} require owner review ·{" "}
+                {accessibilityIssues} observed failures · {accessibilityPassed}{" "}
+                owner-observed passes
+              </p>
+            </div>
+            <button
+              type="button"
+              className="secondary-button"
+              onClick={async () => {
+                const lines = [
+                  "iCamp Build 169 — Local owner accessibility follow-up (manual observations only)",
+                  ...acceptanceQueue.map(
+                    (item) =>
+                      `${item.title} | ${item.result} | ${item.priority} | ${item.followUp} | next: ${item.nextStep || "not assigned"}`,
+                  ),
+                  "Owner-entered outcomes are not independent WCAG certification or formal production sign-off.",
+                ];
+                try {
+                  await navigator.clipboard.writeText(lines.join("\n"));
+                  setCopyState(
+                    "Accessibility follow-up copied locally. No approval, message or case was sent.",
+                  );
+                } catch {
+                  setCopyState(
+                    "Clipboard unavailable. Use the visible follow-up queue and review summary.",
+                  );
+                }
+              }}
+            >
+              Copy accessibility follow-up handoff
+            </button>
+          </div>
+          <ol>
+            {acceptanceQueue.map((item) => (
+              <li key={item.key}>
+                <strong>{item.title}</strong> ·{" "}
+                {item.result.replaceAll("_", " ")} · {item.priority} ·{" "}
+                {item.followUp.replaceAll("_", " ")}
+                <small>
+                  {item.nextStep ||
+                    "Next correction or owner retest not recorded"}
+                </small>
+                <a href={`#owner-accessibility-${item.key}`}>Review check ↗</a>
+              </li>
+            ))}
+          </ol>
+          <p className="ops-inline-note">
+            A self-reported retest does not close an issue or signify formal
+            owner accessibility acceptance. Confirm manually on real devices and
+            obtain any required independent sign-off.
+          </p>
+        </div>
         <div className="camp-theme-review__accessibility-grid">
           {accessibilityChecks.map((item) => (
             <div
@@ -473,6 +566,57 @@ export function StandardThemeOwnerReview() {
                 }
                 placeholder="Record the screen and what our team should retest…"
               />
+              <label htmlFor={`owner-accessibility-priority-${item.key}`}>
+                Follow-up priority
+              </label>
+              <select
+                id={`owner-accessibility-priority-${item.key}`}
+                value={accessibilityPriorities[item.key] ?? "normal"}
+                onChange={(event) =>
+                  setAccessibilityPriorities((state) => ({
+                    ...state,
+                    [item.key]: event.target.value as AccessibilityPriority,
+                  }))
+                }
+              >
+                <option value="normal">Normal</option>
+                <option value="urgent">Urgent owner review</option>
+              </select>
+              <label htmlFor={`owner-accessibility-followup-${item.key}`}>
+                Manual follow-up state
+              </label>
+              <select
+                id={`owner-accessibility-followup-${item.key}`}
+                value={accessibilityFollowUps[item.key] ?? "open"}
+                onChange={(event) =>
+                  setAccessibilityFollowUps((state) => ({
+                    ...state,
+                    [item.key]: event.target.value as AccessibilityFollowUp,
+                  }))
+                }
+              >
+                <option value="open">Open for review</option>
+                <option value="planned">Correction or retest planned</option>
+                <option value="owner_retested">
+                  Owner manually retested (not accepted)
+                </option>
+              </select>
+              <label htmlFor={`owner-accessibility-next-${item.key}`}>
+                Next correction / owner follow-up
+              </label>
+              <textarea
+                id={`owner-accessibility-next-${item.key}`}
+                rows={2}
+                maxLength={350}
+                value={accessibilityNextSteps[item.key] ?? ""}
+                onChange={(event) =>
+                  setAccessibilityNextSteps((state) => ({
+                    ...state,
+                    [item.key]: event.target.value,
+                  }))
+                }
+                placeholder="Record the affected screen, next action and what needs independent review…"
+              />
             </div>
           ))}
         </div>
@@ -509,6 +653,12 @@ export function StandardThemeOwnerReview() {
                     key: item.key,
                     result: accessibilityResults[item.key] ?? "not_tested",
                     note: (accessibilityNotes[item.key] ?? "").slice(0, 350),
+                    followUp: accessibilityFollowUps[item.key] ?? "open",
+                    priority: accessibilityPriorities[item.key] ?? "normal",
+                    nextStep: (accessibilityNextSteps[item.key] ?? "").slice(
+                      0,
+                      350,
+                    ),
                   })),
                 }),
               );
@@ -575,6 +725,10 @@ export function StandardThemeOwnerReview() {
               setDeviceRetests(retests);
               const accessResults: Record<string, AccessibilityResult> = {};
               const accessNotes: Record<string, string> = {};
+              const accessFollowUps: Record<string, AccessibilityFollowUp> = {};
+              const accessPriorities: Record<string, AccessibilityPriority> =
+                {};
+              const accessNextSteps: Record<string, string> = {};
               const accessibilityDraft =
                 "accessibility" in parsed && Array.isArray(parsed.accessibility)
                   ? parsed.accessibility
@@ -597,9 +751,26 @@ export function StandardThemeOwnerReview() {
                   typeof entry.note === "string"
                     ? entry.note.slice(0, 350)
                     : "";
+                accessFollowUps[item.key] = (
+                  ["open", "planned", "owner_retested"].includes(entry.followUp)
+                    ? entry.followUp
+                    : "open"
+                ) as AccessibilityFollowUp;
+                accessPriorities[item.key] = (
+                  ["normal", "urgent"].includes(entry.priority)
+                    ? entry.priority
+                    : "normal"
+                ) as AccessibilityPriority;
+                accessNextSteps[item.key] =
+                  typeof entry.nextStep === "string"
+                    ? entry.nextStep.slice(0, 350)
+                    : "";
               }
               setAccessibilityResults(accessResults);
               setAccessibilityNotes(accessNotes);
+              setAccessibilityFollowUps(accessFollowUps);
+              setAccessibilityPriorities(accessPriorities);
+              setAccessibilityNextSteps(accessNextSteps);
               setCopyState(
                 "Browser-local retest draft restored. Verify it against the current screens before relying on the notes.",
               );
@@ -656,6 +827,9 @@ export function StandardThemeOwnerReview() {
             setDeviceRetests({});
             setAccessibilityResults({});
             setAccessibilityNotes({});
+            setAccessibilityFollowUps({});
+            setAccessibilityPriorities({});
+            setAccessibilityNextSteps({});
             setNotes("");
             setCopyState("");
           }}
