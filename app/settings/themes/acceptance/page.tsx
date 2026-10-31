@@ -4,19 +4,39 @@ import Link from "next/link";
 import { AppShell } from "@/components/app-shell";
 import { StandardThemeOwnerReview } from "@/components/standard-theme-owner-review";
 import { requireAnyCampgroundPermission } from "@/lib/authz/current-user";
+import { getRuntimeConfig } from "@/lib/config/runtime";
+import {
+  hasCampgroundPermission,
+  listAssignedCampgrounds,
+} from "@/lib/authz/postgres.mjs";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
-  title: "Standard Theme Owner Review · iCamp",
+  title: "Independent Standard Theme Owner Review · iCamp",
   description:
-    "Walk through real management, analytics, guest service and I.T. screens and return clear Standard theme acceptance notes.",
+    "Review accessible Standard Theme screens, prepare independent owner evidence, and read unverified decision history without automatic approval.",
 };
 
 export default async function StandardThemeAcceptancePage() {
-  await requireAnyCampgroundPermission(
+  const session = await requireAnyCampgroundPermission(
     "reports.read",
     "/settings/themes/acceptance",
   );
+  const assigned = await listAssignedCampgrounds(session.user.id);
+  const authorized = (
+    await Promise.all(
+      assigned.map(async (campground) =>
+        (await hasCampgroundPermission(
+          session.user.id,
+          campground.campgroundId,
+          "reports.read",
+        ))
+          ? campground
+          : null,
+      ),
+    )
+  ).filter((item): item is NonNullable<typeof item> => item !== null);
+  const sourceSha = getRuntimeConfig().buildSha;
   return (
     <AppShell>
       <div className="page-stack camp-command">
@@ -29,7 +49,7 @@ export default async function StandardThemeAcceptancePage() {
         </nav>
         <section className="hero-panel camp-command__hero">
           <p className="eyebrow">
-            Build 171 · Standard / Independent Owner Review Request Preparation
+            Build 172 · Independent Owner Review Intake &amp; Evidence
           </p>
           <h1>Does iCamp feel right?</h1>
           <p className="hero-panel__lead">
@@ -37,10 +57,16 @@ export default async function StandardThemeAcceptancePage() {
             tablet and phone layouts: management, capacity forecasts, camper
             escalation evidence follow-ups, I.T. and accessible display
             settings. Record corrections, revisit the owner retest worklist, and
-            summarize accessible interaction checks without automatic approval.
+            summarize accessible interaction checks. Prepare a versioned
+            independent-owner handoff and review historic decision claims
+            without automatic approval or external submission.
           </p>
         </section>
-        <StandardThemeOwnerReview />
+        <StandardThemeOwnerReview
+          preparerId={session.user.id}
+          sourceSha={/^[a-f0-9]{40}$/i.test(sourceSha) ? sourceSha : ""}
+          campgrounds={authorized}
+        />
         <section className="content-panel ops-detail-card">
           <h2>What this does not authorize</h2>
           <p>

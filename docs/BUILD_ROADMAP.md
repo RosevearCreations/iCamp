@@ -1041,6 +1041,8 @@ No future visual/style build should bypass this prerequisite.
 
 The 001–156 roadmap above records the original program design; it must not be read as proof that every provider, workflow or pilot was activated. The newer Build 157–170 release documents continue the implementation history. The active **30-build** forward roadmap now covers Builds **171–200**, starting with Build 171 already named by Build 170. Its requirement-level scope and testable acceptance criteria are in [`BUILD_171_200_FUTURE_QUEUE.md`](BUILD_171_200_FUTURE_QUEUE.md), and the numbered execution order is in [`BUILD_QUEUE.md`](BUILD_QUEUE.md).
 
+Build 172's browser-local independent owner evidence intake, scoped historical readback and disabled submission contract are described in [`BUILD_172_INDEPENDENT_OWNER_INTAKE_LEDGER.md`](BUILD_172_INDEPENDENT_OWNER_INTAKE_LEDGER.md). A real append-only, independently authorized owner decision service remains a future gated dependency; neither a claimed approval in an imported file nor Build 171/172 CI may be called production or owner acceptance without actual evidence.
+
 Priority order:
 
 1. **171–172 — Evidence and trust:** recoveries, escalation source continuity and truly independent Standard Theme owner review.

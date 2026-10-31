@@ -7,6 +7,7 @@ import {
   prepareIndependentOwnerAcceptanceRequest,
   summarizeStandardThemeClosureReadiness,
 } from "@/lib/command-centre/standard-theme-closure-readiness-core.mjs";
+import { StandardThemeIndependentIntake } from "@/components/standard-theme-independent-intake";
 
 const reviews = [
   {
@@ -141,7 +142,15 @@ type AccessibilityFollowUp = "open" | "planned" | "owner_retested";
 type AccessibilityPriority = "normal" | "urgent";
 const retestStorageKey = "icamp:standard-theme-retest:v1";
 
-export function StandardThemeOwnerReview() {
+export function StandardThemeOwnerReview({
+  preparerId,
+  sourceSha,
+  campgrounds,
+}: {
+  preparerId: string;
+  sourceSha: string;
+  campgrounds: { campgroundId: string; campgroundName: string }[];
+}) {
   const [checked, setChecked] = useState<Record<string, boolean>>({});
   const [notes, setNotes] = useState("");
   const [deviceResults, setDeviceResults] = useState<
@@ -217,6 +226,14 @@ export function StandardThemeOwnerReview() {
       priority: accessibilityPriorities[item.key] ?? "normal",
     })),
     notes,
+  };
+  const intakeReviewInputs = {
+    ...reviewInputs,
+    accessibility: reviewInputs.accessibility.map((item) => ({
+      ...item,
+      note: accessibilityNotes[item.key] ?? "",
+      nextStep: accessibilityNextSteps[item.key] ?? "",
+    })),
   };
   const closureReadiness = summarizeStandardThemeClosureReadiness(reviewInputs);
   const independentRequest =
@@ -1018,6 +1035,12 @@ export function StandardThemeOwnerReview() {
         aria-label="Owner review summary for manual copying"
         value={summary()}
         rows={8}
+      />
+      <StandardThemeIndependentIntake
+        review={intakeReviewInputs}
+        preparerId={preparerId}
+        sourceSha={sourceSha}
+        campgrounds={campgrounds}
       />
     </section>
   );

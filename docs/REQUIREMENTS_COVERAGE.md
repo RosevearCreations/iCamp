@@ -138,7 +138,7 @@ This matrix cross-checks the complete iCamp vision against the restarted active 
 
 | Verified need / gap | Next build coverage |
 | --- | --- |
-| Independent Standard Theme owner acceptance, separate from browser-only checklists | 171–172 |
+| Independent Standard Theme owner acceptance, separate from browser-only checklists | 171–172: versioned draft and read-only historic claims implemented; true independent server owner acceptance and immutable decision ledger still HELD |
 | Easier customer accommodation comparison and transparent quoting | 173–174 |
 | Resumable booking and clear self-service change/cancel options | 175–176 |
 | Consolidated arrival, stay and assistance follow-up | 177–179 |

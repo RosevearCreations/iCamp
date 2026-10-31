@@ -2,15 +2,15 @@
 
 Current program: **iCamp2027**
 
-## Approved Build Batch 171–200 (30 defined; 172 next after Build 171 release)
+## Approved Build Batch 171–200 (30 defined; Build 172 implementation under release verification)
 
-Planning baseline: **Build 170**. The following is the approved **30-build** batch, replacing the previous one-build-at-a-time forward queue. Build 171 implementation is documented in [`BUILD_171_RECOVERY_SNAPSHOT_OWNER_REQUEST.md`](BUILD_171_RECOVERY_SNAPSHOT_OWNER_REQUEST.md); its actual promotion status requires separate GitHub and production evidence. The remaining builds are requirements, not delivery claims. Full scope, acceptance tests, dependencies, channel support and safety boundaries are in [`BUILD_171_200_FUTURE_QUEUE.md`](BUILD_171_200_FUTURE_QUEUE.md).
+Planning baseline: **Build 170**. The following is the approved **30-build** batch. Build 171 implementation is documented in [`BUILD_171_RECOVERY_SNAPSHOT_OWNER_REQUEST.md`](BUILD_171_RECOVERY_SNAPSHOT_OWNER_REQUEST.md); its main source was merged but Vercel production promotion remained quota-blocked at last check. Build 172's preparatory owner-intake/evidence contract is documented in [`BUILD_172_INDEPENDENT_OWNER_INTAKE_LEDGER.md`](BUILD_172_INDEPENDENT_OWNER_INTAKE_LEDGER.md); its actual release status requires separately verified CI and deployment evidence. Later builds remain planned requirements, not delivery claims. Full scope, acceptance tests, dependencies, channel support and safety boundaries are in [`BUILD_171_200_FUTURE_QUEUE.md`](BUILD_171_200_FUTURE_QUEUE.md).
 
 | Build | Planned scope | Primary benefit |
 | --- | --- | --- |
 | **171 — RELEASE SCOPE** | Scenario Recovery Checksum Exception Review, Escalation Handoff Snapshot Continuity & Standard Theme Independent Owner Acceptance Request Summary | Close existing recovery, escalation and owner-review follow-up without false acceptance claims. |
-| **172 — NEXT** | Independent Owner Review Intake, Accessibility Evidence & Decision Ledger | Make owner review evidence traceable and reviewable. |
-| 173 | Accessible Campsite/Cottage Discovery, Availability Filters & Side-by-Side Comparison | Help guests find the right stay. |
+| **172 — RELEASE SCOPE** | Independent Owner Review Intake, Accessibility Evidence & Decision Ledger (read-only contract; actual owner decisions HELD) | Make owner review evidence versioned and safer to hand off; do not imply signed acceptance. |
+| **173 — NEXT AFTER 172 GREEN** | Accessible Campsite/Cottage Discovery, Availability Filters & Side-by-Side Comparison | Help guests find the right stay. |
 | 174 | Transparent Booking Total, Fee Breakdown & Policy Preview | Make price and rules understandable before commitment. |
 | 175 | Booking Draft Save-and-Resume & Safe Cross-Device Recovery | Prevent lost booking progress. |
 | 176 | Reservation Change/Cancellation Preview & Guest Decision Controls | Give guests clear options without unintended refunds. |
