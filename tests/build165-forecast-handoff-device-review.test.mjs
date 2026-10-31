@@ -197,7 +197,7 @@ test("Build 165 owner review records desktop, tablet and phone observations, not
   assert.match(review, /self-reported; not automatically verified/);
   assert.match(
     route,
-    /Cross-Device Review|Independent Owner Review Request Preparation/,
+    /Cross-Device Review|Independent Owner Review Request Preparation|Independent Owner Review Intake/,
   );
   assert.match(css, /camp-device-review__grid/);
   assert.match(css, /max-width: 48rem/);

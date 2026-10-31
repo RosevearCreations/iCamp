@@ -38,4 +38,6 @@ The completed repository/CI foundation is now an **unnumbered pre-implementation
 
 The original restarted roadmap covers **Builds 001–156**. Development continued through Build 170, and the [next 30-build extension (171–200)](docs/BUILD_171_200_FUTURE_QUEUE.md) now records planned improvements to guest experience, staff workflows, management and launch readiness. Planned builds are not delivery or provider-activation claims. The original roadmap begins with:
 
+The extension's early implementation checkpoints include [Build 171 recovery/escalation/owner-request](docs/BUILD_171_RECOVERY_SNAPSHOT_OWNER_REQUEST.md) and [Build 172 independent owner review intake/evidence readback](docs/BUILD_172_INDEPENDENT_OWNER_INTAKE_LEDGER.md). Build 172 does not activate a server-side decision ledger or owner acceptance: its submission contract remains disabled until independent authorization, original evidence and immutable tenant-scoped storage exist. Billing and Omnichannel remain HELD.
+
 **Build 001 — Responsive PWA & Omnichannel Application Shell**
