@@ -100,6 +100,11 @@ export function AppShell({
                   <Link href="/settings/themes">Theme management</Link>
                 </li>
                 <li>
+                  <Link href="/settings/themes/acceptance">
+                    Standard owner review
+                  </Link>
+                </li>
+                <li>
                   <Link href="/integration/comms-hub">
                     Comms Hub connections
                   </Link>
@@ -121,7 +126,7 @@ export function AppShell({
 
           <div className="sidebar__principle">
             <strong>🌱 Standard theme</strong>
-            <span>Meadow & evergreen · Build 161</span>
+            <span>Meadow & evergreen · Build 162</span>
             <span className="sidebar__principle-subtle">
               Future themes will use the same status meanings and accessible
               layouts.
