@@ -2225,6 +2225,72 @@ html[data-icamp-contrast="high"]
   align-items: flex-start;
   gap: 0.75rem;
 }
+
+/* Build 170: checksum audit review and source/owner handoff readiness. */
+.camp-forecast__verification,
+.camp-theme-review__readiness,
+.camp-aging__delta-handoff {
+  margin-top: 1rem;
+  padding: 0.85rem;
+  border: 1px solid #6c9877;
+  border-radius: 0.65rem;
+  overflow-wrap: anywhere;
+}
+.camp-forecast__verification label,
+.camp-forecast__history-tools label,
+.camp-aging__delta-handoff label {
+  display: grid;
+  gap: 0.4rem;
+  font-weight: 700;
+}
+.camp-forecast__verification input,
+.camp-forecast__verification textarea,
+.camp-forecast__history-tools select,
+.camp-aging__delta-handoff select {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+}
+.camp-forecast__history-tools,
+.camp-aging__delta-handoff-actions {
+  display: flex;
+  align-items: end;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-block: 0.8rem;
+}
+.camp-forecast__history-tools label,
+.camp-aging__delta-handoff-actions label {
+  flex: 1 1 13rem;
+}
+.camp-theme-review__readiness details {
+  margin-top: 0.65rem;
+}
+.camp-theme-review__readiness summary {
+  cursor: pointer;
+  font-weight: 700;
+}
+.camp-theme-review__readiness li {
+  margin-block: 0.35rem;
+}
+html[data-icamp-contrast="high"]
+  .app-shell
+  :is(
+    .camp-forecast__verification,
+    .camp-theme-review__readiness,
+    .camp-aging__delta-handoff
+  ) {
+  color: #fff;
+  background: #07190e;
+  border-color: #e4ffc2;
+}
+@media (max-width: 48rem) {
+  .camp-forecast__history-tools > button,
+  .camp-aging__delta-handoff-actions > button,
+  .camp-theme-review__readiness button {
+    width: 100%;
+  }
+}
 html[data-icamp-contrast="high"]
   .app-shell
   :is(.camp-forecast__history, .camp-theme-review__followup) {

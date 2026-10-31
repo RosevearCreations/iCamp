@@ -37,3 +37,9 @@ export function prioritizeEscalationRecheckDeltas(
   needsTriageCount: number;
   newSnapshotCount: number;
 };
+export function createEscalationDeltaEvidenceHandoff(
+  summary: EscalationAgingSummary,
+  prioritized: ReturnType<typeof prioritizeEscalationRecheckDeltas>,
+  campgroundId: string,
+  focus?: "triage" | "all",
+): { selectedCount: number; text: string };

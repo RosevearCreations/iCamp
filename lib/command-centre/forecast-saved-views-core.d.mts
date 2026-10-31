@@ -9,12 +9,24 @@ export interface SavedForecastView {
 export const FORECAST_SAVED_LIMIT: number;
 export const FORECAST_ACTIVITY_LIMIT: number;
 export interface ForecastActivityEvent {
-  action: "backup" | "comparison_csv" | "recovery";
+  action:
+    | "backup"
+    | "comparison_csv"
+    | "recovery"
+    | "verification_match"
+    | "verification_mismatch";
   occurredAt: string;
   viewCount: number;
   sha256: string;
 }
 export function sha256Hex(contents: string): Promise<string>;
+export function sha256ArrayBuffer(bytes: ArrayBuffer): Promise<string>;
+export function parseExpectedSha256(raw: unknown, filename: string): string;
+export function verifyExportChecksum(
+  bytes: ArrayBuffer,
+  expected: string,
+  filename: string,
+): Promise<{ actualSha256: string; expectedSha256: string; matches: boolean }>;
 export function parseForecastActivityHistory(
   raw: unknown,
 ): ForecastActivityEvent[];
