@@ -1831,6 +1831,96 @@ html[data-icamp-contrast="high"]
   }
 }
 
+/* Build 165: readable capacity forecasts, triage handoffs, and device review. */
+.camp-forecast__summary {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin: 1rem 0 1.4rem;
+}
+.camp-forecast__summary > div,
+.camp-device-review__item {
+  display: grid;
+  gap: 0.35rem;
+  min-width: 0;
+  padding: 0.9rem;
+  border: 1px solid #538062;
+  border-radius: 0.7rem;
+  background: #15382e;
+  overflow-wrap: anywhere;
+}
+.camp-forecast__summary span,
+.camp-device-review__item small {
+  color: #d0e6d0;
+}
+.camp-forecast__summary strong {
+  color: #d4ff9c;
+  font-size: 1.45rem;
+  font-variant-numeric: tabular-nums;
+}
+.camp-forecast__table th,
+.camp-forecast__table td {
+  min-width: 8rem;
+}
+.camp-aging__handoff {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem;
+  margin: 1.2rem 0;
+  border: 1px solid #b0cd81;
+  border-radius: 0.8rem;
+  background: #173d2e;
+}
+.camp-aging__handoff > div {
+  flex: 1 1 18rem;
+  min-width: 0;
+}
+.camp-aging__handoff h3 {
+  margin: 0.3rem 0;
+}
+.camp-aging__handoff p {
+  overflow-wrap: anywhere;
+}
+.camp-device-review {
+  margin: 1.5rem 0;
+}
+.camp-device-review__grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+.camp-device-review__item select {
+  width: 100%;
+  max-width: 100%;
+}
+html[data-icamp-contrast="high"]
+  .app-shell
+  :is(
+    .camp-forecast__summary > div,
+    .camp-aging__handoff,
+    .camp-device-review__item
+  ) {
+  color: #fff;
+  background: #07190e;
+  border-color: #e4ffc2;
+}
+@media (max-width: 65rem) {
+  .camp-device-review__grid {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 48rem) {
+  .camp-forecast__summary {
+    grid-template-columns: 1fr;
+  }
+  .camp-aging__handoff > button {
+    width: 100%;
+  }
+}
+
 /* Build 163: historical utilization, traceable guest resolutions and
    user-operated accessible Standard theme preferences. */
 .standard-accessibility {

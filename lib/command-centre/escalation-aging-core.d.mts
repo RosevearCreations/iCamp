@@ -49,3 +49,15 @@ export function summarizeEscalationAging(
   cases: AgingSourceCase[],
   observedAt?: Date,
 ): EscalationAgingSummary;
+
+export interface AcknowledgementHandoff {
+  pendingCount: number;
+  urgentCount: number;
+  attentionCount: number;
+  unknownAgeCount: number;
+  unassignedCount: number;
+  ambiguousCount: number;
+}
+export function summarizeAcknowledgementHandoff(
+  summary: EscalationAgingSummary,
+): AcknowledgementHandoff;

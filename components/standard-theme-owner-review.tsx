@@ -33,6 +33,13 @@ const reviews = [
     href: "/workspaces/management/command/segments",
   },
   {
+    key: "forecast",
+    title: "Seasonal capacity forecast variance",
+    detail:
+      "Verify month-to-date actuals, historical baseline and excluded-category notice; no false booking forecast",
+    href: "/workspaces/management/command/forecast",
+  },
+  {
     key: "assistance",
     title: "Camper assistance",
     detail:
@@ -76,9 +83,34 @@ const reviews = [
   },
 ] as const;
 
+const deviceChecks = [
+  {
+    key: "desktop",
+    label: "Desktop / laptop",
+    guidance:
+      "At least 1280 CSS pixels; keyboard Tab/Shift+Tab, 200% zoom and focus rings",
+  },
+  {
+    key: "tablet",
+    label: "Tablet",
+    guidance:
+      "About 768–1024 CSS pixels; portrait/landscape, long names and horizontal tables",
+  },
+  {
+    key: "phone",
+    label: "Phone",
+    guidance:
+      "About 360–430 CSS pixels; touch controls, readable cards and no clipped actions",
+  },
+] as const;
+type DeviceResult = "not_tested" | "passed" | "issue";
+
 export function StandardThemeOwnerReview() {
   const [checked, setChecked] = useState<Record<string, boolean>>({});
   const [notes, setNotes] = useState("");
+  const [deviceResults, setDeviceResults] = useState<
+    Record<string, DeviceResult>
+  >({});
   const [copyState, setCopyState] = useState("");
   const done = useMemo(
     () => reviews.filter((item) => checked[item.key]).length,
@@ -86,11 +118,16 @@ export function StandardThemeOwnerReview() {
   );
   const summary = () =>
     [
-      "iCamp Build 164 — Standard Theme Accessibility Corrections",
+      "iCamp Build 165 — Standard Theme Cross-Device Verification",
       `Reviewed: ${done}/${reviews.length} areas`,
       ...reviews.map(
         (item) =>
           `${checked[item.key] ? "[reviewed]" : "[not yet reviewed]"} ${item.title}`,
+      ),
+      "Device observations (self-reported; not automatically verified):",
+      ...deviceChecks.map(
+        (device) =>
+          `${device.label}: ${(deviceResults[device.key] ?? "not_tested").replaceAll("_", " ")}`,
       ),
       "Owner feedback:",
       notes.trim() || "(no feedback entered)",
@@ -152,6 +189,45 @@ export function StandardThemeOwnerReview() {
           </div>
         ))}
       </div>
+      <div
+        className="camp-device-review"
+        aria-labelledby="device-review-heading"
+      >
+        <div className="ops-section-heading">
+          <div>
+            <p className="eyebrow">Build 165 · Cross-device check</p>
+            <h3 id="device-review-heading">What have we actually tested?</h3>
+          </div>
+        </div>
+        <p className="ops-inline-note">
+          Test these widths in a browser or on the actual devices. Check
+          navigation, forecast tables, escalation handoff, display options,
+          contrast and larger text. A simulated viewport does not prove the
+          experience on a physical device.
+        </p>
+        <div className="camp-device-review__grid">
+          {deviceChecks.map((device) => (
+            <label className="camp-device-review__item" key={device.key}>
+              <strong>{device.label}</strong>
+              <small>{device.guidance}</small>
+              <span>Result</span>
+              <select
+                value={deviceResults[device.key] ?? "not_tested"}
+                onChange={(event) =>
+                  setDeviceResults((state) => ({
+                    ...state,
+                    [device.key]: event.target.value as DeviceResult,
+                  }))
+                }
+              >
+                <option value="not_tested">Not yet tested</option>
+                <option value="passed">Looks good</option>
+                <option value="issue">Needs correction</option>
+              </select>
+            </label>
+          ))}
+        </div>
+      </div>
       <label className="camp-theme-review__notes">
         What should we adjust?
         <textarea
@@ -185,6 +261,7 @@ export function StandardThemeOwnerReview() {
           className="secondary-button"
           onClick={() => {
             setChecked({});
+            setDeviceResults({});
             setNotes("");
             setCopyState("");
           }}
