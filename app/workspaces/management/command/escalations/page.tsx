@@ -72,7 +72,7 @@ export default async function EscalationAgingPage({
         </nav>
         <section className="hero-panel camp-command__hero">
           <p className="eyebrow">
-            Build 168 · Standard / Evidence Gap Recheck Readbacks
+            Build 169 · Standard / Source Recheck Delta Prioritization
           </p>
           <h1>Camper Escalation Aging</h1>
           <p className="hero-panel__lead">

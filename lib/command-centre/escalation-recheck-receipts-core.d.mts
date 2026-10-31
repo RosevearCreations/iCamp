@@ -18,3 +18,22 @@ export function captureEscalationRecheckReceipt(
   capturedAt?: Date,
   previousReceipt?: LocalRecheckReceipt | null,
 ): LocalRecheckReceipt;
+export interface PrioritizedRecheckDelta extends LocalRecheckReceipt {
+  currentStatus: LocalRecheckReceipt["status"] | null;
+  kind:
+    "await_refresh" | "missing_active_source" | "status_delta" | "new_snapshot";
+  priority: number;
+  severity: string;
+  band: string;
+  assignedToLabel: string | null;
+  guidance: string;
+}
+export function prioritizeEscalationRecheckDeltas(
+  receipts: LocalRecheckReceipt[],
+  summary: EscalationAgingSummary,
+): {
+  items: PrioritizedRecheckDelta[];
+  count: number;
+  needsTriageCount: number;
+  newSnapshotCount: number;
+};

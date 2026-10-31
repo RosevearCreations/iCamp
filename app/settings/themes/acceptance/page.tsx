@@ -29,8 +29,8 @@ export default async function StandardThemeAcceptancePage() {
         </nav>
         <section className="hero-panel camp-command__hero">
           <p className="eyebrow">
-            Build 168 · Standard / Cross-Device Review &amp; Accessibility
-            Retest Summary
+            Build 169 · Standard / Cross-Device Review &amp; Accessibility
+            Acceptance Follow-Up
           </p>
           <h1>Does iCamp feel right?</h1>
           <p className="hero-panel__lead">
