@@ -28,14 +28,12 @@ export default async function StandardThemeAcceptancePage() {
           <span>Owner review</span>
         </nav>
         <section className="hero-panel camp-command__hero">
-          <p className="eyebrow">
-            Build 164 · Standard / Accessibility Acceptance
-          </p>
+          <p className="eyebrow">Build 165 · Standard / Cross-Device Review</p>
           <h1>Does iCamp feel right?</h1>
           <p className="hero-panel__lead">
-            Review the new grass-green campground interface as a real operator
-            would: management, capacity, camper assistance, I.T. and mobile
-            layout.
+            Review the grass-green campground interface across actual desktop,
+            tablet and phone layouts: management, capacity forecasts, camper
+            escalation handoff, I.T. and accessible display settings.
           </p>
         </section>
         <StandardThemeOwnerReview />

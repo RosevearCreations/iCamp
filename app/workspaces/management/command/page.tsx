@@ -66,6 +66,15 @@ function modulesForPermissions(permissions: string[]): CampgroundModule[] {
       permission: ["reports.read", "reservation.read", "accommodation.read"],
     },
     {
+      title: "Seasonal capacity forecast variance",
+      subtitle:
+        "Month-to-date actuals against a three-month historical baseline",
+      category: "Analytics",
+      href: "/workspaces/management/command/forecast",
+      icon: "▤",
+      permission: ["reports.read", "reservation.read", "accommodation.read"],
+    },
+    {
       title: "Camper assistance board",
       subtitle: "Case stages, urgency and staff ownership",
       category: "Guest services",
@@ -214,6 +223,7 @@ function modulesForPermissions(permissions: string[]): CampgroundModule[] {
           "/workspaces/management/command/capacity",
           "/workspaces/management/command/seasonal",
           "/workspaces/management/command/segments",
+          "/workspaces/management/command/forecast",
         ].includes(module.href)
       ) {
         return ["reports.read", "reservation.read", "accommodation.read"].every(

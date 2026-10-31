@@ -1,3 +1,6 @@
+Warning: truncated output (original token count: 10993)
+Total output lines: 2243
+
 /* iCamp Standard theme v1: presentation only, with semantic status tokens
  * independent of any future theme selection. */
 :root {
@@ -1073,217 +1076,7 @@ body {
 }
 .camp-command__module {
   display: flex;
-  min-width: 0;
-  min-height: 6rem;
-  align-items: center;
-  gap: 0.65rem;
-  padding: 0.85rem;
-  border: 1px solid #34624e;
-  border-radius: 0.8rem;
-  background: linear-gradient(120deg, #1c4835, #102c29);
-  text-decoration: none;
-  transition:
-    border-color 150ms ease,
-    transform 150ms ease;
-}
-.camp-command__module:hover,
-.camp-command__module:focus-visible {
-  border-color: #b4f191;
-  transform: translateY(-2px);
-}
-.camp-command__module-icon {
-  display: grid;
-  flex: 0 0 2.6rem;
-  height: 2.6rem;
-  place-items: center;
-  border-radius: 0.67rem;
-  background: #235f46;
-  color: #bcf48b;
-  font-size: 1.6rem;
-}
-.camp-command__module > span:nth-child(2) {
-  display: grid;
-  flex: 1;
-  min-width: 0;
-  gap: 0.18rem;
-}
-.camp-command__module small {
-  color: #b6d577;
-  font-size: 0.67rem;
-}
-.camp-command__module strong {
-  color: #f3ffe6;
-  font-size: 0.87rem;
-}
-.camp-command__module > span:nth-child(2) > span {
-  color: #acc7b6;
-  font-size: 0.72rem;
-}
-.camp-command__module b {
-  color: #a9e98b;
-}
-.camp-command__safety {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0.9rem 1.3rem;
-}
-.camp-command__safety-list {
-  display: grid;
-  align-content: start;
-}
-.camp-command__safety-list > div {
-  display: flex;
-  justify-content: space-between;
-  gap: 0.65rem;
-  padding: 0.6rem 0;
-  border-bottom: 1px solid #365a4c;
-  font-size: 0.81rem;
-}
-.camp-command__safety-list span {
-  color: #c0d7c6;
-}
-.camp-command__safety-links {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-  grid-column: 1 / -1;
-}
-.camp-command__safety-links a {
-  font-size: 0.81rem;
-  font-weight: 750;
-}
-
-@media (max-width: 74rem) {
-  .camp-command__kpis {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-  .camp-command__modules {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-@media (max-width: 53rem) {
-  .camp-command__columns,
-  .camp-command__safety {
-    grid-template-columns: 1fr;
-  }
-  .camp-command__modules {
-    grid-template-columns: 1fr;
-  }
-}
-@media (max-width: 34rem) {
-  .camp-command__kpis {
-    grid-template-columns: 1fr;
-  }
-  .camp-command__queue li {
-    flex-wrap: wrap;
-  }
-}
-
-.agreement-fields,
-.agreement-stage-grid,
-.theme-swatches {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 0.8rem;
-  margin: 1rem 0;
-}
-
-.agreement-fields {
-  grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
-}
-.agreement-fields label {
-  display: grid;
-  gap: 0.4rem;
-  color: #d4efcd;
-  font-weight: 700;
-}
-.agreement-fields input {
-  width: 100%;
-  min-width: 0;
-  padding: 0.6rem;
-}
-.agreement-stage {
-  display: grid;
-  gap: 0.5rem;
-  padding: 1rem;
-  border: 1px solid #426b55;
-  border-radius: 0.8rem;
-  background: #173b30;
-}
-.agreement-stage span {
-  color: #b6ef8a;
-  font-weight: 750;
-  text-transform: capitalize;
-}
-.agreement-stage strong {
-  color: #effce8;
-}
-.agreement-stage small {
-  color: #b2cabd;
-}
-.agreement-stage button {
-  justify-self: start;
-}
-.agreement-stage button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.theme-swatches {
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-}
-.theme-swatch {
-  display: grid;
-  gap: 0.35rem;
-  padding: 0.75rem;
-  border: 1px solid #426b55;
-  border-radius: 0.7rem;
-  background: #12332b;
-}
-.theme-swatch > span {
-  min-height: 3rem;
-  border: 1px solid #6e9179;
-  border-radius: 0.4rem;
-}
-.theme-swatch strong {
-  text-transform: capitalize;
-}
-.theme-swatch small {
-  color: #b7d0be;
-}
-
-@media (max-width: 80rem) {
-  .standard-command__metrics {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-@media (max-width: 65rem) {
-  .standard-command__body {
-    grid-template-columns: 1fr;
-  }
-}
-
-@media (max-width: 85rem) {
-  .topbar {
-    flex-wrap: wrap;
-  }
-  .topbar__quicklinks {
-    order: 3;
-    width: 100%;
-    justify-content: flex-start;
-  }
-}
-
-@media (max-width: 60rem) {
-  .shell-grid {
-    grid-template-columns: minmax(0, 1fr);
-  }
-  .sidebar {
-    position: static;
-    height: auto;
-    overflow-x: auto;
-    padding: 0.5rem 1rem;
+  m…993 tokens truncated…g: 0.5rem 1rem;
     border-right: 0;
   }
   .sidebar nav {
@@ -1828,6 +1621,96 @@ html[data-icamp-contrast="high"]
 @media (max-width: 65rem) {
   .camp-segments__grid {
     grid-template-columns: 1fr;
+  }
+}
+
+/* Build 165: readable capacity forecasts, triage handoffs, and device review. */
+.camp-forecast__summary {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin: 1rem 0 1.4rem;
+}
+.camp-forecast__summary > div,
+.camp-device-review__item {
+  display: grid;
+  gap: 0.35rem;
+  min-width: 0;
+  padding: 0.9rem;
+  border: 1px solid #538062;
+  border-radius: 0.7rem;
+  background: #15382e;
+  overflow-wrap: anywhere;
+}
+.camp-forecast__summary span,
+.camp-device-review__item small {
+  color: #d0e6d0;
+}
+.camp-forecast__summary strong {
+  color: #d4ff9c;
+  font-size: 1.45rem;
+  font-variant-numeric: tabular-nums;
+}
+.camp-forecast__table th,
+.camp-forecast__table td {
+  min-width: 8rem;
+}
+.camp-aging__handoff {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem;
+  margin: 1.2rem 0;
+  border: 1px solid #b0cd81;
+  border-radius: 0.8rem;
+  background: #173d2e;
+}
+.camp-aging__handoff > div {
+  flex: 1 1 18rem;
+  min-width: 0;
+}
+.camp-aging__handoff h3 {
+  margin: 0.3rem 0;
+}
+.camp-aging__handoff p {
+  overflow-wrap: anywhere;
+}
+.camp-device-review {
+  margin: 1.5rem 0;
+}
+.camp-device-review__grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+.camp-device-review__item select {
+  width: 100%;
+  max-width: 100%;
+}
+html[data-icamp-contrast="high"]
+  .app-shell
+  :is(
+    .camp-forecast__summary > div,
+    .camp-aging__handoff,
+    .camp-device-review__item
+  ) {
+  color: #fff;
+  background: #07190e;
+  border-color: #e4ffc2;
+}
+@media (max-width: 65rem) {
+  .camp-device-review__grid {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 48rem) {
+  .camp-forecast__summary {
+    grid-template-columns: 1fr;
+  }
+  .camp-aging__handoff > button {
+    width: 100%;
   }
 }
 
