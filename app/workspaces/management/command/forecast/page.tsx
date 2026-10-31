@@ -15,7 +15,7 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: "Seasonal Capacity Forecast Variance · iCamp",
   description:
-    "Campground-scoped month-to-date booking coverage variance against a historical three-month planning baseline.",
+    "Campground-scoped month-to-date booking coverage scenarios grounded in recorded historical rates.",
 };
 
 const names: Record<string, string> = {
@@ -27,11 +27,21 @@ const names: Record<string, string> = {
 export default async function CapacityForecastPage({
   searchParams,
 }: Readonly<{
-  searchParams: Promise<{ campground?: string }>;
+  searchParams: Promise<{
+    campground?: string;
+    window?: string;
+    scenario?: string;
+  }>;
 }>) {
   const path = "/workspaces/management/command/forecast";
   const session = await requireStaff(path);
   const params = await searchParams;
+  const lookbackMonths: 2 | 3 | 5 =
+    params.window === "2" ? 2 : params.window === "5" ? 5 : 3;
+  const scenario: "low" | "weighted" | "high" =
+    params.scenario === "low" || params.scenario === "high"
+      ? params.scenario
+      : "weighted";
   const assigned = await listAssignedCampgrounds(session.user.id);
   const authorized = (
     await Promise.all(
@@ -57,7 +67,9 @@ export default async function CapacityForecastPage({
     userId: session.user.id,
     campgroundId: selected.campgroundId,
   })
-    .then(summarizeCapacityForecastVariance)
+    .then((data) =>
+      summarizeCapacityForecastVariance(data, { lookbackMonths, scenario }),
+    )
     .catch(() => null);
 
   return (
@@ -71,11 +83,11 @@ export default async function CapacityForecastPage({
           <span>Capacity forecast variance</span>
         </nav>
         <section className="hero-panel camp-command__hero">
-          <p className="eyebrow">Build 165 · Standard / Seasonal Planning</p>
+          <p className="eyebrow">Build 166 · Standard / Scenario Planning</p>
           <h1>Seasonal Capacity Forecast Variance</h1>
           <p className="hero-panel__lead">
-            See how this month&apos;s booked site-night coverage compares to the
-            previous three completed months of your campground&apos;s records.
+            Explore low, typical and high historical booking-rate comparisons
+            across two, three or five completed months of campground records.
           </p>
           <div className="camp-command__hero-actions">
             <Link
@@ -97,6 +109,8 @@ export default async function CapacityForecastPage({
           aria-label="Campground selection"
         >
           <form method="get" className="camp-command__scope-form">
+            <input type="hidden" name="window" value={lookbackMonths} />
+            <input type="hidden" name="scenario" value={scenario} />
             <label htmlFor="forecast-campground">Campground</label>
             <select
               id="forecast-campground"
@@ -115,6 +129,66 @@ export default async function CapacityForecastPage({
           </form>
           <span className="ops-pill">Read-only · Not a booking prediction</span>
         </section>
+        <section
+          className="content-panel ops-detail-card camp-forecast__scenarios"
+          aria-labelledby="scenario-heading"
+        >
+          <div className="ops-section-heading">
+            <div>
+              <p className="eyebrow">
+                Recorded historical rates · No invented demand
+              </p>
+              <h2 id="scenario-heading">Compare planning scenarios</h2>
+            </div>
+          </div>
+          <form method="get" className="camp-forecast__scenario-form">
+            <input
+              type="hidden"
+              name="campground"
+              value={selected.campgroundId}
+            />
+            <label htmlFor="forecast-window">
+              Historical window
+              <select
+                id="forecast-window"
+                name="window"
+                defaultValue={lookbackMonths}
+              >
+                <option value="2">Previous 2 completed months</option>
+                <option value="3">Previous 3 completed months</option>
+                <option value="5">Previous 5 completed months</option>
+              </select>
+            </label>
+            <label htmlFor="forecast-scenario">
+              Historical scenario
+              <select
+                id="forecast-scenario"
+                name="scenario"
+                defaultValue={scenario}
+              >
+                <option value="low">
+                  Low — smallest observed monthly share
+                </option>
+                <option value="weighted">
+                  Typical — weighted historical share
+                </option>
+                <option value="high">
+                  High — largest observed monthly share
+                </option>
+              </select>
+            </label>
+            <button type="submit" className="secondary-button">
+              Apply scenario
+            </button>
+          </form>
+          <p className="ops-inline-note">
+            These are sensitivity comparisons from real booking records. Low and
+            high use the smallest and largest recorded monthly booked share
+            within the chosen window; typical weights recorded booked site
+            nights by available site nights. They are not forecasts of future
+            demand, guaranteed capacity or booking recommendations.
+          </p>
+        </section>
         {variance ? (
           <>
             <section
@@ -123,7 +197,10 @@ export default async function CapacityForecastPage({
             >
               <div className="ops-section-heading">
                 <div>
-                  <p className="eyebrow">Historical coverage baseline</p>
+                  <p className="eyebrow">
+                    {variance.scenario} historical scenario ·{" "}
+                    {variance.lookbackMonths} months
+                  </p>
                   <h2 id="forecast-heading">
                     {variance.currentMonth.slice(0, 7)} month-to-date
                   </h2>
@@ -135,10 +212,11 @@ export default async function CapacityForecastPage({
               <p className="ops-inline-note">
                 Baseline: {variance.baselineMonths[0].slice(0, 7)} through{" "}
                 {variance.baselineMonths.at(-1)?.slice(0, 7)}. For each
-                accommodation type, its previous three completed months&apos;
-                booked share is applied to current month-to-date site nights.
-                This is a planning comparison, not a prediction of future demand
-                or final occupancy.
+                accommodation type, the selected observed historical rate is
+                applied to current month-to-date site nights. Categories with no
+                historical inventory remain unavailable. This is a planning
+                comparison, not a prediction of future demand or final
+                occupancy.
               </p>
               {variance.total.comparableKinds ? (
                 <div className="camp-forecast__summary" role="status">
@@ -188,7 +266,7 @@ export default async function CapacityForecastPage({
                       <th scope="col">Accommodation</th>
                       <th scope="col">Current site nights</th>
                       <th scope="col">Actual booked</th>
-                      <th scope="col">Historical rate</th>
+                      <th scope="col">Selected historical rate</th>
                       <th scope="col">Estimate</th>
                       <th scope="col">Variance</th>
                     </tr>
@@ -204,7 +282,7 @@ export default async function CapacityForecastPage({
                         <td>
                           {row.baselinePercent === null
                             ? "Unavailable"
-                            : `${row.baselinePercent}%`}
+                            : `${row.baselinePercent}% (${row.observedMonths} observed months)`}
                         </td>
                         <td>
                           {row.expectedNights === null

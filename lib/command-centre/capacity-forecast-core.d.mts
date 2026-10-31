@@ -6,6 +6,7 @@ export interface ForecastVarianceRow {
   actualBookedNights: number;
   baselineSiteNights: number;
   baselineBookedNights: number;
+  observedMonths: number;
   baselinePercent: number | null;
   actualPercent: number | null;
   expectedNights: number | null;
@@ -17,6 +18,8 @@ export interface ForecastVarianceRow {
 export interface CapacityForecastVariance {
   currentMonth: string;
   baselineMonths: string[];
+  lookbackMonths: 2 | 3 | 5;
+  scenario: "low" | "weighted" | "high";
   generatedAt: string;
   rows: ForecastVarianceRow[];
   total: {
@@ -31,4 +34,12 @@ export interface CapacityForecastVariance {
 
 export function summarizeCapacityForecastVariance(
   summary: SegmentComparisonSummary,
+  options?: {
+    lookbackMonths?: 2 | 3 | 5;
+    scenario?: "low" | "weighted" | "high";
+  },
 ): CapacityForecastVariance;
+export const FORECAST_SCENARIOS: Array<CapacityForecastVariance["scenario"]>;
+export const FORECAST_WINDOWS: Array<
+  CapacityForecastVariance["lookbackMonths"]
+>;

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 
 import {
+  summarizeAcknowledgementEvidence,
   summarizeAcknowledgementHandoff,
   type EscalationAgingSummary,
 } from "@/lib/command-centre/escalation-aging-core.mjs";
@@ -12,6 +13,14 @@ const levels: Record<string, string> = {
   main_foreman: "Main foreman",
   manager: "Manager",
   owner: "Owner",
+};
+const evidenceLabels: Record<string, string> = {
+  recorded: "Source timestamp recorded",
+  pending: "Awaiting acknowledgment",
+  missing_timestamp: "Acknowledged, timestamp missing",
+  invalid_timestamp: "Source timestamp invalid",
+  sequence_unknown: "Raised timestamp unavailable",
+  state_conflict: "Open state conflicts with timestamp",
 };
 
 export function CamperEscalationAgingBoard({
@@ -22,12 +31,20 @@ export function CamperEscalationAgingBoard({
   campgroundId: string;
 }) {
   const [filter, setFilter] = useState<
-    "all" | "over24" | "over72" | "unacknowledged" | "urgent"
+    "all" | "over24" | "over72" | "unacknowledged" | "urgent" | "evidence_gap"
   >("all");
   const [search, setSearch] = useState("");
   const handoff = useMemo(
     () => summarizeAcknowledgementHandoff(summary),
     [summary],
+  );
+  const evidence = useMemo(
+    () => summarizeAcknowledgementEvidence(summary),
+    [summary],
+  );
+  const evidenceByEscalation = useMemo(
+    () => new Map(evidence.records.map((item) => [item.escalationId, item])),
+    [evidence],
   );
   const visible = useMemo(
     () =>
@@ -37,6 +54,13 @@ export function CamperEscalationAgingBoard({
         if (filter === "over72" && item.band !== "over72") return false;
         if (filter === "unacknowledged" && item.state !== "open") return false;
         if (filter === "urgent" && item.severity !== "urgent") return false;
+        if (
+          filter === "evidence_gap" &&
+          ["recorded", "pending"].includes(
+            evidenceByEscalation.get(item.escalationId)?.status ?? "pending",
+          )
+        )
+          return false;
         const query = search.trim().toLowerCase();
         return (
           !query ||
@@ -45,7 +69,7 @@ export function CamperEscalationAgingBoard({
             .includes(query)
         );
       }),
-    [summary.items, filter, search],
+    [summary.items, filter, search, evidenceByEscalation],
   );
   const caseHref = (id: string) =>
     `/workspaces/management/campgrounds/assistance?campground=${encodeURIComponent(campgroundId)}#assistance-case-${encodeURIComponent(id)}`;
@@ -99,6 +123,31 @@ export function CamperEscalationAgingBoard({
           Show acknowledgment queue
         </button>
       </div>
+      <div
+        className="camp-aging__evidence"
+        aria-labelledby="evidence-readback-heading"
+      >
+        <div>
+          <p className="eyebrow">Read-only source event readback</p>
+          <h3 id="evidence-readback-heading">Acknowledgment evidence status</h3>
+          <p>
+            {evidence.recordedCount} with a chronologically valid source
+            timestamp · {evidence.pendingCount} pending · {evidence.gapCount}{" "}
+            with missing or conflicting source evidence
+          </p>
+          <small>
+            Timestamps reflect the source triage database only. They are not an
+            independent witness receipt, notification delivery or case closure.
+          </small>
+        </div>
+        <button
+          type="button"
+          className="secondary-button"
+          onClick={() => setFilter("evidence_gap")}
+        >
+          Show evidence gaps
+        </button>
+      </div>
       <div className="camp-command__filters">
         <label>
           Find an escalation
@@ -120,6 +169,7 @@ export function CamperEscalationAgingBoard({
             <option value="over72">72+ hours</option>
             <option value="unacknowledged">Not yet acknowledged</option>
             <option value="urgent">Urgent priority</option>
+            <option value="evidence_gap">Acknowledgment evidence gaps</option>
           </select>
         </label>
       </div>
@@ -144,6 +194,7 @@ export function CamperEscalationAgingBoard({
               <th scope="col">Priority</th>
               <th scope="col">Time since raised</th>
               <th scope="col">Owner</th>
+              <th scope="col">Evidence readback</th>
               <th scope="col">Action</th>
             </tr>
           </thead>
@@ -187,6 +238,28 @@ export function CamperEscalationAgingBoard({
                 </td>
                 <td>{item.assignedToLabel ?? "Unassigned"}</td>
                 <td>
+                  <strong>
+                    {
+                      evidenceLabels[
+                        evidenceByEscalation.get(item.escalationId)?.status ??
+                          "pending"
+                      ]
+                    }
+                  </strong>
+                  <small>
+                    Acknowledged:{" "}
+                    {evidenceByEscalation.get(item.escalationId)?.status ===
+                    "recorded"
+                      ? new Date(item.acknowledgedAt!).toLocaleString("en-CA", {
+                          timeZone: "UTC",
+                          dateStyle: "medium",
+                          timeStyle: "short",
+                        }) + " UTC"
+                      : "Not verifiably recorded"}
+                  </small>
+                  <small>Source escalation: {item.escalationId}</small>
+                </td>
+                <td>
                   <Link href={caseHref(item.caseId)}>
                     {item.state === "open"
                       ? "Open triage to acknowledge ↗"
@@ -210,8 +283,9 @@ export function CamperEscalationAgingBoard({
         The links open the existing campground-authorized triage desk, where
         acknowledgment requires the current source record and its version. A
         handoff is not proof that staff acknowledged anything; refresh the
-        source after acting. No SMS, calls or Omnichannel dispatch happen from
-        this report.
+        source after acting. Missing timestamps and conflicts require staff
+        source review; no synthetic evidence is supplied. No SMS, calls or
+        Omnichannel dispatch happen from this report.
       </p>
     </section>
   );
