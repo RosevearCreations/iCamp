@@ -6,7 +6,8 @@ import { useMemo, useState } from "react";
 export type CampgroundModule = {
   title: string;
   subtitle: string;
-  category: "Bookings" | "Guest services" | "Property" | "Administration";
+  category:
+    "Bookings" | "Guest services" | "Property" | "Administration" | "Analytics";
   icon: string;
   href: string;
 };
@@ -16,6 +17,7 @@ const categories = [
   "Bookings",
   "Guest services",
   "Property",
+  "Analytics",
   "Administration",
 ] as const;
 

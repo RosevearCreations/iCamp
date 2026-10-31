@@ -42,6 +42,37 @@ function modulesForPermissions(permissions: string[]): CampgroundModule[] {
     keys.some((key) => permissions.includes(key));
   const modules: (CampgroundModule & { permission: string[] })[] = [
     {
+      title: "Capacity & occupancy",
+      subtitle: "14-day booking coverage and operable inventory trends",
+      category: "Analytics",
+      href: "/workspaces/management/command/capacity",
+      icon: "▥",
+      permission: ["reports.read", "reservation.read", "accommodation.read"],
+    },
+    {
+      title: "Camper assistance board",
+      subtitle: "Case stages, urgency and staff ownership",
+      category: "Guest services",
+      href: "/workspaces/management/command/assistance",
+      icon: "◈",
+      permission: [
+        "reports.read",
+        "assistance.triage",
+        "assistance.escalate",
+        "assistance.communicate",
+        "assistance.close",
+        "campground.operations.manage",
+      ],
+    },
+    {
+      title: "Standard theme owner review",
+      subtitle: "Inspect screens, collect visual acceptance feedback",
+      category: "Administration",
+      href: "/settings/themes/acceptance",
+      icon: "✧",
+      permission: ["reports.read"],
+    },
+    {
       title: "Reservation desk",
       subtitle: "Booking edits, check-in flow and guest arrivals",
       category: "Bookings",
@@ -82,6 +113,7 @@ function modulesForPermissions(permissions: string[]): CampgroundModule[] {
         "assistance.escalate",
         "assistance.communicate",
         "assistance.close",
+        "campground.operations.manage",
       ],
     },
     {
@@ -129,6 +161,23 @@ function modulesForPermissions(permissions: string[]): CampgroundModule[] {
           permissions.includes("gate.state.read") &&
           permissions.includes("access.events.read") &&
           allowed(["access.credential.issue", "access.credential.revoke"])
+        );
+      }
+      if (module.href === "/workspaces/management/command/capacity") {
+        return ["reports.read", "reservation.read", "accommodation.read"].every(
+          (key) => permissions.includes(key),
+        );
+      }
+      if (module.href === "/workspaces/management/command/assistance") {
+        return (
+          permissions.includes("reports.read") &&
+          allowed([
+            "assistance.triage",
+            "assistance.escalate",
+            "assistance.communicate",
+            "assistance.close",
+            "campground.operations.manage",
+          ])
         );
       }
       return allowed(module.permission);
