@@ -1,4 +1,5 @@
 export interface StandardThemeClosureReadinessInput {
+  notes?: string;
   areas: Array<{ key: string; reviewed: boolean }>;
   devices: Array<{
     key: string;
@@ -26,3 +27,7 @@ export interface StandardThemeClosureReadiness {
 export function summarizeStandardThemeClosureReadiness(
   input: StandardThemeClosureReadinessInput,
 ): StandardThemeClosureReadiness;
+export function prepareIndependentOwnerAcceptanceRequest(
+  input: StandardThemeClosureReadinessInput,
+  now?: Date,
+): { ready: boolean; blockers: string[]; text: string };

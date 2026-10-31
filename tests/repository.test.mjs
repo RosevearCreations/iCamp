@@ -64,7 +64,11 @@ test("roadmap reset keeps the active sequence and old foundation separated", asy
     queue,
     /Build 001 — Responsive PWA & Omnichannel Application Shell/,
   );
-  assert.match(queue, /The active roadmap contains \*\*156 builds\*\*/);
+  assert.match(
+    queue,
+    /original restarted roadmap contains \*\*156 builds\*\*/i,
+  );
+  assert.match(queue, /171–200/);
   assert.match(baseline, /intentionally \*\*unnumbered\*\*/);
 });
 

@@ -135,7 +135,8 @@ test("Build 169 interfaces expose checksum verification, source delta triage and
   );
   assert.match(forecast, /\.sha256/);
   assert.match(forecast, /sha256Hex\(contents\)/);
-  assert.match(forecast, /expectedHash !== recoveryHash/);
+  assert.match(forecast, /reviewRecoveryChecksum/);
+  assert.match(forecast, /disabled=\{!recoveryReview\?\.canRestore\}/);
   assert.match(forecast, /Browser-local export and recovery history/);
   assert.match(forecast, /Clear local history/);
   assert.match(forecast, /not a server audit trail/);

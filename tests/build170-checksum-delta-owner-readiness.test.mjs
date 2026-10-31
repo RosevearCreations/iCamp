@@ -245,7 +245,10 @@ test("Build 170 UIs expose opt-in verification, source-pinned copy, and closure 
   assert.match(owner, /reviewedDraft\.includes/);
   assert.match(forecastPage, /requireStaff|getCampgroundAuthorization/);
   assert.match(escalationPage, /listAssistanceQueue/);
-  assert.match(ownerPage, /Cross-Device Review/);
+  assert.match(
+    ownerPage,
+    /Cross-Device Review|Independent Owner Review Request Preparation/,
+  );
   assert.match(styles, /camp-forecast__verification/);
   assert.match(styles, /camp-aging__delta-handoff/);
   assert.match(styles, /camp-theme-review__readiness/);

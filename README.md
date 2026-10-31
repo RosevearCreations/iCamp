@@ -36,6 +36,6 @@ iCamp is a complete campground operations platform covering live campsite/cottag
 
 The completed repository/CI foundation is now an **unnumbered pre-implementation baseline**.
 
-The restarted active roadmap contains **156 builds** and begins with:
+The original restarted roadmap covers **Builds 001–156**. Development continued through Build 170, and the [next 30-build extension (171–200)](docs/BUILD_171_200_FUTURE_QUEUE.md) now records planned improvements to guest experience, staff workflows, management and launch readiness. Planned builds are not delivery or provider-activation claims. The original roadmap begins with:
 
 **Build 001 — Responsive PWA & Omnichannel Application Shell**

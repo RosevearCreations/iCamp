@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import {
   summarizeAcknowledgementEvidence,
@@ -13,7 +13,10 @@ import {
 import {
   captureEscalationRecheckReceipt,
   createEscalationDeltaEvidenceHandoff,
+  ESCALATION_SESSION_LIMIT,
+  parseEscalationSnapshotSession,
   prioritizeEscalationRecheckDeltas,
+  serializeEscalationSnapshotSession,
   type LocalRecheckReceipt,
 } from "@/lib/command-centre/escalation-recheck-receipts-core.mjs";
 
@@ -34,11 +37,14 @@ const evidenceLabels: Record<string, string> = {
 export function CamperEscalationAgingBoard({
   summary,
   campgroundId,
+  userId,
 }: {
   summary: EscalationAgingSummary;
   campgroundId: string;
+  userId: string;
 }) {
   const router = useRouter();
+  const sessionKey = `icamp:escalation-observations:v1:${userId}:${campgroundId}`;
   const [filter, setFilter] = useState<
     | "all"
     | "over24"
@@ -54,9 +60,29 @@ export function CamperEscalationAgingBoard({
     [],
   );
   const [recheckStatus, setRecheckStatus] = useState("");
+  const [rechecksLoaded, setRechecksLoaded] = useState(false);
   const [deltaHandoffFocus, setDeltaHandoffFocus] = useState<"triage" | "all">(
     "triage",
   );
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      try {
+        setRecheckReceipts(
+          parseEscalationSnapshotSession(
+            window.sessionStorage.getItem(sessionKey),
+            { userId, campgroundId },
+          ),
+        );
+      } catch {
+        setRecheckReceipts([]);
+        setRecheckStatus(
+          "This browser tab cannot retain source observations across refreshes.",
+        );
+      }
+      setRechecksLoaded(true);
+    }, 0);
+    return () => window.clearTimeout(timer);
+  }, [sessionKey, userId, campgroundId]);
   const handoff = useMemo(
     () => summarizeAcknowledgementHandoff(summary),
     [summary],
@@ -113,6 +139,7 @@ export function CamperEscalationAgingBoard({
   const caseHref = (id: string) =>
     `/workspaces/management/campgrounds/assistance?campground=${encodeURIComponent(campgroundId)}#assistance-case-${encodeURIComponent(id)}`;
   const captureRecheck = (escalationId: string) => {
+    if (!rechecksLoaded) return;
     try {
       const previous = recheckReceipts.find(
         (receipt) => receipt.escalationId === escalationId,
@@ -123,13 +150,24 @@ export function CamperEscalationAgingBoard({
         new Date(),
         previous,
       );
-      setRecheckReceipts((state) => [
+      const updated = [
         receipt,
-        ...state.filter((item) => item.escalationId !== escalationId),
-      ]);
-      setRecheckStatus(
-        `Local source readback recorded for escalation ${escalationId}; no case or external evidence was changed.`,
-      );
+        ...recheckReceipts.filter((item) => item.escalationId !== escalationId),
+      ].slice(0, ESCALATION_SESSION_LIMIT);
+      setRecheckReceipts(updated);
+      try {
+        window.sessionStorage.setItem(
+          sessionKey,
+          serializeEscalationSnapshotSession(updated, { userId, campgroundId }),
+        );
+        setRecheckStatus(
+          "Scoped source readback retained in this browser tab for up to four hours. It is not a server receipt or closure proof.",
+        );
+      } catch {
+        setRecheckStatus(
+          "Readback retained only on this page; browser session storage is unavailable.",
+        );
+      }
     } catch (error) {
       setRecheckStatus(
         error instanceof Error
@@ -220,7 +258,7 @@ export function CamperEscalationAgingBoard({
         <div className="ops-section-heading">
           <div>
             <p className="eyebrow">
-              Build 170 · Source-pinned escalation delta evidence handoff
+              Build 171 · Source snapshot continuity and delta handoff
             </p>
             <h3 id="gap-followup-heading">
               {followUps.count} source discrepancies to review
@@ -253,8 +291,10 @@ export function CamperEscalationAgingBoard({
           </button>
           <small>
             Source snapshot UTC: {summary.generatedAt}. Recheck receipts are
-            temporary observations in this browser session, not signed
-            acknowledgments.
+            temporary observations scoped to this user/campground in the current
+            browser tab for at most four hours, not signed acknowledgments.
+            Refresh to compare against newly authorized source data. Closing the
+            tab removes session-only snapshots.
           </small>
         </div>
         {followUps.count ? (
@@ -280,6 +320,7 @@ export function CamperEscalationAgingBoard({
                   <button
                     type="button"
                     className="secondary-button"
+                    disabled={!rechecksLoaded}
                     onClick={() => captureRecheck(item.escalationId)}
                   >
                     Record source readback
@@ -454,7 +495,7 @@ export function CamperEscalationAgingBoard({
                           <button
                             type="button"
                             className="secondary-button"
-                            disabled={!refreshed || !current}
+                            disabled={!rechecksLoaded || !refreshed || !current}
                             onClick={() => captureRecheck(receipt.escalationId)}
                           >
                             Capture refreshed source
@@ -481,7 +522,7 @@ export function CamperEscalationAgingBoard({
               className="secondary-button"
               onClick={async () => {
                 const lines = [
-                  "iCamp Build 170 — Prioritized source recheck delta observations (NOT independent proof)",
+                  "iCamp Build 171 — Session-scoped source snapshot continuity (NOT independent proof)",
                   ...recheckDeltas.items.map(
                     (item) =>
                       `${item.escalationId} | case ${item.caseId} | ${item.kind} | ${item.guidance} | ${item.status} → current ${item.currentStatus ?? "not in active source"} | source observed ${item.sourceObservedAt} | operator noted ${item.operatorRecordedAt}`,
@@ -507,7 +548,16 @@ export function CamperEscalationAgingBoard({
               className="secondary-button"
               onClick={() => {
                 setRecheckReceipts([]);
-                setRecheckStatus("Session-only source observations cleared.");
+                try {
+                  window.sessionStorage.removeItem(sessionKey);
+                  setRecheckStatus(
+                    "This tab's scoped source snapshots were cleared; original cases are unchanged.",
+                  );
+                } catch {
+                  setRecheckStatus(
+                    "Page observations cleared. Browser session storage could not be cleared; end the tab session to remove its copy.",
+                  );
+                }
               }}
             >
               Clear local recheck receipts

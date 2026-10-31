@@ -2,6 +2,47 @@
 
 Current program: **iCamp2027**
 
+## Approved Build Batch 171–200 (30 defined; 172 next after Build 171 release)
+
+Planning baseline: **Build 170**. The following is the approved **30-build** batch, replacing the previous one-build-at-a-time forward queue. Build 171 implementation is documented in [`BUILD_171_RECOVERY_SNAPSHOT_OWNER_REQUEST.md`](BUILD_171_RECOVERY_SNAPSHOT_OWNER_REQUEST.md); its actual promotion status requires separate GitHub and production evidence. The remaining builds are requirements, not delivery claims. Full scope, acceptance tests, dependencies, channel support and safety boundaries are in [`BUILD_171_200_FUTURE_QUEUE.md`](BUILD_171_200_FUTURE_QUEUE.md).
+
+| Build | Planned scope | Primary benefit |
+| --- | --- | --- |
+| **171 — RELEASE SCOPE** | Scenario Recovery Checksum Exception Review, Escalation Handoff Snapshot Continuity & Standard Theme Independent Owner Acceptance Request Summary | Close existing recovery, escalation and owner-review follow-up without false acceptance claims. |
+| **172 — NEXT** | Independent Owner Review Intake, Accessibility Evidence & Decision Ledger | Make owner review evidence traceable and reviewable. |
+| 173 | Accessible Campsite/Cottage Discovery, Availability Filters & Side-by-Side Comparison | Help guests find the right stay. |
+| 174 | Transparent Booking Total, Fee Breakdown & Policy Preview | Make price and rules understandable before commitment. |
+| 175 | Booking Draft Save-and-Resume & Safe Cross-Device Recovery | Prevent lost booking progress. |
+| 176 | Reservation Change/Cancellation Preview & Guest Decision Controls | Give guests clear options without unintended refunds. |
+| 177 | Arrival Planner, Pre-Registration & Check-In Readiness | Reduce front-desk queues and surprises. |
+| 178 | Unified My Stay Mobile Hub & Status Timeline | Put guest information in one place. |
+| 179 | In-App Assistance Conversation & Case Progress | Improve service follow-up without enabling held messaging. |
+| 180 | Accessible Map/List Wayfinding, Amenities & Directions | Make site navigation easier for all visitors. |
+| 181 | Events & Recreation Discovery, Capacity & Registration | Make campground activities easier to discover. |
+| 182 | Amenity/Equipment Rental Availability & Reservation Planner | Support safe rental planning. |
+| 183 | Guest Store Catalogue, Cart Draft & Campsite Delivery Planning | Enable easy store ordering preparation. |
+| 184 | Guest Feedback, Service Recovery & Moderated Reviews | Close the feedback loop. |
+| 185 | Front Desk Unified Arrival/Departure & Exception Workboard | Simplify daily desk operations. |
+| 186 | Housekeeping/Maintenance Turnover & Availability Release Controls | Prevent premature site release. |
+| 187 | Canonical Security Incident Cases & Independent Closure Evidence | Fill the documented security-incident workflow gap. |
+| 188 | Visitor/Vehicle/Access Credential Lifecycle & Safe Reconciliation | Improve controlled, auditable access. |
+| 189 | Offline Field Work Queue, Conflict Resolution & Sync Audit | Support staff working without connectivity. |
+| 190 | Shift Scheduling, Training/Qualification & Handoff Readiness | Make staffing and safety readiness visible. |
+| 191 | Vendor Service Requests, Contract/SLA & Follow-Up Evidence | Improve external service accountability. |
+| 192 | Store Inventory, POS Session & Stock Reconciliation | Improve operational inventory accuracy. |
+| 193 | Seasonal Renewal, Winterization & Spring-Reopening Owner Queue | Connect seasonal operations end to end. |
+| 194 | Role-Aware Operations Dashboard, Saved Layouts & Actionable Drilldowns | Make management screens more usable. |
+| 195 | Source-Grounded Occupancy Forecasts, Scenario Confidence & Export Provenance | Improve planning without fabricated predictions. |
+| 196 | Financial Exception Review, Refund Readiness & End-of-Day Close | Improve auditable financial controls. |
+| 197 | Guest Privacy Requests, Consent History, Retention & Export | Strengthen privacy operations. |
+| 198 | Backup/Restore Drills, Performance Budgets & Incident Runbooks | Strengthen resilience and recovery. |
+| 199 | Tenant Subscription Sandbox Lifecycle & Legal Consent Gate | Prepare billing safely; activation stays held. |
+| 200 | Full Guest/Staff Pilot Acceptance, Omnichannel Proof Review & Go-Live Decision | Verify real journeys without bypassing holds. |
+
+**Queue policy:** Each build must pass the operating-model requirements and dev/main production gates before being called GREEN. These are **planned requirements**, not claims that the capabilities already exist. Do not enable tenant billing, campground charges, external SMS/voice, cross-app gateway calls, gate actions or live dispatch merely because a build ships: **Billing / Omnichannel remain HELD / DISCONNECTED** pending original independent evidence, legal/provider review and explicit owner authorization. Preserve real-source readback, tenant RLS, auditability, accessibility and Web/PWA + safe nonvisual/staff-assisted parity throughout.
+
+---
+
 ## Build 115 — Hold Recurrence Owner Review & Independent Follow-Up Decision Ledger
 
 Implemented on the Build 110–114 feature baseline. See `docs/BUILD_115_ACCEPTANCE.md`; promotion is gated on migrations and remote CI.
@@ -37,8 +78,8 @@ The repository, CI and security engineering foundation is complete and already p
 
 See `docs/PRE_IMPLEMENTATION_BASELINE.md`.
 
-## Active roadmap
-The active roadmap contains **156 builds** and incorporates the complete iCamp vision, including Web/PWA, IVR/DTMF and SMS/MMS channel-parity requirements.
+## Original roadmap context (historical)
+The original restarted roadmap contains **156 builds** and incorporates the complete iCamp vision, including Web/PWA, IVR/DTMF and SMS/MMS channel-parity requirements. The current planned extension is **171–200**, listed above; the historical entries below remain for traceability.
 
 ## Completed active builds
 
