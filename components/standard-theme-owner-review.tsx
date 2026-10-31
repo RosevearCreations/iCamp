@@ -19,11 +19,25 @@ const reviews = [
     href: "/workspaces/management/command/capacity",
   },
   {
+    key: "seasonal",
+    title: "Seasonal utilization",
+    detail:
+      "Six-month bars and exact counts remain readable at 200% zoom and on small screens",
+    href: "/workspaces/management/command/seasonal",
+  },
+  {
     key: "assistance",
     title: "Camper assistance",
     detail:
       "Case cards, filter/search, owner/staff triage handoff and readable inspector",
     href: "/workspaces/management/command/assistance",
+  },
+  {
+    key: "resolution",
+    title: "Camper resolution history",
+    detail:
+      "Case filters, event chronology and links work using keyboard, mouse or touch",
+    href: "/workspaces/management/command/resolutions",
   },
   {
     key: "it",
@@ -39,6 +53,13 @@ const reviews = [
       "Tap targets, horizontal boards, overflow, long campground names and text at large zoom",
     href: "/workspaces/management/command",
   },
+  {
+    key: "accessibility",
+    title: "Display accessibility",
+    detail:
+      "Header Display options switch high contrast and reduced motion; focus states and table headings stay visible",
+    href: "/settings/themes/acceptance",
+  },
 ] as const;
 
 export function StandardThemeOwnerReview() {
@@ -51,7 +72,7 @@ export function StandardThemeOwnerReview() {
   );
   const summary = () =>
     [
-      "iCamp Build 162 — Standard Theme Owner Walkthrough",
+      "iCamp Build 163 — Standard Theme Accessibility Follow-Up",
       `Reviewed: ${done}/${reviews.length} areas`,
       ...reviews.map(
         (item) =>
@@ -87,6 +108,12 @@ export function StandardThemeOwnerReview() {
         Checks on this page are temporary review notes, not a stored approval.
         Open each screen, confirm how it looks on your devices, then copy and
         return your observations for resolution.
+      </p>
+      <p className="ops-inline-note">
+        Try Tab, Shift+Tab, Enter and Space; increase your browser zoom to 200%;
+        and use the header Display options to test high contrast and reduced
+        motion. Preferences stay on this device and do not alter campground
+        records.
       </p>
       <div className="camp-theme-review__list">
         {reviews.map((item) => (

@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { EnvironmentBanner } from "@/components/environment-banner";
+import { StandardAccessibilityControls } from "@/components/standard-accessibility-controls";
 import { workspaces } from "@/lib/workspaces";
 
 const navGroups = [
@@ -56,7 +57,8 @@ export function AppShell({
           <Link href="/status">Status</Link>
         </nav>
 
-        <div className="topbar__status" aria-label="Build status">
+        <StandardAccessibilityControls />
+        <div className="topbar__status" aria-label="Theme status">
           <span className="theme-marker" aria-hidden="true">
             ✦
           </span>
@@ -126,7 +128,7 @@ export function AppShell({
 
           <div className="sidebar__principle">
             <strong>🌱 Standard theme</strong>
-            <span>Meadow & evergreen · Build 162</span>
+            <span>Meadow & evergreen · Build 163</span>
             <span className="sidebar__principle-subtle">
               Future themes will use the same status meanings and accessible
               layouts.

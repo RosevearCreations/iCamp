@@ -105,6 +105,12 @@ export default async function AssistanceCommandPage({
           </p>
           <div className="camp-command__hero-actions">
             <Link
+              className="secondary-link"
+              href={`/workspaces/management/command/resolutions?campground=${encodeURIComponent(selected.campgroundId)}`}
+            >
+              Case resolution timeline ↗
+            </Link>
+            <Link
               className="primary-link"
               href={`/workspaces/management/campgrounds/assistance?campground=${encodeURIComponent(selected.campgroundId)}`}
             >

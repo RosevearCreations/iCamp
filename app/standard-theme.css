@@ -1719,3 +1719,324 @@ body {
     width: 100%;
   }
 }
+
+/* Build 163: historical utilization, traceable guest resolutions and
+   user-operated accessible Standard theme preferences. */
+.standard-accessibility {
+  position: relative;
+  flex: 0 0 auto;
+  z-index: 35;
+  color: var(--ink);
+}
+.standard-accessibility summary {
+  min-height: 2.7rem;
+  display: flex;
+  align-items: center;
+  padding: 0.55rem 0.85rem;
+  border: 1px solid #6b986e;
+  border-radius: 0.75rem;
+  background: #123d31;
+  color: #f0ffe9;
+  cursor: pointer;
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+.standard-accessibility[open] summary {
+  border-color: #ccf78e;
+}
+.standard-accessibility__menu {
+  position: absolute;
+  top: calc(100% + 0.45rem);
+  right: 0;
+  display: grid;
+  gap: 0.55rem;
+  width: min(20rem, 84vw);
+  padding: 0.9rem;
+  border: 1px solid #83ad79;
+  border-radius: 0.7rem;
+  background: #09281f;
+  box-shadow: 0 20px 35px #0009;
+}
+.standard-accessibility__menu button {
+  min-height: 2.7rem;
+  padding: 0.55rem 0.65rem;
+  border: 1px solid #557d60;
+  border-radius: 0.5rem;
+  background: #164734;
+  color: #f1ffec;
+  cursor: pointer;
+  font: inherit;
+  text-align: left;
+}
+.standard-accessibility__menu button[aria-pressed="true"] {
+  border-color: #d5ff93;
+  background: #306044;
+}
+.standard-accessibility__menu p {
+  margin: 0;
+  color: #c7dec9;
+  font-size: 0.73rem;
+}
+.camp-seasonal__chart {
+  display: flex;
+  gap: clamp(0.7rem, 2vw, 1.8rem);
+  align-items: end;
+  min-height: 15rem;
+  margin: 1rem 0;
+  padding: 1rem 0.7rem 0.8rem;
+  border: 1px solid #3e6451;
+  border-radius: 0.8rem;
+  overflow-x: auto;
+  background: linear-gradient(180deg, #12362c, #0a2a23);
+}
+.camp-seasonal__month {
+  flex: 1 0 5.4rem;
+  display: grid;
+  gap: 0.4rem;
+  justify-items: center;
+  min-width: 0;
+  color: #ecffdd;
+}
+.camp-seasonal__month strong {
+  font-size: 0.89rem;
+}
+.camp-seasonal__month small {
+  color: #cfdfcf;
+  font-size: 0.74rem;
+}
+.camp-seasonal__bars {
+  display: flex;
+  gap: 0.4rem;
+  align-items: end;
+  justify-content: center;
+  width: 100%;
+  height: 10rem;
+  padding: 0 0.45rem;
+  border-bottom: 1px solid #65987b;
+  background: repeating-linear-gradient(
+    to top,
+    transparent 0,
+    transparent calc(25% - 1px),
+    #ffffff13 25%
+  );
+}
+.camp-seasonal__bar {
+  display: block;
+  width: min(30%, 1.7rem);
+  min-height: 1px;
+  border-radius: 0.35rem 0.35rem 0 0;
+}
+.camp-seasonal__bar--booked {
+  background: #94e56d;
+}
+.camp-seasonal__bar--seasonal {
+  background: #f2bd64;
+}
+.camp-resolution__layout {
+  display: grid;
+  grid-template-columns: minmax(12rem, 17rem) minmax(0, 1fr);
+  align-items: start;
+  gap: 0.85rem;
+}
+.camp-resolution__cases {
+  display: grid;
+  gap: 0.6rem;
+  align-content: start;
+  max-height: 46rem;
+  overflow-y: auto;
+  padding: 0.15rem 0.45rem 0.2rem 0.15rem;
+}
+.camp-resolution__case {
+  display: grid;
+  gap: 0.48rem;
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #416b55;
+  border-radius: 0.65rem;
+  background: #14372c;
+  color: #f3ffec;
+  cursor: pointer;
+  font: inherit;
+  text-align: left;
+}
+.camp-resolution__case[aria-pressed="true"],
+.camp-resolution__case:hover {
+  border-color: #c2ef89;
+  background: #24503a;
+}
+.camp-resolution__case > span {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.4rem;
+}
+.camp-resolution__case b {
+  font-size: 0.85rem;
+  overflow-wrap: anywhere;
+}
+.camp-resolution__case small {
+  color: #c7ddc9;
+  font-size: 0.71rem;
+}
+.camp-resolution__detail {
+  min-height: 15rem;
+  padding: 1rem;
+  border: 1px solid #557b5d;
+  border-radius: 0.7rem;
+  background: linear-gradient(145deg, #13392d, #0c2925);
+  overflow-wrap: anywhere;
+}
+.camp-resolution__facts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.55rem;
+  margin: 0.8rem 0 1.4rem;
+}
+.camp-resolution__facts div {
+  padding: 0.58rem;
+  border: 1px solid #36644b;
+  border-radius: 0.55rem;
+  background: #13382c;
+}
+.camp-resolution__facts dt {
+  color: #b7d5b9;
+  font-size: 0.72rem;
+}
+.camp-resolution__facts dd {
+  margin: 0.25rem 0 0;
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+.camp-resolution__events {
+  display: grid;
+  gap: 0;
+  margin: 1rem 0 0 0.35rem;
+  padding: 0;
+  list-style: none;
+}
+.camp-resolution__events li {
+  position: relative;
+  display: flex;
+  gap: 0.75rem;
+  padding: 0.25rem 0 1.3rem 0.7rem;
+  border-left: 2px solid #5d9470;
+}
+.camp-resolution__events li:last-child {
+  border-left-color: transparent;
+}
+.camp-resolution__marker {
+  position: absolute;
+  top: 0.3rem;
+  left: -0.43rem;
+  width: 0.73rem;
+  height: 0.73rem;
+  border: 2px solid #cff79b;
+  border-radius: 50%;
+  background: #266a4a;
+}
+.camp-resolution__events strong {
+  display: block;
+  color: #e5ffbb;
+  text-transform: capitalize;
+}
+.camp-resolution__events time,
+.camp-resolution__events small {
+  display: block;
+  margin-top: 0.2rem;
+  color: #b4d3c6;
+  font-size: 0.73rem;
+}
+.camp-resolution__events p {
+  margin: 0.5rem 0 0;
+  font-size: 0.88rem;
+}
+.camp-resolution__warning {
+  padding: 0.75rem;
+  border: 1px solid #efb16f;
+  border-radius: 0.5rem;
+  background: #533421;
+  color: #fff6dd;
+}
+.app-shell :is(a, button, input, select, textarea, summary):focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
+}
+html[data-icamp-contrast="high"] {
+  --bg: #000;
+  --surface: #061b11;
+  --surface-soft: #132f1c;
+  --ink: #fff;
+  --muted: #fff;
+  --line: #d9ffb1;
+  --focus: #fff165;
+  --brand: #d2ff6d;
+}
+html[data-icamp-contrast="high"]
+  .app-shell
+  :is(
+    .topbar,
+    .sidebar,
+    .hero-panel,
+    .content-panel,
+    .camp-command__kpi,
+    .camp-resolution__detail,
+    .camp-seasonal__chart
+  ) {
+  border-color: #e4ffc2;
+  background: #07190e;
+  color: #fff;
+}
+html[data-icamp-contrast="high"]
+  .app-shell
+  :is(
+    small,
+    .ops-inline-note,
+    .camp-resolution__case small,
+    .camp-resolution__events time,
+    .camp-resolution__events small,
+    .camp-seasonal__month small
+  ) {
+  color: #f2ffde;
+}
+html[data-icamp-motion="reduced"] .app-shell *,
+html[data-icamp-motion="reduced"] .app-shell *::before,
+html[data-icamp-motion="reduced"] .app-shell *::after {
+  animation-duration: 0.01ms !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  .app-shell *,
+  .app-shell *::before,
+  .app-shell *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+@media (max-width: 65rem) {
+  .camp-resolution__layout {
+    grid-template-columns: 1fr;
+  }
+  .camp-resolution__cases {
+    display: flex;
+    max-height: none;
+    overflow-x: auto;
+    padding: 0.3rem;
+  }
+  .camp-resolution__case {
+    flex: 0 0 min(16rem, 80vw);
+  }
+}
+@media (max-width: 38rem) {
+  .camp-resolution__facts {
+    grid-template-columns: 1fr;
+  }
+  .camp-seasonal__month {
+    flex-basis: 5.5rem;
+  }
+  .standard-accessibility__menu {
+    right: auto;
+    left: 0;
+  }
+}
