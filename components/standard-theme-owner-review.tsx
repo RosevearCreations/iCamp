@@ -103,8 +103,35 @@ const deviceChecks = [
       "About 360–430 CSS pixels; touch controls, readable cards and no clipped actions",
   },
 ] as const;
+const accessibilityChecks = [
+  {
+    key: "keyboard",
+    title: "Keyboard and focus",
+    guidance:
+      "Tab and Shift+Tab order, visible focus, Enter/Space controls and Escape dismissal",
+  },
+  {
+    key: "zoom",
+    title: "200% zoom and reflow",
+    guidance:
+      "At 200% zoom, inspect text, filters, action buttons and table scrolling without clipping",
+  },
+  {
+    key: "contrast",
+    title: "High contrast and larger text",
+    guidance:
+      "Use Display options and confirm all labels, alerts and data remain legible",
+  },
+  {
+    key: "motion",
+    title: "Reduced motion and touch",
+    guidance:
+      "Verify reduced-motion display options, readable notices and usable touch targets",
+  },
+] as const;
 type DeviceResult = "not_tested" | "passed" | "issue";
 type DeviceRetest = "not_retested" | "looks_fixed" | "still_fails";
+type AccessibilityResult = "not_tested" | "passed" | "needs_fix";
 const retestStorageKey = "icamp:standard-theme-retest:v1";
 
 export function StandardThemeOwnerReview() {
@@ -120,6 +147,12 @@ export function StandardThemeOwnerReview() {
     Record<string, DeviceRetest>
   >({});
   const [copyState, setCopyState] = useState("");
+  const [accessibilityResults, setAccessibilityResults] = useState<
+    Record<string, AccessibilityResult>
+  >({});
+  const [accessibilityNotes, setAccessibilityNotes] = useState<
+    Record<string, string>
+  >({});
   const [retestFilter, setRetestFilter] = useState<"open" | "all" | "observed">(
     "open",
   );
@@ -127,6 +160,12 @@ export function StandardThemeOwnerReview() {
     () => reviews.filter((item) => checked[item.key]).length,
     [checked],
   );
+  const accessibilityPassed = accessibilityChecks.filter(
+    (item) => accessibilityResults[item.key] === "passed",
+  ).length;
+  const accessibilityIssues = accessibilityChecks.filter(
+    (item) => accessibilityResults[item.key] === "needs_fix",
+  ).length;
   const retestQueue = deviceChecks.map((device) => {
     const result = deviceResults[device.key] ?? "not_tested";
     const retest = deviceRetests[device.key] ?? "not_retested";
@@ -150,7 +189,7 @@ export function StandardThemeOwnerReview() {
   );
   const summary = () =>
     [
-      "iCamp Build 167 — Standard Theme Owner Retest Queue",
+      "iCamp Build 168 — Standard Theme Accessibility Retest Summary",
       `Reviewed: ${done}/${reviews.length} areas`,
       ...reviews.map(
         (item) =>
@@ -162,6 +201,11 @@ export function StandardThemeOwnerReview() {
         `Correction / screen: ${deviceCorrections[device.key]?.trim() || "(not entered)"}`,
         `Manual retest: ${(deviceRetests[device.key] ?? "not_retested").replaceAll("_", " ")}`,
       ]),
+      `Accessibility owner retest summary: ${accessibilityPassed} passed, ${accessibilityIssues} need correction, ${accessibilityChecks.length - accessibilityPassed - accessibilityIssues} not tested`,
+      ...accessibilityChecks.map(
+        (item) =>
+          `${item.title}: ${(accessibilityResults[item.key] ?? "not_tested").replaceAll("_", " ")} — ${accessibilityNotes[item.key]?.trim() || "No observation recorded"}`,
+      ),
       "Owner feedback:",
       notes.trim() || "(no feedback entered)",
       "This is owner review feedback, not a billing, integration or production authorization.",
@@ -229,7 +273,7 @@ export function StandardThemeOwnerReview() {
         <div className="ops-section-heading">
           <div>
             <p className="eyebrow">
-              Build 167 · Owner retest queue and corrections
+              Build 168 · Owner retest queue and accessibility summary
             </p>
             <h3 id="device-review-heading">
               Which screens still need attention?
@@ -363,6 +407,76 @@ export function StandardThemeOwnerReview() {
           ))}
         </div>
       </div>
+      <div
+        className="camp-theme-review__accessibility"
+        aria-labelledby="owner-accessibility-heading"
+      >
+        <div className="ops-section-heading">
+          <div>
+            <p className="eyebrow">Build 168 · Owner-observed accessibility</p>
+            <h3 id="owner-accessibility-heading">
+              Accessibility retest summary
+            </h3>
+            <p role="status">
+              {accessibilityPassed} passed · {accessibilityIssues} need
+              correction ·{" "}
+              {accessibilityChecks.length -
+                accessibilityPassed -
+                accessibilityIssues}{" "}
+              not yet tested
+            </p>
+          </div>
+        </div>
+        <p className="ops-inline-note">
+          Retest these interactions manually on real screens and devices. The
+          results are owner observations only—not automated WCAG certification
+          or production authorization.
+        </p>
+        <div className="camp-theme-review__accessibility-grid">
+          {accessibilityChecks.map((item) => (
+            <div
+              className="camp-theme-review__accessibility-item"
+              key={item.key}
+            >
+              <strong>{item.title}</strong>
+              <small>{item.guidance}</small>
+              <label htmlFor={`owner-accessibility-${item.key}`}>
+                Manual retest result
+              </label>
+              <select
+                id={`owner-accessibility-${item.key}`}
+                value={accessibilityResults[item.key] ?? "not_tested"}
+                onChange={(event) =>
+                  setAccessibilityResults((state) => ({
+                    ...state,
+                    [item.key]: event.target.value as AccessibilityResult,
+                  }))
+                }
+              >
+                <option value="not_tested">Not tested</option>
+                <option value="passed">Passed in owner review</option>
+                <option value="needs_fix">Needs correction</option>
+              </select>
+              <label htmlFor={`owner-accessibility-note-${item.key}`}>
+                Observed screen / next correction
+              </label>
+              <textarea
+                id={`owner-accessibility-note-${item.key}`}
+                rows={2}
+                maxLength={350}
+                value={accessibilityNotes[item.key] ?? ""}
+                onChange={(event) =>
+                  setAccessibilityNotes((state) => ({
+                    ...state,
+                    [item.key]: event.target.value,
+                  }))
+                }
+                placeholder="Record the screen and what our team should retest…"
+              />
+            </div>
+          ))}
+        </div>
+      </div>
       <label className="camp-theme-review__notes">
         What should we adjust?
         <textarea
@@ -381,7 +495,7 @@ export function StandardThemeOwnerReview() {
               window.localStorage.setItem(
                 retestStorageKey,
                 JSON.stringify({
-                  version: 1,
+                  version: 2,
                   results: deviceChecks.map((item) => ({
                     key: item.key,
                     result: deviceResults[item.key] ?? "not_tested",
@@ -390,6 +504,11 @@ export function StandardThemeOwnerReview() {
                       1000,
                     ),
                     retest: deviceRetests[item.key] ?? "not_retested",
+                  })),
+                  accessibility: accessibilityChecks.map((item) => ({
+                    key: item.key,
+                    result: accessibilityResults[item.key] ?? "not_tested",
+                    note: (accessibilityNotes[item.key] ?? "").slice(0, 350),
                   })),
                 }),
               );
@@ -417,7 +536,7 @@ export function StandardThemeOwnerReview() {
                 !parsed ||
                 typeof parsed !== "object" ||
                 !("version" in parsed) ||
-                parsed.version !== 1 ||
+                ![1, 2].includes(parsed.version as number) ||
                 !("results" in parsed) ||
                 !Array.isArray(parsed.results)
               )
@@ -454,6 +573,33 @@ export function StandardThemeOwnerReview() {
               setDeviceResults(results);
               setDeviceCorrections(corrections);
               setDeviceRetests(retests);
+              const accessResults: Record<string, AccessibilityResult> = {};
+              const accessNotes: Record<string, string> = {};
+              const accessibilityDraft =
+                "accessibility" in parsed && Array.isArray(parsed.accessibility)
+                  ? parsed.accessibility
+                  : [];
+              for (const item of accessibilityChecks) {
+                const entry = accessibilityDraft.find(
+                  (candidate: unknown) =>
+                    candidate &&
+                    typeof candidate === "object" &&
+                    "key" in candidate &&
+                    candidate.key === item.key,
+                );
+                if (!entry) continue;
+                accessResults[item.key] = (
+                  ["not_tested", "passed", "needs_fix"].includes(entry.result)
+                    ? entry.result
+                    : "not_tested"
+                ) as AccessibilityResult;
+                accessNotes[item.key] =
+                  typeof entry.note === "string"
+                    ? entry.note.slice(0, 350)
+                    : "";
+              }
+              setAccessibilityResults(accessResults);
+              setAccessibilityNotes(accessNotes);
               setCopyState(
                 "Browser-local retest draft restored. Verify it against the current screens before relying on the notes.",
               );
@@ -508,6 +654,8 @@ export function StandardThemeOwnerReview() {
             setDeviceResults({});
             setDeviceCorrections({});
             setDeviceRetests({});
+            setAccessibilityResults({});
+            setAccessibilityNotes({});
             setNotes("");
             setCopyState("");
           }}
