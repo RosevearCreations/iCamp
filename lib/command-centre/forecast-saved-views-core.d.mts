@@ -7,6 +7,24 @@ export interface SavedForecastView {
   scenario: CapacityForecastVariance["scenario"];
 }
 export const FORECAST_SAVED_LIMIT: number;
+export const FORECAST_ACTIVITY_LIMIT: number;
+export interface ForecastActivityEvent {
+  action: "backup" | "comparison_csv" | "recovery";
+  occurredAt: string;
+  viewCount: number;
+  sha256: string;
+}
+export function sha256Hex(contents: string): Promise<string>;
+export function parseForecastActivityHistory(
+  raw: unknown,
+): ForecastActivityEvent[];
+export function recordForecastActivity(
+  history: ForecastActivityEvent[],
+  event: ForecastActivityEvent,
+): ForecastActivityEvent[];
+export function serializeForecastActivityHistory(
+  history: ForecastActivityEvent[],
+): string;
 export function normalizeSavedForecastView(
   input: unknown,
 ): SavedForecastView | null;

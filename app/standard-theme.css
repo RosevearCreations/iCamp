@@ -2188,6 +2188,51 @@ html[data-icamp-contrast="high"]
   }
 }
 
+/* Build 169: metadata-only integrity history and manual accessibility handoffs. */
+.camp-forecast__history,
+.camp-theme-review__followup {
+  margin-top: 1rem;
+  padding: 0.85rem;
+  border: 1px solid #6c9877;
+  border-radius: 0.65rem;
+  overflow-wrap: anywhere;
+}
+.camp-forecast__history ol,
+.camp-theme-review__followup ol {
+  margin: 0.65rem 0 0;
+  padding-left: 1.45rem;
+}
+.camp-forecast__history li,
+.camp-theme-review__followup li {
+  margin-block: 0.45rem;
+}
+.camp-forecast__history code,
+.camp-theme-review__followup small {
+  display: block;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+.camp-forecast__restore-confirm label {
+  display: grid;
+  gap: 0.3rem;
+  flex: 1 1 20rem;
+}
+.camp-forecast__restore-confirm input {
+  width: 100%;
+  min-width: 0;
+}
+.camp-theme-review__followup .ops-section-heading {
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+html[data-icamp-contrast="high"]
+  .app-shell
+  :is(.camp-forecast__history, .camp-theme-review__followup) {
+  color: #fff;
+  background: #07190e;
+  border-color: #e4ffc2;
+}
+
 .standard-accessibility {
   position: relative;
   flex: 0 0 auto;
