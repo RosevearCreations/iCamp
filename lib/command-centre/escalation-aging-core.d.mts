@@ -85,3 +85,25 @@ export interface AcknowledgementEvidenceSummary {
 export function summarizeAcknowledgementEvidence(
   summary: EscalationAgingSummary,
 ): AcknowledgementEvidenceSummary;
+export interface EvidenceGapFollowUp {
+  caseId: string;
+  escalationId: string;
+  siteCode: string;
+  severity: string;
+  band: EscalationAgingItem["band"];
+  assignedToLabel: string | null;
+  status: Exclude<
+    AcknowledgementEvidenceRecord["status"],
+    "recorded" | "pending"
+  >;
+  guidance: string;
+}
+export function summarizeEvidenceGapFollowUps(
+  summary: EscalationAgingSummary,
+): {
+  items: EvidenceGapFollowUp[];
+  count: number;
+  urgentCount: number;
+  unassignedCount: number;
+  unknownAgeCount: number;
+};

@@ -3,12 +3,17 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 
 import { AppShell } from "@/components/app-shell";
+import { ForecastSavedViews } from "@/components/forecast-saved-views";
 import { requireStaff } from "@/lib/auth/current-session";
 import {
   getCampgroundAuthorization,
   listAssignedCampgrounds,
 } from "@/lib/authz/postgres.mjs";
-import { summarizeCapacityForecastVariance } from "@/lib/command-centre/capacity-forecast-core.mjs";
+import {
+  FORECAST_SCENARIOS,
+  FORECAST_WINDOWS,
+  summarizeCapacityForecastVariance,
+} from "@/lib/command-centre/capacity-forecast-core.mjs";
 import { getCampgroundSegmentComparison } from "@/lib/command-centre/segment-comparison-postgres.mjs";
 
 export const dynamic = "force-dynamic";
@@ -63,14 +68,39 @@ export default async function CapacityForecastPage({
     authorized.find((item) => item.campgroundId === params.campground) ??
     authorized[0];
   const base = `?campground=${encodeURIComponent(selected.campgroundId)}`;
-  const variance = await getCampgroundSegmentComparison({
+  const source = await getCampgroundSegmentComparison({
     userId: session.user.id,
     campgroundId: selected.campgroundId,
-  })
-    .then((data) =>
-      summarizeCapacityForecastVariance(data, { lookbackMonths, scenario }),
-    )
-    .catch(() => null);
+  }).catch(() => null);
+  const scenarioResults = source
+    ? (() => {
+        try {
+          const variance = summarizeCapacityForecastVariance(source, {
+            lookbackMonths,
+            scenario,
+          });
+          const comparisons = FORECAST_WINDOWS.flatMap((window) =>
+            FORECAST_SCENARIOS.map((option) => {
+              const result = summarizeCapacityForecastVariance(source, {
+                lookbackMonths: window,
+                scenario: option,
+              });
+              return {
+                lookbackMonths: result.lookbackMonths,
+                scenario: result.scenario,
+                generatedAt: result.generatedAt,
+                total: result.total,
+              };
+            }),
+          );
+          return { variance, comparisons };
+        } catch {
+          return null;
+        }
+      })()
+    : null;
+  const variance = scenarioResults?.variance ?? null;
+  const comparisons = scenarioResults?.comparisons ?? [];
 
   return (
     <AppShell>
@@ -83,7 +113,7 @@ export default async function CapacityForecastPage({
           <span>Capacity forecast variance</span>
         </nav>
         <section className="hero-panel camp-command__hero">
-          <p className="eyebrow">Build 166 · Standard / Scenario Planning</p>
+          <p className="eyebrow">Build 167 · Standard / Scenario Saved Views</p>
           <h1>Seasonal Capacity Forecast Variance</h1>
           <p className="hero-panel__lead">
             Explore low, typical and high historical booking-rate comparisons
@@ -181,6 +211,10 @@ export default async function CapacityForecastPage({
               Apply scenario
             </button>
           </form>
+          <p className="ops-inline-note">
+            Saved comparisons below keep only local filter preferences. Current
+            results are always recalculated from the authorized source.
+          </p>
           <p className="ops-inline-note">
             These are sensitivity comparisons from real booking records. Low and
             high use the smallest and largest recorded monthly booked share
@@ -302,6 +336,13 @@ export default async function CapacityForecastPage({
                 </table>
               </div>
             </section>
+            <ForecastSavedViews
+              key={`${session.user.id}:${selected.campgroundId}`}
+              campgroundId={selected.campgroundId}
+              userId={session.user.id}
+              current={{ lookbackMonths, scenario }}
+              comparisons={comparisons}
+            />
             <section className="content-panel ops-detail-card">
               <h2>How to use this carefully</h2>
               <p className="ops-inline-note">
