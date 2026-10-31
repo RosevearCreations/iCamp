@@ -50,11 +50,34 @@ function modulesForPermissions(permissions: string[]): CampgroundModule[] {
       permission: ["reports.read", "reservation.read", "accommodation.read"],
     },
     {
+      title: "Seasonal site utilization",
+      subtitle: "Six months of booked and seasonal site-night trends",
+      category: "Analytics",
+      href: "/workspaces/management/command/seasonal",
+      icon: "▤",
+      permission: ["reports.read", "reservation.read", "accommodation.read"],
+    },
+    {
       title: "Camper assistance board",
       subtitle: "Case stages, urgency and staff ownership",
       category: "Guest services",
       href: "/workspaces/management/command/assistance",
       icon: "◈",
+      permission: [
+        "reports.read",
+        "assistance.triage",
+        "assistance.escalate",
+        "assistance.communicate",
+        "assistance.close",
+        "campground.operations.manage",
+      ],
+    },
+    {
+      title: "Camper resolution timeline",
+      subtitle: "Case history, closure evidence and resolution times",
+      category: "Guest services",
+      href: "/workspaces/management/command/resolutions",
+      icon: "◷",
       permission: [
         "reports.read",
         "assistance.triage",
@@ -163,12 +186,22 @@ function modulesForPermissions(permissions: string[]): CampgroundModule[] {
           allowed(["access.credential.issue", "access.credential.revoke"])
         );
       }
-      if (module.href === "/workspaces/management/command/capacity") {
+      if (
+        [
+          "/workspaces/management/command/capacity",
+          "/workspaces/management/command/seasonal",
+        ].includes(module.href)
+      ) {
         return ["reports.read", "reservation.read", "accommodation.read"].every(
           (key) => permissions.includes(key),
         );
       }
-      if (module.href === "/workspaces/management/command/assistance") {
+      if (
+        [
+          "/workspaces/management/command/assistance",
+          "/workspaces/management/command/resolutions",
+        ].includes(module.href)
+      ) {
         return (
           permissions.includes("reports.read") &&
           allowed([

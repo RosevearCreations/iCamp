@@ -74,6 +74,12 @@ export default async function CapacityPage({
           </p>
           <div className="camp-command__hero-actions">
             <Link
+              className="secondary-link"
+              href={`/workspaces/management/command/seasonal?campground=${encodeURIComponent(selected.campgroundId)}`}
+            >
+              Six-month utilization ↗
+            </Link>
+            <Link
               className="primary-link"
               href={`/workspaces/management/campgrounds/availability${base}`}
             >
