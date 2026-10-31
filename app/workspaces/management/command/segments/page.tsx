@@ -78,6 +78,12 @@ export default async function SegmentComparisonPage({
             </Link>
             <Link
               className="secondary-link"
+              href={`/workspaces/management/command/forecast${base}`}
+            >
+              Capacity forecast variance ↗
+            </Link>
+            <Link
+              className="secondary-link"
               href="/workspaces/management/command"
             >
               Management Command

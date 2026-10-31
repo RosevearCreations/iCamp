@@ -3,7 +3,10 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 
-import type { EscalationAgingSummary } from "@/lib/command-centre/escalation-aging-core.mjs";
+import {
+  summarizeAcknowledgementHandoff,
+  type EscalationAgingSummary,
+} from "@/lib/command-centre/escalation-aging-core.mjs";
 
 const levels: Record<string, string> = {
   main_foreman: "Main foreman",
@@ -22,6 +25,10 @@ export function CamperEscalationAgingBoard({
     "all" | "over24" | "over72" | "unacknowledged" | "urgent"
   >("all");
   const [search, setSearch] = useState("");
+  const handoff = useMemo(
+    () => summarizeAcknowledgementHandoff(summary),
+    [summary],
+  );
   const visible = useMemo(
     () =>
       summary.items.filter((item) => {
@@ -63,6 +70,35 @@ export function CamperEscalationAgingBoard({
         deadlines. Aging is measured from the original raised timestamp. A
         missing timestamp is shown as unknown, never as zero hours.
       </p>
+      <div
+        className="camp-aging__handoff"
+        aria-labelledby="ack-handoff-heading"
+      >
+        <div>
+          <p className="eyebrow">Acknowledgment handoff · Source-linked</p>
+          <h3 id="ack-handoff-heading">
+            {handoff.pendingCount} awaiting acknowledgment
+          </h3>
+          <p>
+            {handoff.urgentCount} urgent · {handoff.attentionCount} in
+            24/72-hour attention bands · {handoff.unassignedCount} unassigned ·{" "}
+            {handoff.unknownAgeCount} with unknown age
+          </p>
+          {handoff.ambiguousCount ? (
+            <p className="camp-resolution__warning" role="status">
+              {handoff.ambiguousCount} pending case(s) have multiple active
+              escalation records. Inspect the source record before acting.
+            </p>
+          ) : null}
+        </div>
+        <button
+          type="button"
+          className="secondary-button"
+          onClick={() => setFilter("unacknowledged")}
+        >
+          Show acknowledgment queue
+        </button>
+      </div>
       <div className="camp-command__filters">
         <label>
           Find an escalation
@@ -151,7 +187,14 @@ export function CamperEscalationAgingBoard({
                 </td>
                 <td>{item.assignedToLabel ?? "Unassigned"}</td>
                 <td>
-                  <Link href={caseHref(item.caseId)}>Review case ↗</Link>
+                  <Link href={caseHref(item.caseId)}>
+                    {item.state === "open"
+                      ? "Open triage to acknowledge ↗"
+                      : "Review resolution in triage ↗"}
+                  </Link>
+                  {item.multipleActive ? (
+                    <small>Verify active record first</small>
+                  ) : null}
                 </td>
               </tr>
             ))}
@@ -164,9 +207,11 @@ export function CamperEscalationAgingBoard({
         </p>
       ) : null}
       <p className="ops-inline-note">
-        Only the existing authorized camper triage desk can acknowledge, resolve
-        or close a case. No SMS, calls or Omnichannel dispatch happen from this
-        report.
+        The links open the existing campground-authorized triage desk, where
+        acknowledgment requires the current source record and its version. A
+        handoff is not proof that staff acknowledged anything; refresh the
+        source after acting. No SMS, calls or Omnichannel dispatch happen from
+        this report.
       </p>
     </section>
   );
