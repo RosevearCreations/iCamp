@@ -5,8 +5,11 @@ import { useEffect, useState } from "react";
 
 import type { CapacityForecastVariance } from "@/lib/command-centre/capacity-forecast-core.mjs";
 import {
+  createSavedForecastBackup,
+  exportSavedForecastComparisonCsv,
   FORECAST_SAVED_LIMIT,
   parseSavedForecastViews,
+  recoverSavedForecastBackup,
   serializeSavedForecastViews,
   upsertSavedForecastView,
   type SavedForecastView,
@@ -16,6 +19,15 @@ type Snapshot = Pick<
   CapacityForecastVariance,
   "lookbackMonths" | "scenario" | "generatedAt"
 > & { total: CapacityForecastVariance["total"] };
+
+function downloadText(filename: string, contents: string, type: string) {
+  const url = URL.createObjectURL(new Blob([contents], { type }));
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = filename;
+  link.click();
+  window.setTimeout(() => URL.revokeObjectURL(url), 0);
+}
 
 export function ForecastSavedViews({
   campgroundId,
@@ -33,6 +45,9 @@ export function ForecastSavedViews({
   const [label, setLabel] = useState("");
   const [loaded, setLoaded] = useState(false);
   const [message, setMessage] = useState("");
+  const [recoveryDraft, setRecoveryDraft] = useState<
+    SavedForecastView[] | null
+  >(null);
 
   useEffect(() => {
     const timer = window.setTimeout(() => {
@@ -75,7 +90,7 @@ export function ForecastSavedViews({
     >
       <div className="ops-section-heading">
         <div>
-          <p className="eyebrow">Build 167 · Browser-local preferences</p>
+          <p className="eyebrow">Build 168 · Saved view recovery and export</p>
           <h2 id="saved-forecast-heading">Saved scenario comparison views</h2>
         </div>
         <span className="ops-pill">
@@ -125,6 +140,135 @@ export function ForecastSavedViews({
           {message}
         </p>
       ) : null}
+      <div
+        className="camp-forecast__recovery"
+        aria-labelledby="forecast-recovery-heading"
+      >
+        <h3 id="forecast-recovery-heading">Backup, recover and export</h3>
+        <p className="ops-inline-note">
+          Download a portable preference backup to restore these filters on
+          another browser while signed in as the same user and campground. The
+          backup includes scope IDs and view names, not reservation data.
+          Recovery is previewed before replacing local views; the CSV comparison
+          uses this page&apos;s current authorized source.
+        </p>
+        <div className="camp-forecast__recovery-actions">
+          <button
+            type="button"
+            className="secondary-button"
+            disabled={!loaded || !views.length}
+            onClick={() => {
+              try {
+                downloadText(
+                  "icamp-scenario-preferences.json",
+                  createSavedForecastBackup(views, { userId, campgroundId }),
+                  "application/json",
+                );
+                setMessage(
+                  "Preference backup downloaded locally. Keep the file private; it contains the account and campground scope IDs.",
+                );
+              } catch {
+                setMessage("Unable to create a saved-view backup.");
+              }
+            }}
+          >
+            Download preference backup
+          </button>
+          <button
+            type="button"
+            className="secondary-button"
+            disabled={!loaded || !views.length}
+            onClick={() => {
+              try {
+                downloadText(
+                  "icamp-historical-comparisons.csv",
+                  exportSavedForecastComparisonCsv(views, comparisons),
+                  "text/csv;charset=utf-8",
+                );
+                setMessage(
+                  "Historical comparison CSV downloaded. It is a source snapshot, not a future-demand forecast.",
+                );
+              } catch {
+                setMessage("Unable to export the current source comparison.");
+              }
+            }}
+          >
+            Export current comparison CSV
+          </button>
+        </div>
+        <label htmlFor="forecast-recovery-file">
+          Choose an iCamp scenario preference backup (JSON, 8 KB maximum)
+        </label>
+        <input
+          id="forecast-recovery-file"
+          type="file"
+          accept=".json,application/json"
+          disabled={!loaded}
+          onChange={async (event) => {
+            const file = event.target.files?.[0];
+            setRecoveryDraft(null);
+            if (!file) return;
+            if (file.size > 8_000) {
+              setMessage(
+                "Recovery file exceeds 8 KB. No saved views were changed.",
+              );
+              event.target.value = "";
+              return;
+            }
+            try {
+              const restored = recoverSavedForecastBackup(await file.text(), {
+                userId,
+                campgroundId,
+              });
+              setRecoveryDraft(restored);
+              setMessage(
+                `${restored.length} valid saved view(s) ready to restore. Confirm replacement below.`,
+              );
+            } catch (error) {
+              setMessage(
+                error instanceof Error
+                  ? error.message
+                  : "Recovery file could not be read.",
+              );
+            }
+            event.target.value = "";
+          }}
+        />
+        {recoveryDraft ? (
+          <div
+            className="camp-forecast__restore-confirm"
+            role="group"
+            aria-label="Confirm saved view recovery"
+          >
+            <p>
+              Restore {recoveryDraft.length} view(s) and replace the{" "}
+              {views.length} current browser-local view(s)?
+            </p>
+            <button
+              type="button"
+              className="secondary-button"
+              onClick={() => {
+                write(recoveryDraft);
+                setRecoveryDraft(null);
+              }}
+            >
+              Confirm local restore
+            </button>
+            <button
+              type="button"
+              className="secondary-button"
+              onClick={() => {
+                setRecoveryDraft(null);
+                setMessage(
+                  "Recovery canceled; local saved views were not changed.",
+                );
+              }}
+            >
+              Cancel recovery
+            </button>
+          </div>
+        ) : null}
+      </div>
       {!loaded ? (
         <p role="status">Loading saved views from this browser…</p>
       ) : views.length ? (

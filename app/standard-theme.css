@@ -2095,6 +2095,99 @@ html[data-icamp-contrast="high"]
   }
 }
 
+/* Build 168: saved-view recovery, source recheck readbacks and accessibility retests. */
+.camp-forecast__recovery,
+.camp-aging__recheck-receipts,
+.camp-theme-review__accessibility {
+  margin: 1.1rem 0;
+  padding: 1rem;
+  border: 1px solid #7caf83;
+  border-radius: 0.8rem;
+  background: #173a2c;
+  overflow-wrap: anywhere;
+}
+.camp-forecast__recovery-actions,
+.camp-forecast__restore-confirm,
+.camp-aging__recheck-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 0.8rem 0;
+}
+.camp-forecast__recovery > label,
+.camp-theme-review__accessibility-item label {
+  display: block;
+  margin: 0.65rem 0 0.3rem;
+  font-weight: 700;
+}
+.camp-forecast__recovery input[type="file"] {
+  width: 100%;
+  max-width: 100%;
+}
+.camp-aging__recheck-actions small {
+  display: block;
+  flex: 1 1 16rem;
+  color: #d7ecdc;
+}
+.camp-aging__recheck-row-actions {
+  min-width: 12rem;
+}
+.camp-aging__recheck-row-actions > * {
+  display: block;
+  margin-bottom: 0.5rem;
+}
+.camp-theme-review__accessibility-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin: 1rem 0;
+}
+.camp-theme-review__accessibility-item {
+  min-width: 0;
+  padding: 0.8rem;
+  border: 1px solid #567d65;
+  border-radius: 0.65rem;
+  background: #103127;
+}
+.camp-theme-review__accessibility-item small {
+  display: block;
+  color: #d6eadb;
+}
+.camp-theme-review__accessibility-item select,
+.camp-theme-review__accessibility-item textarea {
+  width: 100%;
+  min-width: 0;
+}
+.camp-forecast__recovery :focus-visible,
+.camp-aging__recheck-receipts :focus-visible,
+.camp-theme-review__accessibility :focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+html[data-icamp-contrast="high"]
+  .app-shell
+  :is(
+    .camp-forecast__recovery,
+    .camp-aging__recheck-receipts,
+    .camp-theme-review__accessibility,
+    .camp-theme-review__accessibility-item
+  ) {
+  color: #fff;
+  background: #07190e;
+  border-color: #e4ffc2;
+}
+@media (max-width: 48rem) {
+  .camp-theme-review__accessibility-grid {
+    grid-template-columns: 1fr;
+  }
+  .camp-forecast__recovery-actions > button,
+  .camp-forecast__restore-confirm > button,
+  .camp-aging__recheck-actions > button {
+    width: 100%;
+  }
+}
+
 .standard-accessibility {
   position: relative;
   flex: 0 0 auto;

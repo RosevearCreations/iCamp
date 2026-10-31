@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 
 import {
@@ -9,6 +10,10 @@ import {
   summarizeEvidenceGapFollowUps,
   type EscalationAgingSummary,
 } from "@/lib/command-centre/escalation-aging-core.mjs";
+import {
+  captureEscalationRecheckReceipt,
+  type LocalRecheckReceipt,
+} from "@/lib/command-centre/escalation-recheck-receipts-core.mjs";
 
 const levels: Record<string, string> = {
   main_foreman: "Main foreman",
@@ -31,6 +36,7 @@ export function CamperEscalationAgingBoard({
   summary: EscalationAgingSummary;
   campgroundId: string;
 }) {
+  const router = useRouter();
   const [filter, setFilter] = useState<
     | "all"
     | "over24"
@@ -42,6 +48,10 @@ export function CamperEscalationAgingBoard({
   >("all");
   const [search, setSearch] = useState("");
   const [handoffCopyStatus, setHandoffCopyStatus] = useState("");
+  const [recheckReceipts, setRecheckReceipts] = useState<LocalRecheckReceipt[]>(
+    [],
+  );
+  const [recheckStatus, setRecheckStatus] = useState("");
   const handoff = useMemo(
     () => summarizeAcknowledgementHandoff(summary),
     [summary],
@@ -93,6 +103,32 @@ export function CamperEscalationAgingBoard({
   );
   const caseHref = (id: string) =>
     `/workspaces/management/campgrounds/assistance?campground=${encodeURIComponent(campgroundId)}#assistance-case-${encodeURIComponent(id)}`;
+  const captureRecheck = (escalationId: string) => {
+    try {
+      const previous = recheckReceipts.find(
+        (receipt) => receipt.escalationId === escalationId,
+      );
+      const receipt = captureEscalationRecheckReceipt(
+        summary,
+        escalationId,
+        new Date(),
+        previous,
+      );
+      setRecheckReceipts((state) => [
+        receipt,
+        ...state.filter((item) => item.escalationId !== escalationId),
+      ]);
+      setRecheckStatus(
+        `Local source readback recorded for escalation ${escalationId}; no case or external evidence was changed.`,
+      );
+    } catch (error) {
+      setRecheckStatus(
+        error instanceof Error
+          ? error.message
+          : "Could not capture a source observation.",
+      );
+    }
+  };
   return (
     <section
       className="content-panel ops-detail-card camp-aging"
@@ -174,7 +210,9 @@ export function CamperEscalationAgingBoard({
       >
         <div className="ops-section-heading">
           <div>
-            <p className="eyebrow">Build 167 · Evidence gap follow-up</p>
+            <p className="eyebrow">
+              Build 168 · Evidence gap source recheck receipts
+            </p>
             <h3 id="gap-followup-heading">
               {followUps.count} source discrepancies to review
             </h3>
@@ -190,6 +228,25 @@ export function CamperEscalationAgingBoard({
           >
             Show unassigned gaps
           </button>
+        </div>
+        <div className="camp-aging__recheck-actions">
+          <button
+            type="button"
+            className="secondary-button"
+            onClick={() => {
+              router.refresh();
+              setRecheckStatus(
+                "Requested a fresh authorized source read. Once updated, capture the observed status below; refresh alone is not proof of resolution.",
+              );
+            }}
+          >
+            Refresh authorized source readback
+          </button>
+          <small>
+            Source snapshot UTC: {summary.generatedAt}. Recheck receipts are
+            temporary observations in this browser session, not signed
+            acknowledgments.
+          </small>
         </div>
         {followUps.count ? (
           <>
@@ -211,6 +268,13 @@ export function CamperEscalationAgingBoard({
                     <small>Source escalation: {item.escalationId}</small>
                   </div>
                   <Link href={caseHref(item.caseId)}>Review in triage ↗</Link>
+                  <button
+                    type="button"
+                    className="secondary-button"
+                    onClick={() => captureRecheck(item.escalationId)}
+                  >
+                    Record source readback
+                  </button>
                 </div>
               ))}
             </div>
@@ -248,6 +312,126 @@ export function CamperEscalationAgingBoard({
             readback. Pending acknowledgment remains a separate queue.
           </p>
         )}
+        {recheckReceipts.length ? (
+          <div
+            className="camp-aging__recheck-receipts"
+            aria-labelledby="recheck-receipts-heading"
+          >
+            <h4 id="recheck-receipts-heading">
+              Local source recheck receipts ({recheckReceipts.length})
+            </h4>
+            <p className="ops-inline-note">
+              A changed source status is only an observation. Recheck a record
+              in the authorized triage desk; disappearance from the active queue
+              is not independent closure proof.
+            </p>
+            <div className="camp-occupancy__table-scroll">
+              <table className="camp-occupancy__table">
+                <caption>
+                  Operator-captured source observations, most recent per
+                  escalation
+                </caption>
+                <thead>
+                  <tr>
+                    <th scope="col">Source escalation</th>
+                    <th scope="col">Prior → observed status</th>
+                    <th scope="col">Source read at UTC</th>
+                    <th scope="col">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {recheckReceipts.map((receipt) => {
+                    const current = evidenceByEscalation.get(
+                      receipt.escalationId,
+                    );
+                    const refreshed =
+                      receipt.sourceObservedAt !== summary.generatedAt;
+                    return (
+                      <tr key={receipt.escalationId}>
+                        <th scope="row">
+                          {receipt.escalationId}
+                          <small>
+                            Operator note: {receipt.operatorRecordedAt}
+                          </small>
+                        </th>
+                        <td>
+                          {receipt.previousStatus ?? "First readback"} →{" "}
+                          {receipt.status}
+                          <small>{receipt.change}</small>
+                        </td>
+                        <td>{receipt.sourceObservedAt}</td>
+                        <td className="camp-aging__recheck-row-actions">
+                          <Link href={caseHref(receipt.caseId)}>
+                            Inspect triage ↗
+                          </Link>
+                          <button
+                            type="button"
+                            className="secondary-button"
+                            disabled={!refreshed || !current}
+                            onClick={() => captureRecheck(receipt.escalationId)}
+                          >
+                            Capture refreshed source
+                          </button>
+                          {!current ? (
+                            <small>
+                              Not in active source readback; investigate before
+                              claiming closure.
+                            </small>
+                          ) : !refreshed ? (
+                            <small>Refresh source to recheck.</small>
+                          ) : (
+                            <small>New source snapshot available.</small>
+                          )}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+            <button
+              type="button"
+              className="secondary-button"
+              onClick={async () => {
+                const lines = [
+                  "iCamp Build 168 — Local escalation source recheck observations (NOT independent proof)",
+                  ...recheckReceipts.map(
+                    (item) =>
+                      `${item.escalationId} | case ${item.caseId} | source observed ${item.sourceObservedAt} | operator noted ${item.operatorRecordedAt} | ${item.previousStatus ?? "first readback"} → ${item.status} | ${item.change}`,
+                  ),
+                  "No case, acknowledgment, external receipt, notification or closure was written.",
+                ];
+                try {
+                  await navigator.clipboard.writeText(lines.join("\n"));
+                  setRecheckStatus(
+                    "Local recheck observations copied; no message was sent.",
+                  );
+                } catch {
+                  setRecheckStatus(
+                    "Clipboard blocked; readbacks remain visible on this page.",
+                  );
+                }
+              }}
+            >
+              Copy local recheck receipts
+            </button>
+            <button
+              type="button"
+              className="secondary-button"
+              onClick={() => {
+                setRecheckReceipts([]);
+                setRecheckStatus("Session-only source observations cleared.");
+              }}
+            >
+              Clear local recheck receipts
+            </button>
+          </div>
+        ) : null}
+        {recheckStatus ? (
+          <p role="status" className="ops-inline-note">
+            {recheckStatus}
+          </p>
+        ) : null}
         {handoffCopyStatus ? (
           <p role="status" className="ops-inline-note">
             {handoffCopyStatus}
@@ -255,7 +439,8 @@ export function CamperEscalationAgingBoard({
         ) : null}
         <p className="ops-inline-note">
           Follow-up is a review prompt only: no ticket, notification,
-          assignment, acknowledgment, closure or proof receipt has been created.
+          assignment, acknowledgment, closure or independent proof receipt has
+          been created.
         </p>
       </div>
       <div className="camp-command__filters">
