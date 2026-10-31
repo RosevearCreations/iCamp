@@ -114,8 +114,7 @@ export default async function CapacityForecastPage({
         </nav>
         <section className="hero-panel camp-command__hero">
           <p className="eyebrow">
-            Build 170 · Standard / Comparison Checksum Verification &amp;
-            Recovery History
+            Build 171 · Standard / Scenario Recovery Integrity Exceptions
           </p>
           <h1>Seasonal Capacity Forecast Variance</h1>
           <p className="hero-panel__lead">

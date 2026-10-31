@@ -12,6 +12,18 @@ export interface LocalRecheckReceipt {
   previousStatus: AcknowledgementEvidenceRecord["status"] | null;
   change: "baseline" | "unchanged" | "changed";
 }
+export const ESCALATION_SESSION_LIMIT: number;
+export const ESCALATION_SESSION_MAX_AGE_MS: number;
+export function parseEscalationSnapshotSession(
+  raw: unknown,
+  scope: { userId: string; campgroundId: string },
+  now?: Date,
+): LocalRecheckReceipt[];
+export function serializeEscalationSnapshotSession(
+  receipts: LocalRecheckReceipt[],
+  scope: { userId: string; campgroundId: string },
+  now?: Date,
+): string;
 export function captureEscalationRecheckReceipt(
   summary: EscalationAgingSummary,
   escalationId: string,

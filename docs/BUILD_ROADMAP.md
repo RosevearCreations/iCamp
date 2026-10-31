@@ -1037,6 +1037,22 @@ No future visual/style build should bypass this prerequisite.
 
 ---
 
+# Extension — Customer Experience, Campground Operations and Launch Assurance (Builds 171–200)
+
+The 001–156 roadmap above records the original program design; it must not be read as proof that every provider, workflow or pilot was activated. The newer Build 157–170 release documents continue the implementation history. The active **30-build** forward roadmap now covers Builds **171–200**, starting with Build 171 already named by Build 170. Its requirement-level scope and testable acceptance criteria are in [`BUILD_171_200_FUTURE_QUEUE.md`](BUILD_171_200_FUTURE_QUEUE.md), and the numbered execution order is in [`BUILD_QUEUE.md`](BUILD_QUEUE.md).
+
+Priority order:
+
+1. **171–172 — Evidence and trust:** recoveries, escalation source continuity and truly independent Standard Theme owner review.
+2. **173–176 — Booking confidence:** live discovery, transparent total prices, recoverable booking drafts and safe reservation-change previews.
+3. **177–184 — Camper experience:** arrival prep, My Stay, in-app assistance, accessible wayfinding, events, rentals, store requests and feedback.
+4. **185–193 — Internal operations:** front desk, turnover, security incident cases, access, offline staff, qualifications, vendors, stock/POS and seasonal renewals.
+5. **194–200 — Management and launch:** configurable dashboards, source-honest planning, financial review, privacy requests, disaster recovery, sandbox tenant billing and evidence-based pilot acceptance.
+
+Do not remove the **Billing / Omnichannel HELD / DISCONNECTED** boundary merely because implementation or CI passes. No live charges, calls, SMS, authenticated cross-app GETs, gate actions or dispatch without original evidence, independent review and explicit authorization. Build 200 is a continuation checkpoint, not an automatic public launch or the end of the roadmap.
+
+---
+
 # Build Gate Applied to Every Active Build
 
 Every build must explicitly answer:

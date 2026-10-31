@@ -72,7 +72,7 @@ export default async function EscalationAgingPage({
         </nav>
         <section className="hero-panel camp-command__hero">
           <p className="eyebrow">
-            Build 170 · Standard / Source Delta Evidence Handoff
+            Build 171 · Standard / Escalation Snapshot Continuity
           </p>
           <h1>Camper Escalation Aging</h1>
           <p className="hero-panel__lead">
@@ -169,8 +169,10 @@ export default async function EscalationAgingPage({
               ))}
             </div>
             <CamperEscalationAgingBoard
+              key={`${session.user.id}:${selected.campgroundId}`}
               summary={summary}
               campgroundId={selected.campgroundId}
+              userId={session.user.id}
             />
             <section className="content-panel ops-detail-card">
               <h2>Source completeness</h2>

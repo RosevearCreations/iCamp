@@ -59,7 +59,7 @@ This matrix cross-checks the complete iCamp vision against the restarted active 
 | Manual gate open/close override | 059 |
 | Access zones/schedules/rules | 060 |
 | Security/access operations dashboard (device state, credentials, denied access, overrides, expiring passes, incident signals) | 063 active (historical 064) |
-| Canonical security incident case management | future queue assignment required |
+| Canonical security incident case management | 187 planned (extends but does not conflate the Build 063 security dashboard) |
 | Maintenance categories/work orders/roles | 065-067 |
 | Hourly/daily/weekly/monthly/seasonal maintenance | 068 |
 | Inspection templates/sign-offs | 069 |
@@ -133,6 +133,26 @@ This matrix cross-checks the complete iCamp vision against the restarted active 
 | Full production readiness including omnichannel | 153 |
 | Real campground pilot | 154-155 |
 | Public/telephone/SMS launch | 156 |
+
+## Post-170 enhancement and gap coverage (planned; not delivery evidence)
+
+| Verified need / gap | Next build coverage |
+| --- | --- |
+| Independent Standard Theme owner acceptance, separate from browser-only checklists | 171–172 |
+| Easier customer accommodation comparison and transparent quoting | 173–174 |
+| Resumable booking and clear self-service change/cancel options | 175–176 |
+| Consolidated arrival, stay and assistance follow-up | 177–179 |
+| Accessible wayfinding, real guest activities/rentals/store requests | 180–183 |
+| Feedback moderation and guest issue follow-through | 184 |
+| Unified front desk, turnover and accountable safety case management | 185–187 |
+| Access reconciliation, offline field conflict review and workforce training | 188–190 |
+| Vendor and store inventory/POS control, seasonal follow-up | 191–193 |
+| Role-aware management UX, measured forecasting and finance reconciliation | 194–196 |
+| Privacy request fulfillment and tested disaster recovery | 197–198 |
+| Subscriber billing test-mode implementation, approval/legal/source evidence gate | 199 |
+| Full guest/staff pilot and independent launch/Omnichannel gate decision | 200 |
+
+All entries above are **planned**, subject to implementation audit, security/RLS/channel/accessibility checks and real production verification. Billing/Omnichannel activation is still HELD / DISCONNECTED.
 
 ## Channel parity rule
 

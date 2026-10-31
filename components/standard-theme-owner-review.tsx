@@ -3,7 +3,10 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 
-import { summarizeStandardThemeClosureReadiness } from "@/lib/command-centre/standard-theme-closure-readiness-core.mjs";
+import {
+  prepareIndependentOwnerAcceptanceRequest,
+  summarizeStandardThemeClosureReadiness,
+} from "@/lib/command-centre/standard-theme-closure-readiness-core.mjs";
 
 const reviews = [
   {
@@ -196,7 +199,7 @@ export function StandardThemeOwnerReview() {
   const acceptanceOutstanding = acceptanceQueue.filter(
     (item) => item.result !== "passed" || item.followUp === "planned",
   );
-  const closureReadiness = summarizeStandardThemeClosureReadiness({
+  const reviewInputs = {
     areas: reviews.map((item) => ({
       key: item.key,
       reviewed: checked[item.key] === true,
@@ -213,7 +216,11 @@ export function StandardThemeOwnerReview() {
       followUp: accessibilityFollowUps[item.key] ?? "open",
       priority: accessibilityPriorities[item.key] ?? "normal",
     })),
-  });
+    notes,
+  };
+  const closureReadiness = summarizeStandardThemeClosureReadiness(reviewInputs);
+  const independentRequest =
+    prepareIndependentOwnerAcceptanceRequest(reviewInputs);
   const retestQueue = deviceChecks.map((device) => {
     const result = deviceResults[device.key] ?? "not_tested";
     const retest = deviceRetests[device.key] ?? "not_retested";
@@ -237,7 +244,7 @@ export function StandardThemeOwnerReview() {
   );
   const summary = () =>
     [
-      "iCamp Build 170 — Standard Theme Owner Acceptance Closure Readiness",
+      "iCamp Build 171 — Standard Theme Independent Owner Review Request Readiness",
       `Reviewed: ${done}/${reviews.length} areas`,
       ...reviews.map(
         (item) =>
@@ -324,7 +331,7 @@ export function StandardThemeOwnerReview() {
         <div className="ops-section-heading">
           <div>
             <p className="eyebrow">
-              Build 170 · Owner acceptance closure readiness
+              Build 171 · Independent owner review request preparation
             </p>
             <h3 id="device-review-heading">
               Which screens still need attention?
@@ -465,7 +472,7 @@ export function StandardThemeOwnerReview() {
         <div className="ops-section-heading">
           <div>
             <p className="eyebrow">
-              Build 170 · Owner accessibility closure readiness
+              Build 171 · Owner accessibility closure readiness
             </p>
             <h3 id="owner-accessibility-heading">
               Accessibility retest summary
@@ -554,7 +561,7 @@ export function StandardThemeOwnerReview() {
           <div className="ops-section-heading">
             <div>
               <p className="eyebrow">
-                Build 170 · Manual owner acceptance preflight
+                Build 171 · Independent owner acceptance request preflight
               </p>
               <h4 id="owner-closure-readiness-heading">
                 Owner accessibility closure readiness
@@ -618,6 +625,61 @@ export function StandardThemeOwnerReview() {
               explicitly authorize any formal acceptance outside this checklist.
             </p>
           )}
+        </div>
+        <div
+          className="camp-theme-review__readiness"
+          aria-labelledby="owner-independent-request-heading"
+        >
+          <div className="ops-section-heading">
+            <div>
+              <p className="eyebrow">
+                Build 171 · Manual handoff only · No owner sign-off recorded
+              </p>
+              <h4 id="owner-independent-request-heading">
+                Prepare independent owner acceptance request
+              </h4>
+              <p role="status">
+                {independentRequest.ready
+                  ? "Ready to copy a draft request for a separate independent reviewer."
+                  : `${independentRequest.blockers.length} local review blockers; request not yet available.`}
+              </p>
+            </div>
+            <button
+              type="button"
+              className="secondary-button"
+              disabled={!independentRequest.ready}
+              onClick={async () => {
+                try {
+                  await navigator.clipboard.writeText(
+                    prepareIndependentOwnerAcceptanceRequest(
+                      reviewInputs,
+                      new Date(),
+                    ).text,
+                  );
+                  setCopyState(
+                    "Draft independent review request copied. We did not submit, approve or send anything.",
+                  );
+                } catch {
+                  setCopyState(
+                    "Clipboard blocked; the read-only request preview remains below for manual copying.",
+                  );
+                }
+              }}
+            >
+              Copy independent review request draft
+            </button>
+          </div>
+          <p className="ops-inline-note">
+            A separate authorized reviewer must inspect real devices and record
+            a decision outside this browser-local worksheet. This button never
+            creates an approval, submits a workflow, or enables an integration.
+          </p>
+          <textarea
+            readOnly
+            rows={5}
+            aria-label="Independent owner review request preview"
+            value={independentRequest.text}
+          />
         </div>
         <div className="camp-theme-review__accessibility-grid">
           {accessibilityChecks.map((item) => (

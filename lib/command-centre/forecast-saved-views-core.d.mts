@@ -14,7 +14,8 @@ export interface ForecastActivityEvent {
     | "comparison_csv"
     | "recovery"
     | "verification_match"
-    | "verification_mismatch";
+    | "verification_mismatch"
+    | "recovery_exception";
   occurredAt: string;
   viewCount: number;
   sha256: string;
@@ -27,6 +28,16 @@ export function verifyExportChecksum(
   expected: string,
   filename: string,
 ): Promise<{ actualSha256: string; expectedSha256: string; matches: boolean }>;
+export function reviewRecoveryChecksum(
+  actualSha256: string,
+  expectedRaw: string,
+  acknowledged: boolean,
+): {
+  status:
+    "unavailable" | "unverified" | "invalid_digest" | "mismatch" | "match";
+  canRestore: boolean;
+  guidance: string;
+};
 export function parseForecastActivityHistory(
   raw: unknown,
 ): ForecastActivityEvent[];

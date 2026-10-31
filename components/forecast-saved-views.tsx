@@ -13,6 +13,7 @@ import {
   parseSavedForecastViews,
   recordForecastActivity,
   recoverSavedForecastBackup,
+  reviewRecoveryChecksum,
   serializeForecastActivityHistory,
   serializeSavedForecastViews,
   sha256Hex,
@@ -58,6 +59,7 @@ export function ForecastSavedViews({
   >(null);
   const [recoveryHash, setRecoveryHash] = useState("");
   const [expectedHash, setExpectedHash] = useState("");
+  const [acknowledgeUnverified, setAcknowledgeUnverified] = useState(false);
   const [history, setHistory] = useState<ForecastActivityEvent[]>([]);
   const [verificationFile, setVerificationFile] = useState<File | null>(null);
   const [verificationExpected, setVerificationExpected] = useState("");
@@ -119,6 +121,9 @@ export function ForecastSavedViews({
   };
 
   const selectedKey = `${current.lookbackMonths}:${current.scenario}`;
+  const recoveryReview = recoveryDraft
+    ? reviewRecoveryChecksum(recoveryHash, expectedHash, acknowledgeUnverified)
+    : null;
   const visibleHistory = history.filter((item) =>
     historyFilter === "all"
       ? true
@@ -139,7 +144,7 @@ export function ForecastSavedViews({
       <div className="ops-section-heading">
         <div>
           <p className="eyebrow">
-            Build 170 · Checksum verification and recovery activity review
+            Build 171 · Checksum exception review and recovery activity
           </p>
           <h2 id="saved-forecast-heading">Saved scenario comparison views</h2>
         </div>
@@ -292,6 +297,8 @@ export function ForecastSavedViews({
             const file = event.target.files?.[0];
             setRecoveryDraft(null);
             setRecoveryHash("");
+            setExpectedHash("");
+            setAcknowledgeUnverified(false);
             if (!file) return;
             if (file.size > 8_000) {
               setMessage(
@@ -333,8 +340,7 @@ export function ForecastSavedViews({
               {views.length} current browser-local view(s)?
             </p>
             <label htmlFor="forecast-expected-hash">
-              Optional trusted backup SHA-256 (64 lowercase hexadecimal
-              characters)
+              Trusted backup SHA-256 (64 hexadecimal characters, if available)
               <input
                 id="forecast-expected-hash"
                 value={expectedHash}
@@ -346,13 +352,33 @@ export function ForecastSavedViews({
                 placeholder="Paste independently verified checksum"
               />
             </label>
+            <p className="ops-inline-note" role="status">
+              <strong>Recovery integrity review: </strong>
+              {recoveryReview?.guidance}
+            </p>
+            {!expectedHash ? (
+              <label className="camp-forecast__unverified-acknowledgement">
+                <input
+                  type="checkbox"
+                  checked={acknowledgeUnverified}
+                  onChange={(event) =>
+                    setAcknowledgeUnverified(event.target.checked)
+                  }
+                />
+                I understand that this backup has no independently verified
+                checksum. I am requesting a browser-local preference recovery,
+                not authenticating the file or approving an external action.
+              </label>
+            ) : null}
             <button
               type="button"
               className="secondary-button"
-              disabled={Boolean(expectedHash) && expectedHash !== recoveryHash}
+              disabled={!recoveryReview?.canRestore}
               onClick={() => {
-                if (expectedHash && expectedHash !== recoveryHash) {
-                  setMessage("Checksum mismatch. No saved views were changed.");
+                if (!recoveryReview?.canRestore) {
+                  setMessage(
+                    "Recovery integrity review is not complete. No saved views were changed.",
+                  );
                   return;
                 }
                 if (write(recoveryDraft)) {
@@ -363,21 +389,56 @@ export function ForecastSavedViews({
                     sha256: recoveryHash,
                   });
                   setMessage(
-                    `Browser-local restore completed. SHA-256: ${recoveryHash}. ${retained ? "Recovery recorded in local activity history." : "Browser activity history unavailable."} No independent authenticity was established.`,
+                    `Browser-local restore completed (${recoveryReview.status === "match" ? "checksum matched" : "unverified exception acknowledged"}). SHA-256: ${recoveryHash}. ${retained ? "Recovery recorded in local activity history." : "Browser activity history unavailable."} No independent authenticity or owner approval was established.`,
                   );
                   setRecoveryDraft(null);
                   setExpectedHash("");
+                  setAcknowledgeUnverified(false);
                 }
               }}
             >
               Confirm local restore
             </button>
+            {recoveryReview?.status !== "match" ? (
+              <button
+                type="button"
+                className="secondary-button"
+                onClick={async () => {
+                  const lines = [
+                    "iCamp Build 171 — Local recovery checksum exception (NOT trusted provenance)",
+                    `Local backup SHA-256: ${recoveryHash}`,
+                    `Review status: ${recoveryReview?.status ?? "unavailable"}`,
+                    recoveryReview?.guidance ?? "No valid integrity result.",
+                    "No backup contents, booking data, approval or external notification included.",
+                  ];
+                  try {
+                    await navigator.clipboard.writeText(lines.join("\n"));
+                    const retained = recordActivity({
+                      action: "recovery_exception",
+                      occurredAt: new Date().toISOString(),
+                      viewCount: recoveryDraft.length,
+                      sha256: recoveryHash,
+                    });
+                    setMessage(
+                      `Local recovery exception copied for manual review. ${retained ? "Metadata retained in browser history." : "Local history unavailable."} No recovery or message was sent.`,
+                    );
+                  } catch {
+                    setMessage(
+                      "Clipboard unavailable. Review the visible checksum exception before any restore.",
+                    );
+                  }
+                }}
+              >
+                Copy integrity exception for manual review
+              </button>
+            ) : null}
             <button
               type="button"
               className="secondary-button"
               onClick={() => {
                 setRecoveryDraft(null);
                 setExpectedHash("");
+                setAcknowledgeUnverified(false);
                 setMessage(
                   "Recovery canceled; local saved views were not changed.",
                 );
@@ -534,7 +595,7 @@ export function ForecastSavedViews({
               disabled={!visibleHistory.length}
               onClick={async () => {
                 const lines = [
-                  "iCamp Build 170 — Local checksum and recovery activity review (NOT a server audit)",
+                  "iCamp Build 171 — Local checksum exceptions and recovery activity (NOT a server audit)",
                   ...visibleHistory.map(
                     (item) =>
                       `${item.occurredAt} | ${item.action} | ${item.viewCount} saved views | SHA-256 ${item.sha256}`,
