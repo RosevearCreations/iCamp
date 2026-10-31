@@ -139,7 +139,7 @@ export function StandardOpsCommand({ area }: { area: CommandArea }) {
     <div className="standard-command" data-command-area={area}>
       <div className="standard-command__heading">
         <div>
-          <p className="eyebrow">Build 163 · Standard command centre</p>
+          <p className="eyebrow">Build 164 · Standard command centre</p>
           <h2>
             {isIt
               ? "I.T. & system operations"

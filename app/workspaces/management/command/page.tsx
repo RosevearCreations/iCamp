@@ -58,6 +58,14 @@ function modulesForPermissions(permissions: string[]): CampgroundModule[] {
       permission: ["reports.read", "reservation.read", "accommodation.read"],
     },
     {
+      title: "Accommodation segment comparisons",
+      subtitle: "Campsite, cottage and permanent unit booking coverage",
+      category: "Analytics",
+      href: "/workspaces/management/command/segments",
+      icon: "▥",
+      permission: ["reports.read", "reservation.read", "accommodation.read"],
+    },
+    {
       title: "Camper assistance board",
       subtitle: "Case stages, urgency and staff ownership",
       category: "Guest services",
@@ -77,6 +85,21 @@ function modulesForPermissions(permissions: string[]): CampgroundModule[] {
       subtitle: "Case history, closure evidence and resolution times",
       category: "Guest services",
       href: "/workspaces/management/command/resolutions",
+      icon: "◷",
+      permission: [
+        "reports.read",
+        "assistance.triage",
+        "assistance.escalate",
+        "assistance.communicate",
+        "assistance.close",
+        "campground.operations.manage",
+      ],
+    },
+    {
+      title: "Camper escalation aging",
+      subtitle: "24/72-hour attention, acknowledgment and follow-up",
+      category: "Guest services",
+      href: "/workspaces/management/command/escalations",
       icon: "◷",
       permission: [
         "reports.read",
@@ -190,6 +213,7 @@ function modulesForPermissions(permissions: string[]): CampgroundModule[] {
         [
           "/workspaces/management/command/capacity",
           "/workspaces/management/command/seasonal",
+          "/workspaces/management/command/segments",
         ].includes(module.href)
       ) {
         return ["reports.read", "reservation.read", "accommodation.read"].every(
@@ -200,6 +224,7 @@ function modulesForPermissions(permissions: string[]): CampgroundModule[] {
         [
           "/workspaces/management/command/assistance",
           "/workspaces/management/command/resolutions",
+          "/workspaces/management/command/escalations",
         ].includes(module.href)
       ) {
         return (

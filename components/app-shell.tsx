@@ -128,7 +128,7 @@ export function AppShell({
 
           <div className="sidebar__principle">
             <strong>🌱 Standard theme</strong>
-            <span>Meadow & evergreen · Build 163</span>
+            <span>Meadow & evergreen · Build 164</span>
             <span className="sidebar__principle-subtle">
               Future themes will use the same status meanings and accessible
               layouts.
