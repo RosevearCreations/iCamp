@@ -19,6 +19,7 @@ export interface ReservationManagementConsole {
     id: string;
     name: string;
     slug: string;
+    timezone: string;
   };
   accommodations: Array<{
     id: string;

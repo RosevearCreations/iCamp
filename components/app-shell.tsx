@@ -50,6 +50,7 @@ export function AppShell({
           <Link href="/">Overview</Link>
           <Link href="/booking/map">Site map</Link>
           <Link href="/workspaces/management">Management</Link>
+          <Link href="/workspaces/management/command">Command</Link>
           <Link href="/workspaces/it-analysis">I.T.</Link>
           <Link href="/launch/subscriptions">I.T. & Billing</Link>
           <Link href="/status">Status</Link>
@@ -91,6 +92,11 @@ export function AppShell({
               <p className="sidebar__group-label">Connectivity & launch</p>
               <ul className="workspace-nav">
                 <li>
+                  <Link href="/workspaces/management/command">
+                    Campground command
+                  </Link>
+                </li>
+                <li>
                   <Link href="/settings/themes">Theme management</Link>
                 </li>
                 <li>
@@ -115,7 +121,7 @@ export function AppShell({
 
           <div className="sidebar__principle">
             <strong>🌱 Standard theme</strong>
-            <span>Meadow & evergreen · Build 160</span>
+            <span>Meadow & evergreen · Build 161</span>
             <span className="sidebar__principle-subtle">
               Future themes will use the same status meanings and accessible
               layouts.

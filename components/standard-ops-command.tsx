@@ -7,6 +7,12 @@ type CommandArea = "management" | "it-analysis";
 
 const managementLinks = [
   {
+    label: "Operations Command",
+    detail: "Live arrivals, site metrics and work queues",
+    href: "/workspaces/management/command",
+    icon: "✧",
+  },
+  {
     label: "Campground structure",
     detail: "Sections, operating rules and property settings",
     href: "/workspaces/management/campgrounds",
@@ -133,7 +139,7 @@ export function StandardOpsCommand({ area }: { area: CommandArea }) {
     <div className="standard-command" data-command-area={area}>
       <div className="standard-command__heading">
         <div>
-          <p className="eyebrow">Build 160 · Standard command centre</p>
+          <p className="eyebrow">Build 161 · Standard command centre</p>
           <h2>
             {isIt
               ? "I.T. & system operations"
