@@ -105,6 +105,7 @@ const deviceChecks = [
 ] as const;
 type DeviceResult = "not_tested" | "passed" | "issue";
 type DeviceRetest = "not_retested" | "looks_fixed" | "still_fails";
+const retestStorageKey = "icamp:standard-theme-retest:v1";
 
 export function StandardThemeOwnerReview() {
   const [checked, setChecked] = useState<Record<string, boolean>>({});
@@ -119,13 +120,37 @@ export function StandardThemeOwnerReview() {
     Record<string, DeviceRetest>
   >({});
   const [copyState, setCopyState] = useState("");
+  const [retestFilter, setRetestFilter] = useState<"open" | "all" | "observed">(
+    "open",
+  );
   const done = useMemo(
     () => reviews.filter((item) => checked[item.key]).length,
     [checked],
   );
+  const retestQueue = deviceChecks.map((device) => {
+    const result = deviceResults[device.key] ?? "not_tested";
+    const retest = deviceRetests[device.key] ?? "not_retested";
+    const hasCorrection = Boolean(deviceCorrections[device.key]?.trim());
+    const inScope =
+      result === "issue" || hasCorrection || retest !== "not_retested";
+    return { ...device, result, retest, hasCorrection, inScope };
+  });
+  const outstanding = retestQueue.filter(
+    (item) => item.inScope && item.retest !== "looks_fixed",
+  );
+  const observed = retestQueue.filter(
+    (item) => item.inScope && item.retest === "looks_fixed",
+  );
+  const queueVisible = retestQueue.filter((item) =>
+    retestFilter === "all"
+      ? item.inScope
+      : retestFilter === "open"
+        ? item.inScope && item.retest !== "looks_fixed"
+        : item.inScope && item.retest === "looks_fixed",
+  );
   const summary = () =>
     [
-      "iCamp Build 166 — Standard Theme Device Correction Review",
+      "iCamp Build 167 — Standard Theme Owner Retest Queue",
       `Reviewed: ${done}/${reviews.length} areas`,
       ...reviews.map(
         (item) =>
@@ -204,7 +229,7 @@ export function StandardThemeOwnerReview() {
         <div className="ops-section-heading">
           <div>
             <p className="eyebrow">
-              Build 166 · Device corrections and rechecks
+              Build 167 · Owner retest queue and corrections
             </p>
             <h3 id="device-review-heading">
               Which screens still need attention?
@@ -217,6 +242,66 @@ export function StandardThemeOwnerReview() {
           scenario filters, evidence readback, contrast and larger text. A
           simulated viewport does not prove the experience on a physical device.
         </p>
+        <div
+          className="camp-device-review__queue"
+          aria-labelledby="retest-queue-heading"
+        >
+          <div className="ops-section-heading">
+            <div>
+              <h3 id="retest-queue-heading">Manual device retest worklist</h3>
+              <p>
+                {outstanding.length} need attention · {observed.length}{" "}
+                owner-observed corrections ·{" "}
+                {deviceChecks.length - outstanding.length - observed.length} not
+                flagged
+              </p>
+            </div>
+            <label htmlFor="device-retest-filter">
+              Queue view
+              <select
+                id="device-retest-filter"
+                value={retestFilter}
+                onChange={(event) =>
+                  setRetestFilter(event.target.value as typeof retestFilter)
+                }
+              >
+                <option value="open">Needs attention</option>
+                <option value="all">All flagged devices</option>
+                <option value="observed">Owner-observed as corrected</option>
+              </select>
+            </label>
+          </div>
+          {queueVisible.length ? (
+            <ul className="camp-device-review__queue-list">
+              {queueVisible.map((item) => (
+                <li key={item.key}>
+                  <strong>{item.label}</strong>
+                  <span>
+                    {item.retest === "still_fails"
+                      ? "Still fails · correction needed"
+                      : item.retest === "looks_fixed"
+                        ? "Owner observed correction · not independently approved"
+                        : "Manual retest not recorded"}
+                  </span>
+                  <small>
+                    {deviceCorrections[item.key]?.trim() ||
+                      "No screen/correction description entered"}
+                  </small>
+                  <a href={`#device-result-${item.key}`}>Open device check ↗</a>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="ops-inline-note">
+              No device checks match this queue. Record an issue or screen
+              correction below to add a retest item.
+            </p>
+          )}
+          <p className="ops-inline-note">
+            The queue is based on notes in this browser. An owner-observed fix
+            is not automatic acceptance or an independent physical-device test.
+          </p>
+        </div>
         <div className="camp-device-review__grid">
           {deviceChecks.map((device) => (
             <div className="camp-device-review__item" key={device.key}>
@@ -288,6 +373,115 @@ export function StandardThemeOwnerReview() {
         />
       </label>
       <div className="camp-theme-review__actions">
+        <button
+          type="button"
+          className="secondary-button"
+          onClick={() => {
+            try {
+              window.localStorage.setItem(
+                retestStorageKey,
+                JSON.stringify({
+                  version: 1,
+                  results: deviceChecks.map((item) => ({
+                    key: item.key,
+                    result: deviceResults[item.key] ?? "not_tested",
+                    correction: (deviceCorrections[item.key] ?? "").slice(
+                      0,
+                      1000,
+                    ),
+                    retest: deviceRetests[item.key] ?? "not_retested",
+                  })),
+                }),
+              );
+              setCopyState(
+                "Device retest draft saved on this browser only. No approval was recorded.",
+              );
+            } catch {
+              setCopyState(
+                "Browser storage is unavailable. Copy your review summary instead.",
+              );
+            }
+          }}
+        >
+          Save local retest draft
+        </button>
+        <button
+          type="button"
+          className="secondary-button"
+          onClick={() => {
+            try {
+              const raw = window.localStorage.getItem(retestStorageKey);
+              if (!raw || raw.length > 8_000) throw new Error("No valid draft");
+              const parsed: unknown = JSON.parse(raw);
+              if (
+                !parsed ||
+                typeof parsed !== "object" ||
+                !("version" in parsed) ||
+                parsed.version !== 1 ||
+                !("results" in parsed) ||
+                !Array.isArray(parsed.results)
+              )
+                throw new Error("Invalid draft");
+              const results: Record<string, DeviceResult> = {};
+              const corrections: Record<string, string> = {};
+              const retests: Record<string, DeviceRetest> = {};
+              for (const device of deviceChecks) {
+                const item = parsed.results.find(
+                  (entry: unknown) =>
+                    entry &&
+                    typeof entry === "object" &&
+                    "key" in entry &&
+                    entry.key === device.key,
+                );
+                if (!item) continue;
+                results[device.key] = (
+                  ["not_tested", "passed", "issue"].includes(item.result)
+                    ? item.result
+                    : "not_tested"
+                ) as DeviceResult;
+                corrections[device.key] =
+                  typeof item.correction === "string"
+                    ? item.correction.slice(0, 1000)
+                    : "";
+                retests[device.key] = (
+                  ["not_retested", "looks_fixed", "still_fails"].includes(
+                    item.retest,
+                  )
+                    ? item.retest
+                    : "not_retested"
+                ) as DeviceRetest;
+              }
+              setDeviceResults(results);
+              setDeviceCorrections(corrections);
+              setDeviceRetests(retests);
+              setCopyState(
+                "Browser-local retest draft restored. Verify it against the current screens before relying on the notes.",
+              );
+            } catch {
+              setCopyState(
+                "No usable local retest draft was found. Current review notes remain unchanged.",
+              );
+            }
+          }}
+        >
+          Load local retest draft
+        </button>
+        <button
+          type="button"
+          className="secondary-button"
+          onClick={() => {
+            try {
+              window.localStorage.removeItem(retestStorageKey);
+              setCopyState(
+                "Saved browser-local retest draft deleted. Current session notes remain visible.",
+              );
+            } catch {
+              setCopyState("Unable to clear the saved browser draft.");
+            }
+          }}
+        >
+          Delete saved retest draft
+        </button>
         <button
           type="button"
           className="primary-button"

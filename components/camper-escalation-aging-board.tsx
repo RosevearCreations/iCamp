@@ -6,6 +6,7 @@ import { useMemo, useState } from "react";
 import {
   summarizeAcknowledgementEvidence,
   summarizeAcknowledgementHandoff,
+  summarizeEvidenceGapFollowUps,
   type EscalationAgingSummary,
 } from "@/lib/command-centre/escalation-aging-core.mjs";
 
@@ -31,15 +32,26 @@ export function CamperEscalationAgingBoard({
   campgroundId: string;
 }) {
   const [filter, setFilter] = useState<
-    "all" | "over24" | "over72" | "unacknowledged" | "urgent" | "evidence_gap"
+    | "all"
+    | "over24"
+    | "over72"
+    | "unacknowledged"
+    | "urgent"
+    | "evidence_gap"
+    | "unassigned_gap"
   >("all");
   const [search, setSearch] = useState("");
+  const [handoffCopyStatus, setHandoffCopyStatus] = useState("");
   const handoff = useMemo(
     () => summarizeAcknowledgementHandoff(summary),
     [summary],
   );
   const evidence = useMemo(
     () => summarizeAcknowledgementEvidence(summary),
+    [summary],
+  );
+  const followUps = useMemo(
+    () => summarizeEvidenceGapFollowUps(summary),
     [summary],
   );
   const evidenceByEscalation = useMemo(
@@ -59,6 +71,14 @@ export function CamperEscalationAgingBoard({
           ["recorded", "pending"].includes(
             evidenceByEscalation.get(item.escalationId)?.status ?? "pending",
           )
+        )
+          return false;
+        if (
+          filter === "unassigned_gap" &&
+          (item.assignedToLabel ||
+            ["recorded", "pending"].includes(
+              evidenceByEscalation.get(item.escalationId)?.status ?? "pending",
+            ))
         )
           return false;
         const query = search.trim().toLowerCase();
@@ -148,6 +168,96 @@ export function CamperEscalationAgingBoard({
           Show evidence gaps
         </button>
       </div>
+      <div
+        className="camp-aging__followup"
+        aria-labelledby="gap-followup-heading"
+      >
+        <div className="ops-section-heading">
+          <div>
+            <p className="eyebrow">Build 167 · Evidence gap follow-up</p>
+            <h3 id="gap-followup-heading">
+              {followUps.count} source discrepancies to review
+            </h3>
+            <p>
+              {followUps.urgentCount} urgent · {followUps.unassignedCount}{" "}
+              unassigned · {followUps.unknownAgeCount} with unknown age
+            </p>
+          </div>
+          <button
+            type="button"
+            className="secondary-button"
+            onClick={() => setFilter("unassigned_gap")}
+          >
+            Show unassigned gaps
+          </button>
+        </div>
+        {followUps.count ? (
+          <>
+            <div className="camp-aging__followup-list">
+              {followUps.items.map((item) => (
+                <div
+                  className="camp-aging__followup-item"
+                  key={item.escalationId}
+                >
+                  <div>
+                    <strong>
+                      {item.siteCode} · {evidenceLabels[item.status]}
+                    </strong>
+                    <small>
+                      {item.severity} · {item.assignedToLabel ?? "Unassigned"} ·{" "}
+                      {item.band.replaceAll("over", "over ")}
+                    </small>
+                    <small>{item.guidance}</small>
+                    <small>Source escalation: {item.escalationId}</small>
+                  </div>
+                  <Link href={caseHref(item.caseId)}>Review in triage ↗</Link>
+                </div>
+              ))}
+            </div>
+            <button
+              type="button"
+              className="secondary-button"
+              onClick={async () => {
+                const lines = [
+                  "iCamp Build 167 — Source evidence gap follow-up (read-only)",
+                  `Generated from source: ${summary.generatedAt}`,
+                  ...followUps.items.map(
+                    (item) =>
+                      `${item.siteCode} | case ${item.caseId} | escalation ${item.escalationId} | ${item.status} | ${item.assignedToLabel ?? "unassigned"} | ${item.guidance}`,
+                  ),
+                  "Recheck original triage records. This is neither an acknowledgment nor independent evidence of closure.",
+                ];
+                try {
+                  await navigator.clipboard.writeText(lines.join("\n"));
+                  setHandoffCopyStatus(
+                    "Source follow-up handoff copied locally. No message was sent and no case changed.",
+                  );
+                } catch {
+                  setHandoffCopyStatus(
+                    "Clipboard blocked. Use the visible source-linked list to review these gaps.",
+                  );
+                }
+              }}
+            >
+              Copy follow-up handoff
+            </button>
+          </>
+        ) : (
+          <p className="ops-inline-note">
+            No acknowledgment timestamp discrepancies in the active source
+            readback. Pending acknowledgment remains a separate queue.
+          </p>
+        )}
+        {handoffCopyStatus ? (
+          <p role="status" className="ops-inline-note">
+            {handoffCopyStatus}
+          </p>
+        ) : null}
+        <p className="ops-inline-note">
+          Follow-up is a review prompt only: no ticket, notification,
+          assignment, acknowledgment, closure or proof receipt has been created.
+        </p>
+      </div>
       <div className="camp-command__filters">
         <label>
           Find an escalation
@@ -170,6 +280,7 @@ export function CamperEscalationAgingBoard({
             <option value="unacknowledged">Not yet acknowledged</option>
             <option value="urgent">Urgent priority</option>
             <option value="evidence_gap">Acknowledgment evidence gaps</option>
+            <option value="unassigned_gap">Unassigned evidence gaps</option>
           </select>
         </label>
       </div>
