@@ -113,7 +113,9 @@ export default async function CapacityForecastPage({
           <span>Capacity forecast variance</span>
         </nav>
         <section className="hero-panel camp-command__hero">
-          <p className="eyebrow">Build 167 · Standard / Scenario Saved Views</p>
+          <p className="eyebrow">
+            Build 168 · Standard / Saved View Recovery &amp; Export
+          </p>
           <h1>Seasonal Capacity Forecast Variance</h1>
           <p className="hero-panel__lead">
             Explore low, typical and high historical booking-rate comparisons
