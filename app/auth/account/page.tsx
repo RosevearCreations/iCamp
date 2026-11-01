@@ -64,6 +64,11 @@ export default async function AccountPage() {
                   Manage saved stay information & history →
                 </Link>
               </p>
+              <p>
+                <Link href="/guest/booking-drafts">
+                  Resume or delete my booking drafts →
+                </Link>
+              </p>
             </>
           ) : null}
 
