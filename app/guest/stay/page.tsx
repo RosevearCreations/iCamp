@@ -135,6 +135,9 @@ export default async function MyStayPage({
             <Link className="secondary-link" href="/auth/account">
               Account
             </Link>
+            <Link className="secondary-link" href="/guest/reservation-options">
+              Change or cancellation options
+            </Link>
           </div>
         </section>
 
@@ -215,6 +218,13 @@ export default async function MyStayPage({
                   <p>
                     {detail.reservation.arrivalDate} →{" "}
                     {detail.reservation.departureDate}
+                  </p>
+                  <p>
+                    <Link
+                      href={`/guest/reservation-options?reservation=${encodeURIComponent(detail.reservation.id)}`}
+                    >
+                      Review change and cancellation options
+                    </Link>
                   </p>
                   <p>
                     Campground local date:{" "}
