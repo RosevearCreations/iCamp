@@ -1043,6 +1043,8 @@ The 001–156 roadmap above records the original program design; it must not be 
 
 Build 172's browser-local independent owner evidence intake, scoped historical readback and disabled submission contract are described in [`BUILD_172_INDEPENDENT_OWNER_INTAKE_LEDGER.md`](BUILD_172_INDEPENDENT_OWNER_INTAKE_LEDGER.md). A real append-only, independently authorized owner decision service remains a future gated dependency; neither a claimed approval in an imported file nor Build 171/172 CI may be called production or owner acceptance without actual evidence.
 
+Build 173's public accommodation filters, published gallery coverage, live blocker recheck and saved local three-way comparison are described in [`BUILD_173_DISCOVERY_COMPARISON_ACCEPTANCE.md`](BUILD_173_DISCOVERY_COMPARISON_ACCEPTANCE.md). Source changes and stale holds are explicitly flagged; future Build 174 will separately present an expiring price/fee/policy breakdown. No billing or communications provider is enabled.
+
 Priority order:
 
 1. **171–172 — Evidence and trust:** recoveries, escalation source continuity and truly independent Standard Theme owner review.

@@ -4,18 +4,23 @@ import Link from "next/link";
 import { AppShell } from "@/components/app-shell";
 import { SectionHeading } from "@/components/section-heading";
 import {
+  filterPublicDiscoveryItems,
+  normalizePublicDiscoveryFilters,
+} from "@/lib/public-booking-map/discovery.mjs";
+import {
   getPublicBookingMapSnapshot,
   listPublishedBookingCampgrounds,
 } from "@/lib/public-booking-map/postgres.mjs";
+import { normalizePublicBookingMapFilters } from "@/lib/public-booking-map/core.mjs";
 
-import { PublicBookingMap } from "./booking-map";
+import { DiscoveryResults } from "./discovery-results";
 
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Interactive booking map · iCamp",
+  title: "Accessible campsite and cottage discovery · iCamp",
   description:
-    "Explore published campground accommodation polygons by dates, type and live availability.",
+    "Explore live availability, accessibility, pet and RV fit, amenities, photos and saved three-way accommodation comparisons.",
   robots: { index: false, follow: true },
 };
 
@@ -58,14 +63,32 @@ export default async function PublicBookingMapPage({
   const departureDate = params.departureDate ?? isoDate(1);
   const kind = params.kind ?? "all";
   const availability = params.availability ?? "all";
-
-  const snapshot = await getPublicBookingMapSnapshot({
-    campgroundSlug: selected.slug,
+  const mapFilters = normalizePublicBookingMapFilters({
     arrivalDate,
     departureDate,
     kind,
     availability,
   });
+  const discoveryFilters = normalizePublicDiscoveryFilters(params);
+
+  const snapshot = await getPublicBookingMapSnapshot({
+    campgroundSlug: selected.slug,
+    arrivalDate,
+    departureDate,
+    kind: "all",
+    availability: "all",
+  });
+  const discoveryMatches = filterPublicDiscoveryItems(
+    snapshot.items,
+    discoveryFilters,
+  ).filter(
+    (item) =>
+      mapFilters.kind === "all" || item.accommodationKind === mapFilters.kind,
+  );
+  const visibleItems =
+    mapFilters.availability === "available"
+      ? discoveryMatches.filter((item) => item.selectable)
+      : discoveryMatches;
 
   return (
     <AppShell>
@@ -79,11 +102,14 @@ export default async function PublicBookingMapPage({
         </nav>
 
         <section className="hero-panel">
-          <p className="eyebrow">Build 037 · Live booking discovery</p>
-          <h1>Choose your campsite or cottage on the map</h1>
+          <p className="eyebrow">
+            Build 173 · Accessible discovery and comparison
+          </p>
+          <h1>Find and compare your campsite or cottage</h1>
           <p className="hero-panel__lead">
-            Search by dates and accommodation type. Colors are derived from the
-            same server-authoritative availability used by campground staff.
+            Search published accommodations by date, fit, campground-advertised
+            accessibility, amenities and photos. Compare up to three side by
+            side, using the same live availability as campground staff.
           </p>
         </section>
 
@@ -137,113 +163,120 @@ export default async function PublicBookingMapPage({
             </label>
             <label>
               Availability
-              <select name="availability" defaultValue={snapshot.availability}>
+              <select name="availability" defaultValue={availability}>
                 <option value="all">Show all</option>
                 <option value="available">Available only</option>
               </select>
             </label>
-            <button type="submit">Update booking map</button>
+            <label>
+              Campsite type
+              <select
+                name="campsiteType"
+                defaultValue={discoveryFilters.campsiteType}
+              >
+                <option value="all">Any / include cottages</option>
+                <option value="tent">Tent site</option>
+                <option value="rv">RV site</option>
+                <option value="mixed">Mixed tent / RV site</option>
+              </select>
+            </label>
+            <label>
+              Advertised access feature
+              <select
+                name="accessibility"
+                defaultValue={discoveryFilters.accessibility}
+              >
+                <option value="all">No accessibility filter</option>
+                <option value="advertised_site">
+                  Campground-advertised accessible campsite
+                </option>
+                <option value="step_free">Cottage with step-free access</option>
+                <option value="accessible_washroom">
+                  Cottage with accessible washroom
+                </option>
+              </select>
+            </label>
+            <label>
+              Amenities
+              <select name="amenity" defaultValue={discoveryFilters.amenity}>
+                <option value="all">Any amenities</option>
+                <option value="waterfront">Waterfront</option>
+                <option value="wifi">Wi-Fi (shared or on-site)</option>
+                <option value="electric">Electrical service</option>
+                <option value="fire_ring">Fire ring</option>
+                <option value="picnic_table">Picnic table</option>
+              </select>
+            </label>
+            <label>
+              Published photos
+              <select name="photos" defaultValue={discoveryFilters.photos}>
+                <option value="all">Any photo coverage</option>
+                <option value="with_photos">At least one photo</option>
+                <option value="described">
+                  At least one photo with alt text
+                </option>
+              </select>
+            </label>
+            <label>
+              Cottage guests (1–80; 0 = any)
+              <input
+                type="number"
+                name="guests"
+                min={0}
+                max={80}
+                step={1}
+                defaultValue={discoveryFilters.guests}
+              />
+            </label>
+            <label>
+              Pets (1–20; 0 = any)
+              <input
+                type="number"
+                name="pets"
+                min={0}
+                max={20}
+                step={1}
+                defaultValue={discoveryFilters.pets}
+              />
+            </label>
+            <label>
+              RV length in meters (0 = any)
+              <input
+                type="number"
+                name="rvLengthMeters"
+                min={0}
+                max={80}
+                step="0.01"
+                defaultValue={discoveryFilters.rvLengthMeters}
+              />
+            </label>
+            <button type="submit">Apply discovery filters</button>
           </form>
+          <p>
+            <strong>ⓘ Evidence and fit:</strong> Accessibility flags are
+            campground-advertised, not independent certifications. A missing
+            maximum occupancy or RV length does not match a specific
+            requirement. Campsite guest occupancy is not yet represented in the
+            inventory, so the guests filter only returns cottages with a
+            documented limit. Check critical access, pet and vehicle needs
+            directly with staff.
+          </p>
           <p>
             <a href="#booking-map-list">Skip map and use the accessible list</a>
           </p>
         </section>
 
-        <section className="content-panel" aria-labelledby="booking-map-title">
-          <SectionHeading
-            eyebrow={snapshot.campground.name}
-            title="Interactive booking map"
-            id="booking-map-title"
-            helpTopic="shell.overview"
-            trailing={
-              <span className="build-chip">
-                Published map v{snapshot.map.versionNumber}
-              </span>
-            }
-          />
-          <PublicBookingMap
-            mediaAssetId={snapshot.map.mediaAssetId}
-            sourceWidth={snapshot.map.sourceWidth}
-            sourceHeight={snapshot.map.sourceHeight}
-            campgroundSlug={snapshot.campground.slug}
-            arrivalDate={snapshot.arrivalDate}
-            departureDate={snapshot.departureDate}
-            items={snapshot.items}
-          />
-          <p>
-            Availability generated <time>{snapshot.generatedAt}</time>. A page
-            refresh re-reads reservations, active temporary holds, management
-            restrictions, turnover and seasonal assignments.
-          </p>
-        </section>
-
-        <section
-          className="content-panel"
-          id="booking-map-list"
-          aria-labelledby="booking-list-title"
-        >
-          <SectionHeading
-            eyebrow="Accessible alternative"
-            title="Accommodation list"
-            id="booking-list-title"
-            helpTopic="shell.overview"
-          />
-          <div className="table-wrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>Accommodation</th>
-                  <th>Type</th>
-                  <th>Status</th>
-                  <th>Booking state</th>
-                </tr>
-              </thead>
-              <tbody>
-                {snapshot.items.map((item) => (
-                  <tr
-                    key={item.accommodationId}
-                    id={`booking-map-list-${item.accommodationId}`}
-                  >
-                    <td>
-                      {item.code} · {item.displayName}
-                      {item.selectable &&
-                      ["campsite", "rental_cottage"].includes(
-                        item.accommodationKind,
-                      ) ? (
-                        <>
-                          {" · "}
-                          <Link
-                            href={`/booking/accommodations/${encodeURIComponent(
-                              item.accommodationId,
-                            )}?campground=${encodeURIComponent(
-                              snapshot.campground.slug,
-                            )}&arrivalDate=${encodeURIComponent(
-                              snapshot.arrivalDate,
-                            )}&departureDate=${encodeURIComponent(
-                              snapshot.departureDate,
-                            )}`}
-                          >
-                            View details
-                          </Link>
-                        </>
-                      ) : null}
-                    </td>
-                    <td>{item.accommodationKind.replaceAll("_", " ")}</td>
-                    <td>{item.label}</td>
-                    <td>
-                      {item.selectable
-                        ? "Selectable for these dates"
-                        : "Not selectable for these dates"}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          {snapshot.items.length === 0 ? (
-            <p>No published accommodations match the selected filters.</p>
-          ) : null}
-        </section>
+        <DiscoveryResults
+          allItems={snapshot.items}
+          visibleItems={visibleItems}
+          map={snapshot.map}
+          context={{
+            campgroundSlug: snapshot.campground.slug,
+            arrivalDate: snapshot.arrivalDate,
+            departureDate: snapshot.departureDate,
+          }}
+          generatedAt={snapshot.generatedAt}
+        />
 
         <section className="content-panel">
           <h2>Channel contract</h2>
@@ -251,14 +284,14 @@ export default async function PublicBookingMapPage({
             <strong>Web/PWA:</strong> full visual map plus accessible list.
           </p>
           <p>
-            <strong>IVR/DTMF:</strong> the map is graphical-only; future booking
-            flows read the same authoritative date/type availability and
-            identify accommodations by code, with staff transfer when needed.
+            <strong>Staff-assisted / nonvisual:</strong> the synchronized list
+            and comparison table provide keyboard/screen-reader equivalents.
+            Staff can use accommodation codes for voice-assisted selection.
+            External IVR/DTMF remains HELD.
           </p>
           <p>
-            <strong>SMS/MMS:</strong> future guided booking can return matching
-            accommodation codes and a secure visual handoff to this map without
-            creating a separate availability source.
+            <strong>SMS/MMS:</strong> a future provider-approved adapter could
+            use this same availability source. External messaging remains HELD.
           </p>
         </section>
       </div>

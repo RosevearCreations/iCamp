@@ -40,4 +40,6 @@ The original restarted roadmap covers **Builds 001–156**. Development continue
 
 The extension's early implementation checkpoints include [Build 171 recovery/escalation/owner-request](docs/BUILD_171_RECOVERY_SNAPSHOT_OWNER_REQUEST.md) and [Build 172 independent owner review intake/evidence readback](docs/BUILD_172_INDEPENDENT_OWNER_INTAKE_LEDGER.md). Build 172 does not activate a server-side decision ledger or owner acceptance: its submission contract remains disabled until independent authorization, original evidence and immutable tenant-scoped storage exist. Billing and Omnichannel remain HELD.
 
+[Build 173 public campsite/cottage discovery](docs/BUILD_173_DISCOVERY_COMPARISON_ACCEPTANCE.md) adds campground-maintained accessibility, fit, amenities and photo filters, a synchronized text/map view, and browser-local three-way comparison with live hold/source rechecks. No payment, provider call or independently certified accessibility claim is introduced.
+
 **Build 001 — Responsive PWA & Omnichannel Application Shell**

@@ -12,6 +12,28 @@ export interface PublicBookingMapItem {
   statusState: string;
   availabilityRevision: number;
   blockers: string[];
+  discovery: {
+    campsiteType: string | null;
+    serviceLevel: string | null;
+    isWaterfront: boolean | null;
+    electricalAmperage: number | null;
+    waterService: string | null;
+    wifiService: string | null;
+    maxRvLengthMeters: number | null;
+    pullThrough: boolean | null;
+    hasFireRing: boolean | null;
+    hasPicnicTable: boolean | null;
+    accessibleSite: boolean | null;
+    maxOccupancy: number | null;
+    bedroomCount: number | null;
+    stepFreeAccess: boolean | null;
+    accessibleWashroom: boolean | null;
+    kitchenType: string | null;
+    petsAllowed: boolean | null;
+    maxPets: number | null;
+    photoCount: number;
+    describedPhotoCount: number;
+  };
   geometry: {
     schemaVersion: number;
     closed: boolean;
