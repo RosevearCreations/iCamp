@@ -6,6 +6,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 import { requireSignedIn } from "@/lib/auth/current-session";
+import { postOwnAssistanceReply } from "@/lib/assistance-conversations/postgres.mjs";
 import {
   attachCamperAssistanceMediaEvidence,
   createCamperAssistanceRequest,
@@ -206,4 +207,28 @@ export async function addCamperAssistanceMediaAction(formData: FormData) {
   }
 
   redirect(path + "&saved=" + encodeURIComponent("Attachment added."));
+}
+
+export async function postGuestAssistanceReplyAction(formData: FormData) {
+  const reservationId = text(formData, "reservationId");
+  const path = pathFor(reservationId);
+  const session = await guestSession(path);
+  const requestId = text(formData, "requestId");
+  try {
+    await postOwnAssistanceReply({
+      userId: session.user.id,
+      actorSessionId: session.sessionId,
+      requestId,
+      input: {
+        clientMessageId: text(formData, "clientMessageId"),
+        message: text(formData, "message"),
+      },
+    });
+    revalidatePath(path);
+  } catch (error) {
+    redirect(path + "&error=" + encodeURIComponent(errorMessage(error)));
+  }
+  redirect(
+    path + "&saved=" + encodeURIComponent("Your in-app reply was recorded."),
+  );
 }

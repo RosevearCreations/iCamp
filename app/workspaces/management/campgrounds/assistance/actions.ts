@@ -91,6 +91,27 @@ export async function recordAssistanceGuestMessageAction(formData: FormData) {
   finish(campgroundId, "Guest communication recorded.");
 }
 
+export async function postStaffAssistanceReplyAction(formData: FormData) {
+  const campgroundId = field(formData, "campgroundId");
+  const session = await requireCampgroundPermission(
+    campgroundId,
+    "assistance.communicate",
+    path,
+  );
+  await recordAssistanceGuestMessage({
+    actorUserId: session.user.id,
+    actorSessionId: session.sessionId,
+    campgroundId,
+    caseId: field(formData, "caseId"),
+    channel: "in_app",
+    message: field(formData, "message"),
+  });
+  finish(
+    campgroundId,
+    "In-app reply recorded for guest readback; no outbound message sent.",
+  );
+}
+
 export async function escalateAssistanceCaseAction(formData: FormData) {
   const campgroundId = field(formData, "campgroundId");
   const session = await requireCampgroundPermission(

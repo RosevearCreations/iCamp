@@ -5,13 +5,13 @@ import { redirect } from "next/navigation";
 import { AppShell } from "@/components/app-shell";
 import { SectionHeading } from "@/components/section-heading";
 import { requireStaff } from "@/lib/auth/current-session";
+import { listStaffAssistanceAttachments } from "@/lib/assistance-conversations/postgres.mjs";
 import {
   getCampgroundAuthorization,
   listAssignedCampgrounds,
 } from "@/lib/authz/postgres.mjs";
 import {
   ASSISTANCE_ESCALATION_LEVELS,
-  ASSISTANCE_MESSAGE_CHANNELS,
   ASSISTANCE_OUTCOMES,
 } from "@/lib/camper-assistance-triage/core.mjs";
 import { listAssistanceQueue } from "@/lib/camper-assistance-triage/postgres.mjs";
@@ -25,7 +25,7 @@ import {
   addAssistanceStaffNoteAction,
   closeAssistanceCaseAction,
   escalateAssistanceCaseAction,
-  recordAssistanceGuestMessageAction,
+  postStaffAssistanceReplyAction,
   resolveAssistanceEscalationAction,
   triageAssistanceCaseAction,
 } from "./actions";
@@ -106,10 +106,22 @@ export default async function AssistanceTriagePage({
   const canEscalate = permissions.includes("assistance.escalate");
   const canCommunicate = permissions.includes("assistance.communicate");
   const canClose = permissions.includes("assistance.close");
-  const queue = await listAssistanceQueue(
-    session.user.id,
-    selected.campgroundId,
-  );
+  const [queue, caseMedia] = await Promise.all([
+    listAssistanceQueue(session.user.id, selected.campgroundId),
+    listStaffAssistanceAttachments({
+      userId: session.user.id,
+      campgroundId: selected.campgroundId,
+    }),
+  ]);
+  const canOpenMedia =
+    permissions.includes("media.read") ||
+    permissions.includes("campground.operations.manage");
+  const attachmentsByCase = new Map<string, typeof caseMedia>();
+  for (const attachment of caseMedia) {
+    const list = attachmentsByCase.get(attachment.caseId) ?? [];
+    list.push(attachment);
+    attachmentsByCase.set(attachment.caseId, list);
+  }
 
   const openCases = queue.cases.filter((item) => item.caseState !== "closed");
   const urgent = openCases.filter((item) => item.severity === "urgent").length;
@@ -129,8 +141,10 @@ export default async function AssistanceTriagePage({
         </nav>
 
         <section className="hero-panel">
-          <p className="eyebrow">Build 078 · Operational response</p>
-          <h1>Assistance Triage & Management Escalation</h1>
+          <p className="eyebrow">Build 179 · In-app service follow-up</p>
+          <h1>
+            Assistance Triage & Management Escalation · Guest Conversations
+          </h1>
           <p className="hero-panel__lead">
             Preserve the camper&apos;s original report while staff reclassify,
             assign, escalate, communicate and close the operational case with
@@ -236,6 +250,33 @@ export default async function AssistanceTriagePage({
                   </p>
                   {caseItem.details ? <p>{caseItem.details}</p> : null}
                   <p>{caseItem.mediaCount} attachment(s)</p>
+                  {attachmentsByCase.get(caseItem.id)?.length ? (
+                    <ul>
+                      {(attachmentsByCase.get(caseItem.id) ?? []).map(
+                        (file) => (
+                          <li key={file.id}>
+                            {canOpenMedia ? (
+                              <Link
+                                href={`/guest/assistance/media/${encodeURIComponent(file.id)}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                              >
+                                Open {file.filename} ·{" "}
+                                {Math.ceil(file.byteSize / 1024)} KB
+                              </Link>
+                            ) : (
+                              <span>
+                                {file.filename} · requires staff media.read
+                                permission
+                              </span>
+                            )}
+                          </li>
+                        ),
+                      )}
+                    </ul>
+                  ) : (
+                    <p>No active validated evidence files available.</p>
+                  )}
                 </article>
                 <article>
                   <strong>Operational classification</strong>
@@ -334,34 +375,25 @@ export default async function AssistanceTriagePage({
 
               {caseItem.caseState !== "closed" && canCommunicate ? (
                 <>
-                  <h3>Guest communication</h3>
+                  <h3>Reply to the guest in app</h3>
                   <form
-                    action={recordAssistanceGuestMessageAction}
+                    action={postStaffAssistanceReplyAction}
                     className={styles.formGrid}
                   >
                     {hiddenCase(caseItem, selected.campgroundId)}
-                    <label>
-                      Contact record
-                      <select name="channel" defaultValue="in_app">
-                        {ASSISTANCE_MESSAGE_CHANNELS.map((value) => (
-                          <option key={value} value={value}>
-                            {label(value)}
-                          </option>
-                        ))}
-                      </select>
-                    </label>
                     <label className={styles.full}>
-                      Guest-visible update
+                      Guest-visible reply
                       <textarea name="message" required maxLength={2000} />
                     </label>
                     <p className={styles.full}>
-                      In-app updates are displayed in My Stay. Choosing email,
-                      SMS or phone records that staff contact channel; Build 078
-                      does not falsely claim an external provider delivered it.
+                      Record guest update only in app: replies are stored in the
+                      guest&apos;s case timeline. No SMS, email, phone call or
+                      dispatch is sent. Urgent cases still need direct on-site
+                      escalation as appropriate.
                     </p>
                     <div className={styles.full}>
                       <button className="primary-button" type="submit">
-                        Record guest update
+                        Post in-app reply
                       </button>
                     </div>
                   </form>

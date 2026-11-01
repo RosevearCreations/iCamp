@@ -1,0 +1,162 @@
+.caseList {
+  display: grid;
+  gap: 1.2rem;
+  margin-top: 1.2rem;
+}
+.caseCard {
+  border: 1px solid #d8e3db;
+  border-radius: 1.15rem;
+  padding: clamp(1rem, 3vw, 1.5rem);
+  background: #fbfdf9;
+  min-width: 0;
+}
+.caseHeading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.9rem;
+}
+.caseHeading h3 {
+  margin: 0.2rem 0 0.5rem;
+  font-size: clamp(1.1rem, 3vw, 1.4rem);
+  overflow-wrap: anywhere;
+}
+.eyebrow {
+  color: #416753;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 0.74rem;
+  font-weight: 750;
+  margin: 0;
+}
+.status {
+  background: #dcece1;
+  border-radius: 2rem;
+  padding: 0.35rem 0.75rem;
+  color: #185337;
+  font-weight: 700;
+  font-size: 0.8rem;
+  text-transform: capitalize;
+}
+.caseFacts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin: 0.45rem 0 1.2rem;
+  align-items: center;
+  font-size: 0.84rem;
+}
+.caseFacts span {
+  padding: 0.38rem 0.55rem;
+  background: #e9f1e9;
+  border-radius: 0.5rem;
+}
+.urgent {
+  color: #7b361a;
+  background: #fff0da;
+  padding: 0.4rem 0.65rem;
+  border-radius: 0.5rem;
+}
+.escalation {
+  color: #58418b;
+  background: #efeafd;
+  padding: 0.4rem 0.65rem;
+  border-radius: 0.5rem;
+}
+.timeline {
+  margin: 0.8rem 0 1.3rem;
+  padding: 0 0 0 1.45rem;
+  border-left: 2px solid #c5d8ca;
+  list-style: none;
+}
+.timeline li {
+  padding: 0 0 1rem 0.85rem;
+  position: relative;
+}
+.timeline li::before {
+  content: "";
+  display: block;
+  position: absolute;
+  width: 0.62rem;
+  height: 0.62rem;
+  background: #367353;
+  border: 2px solid #f9fcf8;
+  border-radius: 100%;
+  left: -1.83rem;
+  top: 0.2rem;
+}
+.timeline p {
+  margin: 0.4rem 0;
+  line-height: 1.55;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.timeline small {
+  color: #5b5b4c;
+}
+.eventHeader {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.45rem;
+  font-size: 0.86rem;
+}
+.eventHeader time {
+  color: #556b60;
+  font-size: 0.73rem;
+  overflow-wrap: anywhere;
+}
+.replyForm,
+.attachForm {
+  display: grid;
+  gap: 0.65rem;
+  margin: 1rem 0;
+}
+.replyForm label,
+.attachForm label {
+  font-weight: 700;
+}
+.replyForm textarea {
+  width: 100%;
+  min-height: 6rem;
+  border-radius: 0.7rem;
+  border: 1px solid #92b29c;
+  padding: 0.8rem;
+  font: inherit;
+  resize: vertical;
+}
+.replyForm button,
+.attachForm button {
+  justify-self: start;
+  min-height: 2.75rem;
+}
+.mediaPanel {
+  background: #f0f5ee;
+  border: 1px solid #d7e2d4;
+  border-radius: 0.9rem;
+  padding: 1rem;
+}
+.mediaPanel h4 {
+  margin: 0 0 0.5rem;
+}
+.mediaPanel a {
+  overflow-wrap: anywhere;
+}
+.mediaPanel ul {
+  padding-left: 1.2rem;
+}
+.closed {
+  background: #e5eee8;
+  padding: 0.75rem;
+  border-radius: 0.65rem;
+}
+@media (max-width: 520px) {
+  .caseFacts {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .caseCard {
+    padding: 0.85rem;
+  }
+}
