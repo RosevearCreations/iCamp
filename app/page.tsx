@@ -23,6 +23,9 @@ export default function HomePage() {
             <Link className="primary-link" href="/workspaces/public">
               Explore the public shell
             </Link>
+            <Link className="secondary-link" href="/events">
+              Events & recreation
+            </Link>
             <a className="secondary-link" href="#workspaces">
               View all workspaces
             </a>
