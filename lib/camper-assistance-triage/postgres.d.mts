@@ -106,6 +106,9 @@ export interface GuestAssistanceUpdate {
   outcomeCode: string | null;
   outcomeSummary: string | null;
   closedAt: string | null;
+  assigned: boolean;
+  escalationLevel: string;
+  updatedAt: string | null;
   updates: Array<{
     id: string;
     eventKind: string;
