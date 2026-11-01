@@ -111,6 +111,11 @@ export default async function ReservationManagementPage({
               View guest change/cancellation review requests
             </Link>
           </p>
+          <p>
+            <Link href="/workspaces/management/campgrounds/reservations/arrival-readiness">
+              Review guest arrival plans and pre-registration readiness
+            </Link>
+          </p>
         </section>
 
         {params.saved ? (

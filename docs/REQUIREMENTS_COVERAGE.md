@@ -141,7 +141,7 @@ This matrix cross-checks the complete iCamp vision against the restarted active 
 | Independent Standard Theme owner acceptance, separate from browser-only checklists | 171–172: versioned draft and read-only historic claims implemented; true independent server owner acceptance and immutable decision ledger still HELD |
 | Easier customer accommodation comparison and transparent quoting | 173: live published-map filters and saved browser-local three-way comparison; 174: server-issued expiring rate/mandatory/selected extras and deposit/cancellation preview, no invented taxes/final amount |
 | Resumable booking and clear self-service change/cancel options | 175: guest-owned, seven-day booking drafts; 176: owner-scoped current policy/refund and date-change previews plus internal staff-review requests and withdrawal, without automatic booking/financial action. Live source requires production DB configuration and migrations. |
-| Consolidated arrival, stay and assistance follow-up | 177–179 |
+| Consolidated arrival, stay and assistance follow-up | 177: source-backed guest arrival planner, consented pre-registration, staff-scoped readiness queue and revision-pinned desk receipt without check-in/financial authorization; 178–179 remain planned |
 | Accessible wayfinding, real guest activities/rentals/store requests | 180–183 |
 | Feedback moderation and guest issue follow-through | 184 |
 | Unified front desk, turnover and accountable safety case management | 185–187 |

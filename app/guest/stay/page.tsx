@@ -138,6 +138,9 @@ export default async function MyStayPage({
             <Link className="secondary-link" href="/guest/reservation-options">
               Change or cancellation options
             </Link>
+            <Link className="secondary-link" href="/guest/arrival-planner">
+              Plan your arrival
+            </Link>
           </div>
         </section>
 
@@ -224,6 +227,13 @@ export default async function MyStayPage({
                       href={`/guest/reservation-options?reservation=${encodeURIComponent(detail.reservation.id)}`}
                     >
                       Review change and cancellation options
+                    </Link>
+                  </p>
+                  <p>
+                    <Link
+                      href={`/guest/arrival-planner?reservation=${encodeURIComponent(detail.reservation.id)}`}
+                    >
+                      Prepare for arrival and pre-registration
                     </Link>
                   </p>
                   <p>

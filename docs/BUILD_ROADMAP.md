@@ -1051,6 +1051,8 @@ Build 175's [`booking draft recovery acceptance`](BUILD_175_BOOKING_DRAFT_RECOVE
 
 Build 176's [`reservation decision acceptance`](BUILD_176_RESERVATION_DECISION_ACCEPTANCE.md) adds owner-authenticated current cancellation/refund evidence, fresh nonbinding date-change comparison, explicit opt-in internal staff-review requests, guest withdrawal and a permission-scoped staff queue. No reservation cancellation/price mutation, refund action, outbound contact or provider activation; production live readback still requires the Vercel database connection.
 
+Build 177's [`arrival planner acceptance`](BUILD_177_ARRIVAL_PLANNER_ACCEPTANCE.md) adds source-backed campground-local check-in guidance, guest-owned draft/submit arrival details and document/rules checklist, opt-in nonclinical accessibility arrangements, an upcoming staff arrival queue, and version-pinned internal review receipts. No gate, payment, check-in, outbound message or canonical booking mutation; the production-only Vercel `DATABASE_URL` is configured and protected.
+
 Priority order:
 
 1. **171–172 — Evidence and trust:** recoveries, escalation source continuity and truly independent Standard Theme owner review.
