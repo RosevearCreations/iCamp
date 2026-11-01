@@ -16,6 +16,7 @@
 | Mutation/audit | No new server mutations, audit writes or migrations. Optional local comparison storage is visitor-controlled and can be cleared. |
 | Temporary hold expiration | New page load recomputes hold blockers from the canonical availability function; saved fingerprints include those blockers, not just row revision. No client claim of continuous freshness. |
 | Stale/missing source | Last snapshot time displayed, explicit refresh control, changed-date/revision warnings, removed/unpublished saved selections reported and excluded from comparison. |
+| Deployment without `DATABASE_URL` | Public booking map presents an accessible, honest unavailable state and staff-assisted alternative; no 500 page or fabricated available inventory. The private deployment configuration is a separate operational prerequisite to full live discovery. |
 | Assistive technology | Semantic GET filters, keyboard polygon buttons, visible identical HTML result table, associated compare checkboxes, table header semantics, live status and responsive horizontally scrollable comparison. |
 | Web/PWA | Implemented; no additional provider required. |
 | Staff-assisted | Accommodation codes, dates, published details and current availability can be read verbally by staff. |

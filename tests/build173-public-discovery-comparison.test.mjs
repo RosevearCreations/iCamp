@@ -211,6 +211,9 @@ test("Build 173 integration uses published polygons, public-only galleries and l
   assert.match(map, /g\.is_active/);
   assert.match(page, /filterPublicDiscoveryItems/);
   assert.match(page, /Skip map and use the accessible list/);
+  assert.match(page, /!process\.env\.DATABASE_URL\?\.trim\(\)/);
+  assert.match(page, /Booking discovery is temporarily unavailable/);
+  assert.match(page, /We cannot verify campsite or cottage availability/);
   assert.match(results, /aria-live="polite"/);
   assert.match(results, /scope="row"/);
   assert.match(results, /window\.localStorage/);

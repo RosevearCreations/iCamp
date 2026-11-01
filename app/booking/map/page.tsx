@@ -35,6 +35,35 @@ export default async function PublicBookingMapPage({
   searchParams: Promise<Record<string, string | undefined>>;
 }>) {
   const params = await searchParams;
+  // Deployment may intentionally lack private DB credentials. Never guess availability.
+  if (!process.env.DATABASE_URL?.trim()) {
+    return (
+      <AppShell>
+        <div className="page-stack">
+          <section className="hero-panel" role="status" aria-live="polite">
+            <p className="eyebrow">Build 173 · Live source unavailable</p>
+            <h1>Booking discovery is temporarily unavailable</h1>
+            <p className="hero-panel__lead">
+              We cannot verify campsite or cottage availability right now. No
+              accommodations will be shown as available, and no comparison, hold
+              or booking has been created.
+            </p>
+          </section>
+          <section className="content-panel">
+            <h2>What you can do</h2>
+            <p>
+              Please contact the campground office for current dates, site fit,
+              accessibility arrangements and pet or vehicle restrictions. Return
+              here later to search live inventory and compare stays.
+            </p>
+            <Link href="/workspaces/public">
+              Return to Public &amp; Visitor
+            </Link>
+          </section>
+        </div>
+      </AppShell>
+    );
+  }
   const campgrounds = await listPublishedBookingCampgrounds();
 
   if (campgrounds.length === 0) {
