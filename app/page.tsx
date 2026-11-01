@@ -26,6 +26,9 @@ export default function HomePage() {
             <Link className="secondary-link" href="/events">
               Events & recreation
             </Link>
+            <Link className="secondary-link" href="/rentals">
+              Amenities & rental planning
+            </Link>
             <a className="secondary-link" href="#workspaces">
               View all workspaces
             </a>

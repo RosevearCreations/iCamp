@@ -147,6 +147,9 @@ export default async function MyStayPage({
             <Link className="secondary-link" href="/guest/events">
               Activity requests
             </Link>
+            <Link className="secondary-link" href="/guest/rentals">
+              Rental planning
+            </Link>
           </div>
         </section>
 
