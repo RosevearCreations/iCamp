@@ -1,3 +1,5 @@
+import type { PublicWayfindingPoint } from "../wayfinding/core.mjs";
+
 export interface PublicBookingMapCampground {
   id: string;
   name: string;
@@ -72,6 +74,7 @@ export function getPublicBookingMapSnapshot(input: {
   kind: string;
   availability: string;
   generatedAt: string;
+  wayfinding: PublicWayfindingPoint[];
   items: PublicBookingMapItem[];
 }>;
 export function closePublicBookingMapPoolForTests(): Promise<void>;

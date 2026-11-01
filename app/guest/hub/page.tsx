@@ -169,7 +169,7 @@ export default async function GuestHubPage({
   });
   const selectHref = (path: string) =>
     `${path}?reservation=${encodeURIComponent(reservationId)}`;
-  const mapHref = `/booking/map?campground=${encodeURIComponent(stay.reservation.campground.slug)}&arrivalDate=${encodeURIComponent(stay.reservation.arrivalDate)}&departureDate=${encodeURIComponent(stay.reservation.departureDate)}`;
+  const mapHref = `/booking/map?campground=${encodeURIComponent(stay.reservation.campground.slug)}&arrivalDate=${encodeURIComponent(stay.reservation.arrivalDate)}&departureDate=${encodeURIComponent(stay.reservation.departureDate)}#wayfinding`;
   const documentsHref = `/booking/reservations/${encodeURIComponent(reservationId)}/documents`;
   const sourceStatus = partial
     ? "Some sources unavailable"
@@ -448,7 +448,7 @@ export default async function GuestHubPage({
                   </span>
                 )}
                 <Link href={mapHref}>
-                  Campground map <span>→</span>
+                  Campground amenities &amp; wayfinding <span>→</span>
                 </Link>
                 <Link href="/guest/profile">
                   Saved guest profile <span>→</span>
