@@ -1,0 +1,348 @@
+.hub {
+  width: min(100%, 1160px);
+  margin-inline: auto;
+  padding: clamp(1rem, 3vw, 2rem);
+  display: grid;
+  gap: 1.25rem;
+}
+
+.hero {
+  background: linear-gradient(125deg, #163c31 0%, #245d4c 62%, #417962 100%);
+  border-radius: 1.5rem;
+  color: #fff;
+  padding: clamp(1.4rem, 4vw, 3rem);
+  box-shadow: 0 16px 38px rgb(24 52 40 / 12%);
+}
+
+.heroTop,
+.heroControls,
+.sectionTop,
+.eventHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.kicker {
+  font-size: 0.75rem;
+  font-weight: 750;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  margin: 0 0 0.65rem;
+}
+
+.hero h1 {
+  font-size: clamp(1.85rem, 5.5vw, 3.2rem);
+  line-height: 1.13;
+  letter-spacing: -0.03em;
+  color: inherit;
+  max-width: 17ch;
+  margin: 0.8rem 0;
+}
+
+.intro {
+  font-size: 1.04rem;
+  color: #edf7ed;
+}
+
+.stateBadge {
+  border: 1px solid rgb(255 255 255 / 50%);
+  border-radius: 999px;
+  padding: 0.3rem 0.8rem;
+  text-transform: capitalize;
+  background: rgb(255 255 255 / 13%);
+  font-size: 0.8rem;
+}
+
+.dates {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin-block: 1.6rem;
+  max-width: 32rem;
+}
+
+.dates > div {
+  display: grid;
+  gap: 0.25rem;
+  padding: 0.9rem 1rem;
+  background: rgb(255 255 255 / 12%);
+  border: 1px solid rgb(255 255 255 / 22%);
+  border-radius: 1rem;
+}
+
+.dates strong {
+  font-size: clamp(1rem, 3vw, 1.3rem);
+  font-variant-numeric: tabular-nums;
+}
+.dates span,
+.dates small,
+.freshness {
+  color: #e4f0e8;
+}
+.dates span {
+  font-size: 0.76rem;
+}
+.dates small {
+  font-size: 0.7rem;
+}
+.heroControls {
+  align-items: baseline;
+}
+.freshness {
+  font-size: 0.76rem;
+}
+
+.refresh {
+  cursor: pointer;
+  min-height: 2.75rem;
+  border: 1px solid #ecf3df;
+  background: #f5f6e9;
+  color: #183d30;
+  font-weight: 750;
+  border-radius: 0.8rem;
+  padding: 0.55rem 1rem;
+}
+
+.columns {
+  display: grid;
+  grid-template-columns: minmax(0, 1.7fr) minmax(265px, 1fr);
+  align-items: start;
+  gap: 1.25rem;
+}
+
+.mainColumn,
+.sideColumn {
+  display: grid;
+  gap: 1.25rem;
+  min-width: 0;
+}
+
+.card,
+.next,
+.staySwitch,
+.support {
+  background: var(--surface, #fff);
+  color: var(--text, #20372e);
+  border: 1px solid var(--border, #dae4dc);
+  border-radius: 1.2rem;
+  padding: clamp(1.2rem, 3vw, 1.65rem);
+}
+
+.card h2,
+.next h2 {
+  font-size: clamp(1.25rem, 3vw, 1.6rem);
+  line-height: 1.22;
+  margin: 0 0 0.8rem;
+}
+.card p,
+.next p {
+  line-height: 1.6;
+}
+.next {
+  background: #edf4df;
+  border-color: #ccdcb5;
+  color: #203f2b;
+}
+.next .kicker {
+  color: #356243;
+}
+.cta {
+  display: inline-flex;
+  margin-top: 0.5rem;
+  background: #235941;
+  color: white !important;
+  padding: 0.8rem 1.15rem;
+  border-radius: 0.8rem;
+  font-weight: 750;
+  text-decoration: none;
+}
+
+.timeline {
+  list-style: none;
+  padding: 0 0 0 0.2rem;
+  margin: 1.4rem 0 0;
+}
+.timelineItem {
+  position: relative;
+  margin-left: 0.45rem;
+  padding: 0 0 1.5rem 1.6rem;
+  border-left: 2px solid #cfddd3;
+}
+.timelineItem:last-child {
+  padding-bottom: 0;
+  border-color: transparent;
+}
+.dot {
+  position: absolute;
+  left: -0.43rem;
+  top: 0.15rem;
+  width: 0.75rem;
+  height: 0.75rem;
+  background: #317455;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  outline: 1px solid #317455;
+}
+.timelineItem strong {
+  line-height: 1.4;
+}
+.timelineItem p {
+  margin: 0.4rem 0;
+}
+.timelineItem small,
+.muted,
+.footnote {
+  color: var(--text-muted, #52665d);
+  font-size: 0.79rem;
+}
+.kindTag,
+.reviewTag {
+  border-radius: 999px;
+  padding: 0.2rem 0.6rem;
+  background: #e3eee7;
+  color: #225841;
+  font-size: 0.7rem;
+  text-transform: capitalize;
+  white-space: nowrap;
+}
+.reviewTag {
+  background: #fff0ce;
+  color: #705011;
+}
+.footnote {
+  margin-top: 1rem;
+  line-height: 1.55;
+}
+
+.facts {
+  margin: 0;
+}
+.facts > div {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+  gap: 0.65rem;
+  padding: 0.8rem 0;
+  border-bottom: 1px solid #e6ece7;
+}
+.facts dt {
+  color: var(--text-muted, #50655b);
+}
+.facts dd {
+  margin: 0;
+  font-weight: 700;
+  text-align: right;
+  overflow-wrap: anywhere;
+}
+.quickLinks {
+  display: grid;
+  gap: 0.25rem;
+}
+.quickLinks a {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  text-decoration: none;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #e7ece7;
+  font-weight: 650;
+}
+.quickLinks span {
+  margin-left: auto;
+}
+.disabledLink {
+  padding: 0.7rem 0;
+  color: var(--text-muted, #53665a);
+}
+.support {
+  background: #f3f5ed;
+}
+.support p {
+  font-size: 0.86rem;
+  line-height: 1.55;
+}
+.warning {
+  padding: 1rem 1.2rem;
+  border: 1px solid #dfc48a;
+  background: #fff6df;
+  color: #533d16;
+  border-radius: 0.8rem;
+  line-height: 1.5;
+}
+.staySwitch {
+  display: grid;
+  gap: 0.8rem;
+}
+.stayLinks {
+  display: flex;
+  gap: 0.7rem;
+  overflow-x: auto;
+  padding-bottom: 0.4rem;
+}
+.stayLink,
+.selectedStay {
+  white-space: nowrap;
+  min-height: 2.65rem;
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid #bacac0;
+  border-radius: 999px;
+  padding: 0.55rem 0.8rem;
+  text-decoration: none;
+}
+.selectedStay {
+  background: #245a43;
+  color: #fff !important;
+}
+.guidanceList {
+  list-style: none;
+  padding: 0;
+}
+.guidanceList li {
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #e6ece7;
+}
+.guidanceList strong {
+  display: block;
+}
+.guidanceList span {
+  font-size: 0.78rem;
+  color: #52705e;
+}
+.guidanceList p {
+  margin: 0.3rem 0;
+}
+
+@media (max-width: 780px) {
+  .columns {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .hub {
+    padding: 0.7rem;
+  }
+  .hero {
+    border-radius: 1.15rem;
+  }
+}
+
+@media (max-width: 390px) {
+  .dates {
+    grid-template-columns: 1fr;
+  }
+  .facts > div {
+    grid-template-columns: 1fr;
+    gap: 0.2rem;
+  }
+  .facts dd {
+    text-align: left;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hub * {
+    scroll-behavior: auto;
+  }
+}

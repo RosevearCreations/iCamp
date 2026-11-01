@@ -57,6 +57,11 @@ export default async function AccountPage() {
           {session.user.accountType === "guest" ? (
             <>
               <p>
+                <Link href="/guest/hub">
+                  My Stay mobile hub & live timeline →
+                </Link>
+              </p>
+              <p>
                 <Link href="/guest/stay">Open My Stay guest portal →</Link>
               </p>
               <p>
