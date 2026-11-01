@@ -132,6 +132,28 @@ export default async function WorkspacePage({
           </section>
         ) : null}
 
+        {workspace.slug === "public" ? (
+          <section
+            className="content-panel"
+            aria-labelledby="public-events-heading"
+          >
+            <SectionHeading
+              eyebrow="Campground recreation"
+              title="Published events & activities"
+              id="public-events-heading"
+              helpTopic="shell.overview"
+              trailing={<span className="build-chip">Build 181</span>}
+            />
+            <p>
+              Discover activities with campground-local schedules, accessibility
+              notes and source-backed provisional request capacity.
+            </p>
+            <Link className="primary-link primary-link--dark" href="/events">
+              Explore events &amp; recreation
+            </Link>
+          </section>
+        ) : null}
+
         {workspace.slug === "management" ? (
           <section
             className="content-panel"

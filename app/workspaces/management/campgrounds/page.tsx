@@ -715,6 +715,27 @@ export default async function CampgroundAdministrationPage({
           </Link>
         </section>
 
+        <section className="content-panel" aria-labelledby="recreation-heading">
+          <SectionHeading
+            eyebrow="Recreation management"
+            title="Published events & registration request queue"
+            id="recreation-heading"
+            helpTopic="campground.structure"
+            trailing={<span className="build-chip">Build 181</span>}
+          />
+          <p>
+            Create and publish events, disclose provisional request availability
+            and review reservation-linked registration requests without issuing
+            admission or initiating billing.
+          </p>
+          <Link
+            className="primary-link primary-link--dark"
+            href={`/workspaces/management/campgrounds/events?campground=${encodeURIComponent(structure.campground.id)}`}
+          >
+            Manage events &amp; recreation
+          </Link>
+        </section>
+
         <section className="content-panel" aria-labelledby="my-stay-heading">
           <SectionHeading
             eyebrow="Guest experience"
