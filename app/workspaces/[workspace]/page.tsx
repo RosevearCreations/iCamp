@@ -154,6 +154,28 @@ export default async function WorkspacePage({
           </section>
         ) : null}
 
+        {workspace.slug === "public" ? (
+          <section
+            className="content-panel"
+            aria-labelledby="public-rentals-heading"
+          >
+            <SectionHeading
+              eyebrow="Amenity & equipment planning"
+              title="Find source-verified rentals"
+              id="public-rentals-heading"
+              helpTopic="shell.overview"
+              trailing={<span className="build-chip">Build 182</span>}
+            />
+            <p>
+              Check actual operational assets and provisional date-specific
+              request capacity, without charging or allocating anything.
+            </p>
+            <Link className="primary-link primary-link--dark" href="/rentals">
+              Explore rental planning
+            </Link>
+          </section>
+        ) : null}
+
         {workspace.slug === "management" ? (
           <section
             className="content-panel"

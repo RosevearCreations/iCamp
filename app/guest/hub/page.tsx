@@ -453,6 +453,9 @@ export default async function GuestHubPage({
                 <Link href="/guest/events">
                   Events &amp; activity requests <span>→</span>
                 </Link>
+                <Link href="/guest/rentals">
+                  Amenities &amp; rental planning <span>→</span>
+                </Link>
                 <Link href="/guest/profile">
                   Saved guest profile <span>→</span>
                 </Link>

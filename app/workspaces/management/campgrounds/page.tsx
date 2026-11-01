@@ -736,6 +736,30 @@ export default async function CampgroundAdministrationPage({
           </Link>
         </section>
 
+        <section
+          className="content-panel"
+          aria-labelledby="rental-planning-heading"
+        >
+          <SectionHeading
+            eyebrow="Rental operations"
+            title="Amenity & equipment planning requests"
+            id="rental-planning-heading"
+            helpTopic="campground.structure"
+            trailing={<span className="build-chip">Build 182</span>}
+          />
+          <p>
+            Review registered operational assets, publish source-backed rental
+            planning offers and manage provisional guest requests without
+            allocating equipment or activating billing.
+          </p>
+          <Link
+            className="primary-link primary-link--dark"
+            href={`/workspaces/management/campgrounds/rentals?campground=${encodeURIComponent(structure.campground.id)}`}
+          >
+            Manage rental planning
+          </Link>
+        </section>
+
         <section className="content-panel" aria-labelledby="my-stay-heading">
           <SectionHeading
             eyebrow="Guest experience"
