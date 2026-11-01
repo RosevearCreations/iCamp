@@ -1047,6 +1047,8 @@ Build 173's public accommodation filters, published gallery coverage, live block
 
 Build 174's [`transparent quote and policy acceptance`](BUILD_174_TRANSPARENT_QUOTE_ACCEPTANCE.md) extends server-only canonical rates and booking charges with expiring line-item/selected-extras previews, configured deposit/refund summaries and shared public/print readback. There is no canonical tax-rate table; final tax-inclusive totals remain explicitly unavailable pending real configured taxes. Billing/Omnichannel are still HELD.
 
+Build 175's [`booking draft recovery acceptance`](BUILD_175_BOOKING_DRAFT_RECOVERY_ACCEPTANCE.md) adds explicitly consented, guest-owned, seven-day server drafts, same-account cross-device recovery/deletion and current availability/quote/policy rechecks before a separate checkout action. No hold, reservation, charge or outbound contact is created. Production operation depends on applying migration 0186 and configuring `DATABASE_URL`; Billing/Omnichannel remain HELD.
+
 Priority order:
 
 1. **171–172 — Evidence and trust:** recoveries, escalation source continuity and truly independent Standard Theme owner review.

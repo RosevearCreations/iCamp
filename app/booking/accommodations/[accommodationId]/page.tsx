@@ -8,6 +8,7 @@ import { getPublicAccommodationDetail } from "@/lib/public-accommodation-detail/
 import { parsePublicQuoteSelections } from "@/lib/public-accommodation-detail/quote-preview.mjs";
 
 import { startReservationCheckoutAction } from "./checkout/actions";
+import { saveBookingDraftAction } from "@/app/guest/booking-drafts/actions";
 import { QuoteSummary } from "./quote-summary";
 import styles from "./detail.module.css";
 
@@ -88,6 +89,14 @@ export default async function PublicAccommodationDetailPage({
   const checkoutError = query.checkoutError
     ? "Checkout could not start because the selected accommodation or dates are no longer available."
     : null;
+  const draftError =
+    query.draftError === "consent"
+      ? "Please explicitly agree to save these selections to your account."
+      : query.draftError === "stale"
+        ? "These saved options changed; reprice the stay and try again."
+        : query.draftError
+          ? "We could not save your draft. No reservation or hold was created."
+          : null;
   const quoteQuery = new URLSearchParams({
     campground: detail.campground.slug,
     arrivalDate: detail.dates.arrivalDate,
@@ -491,6 +500,85 @@ export default async function PublicAccommodationDetailPage({
             041 revalidates dates, availability, capacity, compatibility,
             selected add-ons and the final server quote before creating a
             pending reservation. No payment is captured until Build 042.
+          </p>
+        </section>
+
+        <section className="content-panel" aria-labelledby="draft-save-heading">
+          <SectionHeading
+            eyebrow="Build 175 · Private, seven-day recovery"
+            title="Save this booking draft for later"
+            id="draft-save-heading"
+            helpTopic="shell.overview"
+          />
+          <p>
+            Save these dates and optional extras to your iCamp guest account,
+            then sign in on a phone, tablet or another device to resume. Your
+            choices expire after seven days. Reopening checks fresh inventory,
+            rates, fees and policies. It never places a hold, makes a
+            reservation or charges you.
+          </p>
+          {draftError ? (
+            <p className="form-message form-message--error" role="alert">
+              {draftError}
+            </p>
+          ) : null}
+          {!inputError && !detail.selectionError ? (
+            <form action={saveBookingDraftAction} className="form-grid">
+              <input
+                type="hidden"
+                name="campgroundSlug"
+                value={detail.campground.slug}
+              />
+              <input
+                type="hidden"
+                name="accommodationId"
+                value={detail.accommodation.id}
+              />
+              <input
+                type="hidden"
+                name="arrivalDate"
+                value={detail.dates.arrivalDate}
+              />
+              <input
+                type="hidden"
+                name="departureDate"
+                value={detail.dates.departureDate}
+              />
+              {selections.map((selection, index) => (
+                <div key={selection.code}>
+                  <input
+                    type="hidden"
+                    name={`extra${index + 1}`}
+                    value={selection.code}
+                  />
+                  <input
+                    type="hidden"
+                    name={`quantity${index + 1}`}
+                    value={selection.quantity}
+                  />
+                </div>
+              ))}
+              <label>
+                <input type="checkbox" name="saveConsent" required /> I agree to
+                save these selections privately for seven days. I can delete
+                them at any time.
+              </label>
+              <button type="submit" className="primary-button">
+                Save my draft
+              </button>
+            </form>
+          ) : (
+            <p>Reprice invalid extras before saving a draft.</p>
+          )}
+          <p>
+            <Link href="/guest/booking-drafts">
+              View or delete my saved booking drafts
+            </Link>
+          </p>
+          <p>
+            No recovery link is emailed or texted. Billing and automated
+            Omnichannel delivery remain HELD / DISCONNECTED. Staff can assist
+            with a fresh printed quote.
           </p>
         </section>
 
