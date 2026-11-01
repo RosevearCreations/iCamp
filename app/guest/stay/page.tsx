@@ -129,6 +129,9 @@ export default async function MyStayPage({
             map, rules, Wi-Fi guidance, guest services, assistance and receipts.
           </p>
           <div className="hero-actions">
+            <Link className="primary-link" href="/guest/hub">
+              Open mobile My Stay hub
+            </Link>
             <Link className="primary-link" href="/guest/profile">
               Saved stay information
             </Link>

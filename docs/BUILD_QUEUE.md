@@ -2,9 +2,9 @@
 
 Current program: **iCamp2027**
 
-## Approved Build Batch 171–200 (30 defined; Build 177 release scope)
+## Approved Build Batch 171–200 (30 defined; Build 178 release scope)
 
-Planning baseline: **Build 170**. The following is the approved **30-build** batch. Builds 171–176 are recorded in their corresponding acceptance documents, including [`BUILD_176_RESERVATION_DECISION_ACCEPTANCE.md`](BUILD_176_RESERVATION_DECISION_ACCEPTANCE.md). Build 177's consented guest pre-registration and version-pinned staff checklist are documented in [`BUILD_177_ARRIVAL_PLANNER_ACCEPTANCE.md`](BUILD_177_ARRIVAL_PLANNER_ACCEPTANCE.md). Only separately verified CI and production readback establish GREEN; later builds remain planned. Full scope and safety boundaries are in [`BUILD_171_200_FUTURE_QUEUE.md`](BUILD_171_200_FUTURE_QUEUE.md).
+Planning baseline: **Build 170**. The following is the approved **30-build** batch. Builds 171–177 are recorded in their corresponding acceptance documents, including [`BUILD_177_ARRIVAL_PLANNER_ACCEPTANCE.md`](BUILD_177_ARRIVAL_PLANNER_ACCEPTANCE.md). Build 178's source-backed mobile guest hub and status timeline are described in [`BUILD_178_MY_STAY_HUB_ACCEPTANCE.md`](BUILD_178_MY_STAY_HUB_ACCEPTANCE.md). Only separately verified CI and production readback establish GREEN; later builds remain planned. Full scope and safety boundaries are in [`BUILD_171_200_FUTURE_QUEUE.md`](BUILD_171_200_FUTURE_QUEUE.md).
 
 | Build | Planned scope | Primary benefit |
 | --- | --- | --- |
@@ -14,9 +14,9 @@ Planning baseline: **Build 170**. The following is the approved **30-build** bat
 | **174 — PROMOTED** | Transparent Booking Total, Fee Breakdown & Policy Preview | Make source-backed prices and rules understandable before commitment without inventing taxes. |
 | **175 — PROMOTED** | Booking Draft Save-and-Resume & Safe Cross-Device Recovery | Prevent lost booking progress without creating a reservation or hold. |
 | **176 — PROMOTED** | Reservation Change/Cancellation Preview & Guest Decision Controls | Give guests clear options without unintended refunds. |
-| **177 — RELEASE SCOPE** | Arrival Planner, Pre-Registration & Check-In Readiness | Reduce front-desk queues and surprises. |
-| **178 — NEXT AFTER 177 GREEN** | Unified My Stay Mobile Hub & Status Timeline | Put guest information in one place. |
-| 179 | In-App Assistance Conversation & Case Progress | Improve service follow-up without enabling held messaging. |
+| **177 — PROMOTED** | Arrival Planner, Pre-Registration & Check-In Readiness | Reduce front-desk queues and surprises. |
+| **178 — RELEASE SCOPE** | Unified My Stay Mobile Hub & Status Timeline | Put guest information in one place. |
+| **179 — NEXT AFTER 178 GREEN** | In-App Assistance Conversation & Case Progress | Improve service follow-up without enabling held messaging. |
 | 180 | Accessible Map/List Wayfinding, Amenities & Directions | Make site navigation easier for all visitors. |
 | 181 | Events & Recreation Discovery, Capacity & Registration | Make campground activities easier to discover. |
 | 182 | Amenity/Equipment Rental Availability & Reservation Planner | Support safe rental planning. |
