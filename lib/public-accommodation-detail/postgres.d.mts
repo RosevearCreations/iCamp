@@ -1,3 +1,5 @@
+import type { PublicQuotePreview } from "./quote-preview.mjs";
+
 export interface PublicAccommodationDetail {
   campground: {
     id: string;
@@ -39,6 +41,8 @@ export interface PublicAccommodationDetail {
       deltaCents: number;
     }>;
   };
+  quotePreview: PublicQuotePreview;
+  selectionError: string | null;
   bookingCharges: {
     currencyCode: string;
     automaticTotalCents: number | null;
@@ -84,6 +88,7 @@ export function getPublicAccommodationDetail(input: {
   accommodationId: string;
   arrivalDate: string;
   departureDate: string;
+  selections?: Array<{ code: string; quantity: number }>;
 }): Promise<PublicAccommodationDetail | null>;
 
 export function closePublicAccommodationDetailPoolForTests(): Promise<void>;

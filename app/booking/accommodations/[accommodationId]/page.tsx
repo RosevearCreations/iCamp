@@ -5,8 +5,10 @@ import { notFound } from "next/navigation";
 import { AppShell } from "@/components/app-shell";
 import { SectionHeading } from "@/components/section-heading";
 import { getPublicAccommodationDetail } from "@/lib/public-accommodation-detail/postgres.mjs";
+import { parsePublicQuoteSelections } from "@/lib/public-accommodation-detail/quote-preview.mjs";
 
 import { startReservationCheckoutAction } from "./checkout/actions";
+import { QuoteSummary } from "./quote-summary";
 import styles from "./detail.module.css";
 
 export const dynamic = "force-dynamic";
@@ -37,6 +39,30 @@ export default async function PublicAccommodationDetailPage({
   const campgroundSlug = query.campground ?? "";
   const arrivalDate = query.arrivalDate ?? isoDate(0);
   const departureDate = query.departureDate ?? isoDate(1);
+  let selections: Array<{ code: string; quantity: number }> = [];
+  let inputError: string | null = null;
+  try {
+    selections = parsePublicQuoteSelections(query);
+  } catch {
+    inputError =
+      "Invalid or repeated add-on selection. Review the available options and reprice.";
+  }
+
+  if (!process.env.DATABASE_URL?.trim()) {
+    return (
+      <AppShell>
+        <section className="content-panel" role="status">
+          <h1>Live accommodation pricing is temporarily unavailable</h1>
+          <p>
+            We cannot verify current dates, charges or policies. No quote or
+            reservation was created. Please ask the campground office for an
+            up-to-date price.
+          </p>
+          <Link href="/booking/map">Return to booking discovery</Link>
+        </section>
+      </AppShell>
+    );
+  }
 
   let detail = null;
   try {
@@ -45,6 +71,7 @@ export default async function PublicAccommodationDetailPage({
       accommodationId,
       arrivalDate,
       departureDate,
+      selections,
     });
   } catch {
     detail = null;
@@ -61,6 +88,19 @@ export default async function PublicAccommodationDetailPage({
   const checkoutError = query.checkoutError
     ? "Checkout could not start because the selected accommodation or dates are no longer available."
     : null;
+  const quoteQuery = new URLSearchParams({
+    campground: detail.campground.slug,
+    arrivalDate: detail.dates.arrivalDate,
+    departureDate: detail.dates.departureDate,
+  });
+  selections.forEach((selection, index) => {
+    quoteQuery.set(`extra${index + 1}`, selection.code);
+    quoteQuery.set(`quantity${index + 1}`, String(selection.quantity));
+  });
+  const printHref = `/booking/accommodations/${encodeURIComponent(detail.accommodation.id)}/quote/print?${quoteQuery.toString()}`;
+  const optionalCharges = detail.bookingCharges.items.filter(
+    (item) => item.applicationMode === "optional",
+  );
 
   return (
     <AppShell>
@@ -93,6 +133,87 @@ export default async function PublicAccommodationDetailPage({
             {detail.dates.nights}{" "}
             {detail.dates.nights === 1 ? "night" : "nights"}
           </p>
+        </section>
+
+        <section
+          className="content-panel"
+          aria-labelledby="quote-preview-heading"
+        >
+          <SectionHeading
+            eyebrow="Build 174 · Expiring, source-grounded preview"
+            title="Transparent stay price, extras and policies"
+            id="quote-preview-heading"
+            helpTopic="shell.overview"
+          />
+          <p>
+            Choose up to three optional add-ons or passes to get a fresh
+            server-priced comparison. Mandatory campground fees are always
+            included; unconfigured taxes are never silently set to zero. These
+            choices are for this preview only; select them again during
+            checkout, where the server recalculates the final eligible items.
+          </p>
+          <form
+            method="get"
+            className="form-grid"
+            aria-label="Reprice selected optional charges"
+          >
+            <input
+              type="hidden"
+              name="campground"
+              value={detail.campground.slug}
+            />
+            <input
+              type="hidden"
+              name="arrivalDate"
+              value={detail.dates.arrivalDate}
+            />
+            <input
+              type="hidden"
+              name="departureDate"
+              value={detail.dates.departureDate}
+            />
+            {[1, 2, 3].map((index) => (
+              <div key={index}>
+                <label>
+                  Optional extra {index}
+                  <select
+                    name={`extra${index}`}
+                    defaultValue={selections[index - 1]?.code ?? ""}
+                  >
+                    <option value="">No extra</option>
+                    {optionalCharges.map((item) => (
+                      <option key={item.id} value={item.code}>
+                        {item.displayName} · {item.priceLabel}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label>
+                  Quantity for extra {index}
+                  <input
+                    name={`quantity${index}`}
+                    type="number"
+                    min={1}
+                    max={100}
+                    step={1}
+                    defaultValue={selections[index - 1]?.quantity ?? 1}
+                  />
+                </label>
+              </div>
+            ))}
+            <button type="submit">Recalculate server quote</button>
+          </form>
+          {inputError || detail.selectionError ? (
+            <p role="alert" className="form-message form-message--error">
+              {inputError ?? detail.selectionError}
+            </p>
+          ) : null}
+          <p>
+            <Link href={printHref}>
+              Open a fresh, printable / staff-assisted quote summary
+            </Link>
+          </p>
+          <QuoteSummary quote={detail.quotePreview} />
         </section>
 
         <section className={styles.heroGrid} aria-label="Booking readiness">
@@ -380,15 +501,13 @@ export default async function PublicAccommodationDetailPage({
             dynamic-price, add-on/pass/service-fee and map-context experience.
           </p>
           <p>
-            <strong>IVR/DTMF:</strong> the same canonical campsite/cottage
-            facts, dates, availability and canonical booking-charge prices can
-            be read concisely by accommodation code; gallery and long catalogues
-            use staff or secure-link handoff.
+            <strong>IVR/DTMF:</strong> provider-gated and HELD. Staff may read
+            the same sourced quote and policy preview by accommodation code; no
+            automated call or payment is activated.
           </p>
           <p>
-            <strong>SMS/MMS:</strong> the same canonical facts, availability and
-            booking-charge prices can be summarized with a secure link back to
-            this visual detail page.
+            <strong>SMS/MMS:</strong> provider-gated and HELD. A printable
+            office-assisted view is available without outbound messaging.
           </p>
         </section>
       </div>

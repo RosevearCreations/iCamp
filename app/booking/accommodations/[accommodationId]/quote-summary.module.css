@@ -1,0 +1,79 @@
+.quote {
+  display: grid;
+  gap: 0.6rem;
+}
+.quote h3 {
+  margin: 1rem 0 0.2rem;
+}
+.quote p {
+  margin: 0.3rem 0;
+}
+.banner {
+  padding: 1rem;
+  border: 1px solid var(--line);
+  border-radius: 0.8rem;
+  background: var(--surface-soft);
+}
+.muted {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+.warning {
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--line);
+  border-left: 0.3rem solid #ad6a17;
+  border-radius: 0.6rem;
+  background: var(--surface-soft);
+}
+.highlight {
+  font-weight: 800;
+  background: var(--surface-soft);
+}
+.totals {
+  width: 100%;
+}
+.totals th {
+  text-align: left;
+}
+.totals td {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+  gap: 0.75rem;
+  margin: 0;
+}
+.facts > div {
+  border: 1px solid var(--line);
+  border-radius: 0.7rem;
+  padding: 0.8rem;
+}
+.facts dt {
+  font-weight: 700;
+}
+.facts dd {
+  margin: 0.3rem 0 0;
+}
+@media print {
+  .quote {
+    font-size: 10pt;
+    color: #000;
+  }
+  .quote table {
+    border-collapse: collapse;
+    width: 100%;
+  }
+  .quote th,
+  .quote td {
+    padding: 0.3rem;
+    border-bottom: 1px solid #aaa;
+  }
+  .quote details {
+    display: block;
+  }
+  .quote details > * {
+    display: block;
+  }
+}
