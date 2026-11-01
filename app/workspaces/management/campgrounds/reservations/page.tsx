@@ -106,6 +106,11 @@ export default async function ReservationManagementPage({
             preserving the original checkout/payment/document evidence, with a
             dedicated front-office desk for walk-up and overflow intake.
           </p>
+          <p>
+            <Link href="/workspaces/management/campgrounds/reservations/review-requests">
+              View guest change/cancellation review requests
+            </Link>
+          </p>
         </section>
 
         {params.saved ? (

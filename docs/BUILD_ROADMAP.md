@@ -1049,6 +1049,8 @@ Build 174's [`transparent quote and policy acceptance`](BUILD_174_TRANSPARENT_QU
 
 Build 175's [`booking draft recovery acceptance`](BUILD_175_BOOKING_DRAFT_RECOVERY_ACCEPTANCE.md) adds explicitly consented, guest-owned, seven-day server drafts, same-account cross-device recovery/deletion and current availability/quote/policy rechecks before a separate checkout action. No hold, reservation, charge or outbound contact is created. Production operation depends on applying migration 0186 and configuring `DATABASE_URL`; Billing/Omnichannel remain HELD.
 
+Build 176's [`reservation decision acceptance`](BUILD_176_RESERVATION_DECISION_ACCEPTANCE.md) adds owner-authenticated current cancellation/refund evidence, fresh nonbinding date-change comparison, explicit opt-in internal staff-review requests, guest withdrawal and a permission-scoped staff queue. No reservation cancellation/price mutation, refund action, outbound contact or provider activation; production live readback still requires the Vercel database connection.
+
 Priority order:
 
 1. **171–172 — Evidence and trust:** recoveries, escalation source continuity and truly independent Standard Theme owner review.

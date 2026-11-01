@@ -2,9 +2,9 @@
 
 Current program: **iCamp2027**
 
-## Approved Build Batch 171–200 (30 defined; Build 175 release scope)
+## Approved Build Batch 171–200 (30 defined; Build 176 release scope)
 
-Planning baseline: **Build 170**. The following is the approved **30-build** batch. Builds 171–174 are recorded in their corresponding acceptance documents, including [`BUILD_174_TRANSPARENT_QUOTE_ACCEPTANCE.md`](BUILD_174_TRANSPARENT_QUOTE_ACCEPTANCE.md). Build 175's signed-in consented recovery and revalidation is documented in [`BUILD_175_BOOKING_DRAFT_RECOVERY_ACCEPTANCE.md`](BUILD_175_BOOKING_DRAFT_RECOVERY_ACCEPTANCE.md). Only separately verified CI and production readback establish GREEN; later builds remain planned. Full scope and safety boundaries are in [`BUILD_171_200_FUTURE_QUEUE.md`](BUILD_171_200_FUTURE_QUEUE.md).
+Planning baseline: **Build 170**. The following is the approved **30-build** batch. Builds 171–175 are recorded in their corresponding acceptance documents, including [`BUILD_175_BOOKING_DRAFT_RECOVERY_ACCEPTANCE.md`](BUILD_175_BOOKING_DRAFT_RECOVERY_ACCEPTANCE.md). Build 176's source-backed guest decisions and internal staff handoff are documented in [`BUILD_176_RESERVATION_DECISION_ACCEPTANCE.md`](BUILD_176_RESERVATION_DECISION_ACCEPTANCE.md). Only separately verified CI and production readback establish GREEN; later builds remain planned. Full scope and safety boundaries are in [`BUILD_171_200_FUTURE_QUEUE.md`](BUILD_171_200_FUTURE_QUEUE.md).
 
 | Build | Planned scope | Primary benefit |
 | --- | --- | --- |
@@ -12,9 +12,9 @@ Planning baseline: **Build 170**. The following is the approved **30-build** bat
 | **172 — PROMOTED** | Independent Owner Review Intake, Accessibility Evidence & Decision Ledger (read-only contract; actual owner decisions HELD) | Make owner review evidence versioned and safer to hand off; do not imply signed acceptance. |
 | **173 — PROMOTED** | Accessible Campsite/Cottage Discovery, Availability Filters & Side-by-Side Comparison | Help guests find the right stay; live inventory remains dependent on deployment DB credentials. |
 | **174 — PROMOTED** | Transparent Booking Total, Fee Breakdown & Policy Preview | Make source-backed prices and rules understandable before commitment without inventing taxes. |
-| **175 — RELEASE SCOPE** | Booking Draft Save-and-Resume & Safe Cross-Device Recovery | Prevent lost booking progress without creating a reservation or hold. |
-| **176 — NEXT AFTER 175 GREEN** | Reservation Change/Cancellation Preview & Guest Decision Controls | Give guests clear options without unintended refunds. |
-| 177 | Arrival Planner, Pre-Registration & Check-In Readiness | Reduce front-desk queues and surprises. |
+| **175 — PROMOTED** | Booking Draft Save-and-Resume & Safe Cross-Device Recovery | Prevent lost booking progress without creating a reservation or hold. |
+| **176 — RELEASE SCOPE** | Reservation Change/Cancellation Preview & Guest Decision Controls | Give guests clear options without unintended refunds. |
+| **177 — NEXT AFTER 176 GREEN** | Arrival Planner, Pre-Registration & Check-In Readiness | Reduce front-desk queues and surprises. |
 | 178 | Unified My Stay Mobile Hub & Status Timeline | Put guest information in one place. |
 | 179 | In-App Assistance Conversation & Case Progress | Improve service follow-up without enabling held messaging. |
 | 180 | Accessible Map/List Wayfinding, Amenities & Directions | Make site navigation easier for all visitors. |
