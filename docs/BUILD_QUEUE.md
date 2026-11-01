@@ -2,9 +2,9 @@
 
 Current program: **iCamp2027**
 
-## Approved Build Batch 171–200 (30 defined; Build 179 release scope)
+## Approved Build Batch 171–200 (30 defined; Build 180 release scope)
 
-Planning baseline: **Build 170**. The following is the approved **30-build** batch. Builds 171–178 are recorded in their corresponding acceptance documents, including [`BUILD_178_MY_STAY_HUB_ACCEPTANCE.md`](BUILD_178_MY_STAY_HUB_ACCEPTANCE.md). Build 179's guest/staff in-app assistance replies and guarded evidence are documented in [`BUILD_179_ASSISTANCE_CONVERSATION_ACCEPTANCE.md`](BUILD_179_ASSISTANCE_CONVERSATION_ACCEPTANCE.md). Only separately verified CI and production readback establish GREEN; later builds remain planned. Full scope and safety boundaries are in [`BUILD_171_200_FUTURE_QUEUE.md`](BUILD_171_200_FUTURE_QUEUE.md).
+Planning baseline: **Build 170**. The following is the approved **30-build** batch. Builds 171–179 are documented, including [`BUILD_179_ASSISTANCE_CONVERSATION_ACCEPTANCE.md`](BUILD_179_ASSISTANCE_CONVERSATION_ACCEPTANCE.md), and Build 180's reviewed public amenity map/list is documented in [`BUILD_180_WAYFINDING_ACCEPTANCE.md`](BUILD_180_WAYFINDING_ACCEPTANCE.md). Only separately verified CI and production readback establish GREEN; later builds remain planned. Full scope and safety boundaries are in [`BUILD_171_200_FUTURE_QUEUE.md`](BUILD_171_200_FUTURE_QUEUE.md).
 
 | Build | Planned scope | Primary benefit |
 | --- | --- | --- |
@@ -16,9 +16,9 @@ Planning baseline: **Build 170**. The following is the approved **30-build** bat
 | **176 — PROMOTED** | Reservation Change/Cancellation Preview & Guest Decision Controls | Give guests clear options without unintended refunds. |
 | **177 — PROMOTED** | Arrival Planner, Pre-Registration & Check-In Readiness | Reduce front-desk queues and surprises. |
 | **178 — PROMOTED** | Unified My Stay Mobile Hub & Status Timeline | Put guest information in one place. |
-| **179 — RELEASE SCOPE** | In-App Assistance Conversation & Case Progress | Improve service follow-up without enabling held messaging. |
-| **180 — NEXT AFTER 179 GREEN** | Accessible Map/List Wayfinding, Amenities & Directions | Make site navigation easier for all visitors. |
-| 181 | Events & Recreation Discovery, Capacity & Registration | Make campground activities easier to discover. |
+| **179 — PROMOTED** | In-App Assistance Conversation & Case Progress | Improve service follow-up without enabling held messaging. |
+| **180 — RELEASE SCOPE** | Accessible Map/List Wayfinding, Amenities & Directions | Make site navigation easier for all visitors. |
+| **181 — NEXT AFTER 180 GREEN** | Events & Recreation Discovery, Capacity & Registration | Make campground activities easier to discover. |
 | 182 | Amenity/Equipment Rental Availability & Reservation Planner | Support safe rental planning. |
 | 183 | Guest Store Catalogue, Cart Draft & Campsite Delivery Planning | Enable easy store ordering preparation. |
 | 184 | Guest Feedback, Service Recovery & Moderated Reviews | Close the feedback loop. |

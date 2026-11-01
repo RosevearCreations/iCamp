@@ -132,13 +132,15 @@ export default async function PublicBookingMapPage({
 
         <section className="hero-panel">
           <p className="eyebrow">
-            Build 173 · Accessible discovery and comparison
+            Build 180 · Accessible discovery, wayfinding and comparison
           </p>
           <h1>Find and compare your campsite or cottage</h1>
           <p className="hero-panel__lead">
             Search published accommodations by date, fit, campground-advertised
             accessibility, amenities and photos. Compare up to three side by
-            side, using the same live availability as campground staff.
+            side, using the same live availability as campground staff. Browse
+            reviewed amenity points and landmark notes without assuming a
+            verified route or step-free path.
           </p>
         </section>
 
@@ -305,6 +307,7 @@ export default async function PublicBookingMapPage({
             departureDate: snapshot.departureDate,
           }}
           generatedAt={snapshot.generatedAt}
+          wayfinding={snapshot.wayfinding}
         />
 
         <section className="content-panel">

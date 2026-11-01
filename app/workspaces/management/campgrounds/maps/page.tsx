@@ -237,6 +237,32 @@ export default async function CampgroundMapImageLibraryPage({
           )}
         </section>
 
+        {selected.permissions.includes("campground.configuration") &&
+        canPublish ? (
+          <section
+            className="content-panel"
+            aria-labelledby="wayfinding-review-link"
+          >
+            <SectionHeading
+              eyebrow="Build 180 · Publication review"
+              title="Guest-facing amenities and wayfinding"
+              id="wayfinding-review-link"
+              helpTopic="campground.map.objects"
+            />
+            <p>
+              Review verified amenity points, accessibility statements and
+              landmark notes before they appear on the public map. Private
+              utilities, road and gate objects are never automatically exposed.
+            </p>
+            <Link
+              className="primary-link primary-link--dark"
+              href={`/workspaces/management/campgrounds/maps/wayfinding?campground=${encodeURIComponent(selected.campgroundId)}`}
+            >
+              Open amenity publication review
+            </Link>
+          </section>
+        ) : null}
+
         <section className="content-panel" aria-labelledby="versions-heading">
           <SectionHeading
             eyebrow="Version history"

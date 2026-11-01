@@ -11,6 +11,7 @@ import {
 } from "@/lib/public-booking-map/discovery.mjs";
 import type { SavedPublicComparison } from "@/lib/public-booking-map/discovery.mjs";
 import type { PublicBookingMapItem } from "@/lib/public-booking-map/postgres.mjs";
+import type { PublicWayfindingPoint } from "@/lib/wayfinding/core.mjs";
 
 import { PublicBookingMap } from "./booking-map";
 import styles from "./discovery-results.module.css";
@@ -99,6 +100,7 @@ export function DiscoveryResults({
   map,
   context,
   generatedAt,
+  wayfinding,
 }: Readonly<{
   allItems: PublicBookingMapItem[];
   visibleItems: PublicBookingMapItem[];
@@ -110,6 +112,7 @@ export function DiscoveryResults({
   };
   context: Context;
   generatedAt: string;
+  wayfinding: PublicWayfindingPoint[];
 }>) {
   const storageKey = `icamp:public-discovery:comparison:v1:${context.campgroundSlug}`;
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
@@ -234,6 +237,7 @@ export function DiscoveryResults({
           arrivalDate={context.arrivalDate}
           departureDate={context.departureDate}
           items={visibleItems}
+          amenities={wayfinding}
         />
         <p>
           Availability checked at{" "}

@@ -1,0 +1,86 @@
+.notice {
+  padding: 0.85rem 1rem;
+  background: var(--surface-soft);
+  border: 1px solid var(--line);
+  border-radius: 0.75rem;
+}
+.scopeForm {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: 0.75rem;
+}
+.scopeForm label {
+  display: grid;
+  gap: 0.35rem;
+  flex: 1 1 17rem;
+}
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
+  gap: 1rem;
+}
+.card {
+  display: grid;
+  align-content: start;
+  gap: 1rem;
+  padding: 1rem;
+  border: 1px solid var(--line);
+  border-radius: 1rem;
+  background: var(--surface);
+}
+.cardHead {
+  display: flex;
+  gap: 0.7rem;
+  align-items: start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+.cardHead h3 {
+  margin: 0.2rem 0;
+}
+.kicker {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--muted);
+  text-transform: capitalize;
+}
+.published,
+.draft {
+  font-size: 0.78rem;
+  padding: 0.3rem 0.55rem;
+  border-radius: 2rem;
+}
+.published {
+  background: #e1f4e5;
+  color: #16512b;
+}
+.draft {
+  background: #f5ebd7;
+  color: #724510;
+}
+.warning {
+  margin: 0;
+  color: #724510;
+  font-weight: 650;
+}
+.reviewForm {
+  display: grid;
+  gap: 0.8rem;
+}
+.reviewForm label {
+  display: grid;
+  gap: 0.35rem;
+}
+.reviewForm textarea {
+  width: 100%;
+}
+.publishOption {
+  display: flex !important;
+  align-items: start;
+  gap: 0.55rem !important;
+  font-weight: 650;
+}
+.publishOption input {
+  margin-top: 0.25rem;
+}
