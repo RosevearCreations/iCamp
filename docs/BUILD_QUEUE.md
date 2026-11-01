@@ -2,17 +2,17 @@
 
 Current program: **iCamp2027**
 
-## Approved Build Batch 171–200 (30 defined; Build 173 release scope)
+## Approved Build Batch 171–200 (30 defined; Build 174 release scope)
 
-Planning baseline: **Build 170**. The following is the approved **30-build** batch. Build 171's implementation is in [`BUILD_171_RECOVERY_SNAPSHOT_OWNER_REQUEST.md`](BUILD_171_RECOVERY_SNAPSHOT_OWNER_REQUEST.md); Build 172's owner evidence contract is in [`BUILD_172_INDEPENDENT_OWNER_INTAKE_LEDGER.md`](BUILD_172_INDEPENDENT_OWNER_INTAKE_LEDGER.md). Build 173's live discovery and local three-way comparison scope is documented in [`BUILD_173_DISCOVERY_COMPARISON_ACCEPTANCE.md`](BUILD_173_DISCOVERY_COMPARISON_ACCEPTANCE.md). Only separately verified CI and production readback establish GREEN; later builds remain planned. Full scope and safety boundaries are in [`BUILD_171_200_FUTURE_QUEUE.md`](BUILD_171_200_FUTURE_QUEUE.md).
+Planning baseline: **Build 170**. The following is the approved **30-build** batch. Builds 171–173 are recorded in their corresponding acceptance documents, including [`BUILD_173_DISCOVERY_COMPARISON_ACCEPTANCE.md`](BUILD_173_DISCOVERY_COMPARISON_ACCEPTANCE.md). Build 174's server-generated pricing and policy preview is documented in [`BUILD_174_TRANSPARENT_QUOTE_ACCEPTANCE.md`](BUILD_174_TRANSPARENT_QUOTE_ACCEPTANCE.md). Only separately verified CI and production readback establish GREEN; later builds remain planned. Full scope and safety boundaries are in [`BUILD_171_200_FUTURE_QUEUE.md`](BUILD_171_200_FUTURE_QUEUE.md).
 
 | Build | Planned scope | Primary benefit |
 | --- | --- | --- |
 | **171 — PROMOTED** | Scenario Recovery Checksum Exception Review, Escalation Handoff Snapshot Continuity & Standard Theme Independent Owner Acceptance Request Summary | Close existing recovery, escalation and owner-review follow-up without false acceptance claims. |
 | **172 — PROMOTED** | Independent Owner Review Intake, Accessibility Evidence & Decision Ledger (read-only contract; actual owner decisions HELD) | Make owner review evidence versioned and safer to hand off; do not imply signed acceptance. |
-| **173 — RELEASE SCOPE** | Accessible Campsite/Cottage Discovery, Availability Filters & Side-by-Side Comparison | Help guests find the right stay. |
-| **174 — NEXT AFTER 173 GREEN** | Transparent Booking Total, Fee Breakdown & Policy Preview | Make price and rules understandable before commitment. |
-| 175 | Booking Draft Save-and-Resume & Safe Cross-Device Recovery | Prevent lost booking progress. |
+| **173 — PROMOTED** | Accessible Campsite/Cottage Discovery, Availability Filters & Side-by-Side Comparison | Help guests find the right stay; live inventory remains dependent on deployment DB credentials. |
+| **174 — RELEASE SCOPE** | Transparent Booking Total, Fee Breakdown & Policy Preview | Make source-backed prices and rules understandable before commitment without inventing taxes. |
+| **175 — NEXT AFTER 174 GREEN** | Booking Draft Save-and-Resume & Safe Cross-Device Recovery | Prevent lost booking progress. |
 | 176 | Reservation Change/Cancellation Preview & Guest Decision Controls | Give guests clear options without unintended refunds. |
 | 177 | Arrival Planner, Pre-Registration & Check-In Readiness | Reduce front-desk queues and surprises. |
 | 178 | Unified My Stay Mobile Hub & Status Timeline | Put guest information in one place. |

@@ -42,4 +42,6 @@ The extension's early implementation checkpoints include [Build 171 recovery/esc
 
 [Build 173 public campsite/cottage discovery](docs/BUILD_173_DISCOVERY_COMPARISON_ACCEPTANCE.md) adds campground-maintained accessibility, fit, amenities and photo filters, a synchronized text/map view, and browser-local three-way comparison with live hold/source rechecks. No payment, provider call or independently certified accessibility claim is introduced.
 
+[Build 174 transparent pricing preview](docs/BUILD_174_TRANSPARENT_QUOTE_ACCEPTANCE.md) adds canonical nightly allocation, itemized mandatory and optional charges, source-configured deposit/refund terms, a ten-minute expiry and printable current summary. No tax-inclusive grand total is claimed until real tax rules exist; Billing and Omnichannel remain HELD.
+
 **Build 001 — Responsive PWA & Omnichannel Application Shell**

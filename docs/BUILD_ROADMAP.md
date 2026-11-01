@@ -1045,6 +1045,8 @@ Build 172's browser-local independent owner evidence intake, scoped historical r
 
 Build 173's public accommodation filters, published gallery coverage, live blocker recheck and saved local three-way comparison are described in [`BUILD_173_DISCOVERY_COMPARISON_ACCEPTANCE.md`](BUILD_173_DISCOVERY_COMPARISON_ACCEPTANCE.md). Source changes and stale holds are explicitly flagged; future Build 174 will separately present an expiring price/fee/policy breakdown. No billing or communications provider is enabled.
 
+Build 174's [`transparent quote and policy acceptance`](BUILD_174_TRANSPARENT_QUOTE_ACCEPTANCE.md) extends server-only canonical rates and booking charges with expiring line-item/selected-extras previews, configured deposit/refund summaries and shared public/print readback. There is no canonical tax-rate table; final tax-inclusive totals remain explicitly unavailable pending real configured taxes. Billing/Omnichannel are still HELD.
+
 Priority order:
 
 1. **171–172 — Evidence and trust:** recoveries, escalation source continuity and truly independent Standard Theme owner review.
