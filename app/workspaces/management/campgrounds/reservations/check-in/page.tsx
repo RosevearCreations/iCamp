@@ -139,6 +139,13 @@ export default async function FrontDeskCheckInPage({
             details and campground rules before changing the canonical
             reservation to checked in.
           </p>
+          <p>
+            <Link
+              href={`/workspaces/management/campgrounds/reservations/arrival-readiness?campground=${encodeURIComponent(selected.campgroundId)}`}
+            >
+              Review guest pre-registration plans and staff checklist receipts
+            </Link>
+          </p>
         </section>
 
         {params.saved ? (
