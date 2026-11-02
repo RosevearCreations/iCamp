@@ -2,9 +2,9 @@
 
 Current program: **iCamp2027**
 
-## Approved Build Batch 171–200 (30 defined; Build 191 release scope)
+## Approved Build Batch 171–200 (30 defined; Build 192 release scope)
 
-Planning baseline: **Build 170**. The following is the approved **30-build** batch. Builds 171–190 are promoted and have acceptance evidence, including [`BUILD_190_STAFF_SHIFT_READINESS_ACCEPTANCE.md`](BUILD_190_STAFF_SHIFT_READINESS_ACCEPTANCE.md). Build 191's implementation scope and release gates are in [`BUILD_191_VENDOR_SERVICE_EVIDENCE_ACCEPTANCE.md`](BUILD_191_VENDOR_SERVICE_EVIDENCE_ACCEPTANCE.md). Only separately verified CI and production readback establish GREEN; later builds remain planned. Full scope and safety boundaries are in [`BUILD_171_200_FUTURE_QUEUE.md`](BUILD_171_200_FUTURE_QUEUE.md).
+Planning baseline: **Build 170**. The following is the approved **30-build** batch. Builds 171–191 are promoted and have acceptance evidence, including [`BUILD_191_VENDOR_SERVICE_EVIDENCE_ACCEPTANCE.md`](BUILD_191_VENDOR_SERVICE_EVIDENCE_ACCEPTANCE.md). Build 192's implementation scope and release gates are in [`BUILD_192_STOCK_POS_RECONCILIATION_ACCEPTANCE.md`](BUILD_192_STOCK_POS_RECONCILIATION_ACCEPTANCE.md). Only separately verified CI and production readback establish GREEN; later builds remain planned. Full scope and safety boundaries are in [`BUILD_171_200_FUTURE_QUEUE.md`](BUILD_171_200_FUTURE_QUEUE.md).
 
 | Build | Planned scope | Primary benefit |
 | --- | --- | --- |
