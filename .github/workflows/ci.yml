@@ -169,6 +169,9 @@ jobs:
       - name: Verify Build 190 shift overlap, qualification, availability and handoff RLS
         run: npm run build190:verify
 
+      - name: Verify Build 191 vendor SLA, confidential sources and independent invoice review
+        run: npm run build191:verify
+
       - name: Verify authentication lifecycle
         run: npm run auth:verify
 
