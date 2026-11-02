@@ -103,6 +103,7 @@ create table icamp_private.security_incident_closure_reviews (
 );
 
 create index security_incident_cases_queue_idx on icamp_private.security_incident_cases(campground_id,status,severity,updated_at desc);
+create index security_incident_cases_campground_fk_idx on icamp_private.security_incident_cases(organization_id,campground_id);
 create index security_incident_cases_reporter_idx on icamp_private.security_incident_cases(opened_by_user_id);
 create index security_incident_cases_assignee_idx on icamp_private.security_incident_cases(assignee_user_id) where assignee_user_id is not null;
 create index security_incident_cases_requester_idx on icamp_private.security_incident_cases(closure_requested_by_user_id) where closure_requested_by_user_id is not null;
@@ -111,6 +112,7 @@ create index security_incident_cases_signal_idx on icamp_private.security_incide
 create index security_incident_events_timeline_idx on icamp_private.security_incident_events(organization_id,campground_id,case_id,occurred_at,id);
 create index security_incident_events_actor_idx on icamp_private.security_incident_events(actor_user_id);
 create index security_incident_sensitive_updater_idx on icamp_private.security_incident_sensitive(updated_by_user_id);
+create index security_incident_sensitive_case_fk_idx on icamp_private.security_incident_sensitive(organization_id,campground_id,case_id);
 create index security_incident_attachment_case_idx on icamp_private.security_incident_attachments(organization_id,campground_id,case_id,attached_at);
 create index security_incident_attachment_actor_idx on icamp_private.security_incident_attachments(actor_user_id);
 create index security_incident_review_case_idx on icamp_private.security_incident_closure_reviews(organization_id,campground_id,case_id,reviewed_at);

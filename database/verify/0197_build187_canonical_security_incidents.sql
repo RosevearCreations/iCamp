@@ -1,27 +1,27 @@
 do $verify_build187$
 declare
- tablename text;
+ incident_table text;
 begin
- foreach tablename in array array[
+ foreach incident_table in array array[
   'security_incident_cases','security_incident_events','security_incident_sensitive',
   'security_incident_attachments','security_incident_closure_reviews'
  ] loop
-  if not exists(select 1 from pg_class where oid=('icamp_private.'||tablename)::regclass
+  if not exists(select 1 from pg_class where oid=('icamp_private.'||incident_table)::regclass
     and relrowsecurity and relforcerowsecurity) then
-   raise exception 'Build187 private incident table % requires forced RLS',tablename;
+   raise exception 'Build187 private incident table % requires forced RLS',incident_table;
   end if;
   if exists(select 1 from pg_roles where rolname='anon') and
-     has_table_privilege('anon','icamp_private.'||tablename,'SELECT') then
-   raise exception 'Build187 anonymous read of restricted incident %',tablename;
+     has_table_privilege('anon','icamp_private.'||incident_table,'SELECT') then
+   raise exception 'Build187 anonymous read of restricted incident %',incident_table;
   end if;
   if exists(select 1 from pg_roles where rolname='authenticated') and
-     has_table_privilege('authenticated','icamp_private.'||tablename,'INSERT') then
-   raise exception 'Build187 client write of restricted incident %',tablename;
+     has_table_privilege('authenticated','icamp_private.'||incident_table,'INSERT') then
+   raise exception 'Build187 client write of restricted incident %',incident_table;
   end if;
-  if has_table_privilege('icamp_app','icamp_private.'||tablename,'INSERT') or
-     has_table_privilege('icamp_app','icamp_private.'||tablename,'UPDATE') or
-     has_table_privilege('icamp_app','icamp_private.'||tablename,'DELETE') then
-   raise exception 'Build187 incident mutation bypass through icamp_app: %',tablename;
+  if has_table_privilege('icamp_app','icamp_private.'||incident_table,'INSERT') or
+     has_table_privilege('icamp_app','icamp_private.'||incident_table,'UPDATE') or
+     has_table_privilege('icamp_app','icamp_private.'||incident_table,'DELETE') then
+   raise exception 'Build187 incident mutation bypass through icamp_app: %',incident_table;
   end if;
  end loop;
  if not exists(select 1 from pg_policies where schemaname='icamp_private'
