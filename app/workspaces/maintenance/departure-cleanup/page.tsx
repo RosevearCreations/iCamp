@@ -393,6 +393,7 @@ export default async function DepartureCampsiteCleanupPage({
                   canClear &&
                   task.inspectionStatus === "signed_off" &&
                   task.openCorrectiveWorkOrders === 0 &&
+                  task.openSiteWorkOrders === 0 &&
                   (!task.blockRebookingUntilClear || canManageAccommodation) &&
                   !task.clearedAt;
 
@@ -440,6 +441,10 @@ export default async function DepartureCampsiteCleanupPage({
                           {task.correctiveWorkOrders} total
                         </strong>
                       </span>
+                      <span>
+                        Other site maintenance:{" "}
+                        <strong>{task.openSiteWorkOrders} open</strong>
+                      </span>
                     </div>
 
                     {!task.programId && !task.clearedAt ? (
@@ -480,7 +485,8 @@ export default async function DepartureCampsiteCleanupPage({
                         >
                           Complete / review inspection
                         </Link>
-                        {task.openCorrectiveWorkOrders > 0 ? (
+                        {task.openCorrectiveWorkOrders > 0 ||
+                        task.openSiteWorkOrders > 0 ? (
                           <Link
                             className="primary-link primary-link--dark"
                             href={

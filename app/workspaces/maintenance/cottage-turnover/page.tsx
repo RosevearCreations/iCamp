@@ -125,9 +125,15 @@ export default async function CottageHousekeepingTurnoverPage({
     (turnover) =>
       turnover.inspectionStatus === "signed_off" &&
       turnover.openCorrectiveWorkOrders === 0 &&
+      turnover.openSiteWorkOrders === 0 &&
       turnover.requiredItems === turnover.checkedRequiredItems &&
       turnover.checklistIssues === 0 &&
-      turnover.housekeepingInspectionResult === "pass",
+      turnover.housekeepingInspectionResult === "pass" &&
+      turnover.linenComplete &&
+      turnover.housekeepingComplete &&
+      turnover.inventoryComplete &&
+      !turnover.damageFound &&
+      !turnover.securityIssueFound,
   ).length;
 
   return (
@@ -370,7 +376,8 @@ export default async function CottageHousekeepingTurnoverPage({
                   !turnover.securityIssueFound;
                 const inspectionClear =
                   turnover.inspectionStatus === "signed_off" &&
-                  turnover.openCorrectiveWorkOrders === 0;
+                  turnover.openCorrectiveWorkOrders === 0 &&
+                  turnover.openSiteWorkOrders === 0;
                 const canStart =
                   canPerformInspection &&
                   turnover.releaseRequired &&
@@ -454,6 +461,11 @@ export default async function CottageHousekeepingTurnoverPage({
                         </small>
                       </div>
                       <div>
+                        <span>Other site maintenance</span>
+                        <strong>{turnover.openSiteWorkOrders} open</strong>
+                        <small>All unresolved accommodation work orders</small>
+                      </div>
+                      <div>
                         <span>Accommodation state</span>
                         <strong>{turnover.accommodationStatusState}</strong>
                         <small>
@@ -498,6 +510,13 @@ export default async function CottageHousekeepingTurnoverPage({
                         Final inspection is signed off, but linked Build 065
                         corrective work must be completed or cancelled before
                         release.
+                      </p>
+                    ) : null}
+
+                    {turnover.openSiteWorkOrders > 0 && !turnover.releasedAt ? (
+                      <p className={styles.warning}>
+                        Resolve the linked site maintenance work orders before
+                        returning this cottage to availability.
                       </p>
                     ) : null}
 

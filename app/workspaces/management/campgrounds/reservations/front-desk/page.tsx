@@ -154,6 +154,12 @@ export default async function UnifiedFrontDeskPage({
             >
               Pre-registration reviews
             </Link>
+            <Link
+              className="secondary-link"
+              href={`/workspaces/maintenance/turnover-release?${baseParam}`}
+            >
+              Turnover release board
+            </Link>
           </div>
         </section>
         <section className="content-panel" aria-labelledby="desk-workload">

@@ -53,6 +53,7 @@ export interface CampsiteDepartureCleanupWorkspace {
     inspectionTemplateName: string | null;
     inspectionVersionNumber: number | null;
     openCorrectiveWorkOrders: number;
+    openSiteWorkOrders: number;
     correctiveWorkOrders: number;
     blockRebookingUntilClear: boolean;
     clearedAt: string | null;

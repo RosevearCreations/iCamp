@@ -144,7 +144,7 @@ This matrix cross-checks the complete iCamp vision against the restarted active 
 | Consolidated arrival, stay and assistance follow-up | 177: source-backed guest arrival planner, consented pre-registration, staff-scoped readiness queue and revision-pinned desk receipt without check-in/financial authorization; 178–179 remain planned |
 | Accessible wayfinding, real guest activities/rentals/store requests | 180–183 |
 | Feedback moderation and guest issue follow-through | 184 |
-| Unified front desk, turnover and accountable safety case management | 185–187 |
+| Unified front desk, turnover and accountable safety case management | 185 workboard; 186 combined cottage/campsite release evidence and maintenance guard (Web/PWA); 187 security incident cases planned |
 | Access reconciliation, offline field conflict review and workforce training | 188–190 |
 | Vendor and store inventory/POS control, seasonal follow-up | 191–193 |
 | Role-aware management UX, measured forecasting and finance reconciliation | 194–196 |
