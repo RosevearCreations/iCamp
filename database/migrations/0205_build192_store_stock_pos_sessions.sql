@@ -230,7 +230,8 @@ begin
  select quantity_on_hand,row_version into b from icamp_private.store_stock_balances
    where campground_id=new.campground_id and organization_id=new.organization_id
      and product_id=new.product_id and location_id=new.location_id for update;
- if not found or b.row_version=0 then raise exception 'Initialize a verified stock ledger before submitting a count'; end if;
+ if not found then raise exception 'Initialize a verified stock ledger before submitting a count'; end if;
+ if b.row_version=0 then raise exception 'Initialize a verified stock ledger before submitting a count'; end if;
  new.expected_quantity:=b.quantity_on_hand;
  new.expected_version:=b.row_version;
  return new;
@@ -249,7 +250,8 @@ begin
  select status,opened_by_user_id,closed_by_user_id,expected_cash_cents,observed_cash_cents into s
   from icamp_private.store_pos_sessions where id=new.session_id and organization_id=new.organization_id
     and campground_id=new.campground_id;
- if not found or s.status<>'closed' or new.reviewed_by_user_id in (s.opened_by_user_id,s.closed_by_user_id) then
+ if not found then raise exception 'POS close requires a different authorized reviewer'; end if;
+ if s.status<>'closed' or new.reviewed_by_user_id in (s.opened_by_user_id,s.closed_by_user_id) then
    raise exception 'POS close requires a different authorized reviewer'; end if;
  if s.expected_cash_cents<>s.observed_cash_cents and new.disposition='accepted' then
    raise exception 'Unresolved till variance must remain an open exception'; end if;
@@ -307,7 +309,8 @@ begin
      raise exception 'POS sale requires an open register and positive unsettled register amount'; end if;
    select * into sess from icamp_private.store_pos_sessions
      where id=p_session and campground_id=p_camp and organization_id=org for update;
-   if not found or sess.status<>'open' then raise exception 'POS register is not open'; end if;
+   if not found then raise exception 'POS register is not open'; end if;
+   if sess.status<>'open' then raise exception 'POS register is not open'; end if;
  elsif p_session is not null or p_expected_cash_cents is not null then
    raise exception 'Only POS sale may refer to a register amount';
  end if;
@@ -337,8 +340,12 @@ begin
  end if;
  delta:=case when p_kind in ('damage','transfer','pos_sale') then -p_quantity else p_quantity end;
  if b.quantity_on_hand+delta<0 then raise exception 'Insufficient available stock; negative inventory blocked'; end if;
- if b.quantity_on_hand+delta>999999 or (p_kind='transfer' and dest.quantity_on_hand+p_quantity>999999) then
+ if b.quantity_on_hand+delta>999999 then
    raise exception 'Stock capacity exceeded'; end if;
+ if p_kind='transfer' then
+   if dest.quantity_on_hand+p_quantity>999999 then
+     raise exception 'Destination stock capacity exceeded'; end if;
+ end if;
  update icamp_private.store_stock_balances set quantity_on_hand=quantity_on_hand+delta,
    row_version=row_version+1,updated_at=statement_timestamp()
    where product_id=p_product and location_id=p_location;
@@ -372,7 +379,8 @@ begin
  if p_observed_cash_cents not between 0 and 100000000 or char_length(trim(coalesce(p_note,''))) not between 12 and 500 then
    raise exception 'Register closing observation and reason required'; end if;
  select * into s from icamp_private.store_pos_sessions where id=p_session and campground_id=p_camp for update;
- if not found or s.status<>'open' or s.row_version<>p_expected_version then
+ if not found then raise exception 'Register session changed or already closed; refresh'; end if;
+ if s.status<>'open' or s.row_version<>p_expected_version then
    raise exception 'Register session changed or already closed; refresh'; end if;
  select s.opening_cash_cents+coalesce(sum(e.expected_cash_cents),0) into total
  from icamp_private.store_stock_events e where e.pos_session_id=p_session;
@@ -395,14 +403,16 @@ begin
  if p_decision not in ('accept','reject') or char_length(trim(coalesce(p_note,''))) not between 12 and 800 then
    raise exception 'Review decision and independent reasoning are required'; end if;
  select * into c from icamp_private.store_stock_counts where id=p_count and campground_id=p_camp for update;
- if not found or c.counted_by_user_id=actor then raise exception 'Stock count must be independently reviewed'; end if;
+ if not found then raise exception 'Stock count must be independently reviewed'; end if;
+ if c.counted_by_user_id=actor then raise exception 'Stock count must be independently reviewed'; end if;
  if exists(select 1 from icamp_private.store_stock_count_reviews where count_id=p_count) then
    raise exception 'Stock count already independently reviewed'; end if;
  event_id:=null;
  if p_decision='accept' then
    perform pg_catalog.pg_advisory_xact_lock(pg_catalog.hashtextextended(p_camp::text||c.product_id::text,192));
    select * into b from icamp_private.store_stock_balances where product_id=c.product_id and location_id=c.location_id for update;
-   if not found or b.row_version<>c.expected_version or b.quantity_on_hand<>c.expected_quantity then
+   if not found then raise exception 'Count evidence stale; a fresh physical count is required'; end if;
+   if b.row_version<>c.expected_version or b.quantity_on_hand<>c.expected_quantity then
      raise exception 'Count evidence stale; a fresh physical count is required'; end if;
    delta:=c.observed_quantity-b.quantity_on_hand;
    if delta<>0 then
