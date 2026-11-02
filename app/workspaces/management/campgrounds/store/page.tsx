@@ -176,6 +176,12 @@ export default async function ManageStorePage({
             <Link className="secondary-link" href="/store">
               Public catalog
             </Link>
+            <Link
+              className="secondary-link"
+              href={`/workspaces/management/campgrounds/store/operations${params.campground ? `?campground=${encodeURIComponent(params.campground)}` : ""}`}
+            >
+              Stock ledger &amp; POS sessions
+            </Link>
           </div>
         </section>
         {params.saved ? (
