@@ -2,9 +2,9 @@
 
 Current program: **iCamp2027**
 
-## Approved Build Batch 171–200 (30 defined; Build 190 release scope)
+## Approved Build Batch 171–200 (30 defined; Build 191 release scope)
 
-Planning baseline: **Build 170**. The following is the approved **30-build** batch. Builds 171–189 are promoted and have acceptance evidence, including [`BUILD_189_OFFLINE_FIELD_SYNC_ACCEPTANCE.md`](BUILD_189_OFFLINE_FIELD_SYNC_ACCEPTANCE.md). Build 190's implementation scope and release gates are in [`BUILD_190_STAFF_SHIFT_READINESS_ACCEPTANCE.md`](BUILD_190_STAFF_SHIFT_READINESS_ACCEPTANCE.md). Only separately verified CI and production readback establish GREEN; later builds remain planned. Full scope and safety boundaries are in [`BUILD_171_200_FUTURE_QUEUE.md`](BUILD_171_200_FUTURE_QUEUE.md).
+Planning baseline: **Build 170**. The following is the approved **30-build** batch. Builds 171–190 are promoted and have acceptance evidence, including [`BUILD_190_STAFF_SHIFT_READINESS_ACCEPTANCE.md`](BUILD_190_STAFF_SHIFT_READINESS_ACCEPTANCE.md). Build 191's implementation scope and release gates are in [`BUILD_191_VENDOR_SERVICE_EVIDENCE_ACCEPTANCE.md`](BUILD_191_VENDOR_SERVICE_EVIDENCE_ACCEPTANCE.md). Only separately verified CI and production readback establish GREEN; later builds remain planned. Full scope and safety boundaries are in [`BUILD_171_200_FUTURE_QUEUE.md`](BUILD_171_200_FUTURE_QUEUE.md).
 
 | Build | Planned scope | Primary benefit |
 | --- | --- | --- |
@@ -27,8 +27,8 @@ Planning baseline: **Build 170**. The following is the approved **30-build** bat
 | **187 — PROMOTED** | Canonical Security Incident Cases & Independent Closure Evidence | Fill the documented security-incident workflow gap. |
 | **188 — PROMOTED** | Visitor/Vehicle/Access Credential Lifecycle & Safe Reconciliation | Improve controlled, auditable access. |
 | **189 — PROMOTED** | Offline Field Work Queue, Conflict Resolution & Sync Audit | Support staff working without connectivity. |
-| **190 — RELEASE SCOPE** | Shift Scheduling, Training/Qualification & Handoff Readiness | Make staffing and safety readiness visible. |
-| 191 | Vendor Service Requests, Contract/SLA & Follow-Up Evidence | Improve external service accountability. |
+| **190 — PROMOTED** | Shift Scheduling, Training/Qualification & Handoff Readiness | Make staffing and safety readiness visible. |
+| **191 — RELEASE SCOPE** | Vendor Service Requests, Contract/SLA & Follow-Up Evidence | Improve external service accountability. |
 | 192 | Store Inventory, POS Session & Stock Reconciliation | Improve operational inventory accuracy. |
 | 193 | Seasonal Renewal, Winterization & Spring-Reopening Owner Queue | Connect seasonal operations end to end. |
 | 194 | Role-Aware Operations Dashboard, Saved Layouts & Actionable Drilldowns | Make management screens more usable. |
