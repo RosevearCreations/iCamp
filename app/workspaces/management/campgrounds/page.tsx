@@ -690,6 +690,33 @@ export default async function CampgroundAdministrationPage({
 
         <section
           className="content-panel"
+          aria-labelledby="campground-staff-readiness-heading"
+        >
+          <SectionHeading
+            eyebrow="Staff operations · independent qualification checks"
+            title="Shift scheduling, availability & handoffs"
+            id="campground-staff-readiness-heading"
+            helpTopic="shell.overview"
+            trailing={<span className="build-chip">Build 190</span>}
+          />
+          <p>
+            Plan role-based staff shifts, catch unavailability and overlapping
+            assignments, verify time-limited sensitive qualifications and
+            reconcile outstanding-work handoffs with actual receiving staff.
+          </p>
+          <Link
+            className="primary-link primary-link--dark"
+            href={
+              "/workspaces/management/campgrounds/staff-shifts?campground=" +
+              encodeURIComponent(structure.campground.id)
+            }
+          >
+            Open staff readiness workboard
+          </Link>
+        </section>
+
+        <section
+          className="content-panel"
           aria-labelledby="campground-emergency-notices-heading"
         >
           <SectionHeading
