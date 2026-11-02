@@ -73,6 +73,31 @@ export default async function WorkspacePage({
           </p>
         </section>
 
+        {workspace.slug === "finance" ? (
+          <section
+            className="content-panel"
+            aria-labelledby="finance-vendor-intake-heading"
+          >
+            <SectionHeading
+              eyebrow="Build 191 · finance evidence"
+              title="Vendor contracts & independent invoice intake"
+              id="finance-vendor-intake-heading"
+              helpTopic="shell.overview"
+            />
+            <p>
+              Review restricted vendor service records, contract response
+              targets and pending invoice intakes. Recording an intake review
+              never authorizes payment or creates a payable.
+            </p>
+            <Link
+              className="primary-link primary-link--dark"
+              href="/workspaces/management/campgrounds/vendors"
+            >
+              Open vendor invoice intake workboard
+            </Link>
+          </section>
+        ) : null}
+
         {workspace.slug === "management" || workspace.slug === "it-analysis" ? (
           <StandardOpsCommand area={workspace.slug} />
         ) : null}

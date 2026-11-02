@@ -717,6 +717,33 @@ export default async function CampgroundAdministrationPage({
 
         <section
           className="content-panel"
+          aria-labelledby="campground-vendor-services-heading"
+        >
+          <SectionHeading
+            eyebrow="Supplier operations · private contractual evidence"
+            title="Vendor requests, SLA &amp; follow-up"
+            id="campground-vendor-services-heading"
+            helpTopic="shell.overview"
+            trailing={<span className="build-chip">Build 191</span>}
+          />
+          <p>
+            Keep vendor profiles, contracts, recurring service reminders and
+            source-backed follow-up in one campground-scoped workboard. Invoice
+            intake stays independent of payable execution and external dispatch.
+          </p>
+          <Link
+            className="primary-link primary-link--dark"
+            href={
+              "/workspaces/management/campgrounds/vendors?campground=" +
+              encodeURIComponent(structure.campground.id)
+            }
+          >
+            Open private vendor service workboard
+          </Link>
+        </section>
+
+        <section
+          className="content-panel"
           aria-labelledby="campground-emergency-notices-heading"
         >
           <SectionHeading
