@@ -760,6 +760,30 @@ export default async function CampgroundAdministrationPage({
           </Link>
         </section>
 
+        <section
+          className="content-panel"
+          aria-labelledby="store-management-heading"
+        >
+          <SectionHeading
+            eyebrow="Guest store planning"
+            title="Staff-reviewed catalog & cart preferences"
+            id="store-management-heading"
+            helpTopic="campground.structure"
+            trailing={<span className="build-chip">Build 183</span>}
+          />
+          <p>
+            Review and publish campground products, record observed stock
+            snapshots and examine guest cart planning requests. No checkout or
+            delivery dispatch.
+          </p>
+          <Link
+            className="primary-link primary-link--dark"
+            href={`/workspaces/management/campgrounds/store?campground=${encodeURIComponent(structure.campground.id)}`}
+          >
+            Manage guest store
+          </Link>
+        </section>
+
         <section className="content-panel" aria-labelledby="my-stay-heading">
           <SectionHeading
             eyebrow="Guest experience"
