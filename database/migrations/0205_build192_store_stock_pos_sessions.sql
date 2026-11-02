@@ -282,8 +282,9 @@ create function icamp_private.post_store_stock_operation(
 returns table(event_id uuid,created boolean)
 language plpgsql security definer set search_path='' as $$
 declare actor uuid:=nullif(current_setting('icamp.user_id',true),'')::uuid;
- org uuid; b record; dest record; delta integer; prior record; sess record;
+ org uuid; b record; dest record; delta integer; prior record; sess record; movement_kind text;
 begin
+ movement_kind:=case when p_kind='transfer' then 'transfer_out' else p_kind end;
  if actor is null or not icamp_private.has_campground_permission(p_camp,'inventory.manage') then
    raise exception 'Inventory management permission required'; end if;
  if p_quantity not between 1 and 9999 or p_expected_version is null or p_expected_version<0
@@ -314,7 +315,7 @@ begin
  select * into prior from icamp_private.store_stock_events where id=p_event;
  if found then
    if prior.campground_id<>p_camp or prior.product_id<>p_product or prior.location_id<>p_location
-     or prior.kind<>case when p_kind='transfer' then 'transfer_out' else p_kind end
+     or prior.kind<>movement_kind
      or abs(prior.quantity_change)<>p_quantity or prior.source_reference<>p_source
      or prior.reason_note<>p_note or prior.pos_session_id is distinct from p_session
      or prior.expected_cash_cents is distinct from p_expected_cash_cents then
@@ -345,7 +346,7 @@ begin
    quantity_change,quantity_before,quantity_after,transfer_group_id,pos_session_id,expected_cash_cents,
    source_reference,reason_note,actor_user_id)
  values(p_event,org,p_camp,p_product,p_location,
-   case when p_kind='transfer' then 'transfer_out' else p_kind end,delta,b.quantity_on_hand,b.quantity_on_hand+delta,
+   movement_kind,delta,b.quantity_on_hand,b.quantity_on_hand+delta,
    case when p_kind='transfer' then p_event else null end,p_session,p_expected_cash_cents,p_source,p_note,actor);
  if p_kind='transfer' then
    update icamp_private.store_stock_balances set quantity_on_hand=quantity_on_hand+p_quantity,
