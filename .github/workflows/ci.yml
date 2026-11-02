@@ -166,6 +166,9 @@ jobs:
       - name: Verify Build 189 offline conflict dedupe, replay review and RLS
         run: npm run build189:verify
 
+      - name: Verify Build 190 shift overlap, qualification, availability and handoff RLS
+        run: npm run build190:verify
+
       - name: Verify authentication lifecycle
         run: npm run auth:verify
 
