@@ -1,4 +1,4 @@
-const CACHE_NAME = "icamp-shell-v2";
+const CACHE_NAME = "icamp-shell-v189";
 const SHELL_URLS = [
   "/",
   "/manifest.webmanifest",

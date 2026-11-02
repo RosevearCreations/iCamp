@@ -61,6 +61,27 @@ export function getOfflineMaintenanceWorkspace(
   userId: string,
   campgroundId: string,
 ): Promise<OfflineMaintenanceWorkspace>;
+export function getOfflineMaintenanceSyncAudit(
+  actorUserId: string,
+  campgroundId: string,
+): Promise<{
+  receipts: Array<{
+    id: string;
+    clientOperationId: string;
+    operationKind: string;
+    targetId: string;
+    appliedAt: string;
+    reviewedConflictOperationId: string | null;
+    resolutionReason: string | null;
+  }>;
+  conflicts: Array<{
+    clientOperationId: string;
+    operationKind: string;
+    targetId: string;
+    reasonCode: string;
+    detectedAt: string;
+  }>;
+}>;
 export function getOfflineSyncReceipt(input: {
   actorUserId: string;
   operation: OfflineMaintenanceOperation;

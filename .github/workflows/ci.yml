@@ -163,6 +163,9 @@ jobs:
       - name: Verify Build 188 credential reconciliation, tenancy and immutable reviews
         run: npm run build188:verify
 
+      - name: Verify Build 189 offline conflict dedupe, replay review and RLS
+        run: npm run build189:verify
+
       - name: Verify authentication lifecycle
         run: npm run auth:verify
 
