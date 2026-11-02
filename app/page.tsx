@@ -29,6 +29,9 @@ export default function HomePage() {
             <Link className="secondary-link" href="/rentals">
               Amenities & rental planning
             </Link>
+            <Link className="secondary-link" href="/store">
+              Campground guest store
+            </Link>
             <a className="secondary-link" href="#workspaces">
               View all workspaces
             </a>

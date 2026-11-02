@@ -176,6 +176,28 @@ export default async function WorkspacePage({
           </section>
         ) : null}
 
+        {workspace.slug === "public" ? (
+          <section
+            className="content-panel"
+            aria-labelledby="public-store-heading"
+          >
+            <SectionHeading
+              eyebrow="Campground store"
+              title="Browse staff-reviewed store goods"
+              id="public-store-heading"
+              helpTopic="shell.overview"
+              trailing={<span className="build-chip">Build 183</span>}
+            />
+            <p>
+              Browse verified catalog listings and save a private cart draft. No
+              stock is held or charged.
+            </p>
+            <Link className="primary-link primary-link--dark" href="/store">
+              Explore the guest store
+            </Link>
+          </section>
+        ) : null}
+
         {workspace.slug === "management" ? (
           <section
             className="content-panel"
