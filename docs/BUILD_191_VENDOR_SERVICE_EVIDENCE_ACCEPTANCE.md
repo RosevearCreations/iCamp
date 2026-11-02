@@ -14,7 +14,7 @@ Status: implementation in verification. **Do not mark Production GREEN until mai
 ## Acceptance and release gates
 
 1. Formatting, lint, typecheck, unit/static contract tests, application build and browser E2E.
-2. PostgreSQL 17 CI: migration `0203_build191_vendor_service_evidence.sql`, all database contracts and rollback-only `npm run build191:verify` covering restricted RLS, cross-property links, contract/recurrence mismatch, SLA deadlines, confidential attachment enforcement, evidence retention and independent invoice-intake review. Verify no supplier or payable execution happens.
+2. PostgreSQL 17 CI: migrations `0203_build191_vendor_service_evidence.sql` and `0204_build191_vendor_fk_indexes.sql`, all database contracts and rollback-only `npm run build191:verify` covering restricted RLS, cross-property links, contract/recurrence mismatch, SLA deadlines, confidential attachment enforcement, evidence retention and independent invoice-intake review. The follow-up indexes fully cover campground-scoped contract and recurring-plan supersession foreign keys. Verify no supplier or payable execution happens.
 3. Apply the reviewed migration to the linked iCamp Supabase project only after successful CI database lifecycle. Execute hosted `database/verify/0203...` and compare security/performance advisors against pre-build baseline, with no new WARN regressions.
 4. Feature PR into `dev`, successful Verify, DB, Playwright, CodeQL and Secret Scan, and exact-SHA Vercel preview READY. Merge `dev`→`main` after independent dev push and PR gates. Fast-forward dev to main, then verify all six post-merge push checks, exact-SHA READY Vercel production/dev, live `/api/version` and `/api/health/ready`, private route redirect and runtime errors.
 

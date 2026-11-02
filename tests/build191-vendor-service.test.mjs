@@ -204,6 +204,9 @@ test("Build191 SQL constrains scope, immutable confidential sources, review acto
   const verifier = read(
     "../database/verify/0203_build191_vendor_service_evidence.sql",
   );
+  const indexes = read(
+    "../database/migrations/0204_build191_vendor_fk_indexes.sql",
+  );
   const service = read("../lib/vendors/postgres.mjs");
   const page = read(
     "../app/workspaces/management/campgrounds/vendors/page.tsx",
@@ -220,6 +223,8 @@ test("Build191 SQL constrains scope, immutable confidential sources, review acto
   assert.match(migration, /contract.*source|confidential PDF/i);
   assert.doesNotMatch(migration, /grant[^;]*update[^;]*vendor_service/i);
   assert.match(verifier, /relforcerowsecurity/);
+  assert.match(indexes, /organization_id,campground_id,supersedes_contract_id/);
+  assert.match(indexes, /organization_id,campground_id,supersedes_plan_id/);
   assert.match(service, /set local role icamp_app/);
   assert.match(service, /appendAuditEvent/);
   assert.match(page, /Billing and\s+Omnichannel remain HELD/);
