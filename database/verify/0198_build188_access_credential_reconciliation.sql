@@ -5,8 +5,10 @@ begin
     and relrowsecurity and relforcerowsecurity) then
   raise exception 'Build188 immutable review ledger requires forced RLS';
  end if;
- if has_table_privilege('anon','icamp_private.access_reconciliation_reviews','SELECT')
-  or has_table_privilege('authenticated','icamp_private.access_reconciliation_reviews','INSERT') then
+ if (exists(select 1 from pg_roles where rolname='anon') and
+   has_table_privilege('anon','icamp_private.access_reconciliation_reviews','SELECT'))
+  or (exists(select 1 from pg_roles where rolname='authenticated') and
+   has_table_privilege('authenticated','icamp_private.access_reconciliation_reviews','INSERT')) then
   raise exception 'Build188 evidence exposed to client roles';
  end if;
  if has_table_privilege('icamp_app','icamp_private.access_reconciliation_reviews','UPDATE')
@@ -23,7 +25,8 @@ begin
   raise exception 'Build188 independent permission check missing';
  end if;
  if not has_function_privilege('icamp_app','icamp_private.access_reconciliation_sources(uuid)','EXECUTE')
-  or has_function_privilege('anon','icamp_private.access_reconciliation_sources(uuid)','EXECUTE') then
+  or (exists(select 1 from pg_roles where rolname='anon') and
+   has_function_privilege('anon','icamp_private.access_reconciliation_sources(uuid)','EXECUTE')) then
   raise exception 'Build188 scoped source function grants invalid';
  end if;
 end $verify_build188$;

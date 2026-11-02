@@ -89,7 +89,7 @@ for each row execute function icamp_private.guard_access_reconciliation_review()
 
 alter table icamp_private.access_reconciliation_reviews enable row level security;
 alter table icamp_private.access_reconciliation_reviews force row level security;
-revoke all on icamp_private.access_reconciliation_reviews from public,anon,authenticated;
+revoke all on icamp_private.access_reconciliation_reviews from public;
 grant select,insert on icamp_private.access_reconciliation_reviews to icamp_app;
 create policy access_reconciliation_reviews_read on icamp_private.access_reconciliation_reviews
 for select to icamp_app using (
@@ -138,5 +138,5 @@ language sql stable security definer set search_path='' as $$
   and (icamp_private.has_campground_permission(p_campground_id,'access.credential.issue')
    or icamp_private.has_campground_permission(p_campground_id,'access.credential.revoke'))
 $$;
-revoke all on function icamp_private.access_reconciliation_sources(uuid) from public,anon,authenticated;
+revoke all on function icamp_private.access_reconciliation_sources(uuid) from public;
 grant execute on function icamp_private.access_reconciliation_sources(uuid) to icamp_app;
