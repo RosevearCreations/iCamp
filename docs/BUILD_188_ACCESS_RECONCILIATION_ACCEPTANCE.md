@@ -13,6 +13,7 @@
 
 1. Node tests: expired/revoked/duplicated/outside-source credential denial, override non-bypass, input validation, private/security source boundary.
 2. PostgreSQL 17 migrations and `database/verify/0198_build188_access_credential_reconciliation.sql`: forced RLS, client role denial, append-only permissioned ledger, source-function restricted grants.
+   Migration `0199_build188_reconciliation_fk_index.sql` covers the scoped credential foreign key and prevents introducing a new unindexed-FK advisory.
 3. Rollback-only synthetic lifecycle proves review insertion by an assigned security actor, cross-campground isolation, write rejection by unauthorized staff and immutable evidence, then rolls all test data back.
 4. CI format, lint, typecheck, Node, browser E2E, build, production dependency audit, CodeQL and Secret Scan; hosted schema verifier and production deployment/health readback before GREEN.
 
