@@ -2,9 +2,9 @@
 
 Current program: **iCamp2027**
 
-## Approved Build Batch 171–200 (30 defined; Build 189 release scope)
+## Approved Build Batch 171–200 (30 defined; Build 190 release scope)
 
-Planning baseline: **Build 170**. The following is the approved **30-build** batch. Builds 171–188 have release documentation, including [`BUILD_188_ACCESS_RECONCILIATION_ACCEPTANCE.md`](BUILD_188_ACCESS_RECONCILIATION_ACCEPTANCE.md). Build 189's implementation and gates are described in [`BUILD_189_OFFLINE_FIELD_SYNC_ACCEPTANCE.md`](BUILD_189_OFFLINE_FIELD_SYNC_ACCEPTANCE.md). Only separately verified CI and production readback establish GREEN; later builds remain planned. Full scope and safety boundaries are in [`BUILD_171_200_FUTURE_QUEUE.md`](BUILD_171_200_FUTURE_QUEUE.md).
+Planning baseline: **Build 170**. The following is the approved **30-build** batch. Builds 171–189 are promoted and have acceptance evidence, including [`BUILD_189_OFFLINE_FIELD_SYNC_ACCEPTANCE.md`](BUILD_189_OFFLINE_FIELD_SYNC_ACCEPTANCE.md). Build 190's implementation scope and release gates are in [`BUILD_190_STAFF_SHIFT_READINESS_ACCEPTANCE.md`](BUILD_190_STAFF_SHIFT_READINESS_ACCEPTANCE.md). Only separately verified CI and production readback establish GREEN; later builds remain planned. Full scope and safety boundaries are in [`BUILD_171_200_FUTURE_QUEUE.md`](BUILD_171_200_FUTURE_QUEUE.md).
 
 | Build | Planned scope | Primary benefit |
 | --- | --- | --- |
@@ -26,8 +26,8 @@ Planning baseline: **Build 170**. The following is the approved **30-build** bat
 | **186 — PROMOTED** | Housekeeping/Maintenance Turnover & Availability Release Controls | Prevent premature site release. |
 | **187 — PROMOTED** | Canonical Security Incident Cases & Independent Closure Evidence | Fill the documented security-incident workflow gap. |
 | **188 — PROMOTED** | Visitor/Vehicle/Access Credential Lifecycle & Safe Reconciliation | Improve controlled, auditable access. |
-| **189 — RELEASE SCOPE** | Offline Field Work Queue, Conflict Resolution & Sync Audit | Support staff working without connectivity. |
-| 190 | Shift Scheduling, Training/Qualification & Handoff Readiness | Make staffing and safety readiness visible. |
+| **189 — PROMOTED** | Offline Field Work Queue, Conflict Resolution & Sync Audit | Support staff working without connectivity. |
+| **190 — RELEASE SCOPE** | Shift Scheduling, Training/Qualification & Handoff Readiness | Make staffing and safety readiness visible. |
 | 191 | Vendor Service Requests, Contract/SLA & Follow-Up Evidence | Improve external service accountability. |
 | 192 | Store Inventory, POS Session & Stock Reconciliation | Improve operational inventory accuracy. |
 | 193 | Seasonal Renewal, Winterization & Spring-Reopening Owner Queue | Connect seasonal operations end to end. |

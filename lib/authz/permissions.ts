@@ -111,6 +111,7 @@ export const permissions = [
   "garbage.finance.reconcile",
   "staff.read",
   "staff.manage",
+  "staff.shift.self",
   "role.manage",
   "schedule.manage",
   "timekeeping.manage",
