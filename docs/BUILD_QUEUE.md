@@ -2,9 +2,9 @@
 
 Current program: **iCamp2027**
 
-## Approved Build Batch 171–200 (30 defined; Build 183 release scope)
+## Approved Build Batch 171–200 (30 defined; Build 184 release scope)
 
-Planning baseline: **Build 170**. The following is the approved **30-build** batch. Builds 171–182 have release documentation, including [`BUILD_182_RENTAL_PLANNER_ACCEPTANCE.md`](BUILD_182_RENTAL_PLANNER_ACCEPTANCE.md). Build 183's release scope is documented in [`BUILD_183_STORE_CART_ACCEPTANCE.md`](BUILD_183_STORE_CART_ACCEPTANCE.md). Only separately verified CI and production readback establish GREEN; later builds remain planned. Full scope and safety boundaries are in [`BUILD_171_200_FUTURE_QUEUE.md`](BUILD_171_200_FUTURE_QUEUE.md).
+Planning baseline: **Build 170**. The following is the approved **30-build** batch. Builds 171–183 have release documentation, including [`BUILD_183_STORE_CART_ACCEPTANCE.md`](BUILD_183_STORE_CART_ACCEPTANCE.md). Build 184's release scope is documented in [`BUILD_184_GUEST_FEEDBACK_ACCEPTANCE.md`](BUILD_184_GUEST_FEEDBACK_ACCEPTANCE.md). Only separately verified CI and production readback establish GREEN; later builds remain planned. Full scope and safety boundaries are in [`BUILD_171_200_FUTURE_QUEUE.md`](BUILD_171_200_FUTURE_QUEUE.md).
 
 | Build | Planned scope | Primary benefit |
 | --- | --- | --- |
@@ -20,9 +20,9 @@ Planning baseline: **Build 170**. The following is the approved **30-build** bat
 | **180 — PROMOTED** | Accessible Map/List Wayfinding, Amenities & Directions | Make site navigation easier for all visitors. |
 | **181 — PROMOTED** | Events & Recreation Discovery, Capacity & Registration | Make campground activities easier to discover. |
 | **182 — PROMOTED** | Amenity/Equipment Rental Availability & Reservation Planner | Support safe rental planning. |
-| **183 — RELEASE SCOPE** | Guest Store Catalogue, Cart Draft & Campsite Delivery Planning | Enable easy store ordering preparation. |
-| **184 — NEXT AFTER 183 GREEN** | Guest Feedback, Service Recovery & Moderated Reviews | Close the feedback loop. |
-| 185 | Front Desk Unified Arrival/Departure & Exception Workboard | Simplify daily desk operations. |
+| **183 — PROMOTED** | Guest Store Catalogue, Cart Draft & Campsite Delivery Planning | Enable easy store ordering preparation. |
+| **184 — RELEASE SCOPE** | Guest Feedback, Service Recovery & Moderated Reviews | Close the feedback loop. |
+| **185 — NEXT AFTER 184 GREEN** | Front Desk Unified Arrival/Departure & Exception Workboard | Simplify daily desk operations. |
 | 186 | Housekeeping/Maintenance Turnover & Availability Release Controls | Prevent premature site release. |
 | 187 | Canonical Security Incident Cases & Independent Closure Evidence | Fill the documented security-incident workflow gap. |
 | 188 | Visitor/Vehicle/Access Credential Lifecycle & Safe Reconciliation | Improve controlled, auditable access. |

@@ -198,6 +198,28 @@ export default async function WorkspacePage({
           </section>
         ) : null}
 
+        {workspace.slug === "public" ? (
+          <section
+            className="content-panel"
+            aria-labelledby="public-reviews-heading"
+          >
+            <SectionHeading
+              eyebrow="Completed-stay guest feedback"
+              title="Explore verified, moderated reviews"
+              id="public-reviews-heading"
+              helpTopic="shell.overview"
+              trailing={<span className="build-chip">Build 184</span>}
+            />
+            <p>
+              See only reviews guests chose to share and campground staff
+              approved, without private incident details.
+            </p>
+            <Link className="primary-link primary-link--dark" href="/reviews">
+              Browse verified reviews
+            </Link>
+          </section>
+        ) : null}
+
         {workspace.slug === "management" ? (
           <section
             className="content-panel"
