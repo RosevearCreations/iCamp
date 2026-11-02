@@ -14,7 +14,7 @@ Status: implementation ready for CI, hosted migration and dev/main promotion. **
 ## Verification gates
 
 1. `npm run format:check`, `npm run lint`, `npm run typecheck`, `npm test`, `npm run build`, browser E2E.
-2. PostgreSQL 17: apply migration `0200_build189_offline_sync_conflicts.sql`, run every `database/verify` contract including `0200`, and `npm run build189:verify` rollback-only proof of cross-tenant RLS, immutable conflict evidence, deduplication and scoped reviewed replay.
+2. PostgreSQL 17: apply migrations `0200_build189_offline_sync_conflicts.sql` and `0201_build189_conflict_rls_initplan.sql`, run every `database/verify` contract including both, and `npm run build189:verify` rollback-only proof of cross-tenant RLS, immutable conflict evidence, deduplication and scoped reviewed replay. The follow-up wraps the per-statement actor setting in a SELECT initplan to avoid new Supabase RLS performance advisor warnings.
 3. Apply hosted migration to the iCamp Supabase project; execute verify SQL and check security/performance advisors for new regressions.
 4. Feature PR into `dev` with CI/security scans and READY preview; dev→main PR with all gates; promote main, fast-forward dev to exact SHA, verify both branches plus Vercel production READY, `/api/version` SHA, `/api/health/ready` and runtime errors.
 

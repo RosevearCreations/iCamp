@@ -84,12 +84,17 @@ test("Build189 keeps sync ledger immutable, scoped and non-duplicative", () => {
   const sql = read(
     "../database/migrations/0200_build189_offline_sync_conflicts.sql",
   );
+  const hardening = read(
+    "../database/migrations/0201_build189_conflict_rls_initplan.sql",
+  );
   const service = read("../lib/offline-maintenance/postgres.mjs");
   const route = read("../app/api/maintenance/offline/audit/route.ts");
   assert.match(sql, /force row level security/i);
   assert.match(sql, /guard_offline_sync_conflict_immutability/);
   assert.match(sql, /scope_fk/);
   assert.match(sql, /reviewed_conflict_id/);
+  assert.match(hardening, /alter policy maintenance_offline_sync_conflicts_read/);
+  assert.match(hardening, /\(select current_setting\('icamp.user_id'/);
   assert.doesNotMatch(
     sql,
     /grant[^;]*(update|delete)[^;]*maintenance_offline_sync_conflicts/i,
