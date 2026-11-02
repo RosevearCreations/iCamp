@@ -4,6 +4,7 @@ import { getCurrentSession } from "@/lib/auth/current-session";
 import { hasCampgroundPermission } from "@/lib/authz/postgres.mjs";
 import { getMediaAccessDescriptor } from "@/lib/media/postgres.mjs";
 import { isPublishedCampgroundMapMedia } from "@/lib/public-booking-map/postgres.mjs";
+import { isSecurityIncidentMedia } from "@/lib/security-incidents/postgres.mjs";
 import {
   createSupabaseStorageAdapter,
   getMediaStorageConfig,
@@ -108,6 +109,34 @@ export async function GET(
 
   if (!allowed) {
     return NextResponse.json({ error: "Not authorized." }, { status: 403 });
+  }
+
+  // Confidential incident evidence needs case-specific sensitive access too;
+  // the generic media permission alone must never expose witness material.
+  const incidentCampgroundId = await isSecurityIncidentMedia(mediaId);
+  if (
+    incidentCampgroundId &&
+    (incidentCampgroundId !== asset.campgroundId ||
+      !(await hasCampgroundPermission(
+        session.user.id,
+        incidentCampgroundId,
+        "security.incident.sensitive.read",
+      )) ||
+      (!(await hasCampgroundPermission(
+        session.user.id,
+        incidentCampgroundId,
+        "security.incident.manage",
+      )) &&
+        !(await hasCampgroundPermission(
+          session.user.id,
+          incidentCampgroundId,
+          "security.incident.review",
+        ))))
+  ) {
+    return NextResponse.json(
+      { error: "Not authorized for incident evidence." },
+      { status: 403 },
+    );
   }
 
   if (!config.secretKey) {

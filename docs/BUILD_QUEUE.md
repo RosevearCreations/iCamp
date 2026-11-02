@@ -2,9 +2,9 @@
 
 Current program: **iCamp2027**
 
-## Approved Build Batch 171–200 (30 defined; Build 186 release scope)
+## Approved Build Batch 171–200 (30 defined; Build 187 release scope)
 
-Planning baseline: **Build 170**. The following is the approved **30-build** batch. Builds 171–185 have release documentation, including [`BUILD_185_FRONT_DESK_WORKBOARD_ACCEPTANCE.md`](BUILD_185_FRONT_DESK_WORKBOARD_ACCEPTANCE.md). Build 186's release scope is documented in [`BUILD_186_TURNOVER_RELEASE_ACCEPTANCE.md`](BUILD_186_TURNOVER_RELEASE_ACCEPTANCE.md). Only separately verified CI and production readback establish GREEN; later builds remain planned. Full scope and safety boundaries are in [`BUILD_171_200_FUTURE_QUEUE.md`](BUILD_171_200_FUTURE_QUEUE.md).
+Planning baseline: **Build 170**. The following is the approved **30-build** batch. Builds 171–186 have release documentation, including [`BUILD_186_TURNOVER_RELEASE_ACCEPTANCE.md`](BUILD_186_TURNOVER_RELEASE_ACCEPTANCE.md). Build 187's implementation and acceptance scope are documented in [`BUILD_187_SECURITY_INCIDENT_CASES_ACCEPTANCE.md`](BUILD_187_SECURITY_INCIDENT_CASES_ACCEPTANCE.md). Only separately verified CI and production readback establish GREEN; later builds remain planned. Full scope and safety boundaries are in [`BUILD_171_200_FUTURE_QUEUE.md`](BUILD_171_200_FUTURE_QUEUE.md).
 
 | Build | Planned scope | Primary benefit |
 | --- | --- | --- |
@@ -22,10 +22,10 @@ Planning baseline: **Build 170**. The following is the approved **30-build** bat
 | **182 — PROMOTED** | Amenity/Equipment Rental Availability & Reservation Planner | Support safe rental planning. |
 | **183 — PROMOTED** | Guest Store Catalogue, Cart Draft & Campsite Delivery Planning | Enable easy store ordering preparation. |
 | **184 — PROMOTED** | Guest Feedback, Service Recovery & Moderated Reviews | Close the feedback loop. |
-| **185 — MERGED TO MAIN** | Front Desk Unified Arrival/Departure & Exception Workboard | Simplify daily desk operations. |
-| **186 — RELEASE SCOPE** | Housekeeping/Maintenance Turnover & Availability Release Controls | Prevent premature site release. |
-| **187 — NEXT AFTER 186** | Canonical Security Incident Cases & Independent Closure Evidence | Fill the documented security-incident workflow gap. |
-| 188 | Visitor/Vehicle/Access Credential Lifecycle & Safe Reconciliation | Improve controlled, auditable access. |
+| **185 — PROMOTED** | Front Desk Unified Arrival/Departure & Exception Workboard | Simplify daily desk operations. |
+| **186 — PROMOTED** | Housekeeping/Maintenance Turnover & Availability Release Controls | Prevent premature site release. |
+| **187 — RELEASE SCOPE** | Canonical Security Incident Cases & Independent Closure Evidence | Fill the documented security-incident workflow gap. |
+| **188 — NEXT AFTER 187** | Visitor/Vehicle/Access Credential Lifecycle & Safe Reconciliation | Improve controlled, auditable access. |
 | 189 | Offline Field Work Queue, Conflict Resolution & Sync Audit | Support staff working without connectivity. |
 | 190 | Shift Scheduling, Training/Qualification & Handoff Readiness | Make staffing and safety readiness visible. |
 | 191 | Vendor Service Requests, Contract/SLA & Follow-Up Evidence | Improve external service accountability. |

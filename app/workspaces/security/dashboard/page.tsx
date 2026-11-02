@@ -440,7 +440,11 @@ export default async function SecurityAccessDashboardPage({
             These are operational signals derived from device faults, denied
             access and failed/rejected overrides. They are not fabricated
             incident cases. Canonical incident case management requires its own
-            future queue assignment.
+            restricted case ledger, now available in{" "}
+            <Link href="/workspaces/security/incidents">
+              Security Incident Cases
+            </Link>
+            . A signal clearing does not close a case.
           </p>
           <div className={styles.tableWrap}>
             <table>

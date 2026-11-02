@@ -649,6 +649,12 @@ export default async function WorkspacePage({
             >
               Open security dashboard
             </Link>
+            <Link
+              href="/workspaces/security/incidents"
+              className="secondary-button"
+            >
+              Manage security incident cases
+            </Link>
           </section>
         ) : null}
 

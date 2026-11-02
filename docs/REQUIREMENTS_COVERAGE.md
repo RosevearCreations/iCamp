@@ -59,7 +59,7 @@ This matrix cross-checks the complete iCamp vision against the restarted active 
 | Manual gate open/close override | 059 |
 | Access zones/schedules/rules | 060 |
 | Security/access operations dashboard (device state, credentials, denied access, overrides, expiring passes, incident signals) | 063 active (historical 064) |
-| Canonical security incident case management | 187 planned (extends but does not conflate the Build 063 security dashboard) |
+| Canonical security incident case management | 187 private, tenant-scoped incident intake, protected witness/guest evidence, assignment/escalation, append-only chronology, independent closure/reopen (distinct from Build 063 signals) |
 | Maintenance categories/work orders/roles | 065-067 |
 | Hourly/daily/weekly/monthly/seasonal maintenance | 068 |
 | Inspection templates/sign-offs | 069 |
@@ -144,7 +144,7 @@ This matrix cross-checks the complete iCamp vision against the restarted active 
 | Consolidated arrival, stay and assistance follow-up | 177: source-backed guest arrival planner, consented pre-registration, staff-scoped readiness queue and revision-pinned desk receipt without check-in/financial authorization; 178–179 remain planned |
 | Accessible wayfinding, real guest activities/rentals/store requests | 180–183 |
 | Feedback moderation and guest issue follow-through | 184 |
-| Unified front desk, turnover and accountable safety case management | 185 workboard; 186 combined cottage/campsite release evidence and maintenance guard (Web/PWA); 187 security incident cases planned |
+| Unified front desk, turnover and accountable safety case management | 185 workboard; 186 combined cottage/campsite release evidence and maintenance guard (Web/PWA); 187 restricted canonical security incidents, retention and independent closure evidence |
 | Access reconciliation, offline field conflict review and workforce training | 188–190 |
 | Vendor and store inventory/POS control, seasonal follow-up | 191–193 |
 | Role-aware management UX, measured forecasting and finance reconciliation | 194–196 |
