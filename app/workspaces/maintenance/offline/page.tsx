@@ -76,8 +76,8 @@ export default async function OfflineMaintenancePage({
         </nav>
 
         <section className="hero-panel">
-          <p className="eyebrow">Build 076 · Field continuity</p>
-          <h1>Offline Maintenance Workspace</h1>
+          <p className="eyebrow">Build 189 · Field continuity</p>
+          <h1>Offline Field Work &amp; Sync Review</h1>
           <p className="hero-panel__lead">
             Cache only work assigned to you, record notes, checklist answers and
             field media without a signal, then reconcile safely when the device
@@ -121,21 +121,26 @@ export default async function OfflineMaintenancePage({
         >
           <SectionHeading
             eyebrow="Device-local field queue"
-            title="Assigned work & sync"
+            title="Filtered assignments, protected drafts & sync"
             id="offline-workspace-heading"
             helpTopic="shell.overview"
-            trailing={<span className="build-chip">Build 076</span>}
+            trailing={<span className="build-chip">Build 189</span>}
           />
           <p>
-            The cached snapshot and unsent evidence live on this device until
-            synchronized or explicitly cleared. The server accepts only
-            idempotent notes, in-progress checklist results and validated
-            internal media whose cached row versions still match.
+            The Build 076 foundation remains in place: the cached snapshot and
+            unsent evidence live on this device until synchronized or explicitly
+            cleared. The server accepts only idempotent notes, in-progress
+            checklist results and validated internal media whose cached row
+            versions still match. Conflicts require a fresh snapshot, manual
+            comparison, a written review reason and a new operation ID. The
+            scoped audit records applied receipts and the first detection of
+            each conflict.
           </p>
           <div
             id="offline-maintenance-root"
             data-campground-id={selected.campgroundId}
             data-campground-name={selected.campgroundName}
+            data-actor-user-id={session.user.id}
           >
             <p role="status">Opening the device-local maintenance cache…</p>
           </div>
