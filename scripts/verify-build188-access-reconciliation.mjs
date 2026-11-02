@@ -116,6 +116,16 @@ try {
     ).rowCount,
     1,
   );
+  assert.equal(
+    (
+      await client.query(
+        "select * from icamp_private.access_reconciliation_reviews where campground_id=$1",
+        [campB.id],
+      )
+    ).rowCount,
+    0,
+    "An assigned security reviewer must not read another campground's evidence",
+  );
   await expectedFailure(
     "update icamp_private.access_reconciliation_reviews set reason='Changed evidence not allowed' where credential_id=$1",
     [credA.id],
@@ -143,7 +153,7 @@ try {
       source_status_snapshot,observed_verdict,credential_version_snapshot)
     values($1,$2,$3,$4,'acknowledged','Cross-scope review should never be accepted.','active','not_applicable','valid_in_app',$5)`,
     [orgB.id, campB.id, credB.id, security.id, credB.row_version],
-    /row-level security|policy|permission/,
+    /row-level security|policy|permission|snapshot is stale/,
   );
   await client.query("select set_config('icamp.user_id',$1,true)", [front.id]);
   await expectedFailure(
