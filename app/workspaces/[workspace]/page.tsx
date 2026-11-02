@@ -655,6 +655,12 @@ export default async function WorkspacePage({
             >
               Manage security incident cases
             </Link>
+            <Link
+              href="/workspaces/security/credentials"
+              className="secondary-button"
+            >
+              Reconcile visitor, vehicle and access credentials
+            </Link>
           </section>
         ) : null}
 

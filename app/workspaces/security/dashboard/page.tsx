@@ -251,6 +251,12 @@ export default async function SecurityAccessDashboardPage({
             id="security-dashboard-credentials"
             helpTopic="access.credential.lifecycle"
           />
+          <p>
+            <Link href="/workspaces/security/credentials">
+              Open Build 188 credential reconciliation and reasoned exception
+              review
+            </Link>
+          </p>
           <div className={styles.tableWrap}>
             <table>
               <thead>

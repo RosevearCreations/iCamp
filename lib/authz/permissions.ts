@@ -34,6 +34,7 @@ export const permissions = [
   "visitor.register",
   "access.credential.issue",
   "access.credential.revoke",
+  "access.reconciliation.review",
   "access.events.read",
   "access.events.record",
   "access.rules.manage",
