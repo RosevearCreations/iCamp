@@ -172,6 +172,9 @@ jobs:
       - name: Verify Build 191 vendor SLA, confidential sources and independent invoice review
         run: npm run build191:verify
 
+      - name: Verify Build 192 stock concurrency, POS sessions and independent count/till review
+        run: npm run build192:verify
+
       - name: Verify authentication lifecycle
         run: npm run auth:verify
 

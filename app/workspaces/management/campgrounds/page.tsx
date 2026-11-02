@@ -836,6 +836,17 @@ export default async function CampgroundAdministrationPage({
           >
             Manage guest store
           </Link>
+          <p>
+            Build 192 adds a separate, source-backed stock ledger, POS register
+            sessions, independent variance reviews and reorder suggestions.
+            Payment settlement and external purchases remain HELD.
+          </p>
+          <Link
+            className="secondary-link"
+            href={`/workspaces/management/campgrounds/store/operations?campground=${encodeURIComponent(structure.campground.id)}`}
+          >
+            Open stock &amp; POS reconciliation
+          </Link>
         </section>
 
         <section
