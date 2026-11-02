@@ -18,6 +18,9 @@ const nextConfig: NextConfig = {
     // Use the TS compiler API: detached CLI subprocess output is unavailable
     // in some sandboxed production-build environments.
     useTypeScriptCli: false,
+    // Restricted security incident evidence accepts validated PDFs up to 25 MiB.
+    // CSRF origin checks and server-side signature / size checks remain enforced.
+    serverActions: { bodySizeLimit: "26mb" },
   },
   async headers() {
     return [

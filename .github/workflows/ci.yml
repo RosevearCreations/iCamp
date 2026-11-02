@@ -157,6 +157,9 @@ jobs:
       - name: Verify all database contracts
         run: npm run db:verify
 
+      - name: Verify Build 187 incident closure, privacy RLS and immutable evidence
+        run: npm run build187:verify
+
       - name: Verify authentication lifecycle
         run: npm run auth:verify
 

@@ -70,6 +70,8 @@ At minimum:
 - gate.override.open
 - gate.override.close
 - security.incident.manage
+- security.incident.review (Build 187 independent closure, separate from investigation)
+- security.incident.sensitive.read (Build 187 witness/guest and confidential case evidence)
 - maintenance.read
 - maintenance.create
 - maintenance.assign

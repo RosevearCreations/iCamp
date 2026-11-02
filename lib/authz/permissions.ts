@@ -41,6 +41,8 @@ export const permissions = [
   "gate.override.open",
   "gate.override.close",
   "security.incident.manage",
+  "security.incident.review",
+  "security.incident.sensitive.read",
   "maintenance.read",
   "maintenance.create",
   "maintenance.assign",
