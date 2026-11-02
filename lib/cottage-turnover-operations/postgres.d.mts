@@ -73,6 +73,7 @@ export interface CottageTurnoverOperationsWorkspace {
     inspectionStartedAt: string | null;
     correctiveWorkOrders: number;
     openCorrectiveWorkOrders: number;
+    openSiteWorkOrders: number;
     rowVersion: number;
   }>;
 }

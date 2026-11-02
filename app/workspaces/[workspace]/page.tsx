@@ -346,6 +346,29 @@ export default async function WorkspacePage({
             </section>
             <section
               className="content-panel"
+              aria-labelledby="maintenance-turnover-release-heading"
+            >
+              <SectionHeading
+                eyebrow="Availability controls"
+                title="Housekeeping / Maintenance Turnover & Release"
+                id="maintenance-turnover-release-heading"
+                helpTopic="shell.overview"
+                trailing={<span className="build-chip">Build 186</span>}
+              />
+              <p>
+                Review cottage and campsite turnover together, see current
+                inspection and site maintenance blockers, and release only
+                through the canonical clearance workflows.
+              </p>
+              <Link
+                className="primary-link primary-link--dark"
+                href="/workspaces/maintenance/turnover-release"
+              >
+                Open turnover release board
+              </Link>
+            </section>
+            <section
+              className="content-panel"
               aria-labelledby="maintenance-cottage-turnover-heading"
             >
               <SectionHeading
