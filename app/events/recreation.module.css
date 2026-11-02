@@ -1,0 +1,82 @@
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: 1rem;
+}
+.filters label {
+  display: grid;
+  gap: 0.35rem;
+  min-width: 11rem;
+  flex: 1;
+}
+.filters input,
+.filters select {
+  width: 100%;
+  min-height: 2.75rem;
+}
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 19rem), 1fr));
+  gap: 1rem;
+}
+.card {
+  padding: 1.25rem;
+  border: 1px solid var(--border, #bccdc2);
+  border-radius: 1rem;
+  background: var(--surface, #fff);
+}
+.card h3 {
+  margin: 0.4rem 0 0.8rem;
+}
+.tag {
+  text-transform: capitalize;
+  font-weight: 700;
+}
+.details {
+  display: grid;
+  gap: 0.6rem;
+  margin: 1rem 0;
+}
+.details div {
+  display: grid;
+  gap: 0.2rem;
+}
+.details dt {
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+.details dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+.form {
+  display: grid;
+  gap: 1rem;
+  max-width: 46rem;
+}
+.form label {
+  display: grid;
+  gap: 0.35rem;
+}
+.form textarea {
+  min-height: 5rem;
+}
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+}
+.notice {
+  border-left: 0.3rem solid #38815a;
+  padding: 0.8rem 1rem;
+  background: #effaf3;
+  color: #15432c;
+}
+.warning {
+  border-left: 0.3rem solid #bd6630;
+  padding: 0.8rem 1rem;
+  background: #fff5ed;
+  color: #65310b;
+}

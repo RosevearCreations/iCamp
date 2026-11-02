@@ -1,0 +1,92 @@
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.65rem;
+  margin: 1rem 0;
+}
+
+.secondary {
+  background: var(--surface-soft);
+  border: 1px solid var(--line);
+  color: var(--brand);
+}
+
+.compareLabel {
+  display: inline-flex;
+  align-items: center;
+  min-width: 2.75rem;
+  min-height: 2.75rem;
+  cursor: pointer;
+}
+
+.compareLabel input {
+  width: 1.3rem;
+  height: 1.3rem;
+  accent-color: var(--brand);
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.muted {
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.55;
+}
+
+.notice {
+  min-height: 1.5rem;
+  color: var(--brand);
+}
+
+.savedNotice {
+  border: 1px solid var(--line);
+  border-left: 0.3rem solid var(--brand);
+  border-radius: 0.6rem;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1rem;
+  background: var(--surface-soft);
+}
+
+.savedNotice p {
+  margin: 0.4rem 0 0;
+}
+
+.comparison {
+  min-width: 42rem;
+}
+
+.comparison th:first-child {
+  min-width: 10rem;
+}
+
+.comparison th:not(:first-child),
+.comparison td {
+  min-width: 10rem;
+  max-width: 18rem;
+}
+
+.comparison th {
+  text-align: left;
+}
+
+.comparison td {
+  overflow-wrap: anywhere;
+}
+
+.comparison tbody tr:nth-child(even) {
+  background: var(--surface-soft);
+}
+
+@media (max-width: 44rem) {
+  .actions > button {
+    width: 100%;
+  }
+}

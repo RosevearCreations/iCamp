@@ -1,0 +1,1215 @@
+import type { Metadata } from "next";
+import Link from "next/link";
+import { redirect } from "next/navigation";
+
+import { AdminRefreshControl } from "@/components/admin-refresh-control";
+import { AppShell } from "@/components/app-shell";
+import { SectionHeading } from "@/components/section-heading";
+import { requireAnyCampgroundPermission } from "@/lib/authz/current-user";
+import {
+  getCampgroundAuthorization,
+  listAssignedCampgrounds,
+} from "@/lib/authz/postgres.mjs";
+import { listCampgroundStructure } from "@/lib/campground-structure/postgres.mjs";
+
+import {
+  createSectionAction,
+  createSubsectionAction,
+  updateCampgroundAction,
+  updateSectionAction,
+  updateSubsectionAction,
+} from "./actions";
+import styles from "./campground-admin.module.css";
+
+export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = {
+  title: "Campground structure · iCamp",
+  description:
+    "Manage campground sections, subsections, ordering and settings.",
+};
+
+function LifecycleSelect({
+  name,
+  value,
+}: Readonly<{ name: string; value: string }>) {
+  return (
+    <select name={name} defaultValue={value}>
+      <option value="active">Active</option>
+      <option value="inactive">Inactive</option>
+    </select>
+  );
+}
+
+export default async function CampgroundAdministrationPage({
+  searchParams,
+}: Readonly<{
+  searchParams: Promise<{ campground?: string; saved?: string }>;
+}>) {
+  const session = await requireAnyCampgroundPermission(
+    "campground.configuration",
+    "/workspaces/management/campgrounds",
+  );
+  const params = await searchParams;
+  const assigned = await listAssignedCampgrounds(session.user.id);
+
+  const authorized = (
+    await Promise.all(
+      assigned.map(async (campground) => {
+        const authorization = await getCampgroundAuthorization(
+          session.user.id,
+          campground.campgroundId,
+        );
+        return authorization?.permissions.includes("campground.configuration")
+          ? campground
+          : null;
+      }),
+    )
+  ).filter((item): item is NonNullable<typeof item> => item !== null);
+
+  if (authorized.length === 0) {
+    redirect("/auth/not-authorized");
+  }
+
+  const selected =
+    authorized.find((item) => item.campgroundId === params.campground) ??
+    authorized[0];
+  const structure = await listCampgroundStructure(
+    session.user.id,
+    selected.campgroundId,
+  );
+
+  if (!structure) {
+    redirect("/auth/not-authorized");
+  }
+
+  return (
+    <AppShell>
+      <div className="page-stack">
+        <nav className="breadcrumbs" aria-label="Breadcrumb">
+          <Link href="/">iCamp</Link>
+          <span aria-hidden="true">/</span>
+          <Link href="/workspaces/management">Management</Link>
+          <span aria-hidden="true">/</span>
+          <span>Campground structure</span>
+        </nav>
+
+        <section className="hero-panel">
+          <p className="eyebrow">Build 017</p>
+          <h1>Campground structure administration</h1>
+          <p className="hero-panel__lead">
+            Manage campground details, ordered sections and subsections without
+            crossing property boundaries.
+          </p>
+        </section>
+
+        {params.saved ? (
+          <div className={styles.notice}>{params.saved}</div>
+        ) : null}
+
+        <section className="content-panel" aria-labelledby="property-heading">
+          <SectionHeading
+            eyebrow="Property scope"
+            title="Choose campground"
+            id="property-heading"
+            helpTopic="campground.structure"
+          />
+          <form method="get" className={styles.selector}>
+            <label className={styles.field}>
+              <span>Campground</span>
+              <select name="campground" defaultValue={selected.campgroundId}>
+                {authorized.map((campground) => (
+                  <option
+                    key={campground.campgroundId}
+                    value={campground.campgroundId}
+                  >
+                    {campground.campgroundName}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <button className="primary-button" type="submit">
+              Open campground
+            </button>
+          </form>
+        </section>
+
+        <section className="content-panel" aria-labelledby="campground-heading">
+          <SectionHeading
+            eyebrow="Campground"
+            title="Property configuration"
+            id="campground-heading"
+            helpTopic="campground.structure"
+          />
+          <form action={updateCampgroundAction} className={styles.formGrid}>
+            <input
+              type="hidden"
+              name="campgroundId"
+              value={structure.campground.id}
+            />
+            <input
+              type="hidden"
+              name="rowVersion"
+              value={structure.campground.rowVersion}
+            />
+            <label className={styles.field}>
+              <span>Name</span>
+              <input
+                name="name"
+                defaultValue={structure.campground.name}
+                maxLength={160}
+                required
+              />
+            </label>
+            <label className={styles.field}>
+              <span>Timezone</span>
+              <input
+                name="timezone"
+                defaultValue={structure.campground.timezone}
+                maxLength={100}
+                required
+              />
+            </label>
+            <label className={styles.field}>
+              <span>State</span>
+              <LifecycleSelect
+                name="lifecycleState"
+                value={structure.campground.lifecycleState}
+              />
+            </label>
+            <div className={styles.actions}>
+              <button className="primary-button" type="submit">
+                Save campground
+              </button>
+            </div>
+          </form>
+        </section>
+
+        <section className="content-panel" aria-labelledby="sections-heading">
+          <SectionHeading
+            eyebrow="Hierarchy"
+            title="Sections and subsections"
+            id="sections-heading"
+            helpTopic="campground.structure"
+            trailing={<span className="build-chip">Build 017</span>}
+          />
+
+          <div className={styles.sectionGrid}>
+            {structure.sections.map((section) => (
+              <article className={styles.sectionCard} key={section.id}>
+                <div>
+                  <h3>{section.name}</h3>
+                  <span className={styles.sectionMeta}>
+                    {section.code} · row {section.rowVersion}
+                  </span>
+                </div>
+
+                <form action={updateSectionAction} className={styles.formGrid}>
+                  <input
+                    type="hidden"
+                    name="campgroundId"
+                    value={structure.campground.id}
+                  />
+                  <input type="hidden" name="sectionId" value={section.id} />
+                  <input
+                    type="hidden"
+                    name="rowVersion"
+                    value={section.rowVersion}
+                  />
+                  <label className={styles.field}>
+                    <span>Name</span>
+                    <input
+                      name="name"
+                      defaultValue={section.name}
+                      maxLength={160}
+                      required
+                    />
+                  </label>
+                  <label className={styles.field}>
+                    <span>Code</span>
+                    <input
+                      name="code"
+                      defaultValue={section.code}
+                      maxLength={64}
+                      required
+                    />
+                  </label>
+                  <label className={styles.field}>
+                    <span>Order</span>
+                    <input
+                      name="sortOrder"
+                      type="number"
+                      min="0"
+                      max="100000"
+                      defaultValue={section.sortOrder}
+                      required
+                    />
+                  </label>
+                  <label className={styles.field}>
+                    <span>State</span>
+                    <LifecycleSelect
+                      name="lifecycleState"
+                      value={section.lifecycleState}
+                    />
+                  </label>
+                  <label className={styles.field}>
+                    <span>Operating mode</span>
+                    <select
+                      name="operatingMode"
+                      defaultValue={section.settings.operatingMode}
+                    >
+                      <option value="standard">Standard</option>
+                      <option value="quiet">Quiet</option>
+                      <option value="restricted">Restricted</option>
+                    </select>
+                  </label>
+                  <label className={styles.field}>
+                    <span>Quiet hours start</span>
+                    <input
+                      type="time"
+                      name="quietHoursStart"
+                      defaultValue={section.settings.quietHoursStart ?? ""}
+                    />
+                  </label>
+                  <label className={styles.field}>
+                    <span>Quiet hours end</span>
+                    <input
+                      type="time"
+                      name="quietHoursEnd"
+                      defaultValue={section.settings.quietHoursEnd ?? ""}
+                    />
+                  </label>
+                  <div className={styles.actions}>
+                    <button className="primary-button" type="submit">
+                      Save section
+                    </button>
+                  </div>
+                  <label className={`${styles.field} ${styles.full}`}>
+                    <span>Staff note</span>
+                    <textarea
+                      name="staffNote"
+                      maxLength={500}
+                      defaultValue={section.settings.staffNote}
+                    />
+                  </label>
+                </form>
+
+                <div>
+                  <h4>Subsections</h4>
+                </div>
+
+                {section.subsections.map((subsection) => (
+                  <form
+                    action={updateSubsectionAction}
+                    className={styles.subsectionCard}
+                    key={subsection.id}
+                  >
+                    <input
+                      type="hidden"
+                      name="campgroundId"
+                      value={structure.campground.id}
+                    />
+                    <input
+                      type="hidden"
+                      name="subsectionId"
+                      value={subsection.id}
+                    />
+                    <input
+                      type="hidden"
+                      name="rowVersion"
+                      value={subsection.rowVersion}
+                    />
+                    <div className={styles.subsectionGrid}>
+                      <label className={styles.field}>
+                        <span>Name</span>
+                        <input
+                          name="name"
+                          defaultValue={subsection.name}
+                          maxLength={160}
+                          required
+                        />
+                      </label>
+                      <label className={styles.field}>
+                        <span>Code</span>
+                        <input
+                          name="code"
+                          defaultValue={subsection.code}
+                          maxLength={64}
+                          required
+                        />
+                      </label>
+                      <label className={styles.field}>
+                        <span>Order</span>
+                        <input
+                          name="sortOrder"
+                          type="number"
+                          min="0"
+                          max="100000"
+                          defaultValue={subsection.sortOrder}
+                          required
+                        />
+                      </label>
+                      <label className={styles.field}>
+                        <span>State</span>
+                        <LifecycleSelect
+                          name="lifecycleState"
+                          value={subsection.lifecycleState}
+                        />
+                      </label>
+                    </div>
+                    <div className={styles.actions}>
+                      <button className="primary-button" type="submit">
+                        Save subsection
+                      </button>
+                    </div>
+                  </form>
+                ))}
+
+                <form
+                  action={createSubsectionAction}
+                  className={styles.subsectionCard}
+                >
+                  <input
+                    type="hidden"
+                    name="campgroundId"
+                    value={structure.campground.id}
+                  />
+                  <input type="hidden" name="sectionId" value={section.id} />
+                  <div className={styles.subsectionGrid}>
+                    <label className={styles.field}>
+                      <span>New subsection name</span>
+                      <input name="name" maxLength={160} required />
+                    </label>
+                    <label className={styles.field}>
+                      <span>Code</span>
+                      <input name="code" maxLength={64} required />
+                    </label>
+                    <label className={styles.field}>
+                      <span>Order</span>
+                      <input
+                        name="sortOrder"
+                        type="number"
+                        min="0"
+                        max="100000"
+                        defaultValue={10}
+                        required
+                      />
+                    </label>
+                    <label className={styles.field}>
+                      <span>State</span>
+                      <LifecycleSelect name="lifecycleState" value="active" />
+                    </label>
+                  </div>
+                  <div className={styles.actions}>
+                    <button className="primary-button" type="submit">
+                      Add subsection
+                    </button>
+                  </div>
+                </form>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        <section className="content-panel" aria-labelledby="create-heading">
+          <SectionHeading
+            eyebrow="Add hierarchy"
+            title="Create section"
+            id="create-heading"
+            helpTopic="campground.structure"
+          />
+          <form action={createSectionAction} className={styles.formGrid}>
+            <input
+              type="hidden"
+              name="campgroundId"
+              value={structure.campground.id}
+            />
+            <label className={styles.field}>
+              <span>Name</span>
+              <input name="name" maxLength={160} required />
+            </label>
+            <label className={styles.field}>
+              <span>Code</span>
+              <input name="code" maxLength={64} required />
+            </label>
+            <label className={styles.field}>
+              <span>Order</span>
+              <input
+                name="sortOrder"
+                type="number"
+                min="0"
+                max="100000"
+                defaultValue={10}
+                required
+              />
+            </label>
+            <label className={styles.field}>
+              <span>State</span>
+              <LifecycleSelect name="lifecycleState" value="active" />
+            </label>
+            <label className={styles.field}>
+              <span>Operating mode</span>
+              <select name="operatingMode" defaultValue="standard">
+                <option value="standard">Standard</option>
+                <option value="quiet">Quiet</option>
+                <option value="restricted">Restricted</option>
+              </select>
+            </label>
+            <label className={styles.field}>
+              <span>Quiet hours start</span>
+              <input type="time" name="quietHoursStart" />
+            </label>
+            <label className={styles.field}>
+              <span>Quiet hours end</span>
+              <input type="time" name="quietHoursEnd" />
+            </label>
+            <div className={styles.actions}>
+              <button className="primary-button" type="submit">
+                Add section
+              </button>
+            </div>
+            <label className={`${styles.field} ${styles.full}`}>
+              <span>Staff note</span>
+              <textarea name="staffNote" maxLength={500} />
+            </label>
+          </form>
+        </section>
+
+        <section
+          className="content-panel"
+          aria-labelledby="accommodations-heading"
+        >
+          <SectionHeading
+            eyebrow="Accommodation inventory"
+            title="Unified campsites, cottages & permanent units"
+            id="accommodations-heading"
+            helpTopic="accommodation.inventory"
+            trailing={<span className="build-chip">Build 028</span>}
+          />
+          <p>
+            Open the accommodation operations workbench: shared identity,
+            campsite and cottage detail, turnover readiness and curated public
+            galleries in one place, ready for later status and booking builds.
+          </p>
+          <Link
+            className="primary-link primary-link--dark"
+            aria-label="Open accommodation inventory and assembly"
+            href={`/workspaces/management/campgrounds/accommodations?campground=${encodeURIComponent(
+              structure.campground.id,
+            )}`}
+          >
+            Open accommodation assembly · Build 024–026
+          </Link>
+        </section>
+
+        <section className="content-panel" aria-labelledby="assets-heading">
+          <SectionHeading
+            eyebrow="Operational inventory"
+            title="Operational assets & equipment"
+            id="assets-heading"
+            helpTopic="asset.inventory"
+            trailing={<span className="build-chip">Build 029</span>}
+          />
+          <p>
+            Open the facilities, infrastructure, equipment and fleet workbench
+            for map linkage, ownership, meter facts and current operating-state
+            readiness.
+          </p>
+          <Link
+            className="primary-link primary-link--dark"
+            href={
+              "/workspaces/management/campgrounds/assets?campground=" +
+              encodeURIComponent(structure.campground.id)
+            }
+          >
+            Open operational assets workbench
+          </Link>
+        </section>
+
+        <section
+          className="content-panel"
+          aria-labelledby="status-engine-heading"
+        >
+          <SectionHeading
+            eyebrow="Current operating state"
+            title="Accommodation & asset status engine"
+            id="status-engine-heading"
+            helpTopic="status.engine"
+            trailing={<span className="build-chip">Build 030</span>}
+          />
+          <p>
+            Control campsite, cottage, permanent-unit, facility, equipment and
+            fleet state through server-enforced transition rules with durable
+            history.
+          </p>
+          <Link
+            className="primary-link primary-link--dark"
+            href={
+              "/workspaces/management/campgrounds/status?campground=" +
+              encodeURIComponent(structure.campground.id)
+            }
+          >
+            Open status control centre
+          </Link>
+        </section>
+
+        <section
+          className="content-panel"
+          aria-labelledby="booking-rules-heading"
+        >
+          <SectionHeading
+            eyebrow="Booking configuration"
+            title="Booking calendar & date rules"
+            id="booking-rules-heading"
+            helpTopic="campground.structure"
+            trailing={<span className="build-chip">Build 032</span>}
+          />
+          <p>
+            Configure check-in/out times, booking windows, stay limits, weekend
+            classification and named holiday/season calendars before live
+            availability and pricing consume them.
+          </p>
+          <Link
+            className="primary-link primary-link--dark"
+            href={
+              "/workspaces/management/campgrounds/booking-rules?campground=" +
+              encodeURIComponent(structure.campground.id)
+            }
+          >
+            Open booking calendar & date rules
+          </Link>
+        </section>
+
+        <section
+          className="content-panel"
+          aria-labelledby="published-facility-rules-heading"
+        >
+          <SectionHeading
+            eyebrow="Rules & safety"
+            title="Versioned campground & facility rules"
+            id="published-facility-rules-heading"
+            helpTopic="campground.rules"
+            trailing={<span className="build-chip">Build 082</span>}
+          />
+          <p>
+            Register campground and facility policies, publish exact immutable
+            versions, and review reservation-linked guest acknowledgement
+            counts.
+          </p>
+          <Link
+            className="primary-link primary-link--dark"
+            href={
+              "/workspaces/management/campgrounds/rules?campground=" +
+              encodeURIComponent(structure.campground.id)
+            }
+          >
+            Open published rules
+          </Link>
+        </section>
+
+        <section
+          className="content-panel"
+          aria-labelledby="campground-enforcement-heading"
+        >
+          <SectionHeading
+            eyebrow="Safety & governance"
+            title="Warnings, suspensions & reinstatement"
+            id="campground-enforcement-heading"
+            helpTopic="safety.enforcement"
+            trailing={<span className="build-chip">Build 083</span>}
+          />
+          <p>
+            Record authorized staff warnings, request scoped restrictions and
+            route suspension decisions to independent campground management.
+            Review the immutable event history before reinstatement.
+          </p>
+          <Link
+            className="primary-link primary-link--dark"
+            href={
+              "/workspaces/management/campgrounds/enforcement?campground=" +
+              encodeURIComponent(structure.campground.id)
+            }
+          >
+            Open enforcement register
+          </Link>
+        </section>
+
+        <section
+          className="content-panel"
+          aria-labelledby="campground-pool-supervision-heading"
+        >
+          <SectionHeading
+            eyebrow="Aquatic safety"
+            title="Lifeguarded pool & supervised swimming"
+            id="campground-pool-supervision-heading"
+            helpTopic="pool.supervision"
+            trailing={<span className="build-chip">Build 084</span>}
+          />
+          <p>
+            Publish facility-specific swimming limits, verify staff
+            qualifications, record on-site admission and incident decisions, and
+            independently review temporary swim holds.
+          </p>
+          <Link
+            className="primary-link primary-link--dark"
+            href={
+              "/workspaces/management/campgrounds/pool-safety?campground=" +
+              encodeURIComponent(structure.campground.id)
+            }
+          >
+            Open pool safety register
+          </Link>
+        </section>
+
+        <section
+          className="content-panel"
+          aria-labelledby="campground-waterfront-swim-heading"
+        >
+          <SectionHeading
+            eyebrow="Waterfront safety"
+            title="Beach swimming zones, hazards & closures"
+            id="campground-waterfront-swim-heading"
+            helpTopic="waterfront.swim"
+            trailing={<span className="build-chip">Build 085</span>}
+          />
+          <p>
+            Define swimming boundaries and locally approved hours, record safety
+            observations, initiate immediate swimming closures and independently
+            review reopening evidence.
+          </p>
+          <Link
+            className="primary-link primary-link--dark"
+            href={
+              "/workspaces/management/campgrounds/waterfront-safety?campground=" +
+              encodeURIComponent(structure.campground.id)
+            }
+          >
+            Open waterfront safety register
+          </Link>
+        </section>
+
+        <section
+          className="content-panel"
+          aria-labelledby="campground-staff-readiness-heading"
+        >
+          <SectionHeading
+            eyebrow="Staff operations · independent qualification checks"
+            title="Shift scheduling, availability & handoffs"
+            id="campground-staff-readiness-heading"
+            helpTopic="shell.overview"
+            trailing={<span className="build-chip">Build 190</span>}
+          />
+          <p>
+            Plan role-based staff shifts, catch unavailability and overlapping
+            assignments, verify time-limited sensitive qualifications and
+            reconcile outstanding-work handoffs with actual receiving staff.
+          </p>
+          <Link
+            className="primary-link primary-link--dark"
+            href={
+              "/workspaces/management/campgrounds/staff-shifts?campground=" +
+              encodeURIComponent(structure.campground.id)
+            }
+          >
+            Open staff readiness workboard
+          </Link>
+        </section>
+
+        <section
+          className="content-panel"
+          aria-labelledby="campground-vendor-services-heading"
+        >
+          <SectionHeading
+            eyebrow="Supplier operations · private contractual evidence"
+            title="Vendor requests, SLA &amp; follow-up"
+            id="campground-vendor-services-heading"
+            helpTopic="shell.overview"
+            trailing={<span className="build-chip">Build 191</span>}
+          />
+          <p>
+            Keep vendor profiles, contracts, recurring service reminders and
+            source-backed follow-up in one campground-scoped workboard. Invoice
+            intake stays independent of payable execution and external dispatch.
+          </p>
+          <Link
+            className="primary-link primary-link--dark"
+            href={
+              "/workspaces/management/campgrounds/vendors?campground=" +
+              encodeURIComponent(structure.campground.id)
+            }
+          >
+            Open private vendor service workboard
+          </Link>
+        </section>
+
+        <section
+          className="content-panel"
+          aria-labelledby="campground-emergency-notices-heading"
+        >
+          <SectionHeading
+            eyebrow="Emergency communication"
+            title="Campground alerts & safety guardrails"
+            id="campground-emergency-notices-heading"
+            helpTopic="emergency.notices"
+            trailing={<span className="build-chip">Build 086</span>}
+          />
+          <p>
+            Draft notices for the whole campground, specific sections or sites,
+            or campground staff. Record independent management approvals and
+            manual on-site announcements without claiming emergency dispatch.
+          </p>
+          <Link
+            className="primary-link primary-link--dark"
+            href={
+              "/workspaces/management/campgrounds/emergency-notices?campground=" +
+              encodeURIComponent(structure.campground.id)
+            }
+          >
+            Open emergency notice register
+          </Link>
+        </section>
+
+        <section className="content-panel" aria-labelledby="recreation-heading">
+          <SectionHeading
+            eyebrow="Recreation management"
+            title="Published events & registration request queue"
+            id="recreation-heading"
+            helpTopic="campground.structure"
+            trailing={<span className="build-chip">Build 181</span>}
+          />
+          <p>
+            Create and publish events, disclose provisional request availability
+            and review reservation-linked registration requests without issuing
+            admission or initiating billing.
+          </p>
+          <Link
+            className="primary-link primary-link--dark"
+            href={`/workspaces/management/campgrounds/events?campground=${encodeURIComponent(structure.campground.id)}`}
+          >
+            Manage events &amp; recreation
+          </Link>
+        </section>
+
+        <section
+          className="content-panel"
+          aria-labelledby="rental-planning-heading"
+        >
+          <SectionHeading
+            eyebrow="Rental operations"
+            title="Amenity & equipment planning requests"
+            id="rental-planning-heading"
+            helpTopic="campground.structure"
+            trailing={<span className="build-chip">Build 182</span>}
+          />
+          <p>
+            Review registered operational assets, publish source-backed rental
+            planning offers and manage provisional guest requests without
+            allocating equipment or activating billing.
+          </p>
+          <Link
+            className="primary-link primary-link--dark"
+            href={`/workspaces/management/campgrounds/rentals?campground=${encodeURIComponent(structure.campground.id)}`}
+          >
+            Manage rental planning
+          </Link>
+        </section>
+
+        <section
+          className="content-panel"
+          aria-labelledby="store-management-heading"
+        >
+          <SectionHeading
+            eyebrow="Guest store planning"
+            title="Staff-reviewed catalog & cart preferences"
+            id="store-management-heading"
+            helpTopic="campground.structure"
+            trailing={<span className="build-chip">Build 183</span>}
+          />
+          <p>
+            Review and publish campground products, record observed stock
+            snapshots and examine guest cart planning requests. No checkout or
+            delivery dispatch.
+          </p>
+          <Link
+            className="primary-link primary-link--dark"
+            href={`/workspaces/management/campgrounds/store?campground=${encodeURIComponent(structure.campground.id)}`}
+          >
+            Manage guest store
+          </Link>
+          <p>
+            Build 192 adds a separate, source-backed stock ledger, POS register
+            sessions, independent variance reviews and reorder suggestions.
+            Payment settlement and external purchases remain HELD.
+          </p>
+          <Link
+            className="secondary-link"
+            href={`/workspaces/management/campgrounds/store/operations?campground=${encodeURIComponent(structure.campground.id)}`}
+          >
+            Open stock &amp; POS reconciliation
+          </Link>
+        </section>
+
+        <section
+          className="content-panel"
+          aria-labelledby="feedback-management-heading"
+        >
+          <SectionHeading
+            eyebrow="Verified stay feedback"
+            title="Guest review moderation & service-recovery queue"
+            id="feedback-management-heading"
+            helpTopic="campground.structure"
+            trailing={<span className="build-chip">Build 184</span>}
+          />
+          <p>
+            Review real completed-stay guest ratings, consent requests and
+            appeals, and record private follow-up milestones without changing
+            assistance cases, issuing refunds or sending outbound messages.
+          </p>
+          <Link
+            className="primary-link primary-link--dark"
+            href={`/workspaces/management/campgrounds/feedback?campground=${encodeURIComponent(structure.campground.id)}`}
+          >
+            Manage feedback &amp; service recovery
+          </Link>
+        </section>
+
+        <section className="content-panel" aria-labelledby="my-stay-heading">
+          <SectionHeading
+            eyebrow="Guest experience"
+            title="My Stay portal configuration"
+            id="my-stay-heading"
+            helpTopic="campground.structure"
+            trailing={<span className="build-chip">Build 051</span>}
+          />
+          <p>
+            Publish campground guest rules, Wi-Fi guidance, assistance
+            instructions and safe handoff links for the authenticated My Stay
+            portal.
+          </p>
+          <Link
+            className="primary-link primary-link--dark"
+            href={
+              "/workspaces/management/campgrounds/guest-experience?campground=" +
+              encodeURIComponent(structure.campground.id)
+            }
+          >
+            Configure My Stay guest experience
+          </Link>
+        </section>
+
+        <section
+          className="content-panel"
+          aria-labelledby="capacity-rules-heading"
+        >
+          <SectionHeading
+            eyebrow="Booking capacity"
+            title="Capacity, guest & vehicle limits"
+            id="capacity-rules-heading"
+            helpTopic="campground.structure"
+            trailing={<span className="build-chip">Build 033</span>}
+          />
+          <p>
+            Configure layered occupant, visitor and vehicle limits by
+            campground, accommodation type, section or individual accommodation,
+            including campsite-size bands.
+          </p>
+          <Link
+            className="primary-link primary-link--dark"
+            href={
+              "/workspaces/management/campgrounds/capacity-rules?campground=" +
+              encodeURIComponent(structure.campground.id)
+            }
+          >
+            Open capacity, guest & vehicle limits
+          </Link>
+        </section>
+
+        <section
+          className="content-panel"
+          aria-labelledby="compatibility-heading"
+        >
+          <SectionHeading
+            eyebrow="Booking compatibility"
+            title="Accommodation compatibility engine"
+            id="compatibility-heading"
+            helpTopic="campground.structure"
+            trailing={<span className="build-chip">Build 034</span>}
+          />
+          <p>
+            Validate tent, RV and cottage fit against physical dimensions,
+            utilities, accessibility, pets, occupancy and accommodation
+            features.
+          </p>
+          <Link
+            className="primary-link primary-link--dark"
+            href={
+              "/workspaces/management/campgrounds/compatibility?campground=" +
+              encodeURIComponent(structure.campground.id)
+            }
+          >
+            Open accommodation compatibility
+          </Link>
+        </section>
+
+        <section
+          className="content-panel"
+          aria-labelledby="live-availability-heading"
+        >
+          <SectionHeading
+            eyebrow="Booking inventory"
+            title="Server-authoritative live availability"
+            id="live-availability-heading"
+            helpTopic="campground.structure"
+            trailing={<span className="build-chip">Build 035</span>}
+          />
+          <p>
+            Read live booking inventory from reservations, temporary holds,
+            management restrictions, turnover work and seasonal assignments.
+          </p>
+          <Link
+            className="primary-link primary-link--dark"
+            href={
+              "/workspaces/management/campgrounds/availability?campground=" +
+              encodeURIComponent(structure.campground.id)
+            }
+          >
+            Open live availability
+          </Link>
+        </section>
+
+        <section
+          className="content-panel"
+          aria-labelledby="reservations-heading"
+        >
+          <SectionHeading
+            eyebrow="Reservation operations"
+            title="Reservation management console"
+            id="reservations-heading"
+            helpTopic="campground.structure"
+            trailing={<span className="build-chip">Build 044</span>}
+          />
+          <p>
+            Create, move, extend, shorten, reprice and cancel reservations with
+            complete change history and an explicit Build 045 financial-review
+            boundary.
+          </p>
+          <Link
+            className="primary-link primary-link--dark"
+            href={
+              "/workspaces/management/campgrounds/reservations?campground=" +
+              encodeURIComponent(structure.campground.id)
+            }
+          >
+            Open reservation management
+          </Link>
+          <p>
+            <Link
+              href={
+                "/workspaces/management/campgrounds/reservations/front-desk?campground=" +
+                encodeURIComponent(structure.campground.id)
+              }
+            >
+              Unified front desk · arrivals, departures and exception triage
+            </Link>
+          </p>
+        </section>
+
+        <section
+          className="content-panel"
+          aria-labelledby="seasonal-assignments-heading"
+        >
+          <SectionHeading
+            eyebrow="Long-term accommodation"
+            title="Seasonal & yearly assignments"
+            id="seasonal-assignments-heading"
+            helpTopic="campground.structure"
+            trailing={<span className="build-chip">Build 047</span>}
+          />
+          <p>
+            Assign seasonal/yearly campsites and permanent units, preserve the
+            Build 035 availability authority and snapshot canonical Build 039
+            package pricing.
+          </p>
+          <Link
+            className="primary-link primary-link--dark"
+            href={
+              "/workspaces/management/campgrounds/seasonal?campground=" +
+              encodeURIComponent(structure.campground.id)
+            }
+          >
+            Open seasonal & yearly assignments
+          </Link>
+        </section>
+
+        <section
+          className="content-panel"
+          aria-labelledby="winterization-heading"
+        >
+          <SectionHeading
+            eyebrow="Seasonal/yearly site shutdown"
+            title="Winterization checklists & foreman approval"
+            id="winterization-heading"
+            helpTopic="winterization.shutdown"
+            trailing={<span className="build-chip">Build 087</span>}
+          />
+          <p>
+            Create campground-specific water and utility shutdown checklists,
+            preserve physical work evidence and require authorized maintenance
+            sign-off before winter-closing a flagged long-term assignment.
+          </p>
+          <Link
+            className="primary-link primary-link--dark"
+            href={
+              "/workspaces/management/campgrounds/winterization?campground=" +
+              encodeURIComponent(structure.campground.id)
+            }
+          >
+            Open seasonal winterization
+          </Link>
+        </section>
+
+        <section
+          className="content-panel"
+          aria-labelledby="winter-readiness-heading"
+        >
+          <SectionHeading
+            eyebrow="Eligible cold-weather open sites"
+            title="Winter-readiness compliance & approval"
+            id="winter-readiness-heading"
+            helpTopic="winter.readiness"
+            trailing={<span className="build-chip">Build 088</span>}
+          />
+          <p>
+            Verify freeze protection, heating, wastewater measures and winter
+            access for sites permitted to operate during cold weather. Defects
+            require corrective work and independent approval. This does not
+            bypass mandatory shutdown or activate bookings.
+          </p>
+          <Link
+            className="primary-link primary-link--dark"
+            href={
+              "/workspaces/management/campgrounds/winter-readiness?campground=" +
+              encodeURIComponent(structure.campground.id)
+            }
+          >
+            Open winter-readiness compliance
+          </Link>
+        </section>
+
+        <section
+          className="content-panel"
+          aria-labelledby="spring-reopening-heading"
+        >
+          <SectionHeading
+            eyebrow="Independent seasonal return to service"
+            title="Spring reopening inspections & approval"
+            id="spring-reopening-heading"
+            helpTopic="spring.reopening"
+            trailing={<span className="build-chip">Build 089</span>}
+          />
+          <p>
+            Inspect restored water and utilities, fire safety, sanitation,
+            grounds and site hazards after winter. Resolve maintenance defects
+            and secure independent sign-off before a winter-closed assignment
+            may be separately reopened by authorized management.
+          </p>
+          <Link
+            className="primary-link primary-link--dark"
+            href={
+              "/workspaces/management/campgrounds/spring-reopening?campground=" +
+              encodeURIComponent(structure.campground.id)
+            }
+          >
+            Open spring reopening inspection
+          </Link>
+        </section>
+
+        <section
+          className="content-panel"
+          aria-labelledby="permanent-units-heading"
+        >
+          <SectionHeading
+            eyebrow="Owned units, separate from campground land"
+            title="Permanent-unit listings & buyer inquiries"
+            id="permanent-units-heading"
+            helpTopic="permanent.units"
+            trailing={<span className="build-chip">Build 091</span>}
+          />
+          <p>
+            Track source-linked unit ownership, independently review private
+            sale listings and record buyer inquiries without transferring land
+            rights, bookings, leases or payments.
+          </p>
+          <Link
+            className="primary-link primary-link--dark"
+            href={
+              "/workspaces/management/campgrounds/permanent-units?campground=" +
+              encodeURIComponent(structure.campground.id)
+            }
+          >
+            Open permanent-unit desk
+          </Link>
+        </section>
+
+        <section className="content-panel" aria-labelledby="payments-heading">
+          <SectionHeading
+            eyebrow="Reservation payments"
+            title="Deposits, balances & payment provider"
+            id="payments-heading"
+            helpTopic="campground.structure"
+            trailing={<span className="build-chip">Build 042</span>}
+          />
+          <p>
+            Configure booking deposits, refundable security-deposit timing,
+            remaining balance due rules and the provider-neutral payment
+            adapter.
+          </p>
+          <Link
+            className="primary-link primary-link--dark"
+            href={
+              "/workspaces/management/campgrounds/payments?campground=" +
+              encodeURIComponent(structure.campground.id)
+            }
+          >
+            Open deposits, balances & payments
+          </Link>
+        </section>
+
+        <section className="content-panel" aria-labelledby="map-images-heading">
+          <SectionHeading
+            eyebrow="Campground map"
+            title="Overhead image library"
+            id="map-images-heading"
+            helpTopic="campground.map.images"
+            trailing={<span className="build-chip">Build 018</span>}
+          />
+          <p>
+            Upload and version overhead, drone or site-plan imagery before
+            plotting the campground map.
+          </p>
+          <Link
+            className="primary-link primary-link--dark"
+            href={`/workspaces/management/campgrounds/maps?campground=${encodeURIComponent(
+              structure.campground.id,
+            )}`}
+          >
+            Open overhead image library
+          </Link>
+        </section>
+
+        <section className="content-panel" aria-labelledby="freshness-heading">
+          <SectionHeading
+            eyebrow="Administrative tracking"
+            title="Data freshness and refresh"
+            id="freshness-heading"
+            helpTopic="admin.refresh"
+          />
+          <AdminRefreshControl
+            renderedAt={new Date().toISOString()}
+            sectionKey="management.campground-structure"
+          />
+        </section>
+      </div>
+    </AppShell>
+  );
+}

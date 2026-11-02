@@ -1,0 +1,807 @@
+# iCamp Security Standard — iCamp2027
+
+## 1. Security posture
+
+iCamp manages reservations, payments, guest/staff data, physical access, safety records, financial records and potentially financing applications. Security is therefore a product requirement, not a later hardening exercise.
+
+Mandatory principles:
+- deny by default;
+- least privilege;
+- server-side authorization for every protected mutation;
+- database row/data boundary enforcement;
+- no trust in client-supplied price, role, availability, inventory, access status, payment status or financial totals;
+- secrets never committed;
+- sensitive media private by default;
+- audit privileged and high-risk actions;
+- strict validation at API boundaries;
+- rate limiting/abuse controls;
+- verified/idempotent webhooks;
+- strong environment separation;
+- production changes traceable to commit and migration versions.
+
+## 2. Data classifications
+
+### Public
+Published campground information, public amenities, approved site/cottage images, published rates, public local-attraction/event content.
+
+### Internal
+Operational notes, maintenance assignments, non-sensitive schedules, inventory operations.
+
+### Confidential
+Guest contact information, vehicle registrations, visitor records, staff personal information, vendor contracts, detailed finance.
+
+### Highly restricted
+Authentication/recovery secrets, provider API secrets, sensitive incidents, privileged access-control details, financing applications/documents, security device credentials.
+
+Access, retention and export rules must match classification.
+
+## 3. Permission domains
+
+At minimum:
+- campground.configuration
+- campground.map
+- campground.map.publish
+- accommodation.read
+- accommodation.manage
+- accommodation.media.manage
+- reservation.read
+- reservation.create
+- reservation.modify
+- reservation.cancel
+- reservation.override
+- pricing.manage
+- payment.read
+- payment.capture
+- refund.issue
+- discount.apply
+- guest.read
+- guest.manage
+- vehicle.read
+- vehicle.register
+- vehicle.pass.issue
+- visitor.read
+- visitor.register
+- access.credential.issue
+- access.credential.revoke
+- access.events.read
+- access.events.record
+- access.rules.manage
+- gate.state.read
+- gate.override.open
+- gate.override.close
+- security.incident.manage
+- security.incident.review (Build 187 independent closure, separate from investigation)
+- security.incident.sensitive.read (Build 187 witness/guest and confidential case evidence)
+- maintenance.read
+- maintenance.create
+- maintenance.assign
+- maintenance.complete
+- maintenance.triage
+- maintenance.escalate
+- maintenance.schedule
+- maintenance.preventive
+- maintenance.offline.media
+- inspection.perform
+- inspection.signoff
+- inspection.template.manage
+- aquatics.read
+- aquatics.manage
+- aquatics.reopen
+- seasonal.manage
+- winterization.signoff
+- permanent_unit.manage
+- permanent_unit.transfer
+- financing.read
+- financing.manage
+- event.manage
+- event.access.manage
+- local_interest.manage
+- promotion.manage
+- waterfront.manage
+- boat.manage
+- dock.manage
+- safety.warning.issue
+- safety.suspension.issue
+- safety.suspension.review
+- rental.manage
+- pos.sell
+- pos.refund
+- inventory.read
+- inventory.manage
+- garbage.pickup.manage
+- staff.read
+- staff.manage
+- role.manage
+- schedule.manage
+- timekeeping.manage
+- vendor.read
+- vendor.manage
+- finance.read
+- finance.manage
+- reports.read
+- audit.read
+- announcement.send
+- communications.read
+- communications.send
+- communications.manage
+- voice.call
+- ivr.admin
+- sms.send
+- sms.preference.manage
+- emergency.broadcast
+- system.admin
+
+## Reservation credential lifecycle
+
+Build 062 binds stay-managed credentials to canonical reservation/check-in evidence. Active assignments are stay-synchronized, ended assignments cannot be reopened, checkout/cancellation revoke active credentials, and lost/replacement issues a new credential identity rather than reusing a lost secret. Public lifecycle tables FORCE RLS and deny direct `anon`/`authenticated` Data API access.
+
+## Security & Access Operations Dashboard
+
+Build 063 is a privileged read-only operational projection over the canonical access domains. It requires campground-scoped gate-state, access-event and credential visibility and continues to rely on database RLS.
+
+The dashboard must never expose raw PINs, QR/pass bearer tokens, credential/pass fingerprints, controller secrets or provider credentials. Manual gate commands remain on the separate Build 059 high-risk command path.
+
+Because the active queue did not deliver the historical standalone incident-management build, Build 063 may surface fault/denial/override-failure **signals** but must not fabricate canonical incident cases, assignment, escalation or resolution evidence.
+
+## Access pass bearer secrets
+
+Build 061 QR, printed and wristband validation identifiers are bearer credentials. iCamp generates them with cryptographically secure randomness, stores only SHA-256 fingerprints plus masked hints, never writes the raw token to PostgreSQL/audit metadata, and does not expose the pass tables directly to `anon` or `authenticated` Data API roles. Validation is server-side and does not itself authorize a gate opening; Build 060 policy and the device-control path remain separate required decisions.
+
+## Access policy enforcement
+
+Build 060 access zones, schedules and rules are server-authoritative policy. Configuration requires `access.rules.manage`; evaluation fails closed, uses campground-local time supplied by trusted server code, and never treats a descriptive hardware zone label, caller ID, SMS sender or raw credential payload as authorization.
+
+## Manual gate overrides
+
+Build 059 gate open/close overrides are high-risk server-only commands. They require the command-specific permission, an explicit reason, recent re-authentication, device capability validation, a database rate limit, append-only request/provider evidence and privileged audit evidence. They must never bypass physical life-safety controls or store provider/controller secrets.
+
+## 4. High-risk operations
+
+Require explicit permission, reason capture and audit. Some may additionally require recent re-authentication or second approval:
+- role/permission changes;
+- privileged staff creation;
+- refunds above threshold;
+- manual payment-state changes;
+- financial adjustments;
+- financing application access/decision recording;
+- sensitive exports/deletion;
+- campground-wide closures;
+- emergency broadcasts;
+- map publication;
+- manual gate open/close;
+- access credential provisioning/revocation;
+- mass visitor/pass operations;
+- permanent-unit ownership transfer;
+- bulk reservation mutations.
+
+## 5. Authentication/session requirements
+
+- secure hosted authentication;
+- verified email/identity where appropriate;
+- MFA readiness for management/security/finance;
+- secure password reset;
+- session expiration/revocation;
+- recent re-authentication support for sensitive actions;
+- secure, HTTP-only, same-site cookies where applicable;
+- device/session audit events.
+
+## 6. Authorization
+
+- roles are permission collections, not the source of truth for access by themselves;
+- permissions are checked server-side;
+- property/campground scope is enforced;
+- database policies prevent cross-property data access;
+- client UI hiding is never considered authorization;
+- management overrides remain permission-controlled and audited.
+
+## 7. Reservation/payment security
+
+- atomic booking holds;
+- anti-double-booking constraints;
+- server-generated price quotes;
+- payment provider tokenization;
+- no raw card storage;
+- verified webhook signatures;
+- idempotency on reservation/payment/refund writes;
+- refund references original payment;
+- append-oriented financial history.
+
+## 8. Physical access/gate security
+
+Gate/security integration is treated as a privileged operational system.
+
+Requirements:
+- no direct browser-to-controller commands;
+- server-side provider adapter;
+- authenticated/authorized command path;
+- command rate limiting;
+- audit actor, gate/device, reason, timestamp, request, provider response and result;
+- credentials scoped by person/vehicle/site/time/zone;
+- revocation/expiry;
+- access-event logging;
+- device health monitoring where supported;
+- encrypted secret storage;
+- provider credentials never exposed to clients.
+
+Manual override must never bypass required physical life-safety mechanisms. iCamp cannot be the only means of emergency egress or hardware safety control.
+
+## 9. Vehicle/visitor privacy
+
+Collect only operationally required data. Plate, vehicle description, visitor identity and validity should be retained according to campground policy and applicable privacy obligations, not indefinitely by default.
+
+Visitor/pass lookups must be permission-filtered.
+
+## 10. Financing security
+
+Financing is isolated from ordinary reservation workflows.
+
+Requirements:
+- separate permissions;
+- confidential/highly restricted data classification;
+- minimal collection;
+- encrypted transport/storage through approved provider services;
+- document access audit;
+- retention policy;
+- no hidden automated lending decision unless specifically implemented through a compliant provider/process;
+- no payment card/bank credential storage unless an approved provider tokenizes it.
+
+## 11. Media/upload security
+
+- validate size/type/signature;
+- strip unsafe metadata where appropriate;
+- process customer-facing images into controlled variants;
+- private media uses signed/authorized delivery;
+- avoid executable file types unless explicitly required;
+- protect against path traversal/content-type spoofing;
+- maintain attachment audit.
+
+Public site/cottage gallery has a business limit of 10 active images; internal evidence media is separate.
+
+## 12. Local-content security and integrity
+
+Local attractions/events can contain external links/content.
+
+Requirements:
+- management approval before public promotion;
+- source reference;
+- freshness/expiry date;
+- sanitization of displayed content;
+- safe external links;
+- no unreviewed remote HTML/script;
+- marketing consent/opt-out respected;
+- expired events suppressed automatically.
+
+## 13. Garbage sticker/pass integrity
+
+Serialized garbage stickers, QR passes and access credentials must use non-guessable identifiers where digital validation matters.
+
+Redemption/voiding is server-authoritative and idempotent.
+
+## 14. Safety/incident data
+
+Warnings, suspensions and incident records are access-controlled.
+
+Changes should be append/history-oriented. Do not silently rewrite who was warned, suspended or reinstated.
+
+iCamp does not replace emergency services or qualified safety staff.
+
+## 15. Application security controls
+
+- CSP;
+- strict CORS;
+- CSRF strategy where applicable;
+- output encoding/XSS prevention;
+- parameterized queries;
+- schema validation;
+- secure headers;
+- abuse/rate limits;
+- upload controls;
+- dependency auditing;
+- secret scanning;
+- code scanning where account eligibility permits;
+- secure error handling that does not expose secrets/internal traces.
+
+## 16. Audit events
+
+Build 006 makes audit evidence append-only in the private database schema.
+
+Audit events include where practical:
+- actor;
+- target;
+- action;
+- campground/organization scope;
+- timestamp;
+- request/session reference;
+- permission and risk classification;
+- reason;
+- previous/new state or event details;
+- re-authentication/assurance evidence for high-risk actions;
+- success/failure.
+
+A database trigger rejects UPDATE and DELETE against canonical audit rows. Audit JSON must never contain passwords, raw tokens, PINs, MFA secrets, payment credentials or similarly sensitive values.
+
+## 17. Security testing
+
+Every relevant build should add tests for:
+- unauthorized/forbidden access;
+- wrong campground/tenant;
+- forged IDs/roles/prices;
+- concurrent writes;
+- expired credentials/holds/passes;
+- idempotency;
+- unsafe input;
+- sensitive data exposure.
+
+Physical-access adapter tests use mocks/sandboxes, not real gate commands in ordinary CI.
+
+## 18. Development/production separation
+
+- dev uses synthetic/demo personal data;
+- payment/access integrations use sandbox/mock modes;
+- production secrets exist only in production secret stores;
+- real financing/security data is never copied casually to dev;
+- production logs must avoid secret leakage.
+
+## 19. Security gate
+
+A build cannot be GREEN if it introduces an unresolved critical/high security defect in the code or production dependency set, or if a high-risk operation lacks authorization/audit controls.
+
+
+## 20. Telephone, IVR, DTMF and SMS Security
+
+Telephone/SMS channels are untrusted external interfaces.
+
+### Identity
+- Caller ID must never be treated as sufficient authentication.
+- Reservation/stay lookups should use limited verification appropriate to the action.
+- Staff and high-risk actions require stronger authentication than guest information lookups.
+- Authentication secrets/PINs must not be spoken back or returned in plaintext SMS.
+- Failed verification attempts are rate limited and monitored.
+
+### DTMF
+- Never log full sensitive DTMF sequences if they represent PINs or authentication secrets.
+- Mask/redact sensitive digit input in application logs and provider event storage.
+- Set session expiry and retry limits.
+- Prevent replay of completed commands.
+- Do not collect raw payment-card data using custom iCamp DTMF flows.
+
+### SMS
+- Treat incoming message bodies as untrusted input.
+- Validate and normalize every SMS command before executing a domain action.
+- Natural-language SMS interpretation cannot bypass normal authorization/business rules.
+- Sensitive information should not be sent by plain SMS when a secure link or authenticated portal is appropriate.
+- STOP/START/HELP and provider opt-out events must update internal preference state where applicable.
+- Marketing and transactional/operational messaging purposes remain separately classified.
+
+### Provider webhooks
+- Verify webhook signatures.
+- Enforce HTTPS.
+- Apply replay/idempotency controls.
+- Rate limit abusive sources.
+- Validate provider event schema.
+- Avoid storing unnecessary provider payload fields.
+
+### Staff telephone actions
+A staff call may not perform gate overrides, refunds, financing actions, role changes or similar high-risk commands based on caller ID alone.
+
+High-risk staff telephone actions should require:
+- authenticated staff identity;
+- additional factor/re-authentication;
+- explicit target confirmation;
+- reason capture where appropriate;
+- complete audit event.
+
+### Voice recordings and transcription
+If call recording/transcription is ever enabled:
+- it is disabled by default;
+- jurisdiction-appropriate notice/consent is required;
+- retention is limited;
+- recordings/transcripts are confidential;
+- access is audited;
+- payment/authentication secrets are excluded/redacted where possible.
+
+### Emergency boundary
+The IVR must provide clear routing/escalation for emergencies and must not imply that a voicemail/SMS/automated workflow replaces calling emergency services where immediate assistance is required.
+
+## 21. Messaging Compliance Boundary
+
+iCamp must support configurable compliance requirements rather than hard-code one jurisdiction.
+
+For Canadian commercial SMS, the communications module must support evidence of consent where required, sender identification and a functioning unsubscribe mechanism. Transactional/operational notices and marketing messages must be purpose-tagged and reviewed separately.
+
+Provider-level opt-out handling is synchronized into iCamp's consent/preference records instead of being treated as an external black box.
+
+
+## 22. I.T. Diagnostics and Observability Security
+
+Diagnostics are potentially sensitive because logs and traces can accidentally reveal personal data, tokens, payment references, infrastructure details or access-control information.
+
+Mandatory controls:
+- public health/status endpoints return a strict allow-list of safe fields;
+- detailed diagnostics require authenticated, explicitly authorized I.T./system permissions once authentication exists;
+- stack traces are never returned to ordinary clients in production;
+- client error pages use safe correlation/support references;
+- secrets/tokens/passwords/PINs/payment-card data are redacted or excluded before logging;
+- request/response bodies are not logged by default;
+- diagnostic exports are permission-controlled and audited;
+- health endpoints are rate-limited/abuse-reviewed before public production launch;
+- external monitoring credentials are stored only in approved secret stores;
+- diagnostic retention is configurable and minimized.
+
+Add permission domains when authorization is implemented:
+- it.health.read
+- it.diagnostics.read
+- it.incident.manage
+- it.integration.read
+- it.release.read
+- it.diagnostics.export
+- system.status.publish
+
+Until Builds 004–006 implement identity/permissions/audit, the I.T. workspace and public status page must expose **sanitized non-sensitive information only**.
+
+
+## 23. Database Foundation, Refresh Tracking and Help Security
+
+### Database
+- new exposed-schema tables enable RLS immediately;
+- no permissive anon/authenticated policies are introduced before Build 005;
+- foreign keys enforce organization/campground hierarchy;
+- UUIDs are generated server-side/database-side;
+- migration SQL is reviewed/tested in CI against PostgreSQL;
+- destructive schema changes require explicit migration/recovery planning.
+
+### Refresh/freshness tracking
+Refresh tracking stores operational metadata, not copies of sensitive payloads.
+
+Safe fields include timestamps, status, source watermark/version and sanitized error codes/fingerprints.
+
+Do not persist:
+- raw exception dumps;
+- guest/staff form payloads;
+- payment data;
+- access credentials;
+- authentication tokens;
+merely to record that a refresh succeeded or failed.
+
+Manual refresh actions that later trigger privileged data access must use normal authorization and audit controls.
+
+### Contextual help
+Help content is classified.
+
+Public help may describe public/guest workflows.
+
+Privileged internal help may contain operational guidance but must not expose:
+- credentials;
+- secret configuration;
+- security bypass procedures;
+- private infrastructure details;
+- sensitive financial or client information.
+
+Help controls themselves do not bypass authorization; a user who cannot access a feature must not gain its privileged data through help content.
+
+
+## 24. Authentication and Session Security Controls
+
+### Passwords
+- passwords are hashed server-side with scrypt and random salts;
+- plaintext passwords are never persisted or logged;
+- password hashes remain in the private database schema;
+- public APIs never expose password verifiers.
+
+### Account enumeration
+- login uses generic invalid-credential messages;
+- unknown-account login performs password-verification work against a dummy verifier to reduce timing differences;
+- registration does not reveal whether an email already exists;
+- recovery responses do not reveal account existence.
+
+### Failed sign-in handling
+- active accounts track failed attempts;
+- five failed password attempts trigger an initial 15-minute lock;
+- lockout behavior is server/database controlled;
+- future I.T./Analysis can surface abuse patterns without publishing account existence.
+
+### Sessions
+- session tokens contain at least 256 bits of cryptographic randomness;
+- only SHA-256 token hashes are persisted;
+- sessions expire and can be revoked server-side;
+- production cookie uses `__Host-`, Secure, HttpOnly and SameSite=Lax;
+- logout revokes the database session before clearing the cookie.
+
+### Recovery
+- recovery tokens are random, expiring and single-use;
+- only token hashes are stored;
+- password reset revokes all existing sessions;
+- raw recovery tokens are not logged by the no-op delivery adapter.
+
+### Browser mutations
+- authentication POST requests require same-origin Origin validation;
+- redirect targets are constrained to local application paths;
+- mutation endpoints do not use GET.
+
+### Staff and privilege boundary
+Build 004 staff identity is not itself permission to perform every staff operation.
+
+Build 005 must enforce campground/property scope and permission checks before staff business data becomes available.
+
+### Repository release protection
+The production/release `main` branch should be protected:
+- pull request required;
+- required GREEN status checks;
+- no force pushes;
+- no branch deletion;
+- no routine direct-push bypass;
+- no mandatory human approval count while autonomous single-maintainer development is in use, unless the owner later chooses otherwise.
+
+
+## 25. Authorization, Roles and Row-Level Security Controls
+
+### Authentication is not authorization
+A valid staff session does not grant universal staff access.
+
+Every protected operation must resolve the staff identity against an active campground assignment and the required granular permission.
+
+### Default deny
+If an assignment, active role, permission, campground scope or trusted request-user context is missing, access is denied.
+
+Malformed RLS request-user context resolves to no identity rather than an elevated/default user.
+
+### Never trust client authority claims
+Do not authorize from:
+- client-submitted role names;
+- hidden form fields;
+- browser UI state;
+- caller ID;
+- SMS sender identity;
+- arbitrary headers;
+- unverified external claims.
+
+Authorization is resolved server-side from canonical database assignments/roles/permissions.
+
+### Private authorization records
+Permission catalogues, roles, assignments and assignment-role links live in `icamp_private`.
+
+Supabase `anon` and `authenticated` roles have no private-schema USAGE and are not members of `icamp_app`.
+
+### Application database role
+`icamp_app` is NOLOGIN and NOINHERIT.
+
+Only a trusted server/migration principal may assume it. Its table privileges are intentionally narrower than the migration owner's privileges and remain constrained by forced RLS.
+
+### Tenant and custom-role boundaries
+A campground assignment carries organization and campground scope.
+
+Custom roles belong to one organization and are rejected if attached to another organization's assignment.
+
+Only staff authentication identities may receive staff assignments.
+
+### Forced RLS
+Current scoped public tables FORCE RLS, and broad public grants are revoked.
+
+Server guards and RLS are defense-in-depth; neither is considered a substitute for the other.
+
+### Permission-specific UI/server guards
+Opening an operational workspace requires an explicit minimum permission.
+
+Each sensitive action inside the workspace must check its own capability rather than inheriting every capability from workspace entry.
+
+### High-risk permissions
+Capabilities such as refunds, gate overrides, role management, financing, emergency broadcasting, diagnostic exports and system administration are marked high-risk/elevated where appropriate.
+
+Build 006 adds audit/reason/re-authentication controls; possession of the permission alone will not be the final safeguard for those actions.
+
+### Cross-channel enforcement
+Telephone, DTMF, SMS, secure-link and staff-assisted workflows must use the same canonical authorization services as Web/PWA.
+
+No channel adapter may create an authorization bypass.
+
+### Verification requirements
+CI and production-readiness checks must prove at minimum:
+- unassigned users see no scoped campground rows;
+- a limited role cannot perform an owner/admin update;
+- an authorized role can perform its permitted update;
+- one campground assignment cannot modify another campground;
+- organization-scoped custom roles cannot cross organizations;
+- missing/malformed request identity fails closed;
+- migration history remains reproducible.
+
+### Hosted database verification
+Build 005 remote tests run in rollback-only transactions against the iCamp Supabase development project and retain no synthetic authorization records.
+
+Supabase security-advisor findings must be reviewed after authorization migrations; security findings are not waived merely because CI is GREEN.
+
+
+## 26. Background Job, Scheduler and Queue Security
+
+### Private execution state
+Build 007 queue, schedule, worker and scheduler records live in `icamp_private`.
+
+Browser-facing Supabase roles do not receive private-schema access. Queue payloads are server-side operational data, not a client API.
+
+### At-least-once execution
+A claimed job is protected by a finite worker lease. Workers may heartbeat, complete or fail a job only while they still own an unexpired lease.
+
+Expired work is recovered safely:
+- attempts remaining → return to queue;
+- final attempt exhausted → dead-letter.
+
+Because processing is at-least-once, side-effecting handlers must use domain/provider idempotency in addition to queue-record idempotency.
+
+### Idempotency
+Non-null idempotency keys are unique within a queue. Scheduled occurrences use a stable schedule/occurrence key so repeated scheduler ticks do not create duplicate records for the same occurrence.
+
+### Retry and error hygiene
+Retries are bounded. Error fields store short sanitized codes/summaries only.
+
+Never put the following in queue error evidence, worker metadata or scheduler metadata:
+- passwords or authentication tokens;
+- API/service secrets;
+- payment-card data;
+- authentication, MFA or keypad codes;
+- reusable access credentials;
+- raw request/response bodies by default;
+- sensitive financing, incident or message content.
+
+### I.T. visibility
+The protected I.T./Analysis health surface receives aggregate counts and safe heartbeat timestamps. It does not receive job payloads.
+
+Dead-letter replay/remediation is intentionally not introduced as an unaudited button in Build 007. Later controls that mutate/replay privileged work must use authorization and audit safeguards.
+
+### Cross-channel boundary
+Web/PWA, IVR/DTMF and SMS may enqueue the same canonical job types, but queueing never substitutes for authorization. Privileged source actions must complete normal permission, re-authentication and audit requirements before the command is accepted for background execution.
+
+
+## Build 008 — Secure media and document storage
+
+- Media is classified as `public`, `internal` or `confidential`; classification is server-authoritative.
+- Internal reads require an active campground assignment with `media.read`.
+- Confidential reads require the narrower `media.confidential.read` permission.
+- Media mutations require `media.manage` and produce audit/lifecycle evidence.
+- Browser-facing database roles have no direct access to the private media metadata tables.
+- Provider secret/service credentials are server-only and must never use a `NEXT_PUBLIC_*` variable.
+- Private provider URLs are short-lived, bounded to 60–900 seconds, and must not be persisted in database rows, queues, logs, analytics or message history.
+- Upload validation checks MIME type, extension, byte size and binary signature; SVG, HTML and executable formats are not accepted by this foundation.
+- User filenames are metadata only. Storage object keys use UUID scope/asset identifiers to avoid path traversal and sensitive filename leakage.
+- Public storage permits deliberate unauthenticated reads only for the public bucket; upload/update/delete remain trusted-server operations.
+- Internal and confidential buckets remain private.
+- Object deletion is the reliable emergency access cutoff when a previously issued signed URL must be invalidated; token expiry alone is not treated as an immediate-revocation mechanism.
+
+## Build 009 — Omnichannel communications security
+
+- Phone numbers, email addresses and push destinations are private routing data and must not appear in public diagnostics or ordinary audit snapshots.
+- Caller ID, sender address and endpoint possession are never sufficient authentication or campground authorization.
+- Endpoint/preference/consent administration uses the canonical campground permission engine.
+- Communication sends use `communications.send`; administration uses `communications.manage`.
+- Dispatch purpose is server-authoritative and must remain transactional, operational or marketing.
+- Consent evidence and provider events are append-only.
+- Provider event IDs are idempotent per provider.
+- Raw provider webhook bodies, signatures and service credentials are not persisted in provider-event metadata.
+- Message bodies, call recordings/transcripts, payment-card data, MFA/PIN/DTMF secrets and reusable credentials must not be placed in ordinary dispatch errors, provider metadata, audit snapshots or I.T. health.
+- Retryable provider failures use bounded attempts and capped backoff; terminal failure remains visible to operators.
+- Real webhook signature verification and replay protection are required by provider-specific gateway builds before external inbound traffic is trusted.
+- The Build 009 mock provider has no external account, number, billing or secret requirement.
+
+## Build 010 — Voice and IVR gateway security
+
+- Voice provider webhooks require signature verification before any event is trusted.
+- The default signature contract uses HMAC-SHA256 over the exact timestamp plus raw body and a bounded freshness window.
+- Replay/stale webhook requests are rejected before database processing.
+- Provider event IDs are idempotent and event ingestion plus call state changes share one transaction.
+- Raw webhook bodies and signatures are never persisted.
+- Caller ID and provider call references remain routing hints, not authentication.
+- Outbound calls require the canonical `communications.send` permission.
+- Voice-line administration requires `communications.manage`.
+- Voice line and staff-transfer endpoints are constrained to the same campground.
+- Raw phone numbers are not returned by voice-line/call objects and never appear in I.T. health.
+- IVR transition evidence stores semantic events only. DTMF digits, PINs, MFA codes, payment-card data, audio and transcripts are forbidden from ordinary IVR event metadata.
+- Staff-transfer destinations are resolved only inside trusted server code.
+- Build 010 defaults to a mock sandbox. External provider credentials and provider-specific signature adapters are not required until an external provider is intentionally connected.
+
+
+## Build 011 — Numeric keypad / DTMF security
+
+- DTMF values are untrusted provider input and are parsed only after the signed Build 010 webhook boundary succeeds.
+- Raw keypad strings are transient and must not be written to provider-event metadata, IVR events, audit snapshots, error summaries, analytics or I.T. health.
+- Provider-event metadata records only input kind, digit count, sensitivity classification and a `rawDigitsExcluded` marker.
+- IVR evidence records only semantic transitions/actions.
+- PIN and verification input is classified as sensitive and is never returned as a transient site/reservation/pass lookup value.
+- DTMF provider event status is normalized to the semantic event type so a provider-supplied status cannot copy digits into durable evidence.
+- Caller ID, keypad possession and knowledge of an identifier are not authentication or authorization.
+- Site/reservation/pass values are available only transiently to trusted server code for later domain lookup.
+- Invalid input and timeout retries are bounded; retry exhaustion transfers to staff.
+- Duplicate provider events are idempotent and cannot replay the keypad transition.
+- Raw payment-card data remains prohibited from the custom iCamp keypad flow.
+
+
+## Build 013 telephone/SMS identity verification
+
+- Caller ID, SMS sender address and phone possession remain routing hints only, never authentication.
+- Guest site/reservation/pass references and one-time codes are persisted only as salted scrypt verifiers.
+- Staff channel PINs are persisted only as salted scrypt verifiers.
+- Privileged staff channel actions require PIN plus a one-time code or a recent approved authenticated-session re-authentication.
+- Verification challenges expire, rate-limit issuance, bound attempts and lock after repeated failures.
+- Fraud/abuse evidence is categorical and must not contain raw PINs, codes, phone numbers, message bodies or guest identifiers.
+- Verified identity never bypasses campground authorization or Build 006 privileged-action controls.
+- I.T. diagnostics expose aggregate verification health only.
+
+
+## Build 014 messaging consent and provider suppression
+
+- STOP/START/HELP are interpreted as exact control keywords before ordinary SMS command parsing.
+- STOP establishes provider-level suppression so purpose misclassification cannot leak an ordinary outbound SMS/MMS.
+- START clears transport suppression but does not restore Canadian marketing consent by default.
+- Promotional SMS/MMS requires a current purpose/channel consent record when the active compliance rule requires it.
+- Provider control events are idempotent and append-only.
+- Preference evidence never copies raw message bodies, phone numbers or endpoint values.
+- I.T. diagnostics expose counts only.
+
+
+## Offline maintenance device boundary
+
+Build 076 keeps offline field evidence within the existing maintenance and
+inspection authorities rather than creating a second task system.
+
+- cached snapshots contain only work assigned to the signed-in staff member and
+  that staff member's in-progress inspections;
+- queued notes, checklist answers and media remain device-local until sync;
+- sync is idempotent through append-only client-operation receipts and rejects
+  stale row versions instead of overwriting newer server state;
+- `maintenance.offline.media` is a narrow standard-risk authority for validated
+  **internal** maintenance evidence only; it does not grant general
+  `media.manage`;
+- offline mode cannot complete/cancel work orders, submit/sign off inspections,
+  change assignments, resolve escalations or perform another final/high-risk
+  transition;
+- the service worker caches a public offline shell and static assets, not an
+  authenticated server-rendered maintenance page;
+- operators can explicitly clear the IndexedDB snapshot and pending queue from
+  the device.
+
+
+## Camper assistance intake boundary
+
+Build 077 accepts guest-originated campground assistance without treating guest
+input as a privileged operational command.
+
+- a request must belong to the signed-in guest and a canonical reservation in
+  `checked_in` state;
+- reservation, campground and accommodation linkage is validated server-side and
+  again by the database trigger/RLS boundary;
+- guest intake is append-only; later staff triage cannot silently rewrite what
+  the camper originally reported;
+- routine/soon/urgent are campground response priorities only and never imply
+  emergency-service dispatch;
+- optional attachments reuse Build 008 internal-media validation and private
+  storage, with a five-file request cap;
+- storage service credentials remain server-only and raw signed URLs/object
+  credentials are not persisted in assistance rows;
+- direct `anon` and `authenticated` Data API table access is revoked even though
+  RLS is also forced;
+- client request UUIDs make request creation duplicate-safe and reject payload
+  substitution under a reused key;
+- Build 078 adds those privileged triage, assignment, escalation,
+  communication and closure controls while preserving Build 077 intake.
+
+
+## Camper assistance operational boundary
+
+Build 078 separates staff operations from immutable Build 077 guest intake.
+
+- `assistance.triage`, `assistance.escalate`, `assistance.communicate` and
+  `assistance.close` are distinct campground-scoped authorities;
+- operational classification and assignment live in a separate case projection;
+  the original guest category, priority, narrative and media are never rewritten;
+- assignment is limited to an active staff identity assigned to the same
+  campground;
+- case and escalation updates use optimistic row versions and reject stale
+  operator screens instead of silently overwriting newer work;
+- operational events are append-only and distinguish internal staff notes from
+  guest-visible communication;
+- email/SMS/phone selections in Build 078 are contact records, not fabricated
+  provider-delivery receipts; real external delivery must use the canonical
+  communications gateway and its consent/suppression controls;
+- management escalation is not emergency dispatch and does not replace calling
+  emergency services where immediate life safety is involved;
+- closure is terminal, requires an explicit outcome and guest-visible summary,
+  and is blocked while an escalation remains open or acknowledged;
+- all new public tables enable and FORCE RLS, and direct `anon`/
+  `authenticated` table privileges remain revoked.

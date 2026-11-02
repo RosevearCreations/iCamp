@@ -1,0 +1,230 @@
+import type { Metadata } from "next";
+import Link from "next/link";
+import { redirect } from "next/navigation";
+
+import { AdminRefreshControl } from "@/components/admin-refresh-control";
+import { AppShell } from "@/components/app-shell";
+import { SectionHeading } from "@/components/section-heading";
+import { requireAnyCampgroundPermission } from "@/lib/authz/current-user";
+import {
+  getCampgroundAuthorization,
+  listAssignedCampgrounds,
+} from "@/lib/authz/postgres.mjs";
+import { listMapImageVersions } from "@/lib/map-images/postgres.mjs";
+import { listMapLayers } from "@/lib/map-layers/postgres.mjs";
+import { listMapObjects } from "@/lib/map-objects/postgres.mjs";
+import { listMapPolygons } from "@/lib/map-polygons/postgres.mjs";
+
+import { CoordinateEngine } from "./coordinate-engine";
+import styles from "./coordinate-engine.module.css";
+
+export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = {
+  title: "Canonical map object binding · iCamp",
+  description:
+    "Bind campground polygons and points to canonical sites, cottages and facility objects.",
+};
+
+export default async function MapCoordinateEnginePage({
+  searchParams,
+}: Readonly<{
+  searchParams: Promise<{ campground?: string; saved?: string }>;
+}>) {
+  const path = "/workspaces/management/campgrounds/maps/coordinate-engine";
+  const session = await requireAnyCampgroundPermission("campground.map", path);
+  const params = await searchParams;
+  const assigned = await listAssignedCampgrounds(session.user.id);
+
+  const authorized = (
+    await Promise.all(
+      assigned.map(async (campground) => {
+        const authorization = await getCampgroundAuthorization(
+          session.user.id,
+          campground.campgroundId,
+        );
+        return authorization?.permissions.includes("campground.map")
+          ? campground
+          : null;
+      }),
+    )
+  ).filter((item): item is NonNullable<typeof item> => item !== null);
+
+  if (authorized.length === 0) {
+    redirect("/auth/not-authorized");
+  }
+
+  const selected =
+    authorized.find((item) => item.campgroundId === params.campground) ??
+    authorized[0];
+  const selectedAuthorization = await getCampgroundAuthorization(
+    session.user.id,
+    selected.campgroundId,
+  );
+  const canConfigureLayers =
+    selectedAuthorization?.permissions.includes("campground.configuration") ??
+    false;
+  const layers = await listMapLayers(session.user.id, selected.campgroundId);
+  const versions = await listMapImageVersions(
+    session.user.id,
+    selected.campgroundId,
+  );
+  const activeVersion = versions.find((version) => version.isActive) ?? null;
+  const polygons = activeVersion
+    ? await listMapPolygons(
+        session.user.id,
+        selected.campgroundId,
+        activeVersion.id,
+      )
+    : [];
+  const mapObjects = activeVersion
+    ? await listMapObjects(
+        session.user.id,
+        selected.campgroundId,
+        activeVersion.id,
+      )
+    : [];
+  const libraryHref =
+    "/workspaces/management/campgrounds/maps?campground=" +
+    encodeURIComponent(selected.campgroundId);
+
+  return (
+    <AppShell>
+      <div className="page-stack">
+        <nav className="breadcrumbs" aria-label="Breadcrumb">
+          <Link href="/">iCamp</Link>
+          <span aria-hidden="true">/</span>
+          <Link href="/workspaces/management">Management</Link>
+          <span aria-hidden="true">/</span>
+          <Link href="/workspaces/management/campgrounds">Campgrounds</Link>
+          <span aria-hidden="true">/</span>
+          <Link href={libraryHref}>Overhead images</Link>
+          <span aria-hidden="true">/</span>
+          <span>Canonical objects</span>
+        </nav>
+
+        <section className="hero-panel">
+          <p className="eyebrow">Build 023</p>
+          <h1>Canonical Map Object Binding</h1>
+          <p className="hero-panel__lead">
+            Bind polygons and precise map points to stable canonical identities
+            for sites, cottages, pools, washrooms, gates, docks, roads,
+            buildings and operational assets.
+          </p>
+        </section>
+
+        {params.saved ? (
+          <section className={styles.savedNotice} aria-live="polite">
+            {params.saved}
+          </section>
+        ) : null}
+
+        <section className="content-panel" aria-labelledby="property-heading">
+          <SectionHeading
+            eyebrow="Property scope"
+            title="Choose campground"
+            id="property-heading"
+            helpTopic="campground.map.polygons"
+          />
+          <form method="get" className={styles.propertySelector}>
+            <label>
+              <span>Campground</span>
+              <select name="campground" defaultValue={selected.campgroundId}>
+                {authorized.map((campground) => (
+                  <option
+                    key={campground.campgroundId}
+                    value={campground.campgroundId}
+                  >
+                    {campground.campgroundName}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <button className="primary-button" type="submit">
+              Open canonical map editor
+            </button>
+          </form>
+        </section>
+
+        <section className="content-panel" aria-labelledby="engine-heading">
+          <SectionHeading
+            eyebrow="Visual map editor"
+            title="Canonical object map editor"
+            id="engine-heading"
+            helpTopic="campground.map.objects"
+            trailing={<span className="build-chip">Build 023</span>}
+          />
+          {activeVersion ? (
+            <CoordinateEngine
+              campgroundId={selected.campgroundId}
+              mapImageVersionId={activeVersion.id}
+              mediaAssetId={activeVersion.mediaAssetId}
+              label={activeVersion.label}
+              sourceWidth={activeVersion.sourceWidth}
+              sourceHeight={activeVersion.sourceHeight}
+              initialPolygons={polygons}
+              initialLayers={layers}
+              initialMapObjects={mapObjects}
+              canConfigureLayers={canConfigureLayers}
+            />
+          ) : (
+            <div className={styles.emptyState}>
+              <strong>No active overhead image is available.</strong>
+              <p>
+                Upload or activate an image version before plotting polygons.
+              </p>
+              <Link
+                className="primary-link primary-link--dark"
+                href={libraryHref}
+              >
+                Open overhead image library
+              </Link>
+            </div>
+          )}
+        </section>
+
+        <section className="content-panel" aria-labelledby="contract-heading">
+          <SectionHeading
+            eyebrow="Geometry contract"
+            title="Version-bound, drift-resistant object geometry"
+            id="contract-heading"
+            helpTopic="campground.map.coordinates"
+          />
+          <p>
+            Polygon and point bindings use the Build 019 original-image plus
+            normalized 0–1 coordinate contract and remain tied to the exact map
+            image version. Canonical object identity remains stable even when
+            later domain builds add booking, facility or asset details.
+          </p>
+        </section>
+
+        <section className="content-panel" aria-labelledby="platform-heading">
+          <SectionHeading
+            eyebrow="Architecture checkpoint"
+            title="Platform choices"
+            id="platform-heading"
+            helpTopic="campground.map.polygons"
+          />
+          <p>
+            Build 023 keeps canonical map identities and geometry in the
+            existing PostgreSQL/Supabase boundary. No paid map, GIS, Vercel or
+            Cloudflare resource is required for object binding.
+          </p>
+        </section>
+
+        <section className="content-panel" aria-labelledby="freshness-heading">
+          <SectionHeading
+            eyebrow="Administrative tracking"
+            title="Object-binding freshness"
+            id="freshness-heading"
+            helpTopic="admin.refresh"
+          />
+          <AdminRefreshControl
+            renderedAt={new Date().toISOString()}
+            sectionKey="management.campground-map-object-binding"
+          />
+        </section>
+      </div>
+    </AppShell>
+  );
+}
