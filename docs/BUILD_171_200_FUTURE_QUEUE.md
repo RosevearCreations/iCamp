@@ -1,6 +1,6 @@
 # iCamp Next 30 Builds — 171–200
 
-**Status:** Approved 30-build sequence. Build 185 has been merged to `main` and documented in `BUILD_185_FRONT_DESK_WORKBOARD_ACCEPTANCE.md`. **Build 186 is the current release scope**, documented in `BUILD_186_TURNOVER_RELEASE_ACCEPTANCE.md`; Build 187 follows only after Build 186 release verification. Builds 187–200 remain in the future queue. Review scope against current code and authoritative records at the start of each build so existing functionality is extended, not duplicated. Prior build headings below are retained as scope history, not as evidence of production status.
+**Status:** Approved 30-build sequence. Builds 185–187 have acceptance documentation and are already promoted; **Build 188 is the current release scope**, documented in `BUILD_188_ACCESS_RECONCILIATION_ACCEPTANCE.md`. Builds 189–200 remain planned until individually implemented and verified. Review current canonical records first to extend existing behavior without duplicating it.
 
 ## Operating boundaries for all 30 builds
 
