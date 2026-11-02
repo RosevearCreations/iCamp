@@ -1,6 +1,6 @@
 # iCamp Next 30 Builds — 171–200
 
-**Status:** Approved 30-build sequence. Build 171's code and acceptance contract are recorded in `BUILD_171_RECOVERY_SNAPSHOT_OWNER_REQUEST.md`; check actual CI/deployment evidence before treating it as promoted. Builds 172–200 are planned only, not yet implemented or owner-approved. **Baseline:** Build 170. **Next after Build 171:** Build 172. Review scope against current code and authoritative records at the start of each build so existing functionality is extended, not duplicated.
+**Status:** Approved 30-build sequence. Build 184 was production-promoted and verified with `BUILD_184_GUEST_FEEDBACK_ACCEPTANCE.md`. **Build 185 is the current release scope**, documented in `BUILD_185_FRONT_DESK_WORKBOARD_ACCEPTANCE.md`; **Build 186 is next after Build 185 is verified GREEN**. Builds 186–200 remain in the future queue. Review scope against current code and authoritative records at the start of each build so existing functionality is extended, not duplicated. Prior build headings below are retained as scope history, not as evidence of production status.
 
 ## Operating boundaries for all 30 builds
 

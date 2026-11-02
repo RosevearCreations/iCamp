@@ -937,6 +937,16 @@ export default async function CampgroundAdministrationPage({
           >
             Open reservation management
           </Link>
+          <p>
+            <Link
+              href={
+                "/workspaces/management/campgrounds/reservations/front-desk?campground=" +
+                encodeURIComponent(structure.campground.id)
+              }
+            >
+              Unified front desk · arrivals, departures and exception triage
+            </Link>
+          </p>
         </section>
 
         <section

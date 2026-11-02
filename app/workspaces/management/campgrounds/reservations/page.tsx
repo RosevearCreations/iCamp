@@ -116,6 +116,11 @@ export default async function ReservationManagementPage({
               Review guest arrival plans and pre-registration readiness
             </Link>
           </p>
+          <p>
+            <Link href="/workspaces/management/campgrounds/reservations/front-desk">
+              Open Build 185 unified arrival, departure and exception workboard
+            </Link>
+          </p>
         </section>
 
         {params.saved ? (
