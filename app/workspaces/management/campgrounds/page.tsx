@@ -784,6 +784,30 @@ export default async function CampgroundAdministrationPage({
           </Link>
         </section>
 
+        <section
+          className="content-panel"
+          aria-labelledby="feedback-management-heading"
+        >
+          <SectionHeading
+            eyebrow="Verified stay feedback"
+            title="Guest review moderation & service-recovery queue"
+            id="feedback-management-heading"
+            helpTopic="campground.structure"
+            trailing={<span className="build-chip">Build 184</span>}
+          />
+          <p>
+            Review real completed-stay guest ratings, consent requests and
+            appeals, and record private follow-up milestones without changing
+            assistance cases, issuing refunds or sending outbound messages.
+          </p>
+          <Link
+            className="primary-link primary-link--dark"
+            href={`/workspaces/management/campgrounds/feedback?campground=${encodeURIComponent(structure.campground.id)}`}
+          >
+            Manage feedback &amp; service recovery
+          </Link>
+        </section>
+
         <section className="content-panel" aria-labelledby="my-stay-heading">
           <SectionHeading
             eyebrow="Guest experience"

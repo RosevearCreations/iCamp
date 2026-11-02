@@ -32,6 +32,9 @@ export default function HomePage() {
             <Link className="secondary-link" href="/store">
               Campground guest store
             </Link>
+            <Link className="secondary-link" href="/reviews">
+              Verified guest reviews
+            </Link>
             <a className="secondary-link" href="#workspaces">
               View all workspaces
             </a>

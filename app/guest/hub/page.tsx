@@ -459,6 +459,9 @@ export default async function GuestHubPage({
                 <Link href="/guest/store">
                   Store cart &amp; pickup preferences <span>→</span>
                 </Link>
+                <Link href="/guest/feedback">
+                  Feedback, reviews &amp; service recovery <span>→</span>
+                </Link>
                 <Link href="/guest/profile">
                   Saved guest profile <span>→</span>
                 </Link>
