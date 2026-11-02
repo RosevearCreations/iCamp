@@ -65,7 +65,8 @@
 .offline-summary,
 .offline-grid,
 .offline-actions,
-.offline-scope-form {
+.offline-scope-form,
+.offline-filters {
   display: flex;
   flex-wrap: wrap;
   gap: 0.75rem;
@@ -150,7 +151,8 @@
 
 .offline-form label,
 .offline-checklist label,
-.offline-scope-form label {
+.offline-scope-form label,
+.offline-filters label {
   display: grid;
   gap: 0.3rem;
   color: var(--ink);
@@ -163,7 +165,9 @@
 .offline-checklist input,
 .offline-checklist textarea,
 .offline-checklist select,
-.offline-scope-form select {
+.offline-scope-form select,
+.offline-filters select,
+.offline-filters input {
   width: 100%;
   min-height: 2.7rem;
   padding: 0.65rem 0.75rem;
@@ -221,6 +225,37 @@
 .offline-queue-item[data-state="blocked"] {
   border-color: #b18a34;
   background: #fff9e8;
+}
+
+.offline-review {
+  padding: 0.9rem;
+  border: 1px solid #bd6e5e;
+  border-radius: 0.7rem;
+  background: #fffaf6;
+}
+
+.offline-review p {
+  margin: 0.3rem 0 0.7rem;
+}
+
+.offline-audit {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.offline-audit p {
+  display: grid;
+  gap: 0.25rem;
+  margin: 0;
+  padding: 0.7rem;
+  border: 1px solid var(--line);
+  border-radius: 0.7rem;
+  background: var(--surface);
+  overflow-wrap: anywhere;
+}
+
+.offline-audit span {
+  color: var(--muted);
 }
 
 .offline-state {

@@ -1,7 +1,7 @@
 export type OfflineMaintenanceOperationKind =
   "work_order_note" | "inspection_result" | "work_order_media";
 
-export type OfflineMaintenanceOperation =
+export type OfflineMaintenanceOperation = (
   | {
       clientOperationId: string;
       campgroundId: string;
@@ -29,7 +29,11 @@ export type OfflineMaintenanceOperation =
       expectedWorkOrderRowVersion: number;
       caption: string | null;
       fileChecksumSha256: string;
-    };
+    }
+) & {
+  reviewedConflictOperationId?: string | null;
+  resolutionReason?: string | null;
+};
 
 export const offlineMaintenanceOperationKinds: readonly OfflineMaintenanceOperationKind[];
 

@@ -67,6 +67,9 @@ export async function POST(request: Request) {
       field(formData, "expectedWorkOrderRowVersion"),
     );
     const caption = field(formData, "caption") || null;
+    const reviewedConflictOperationId =
+      field(formData, "reviewedConflictOperationId") || null;
+    const resolutionReason = field(formData, "resolutionReason") || null;
     const source = formData.get("file");
 
     if (!(source instanceof File) || source.size < 1) {
@@ -119,6 +122,8 @@ export async function POST(request: Request) {
       expectedWorkOrderRowVersion,
       caption,
       fileChecksumSha256: checksumSha256,
+      reviewedConflictOperationId,
+      resolutionReason,
     };
 
     const existing = await getOfflineSyncReceipt({
@@ -157,17 +162,9 @@ export async function POST(request: Request) {
       body: new Blob([bytes], { type: validation.contentType }),
     };
 
-    try {
-      await adapter.uploadValidatedObject(uploadInput);
-    } catch {
-      await adapter
-        .deleteObject({
-          bucketKey: validation.bucketKey,
-          objectKey,
-        })
-        .catch(() => undefined);
-      await adapter.uploadValidatedObject(uploadInput);
-    }
+    // Never delete an existing object on an ambiguous retry; another request
+    // may already have committed an idempotent receipt for this same key.
+    await adapter.uploadValidatedObject(uploadInput);
 
     uploaded = {
       bucketKey: validation.bucketKey,
