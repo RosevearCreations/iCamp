@@ -93,7 +93,10 @@ test("Build189 keeps sync ledger immutable, scoped and non-duplicative", () => {
   assert.match(sql, /guard_offline_sync_conflict_immutability/);
   assert.match(sql, /scope_fk/);
   assert.match(sql, /reviewed_conflict_id/);
-  assert.match(hardening, /alter policy maintenance_offline_sync_conflicts_read/);
+  assert.match(
+    hardening,
+    /alter policy maintenance_offline_sync_conflicts_read/,
+  );
   assert.match(hardening, /\(select current_setting\('icamp.user_id'/);
   assert.doesNotMatch(
     sql,
