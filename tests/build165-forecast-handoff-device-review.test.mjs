@@ -174,7 +174,10 @@ test("Build 165 forecast and triage routes remain permission scoped and read-onl
   assert.match(page, /getCampgroundSegmentComparison/);
   assert.match(page, /Read-only/);
   assert.match(page, /HELD \/ DISCONNECTED/);
-  assert.match(management, /command\/forecast/);
+  const catalog = source("../lib/command-centre/module-catalog.ts");
+  assert.match(management, /modulesForPermissions/);
+  assert.match(catalog, /command\/forecast/);
+  assert.match(catalog, /reports.read/);
   assert.match(board, /Open triage to acknowledge/);
   assert.match(board, /assistance\?campground=/);
   assert.match(board, /handoff is not proof/);
