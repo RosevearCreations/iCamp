@@ -6,6 +6,10 @@ import { redirect } from "next/navigation";
 import { requireStaff } from "@/lib/auth/current-session";
 import { moneyInputToCents } from "@/lib/payments/core.mjs";
 import {
+  decideManualAdjustment,
+  proposeManualAdjustment,
+} from "@/lib/finance-close/postgres.mjs";
+import {
   createRefundProviderAdapter,
   getRefundProviderConfig,
 } from "@/lib/refunds/provider.mjs";
@@ -298,9 +302,13 @@ export async function executeRefundAction(formData: FormData) {
 export async function recordFinancialAdjustmentAction(formData: FormData) {
   const campgroundId = text(formData, "campgroundId");
   const reservationId = text(formData, "reservationId");
-  const path = detailPath(campgroundId, reservationId);
+  const path =
+    "/workspaces/management/campgrounds/reservations/" +
+    encodeURIComponent(reservationId) +
+    "/financial?campground=" +
+    encodeURIComponent(campgroundId);
   const session = await requireStaff(path);
-
+  let destination: string;
   try {
     const { adjustmentKind, financialEffect } = parseFinancialAdjustment(
       text(formData, "adjustmentKind"),
@@ -318,17 +326,84 @@ export async function recordFinancialAdjustmentAction(formData: FormData) {
       ),
       currencyCode: text(formData, "currencyCode"),
       reason: text(formData, "reason"),
+      approvedProposalId: text(formData, "approvedProposalId"),
+    });
+    revalidatePath(path);
+    destination =
+      path +
+      "&saved=" +
+      encodeURIComponent(
+        "Independently approved adjustment posted to the append-only evidence ledger.",
+      );
+  } catch (error) {
+    destination = path + "&error=" + encodeURIComponent(errorMessage(error));
+  }
+  redirect(destination);
+}
+
+export async function proposeFinancialAdjustmentAction(formData: FormData) {
+  const campgroundId = text(formData, "campgroundId");
+  const reservationId = text(formData, "reservationId");
+  const path =
+    "/workspaces/management/campgrounds/reservations/" +
+    encodeURIComponent(reservationId) +
+    "/financial?campground=" +
+    encodeURIComponent(campgroundId);
+  const session = await requireStaff(path);
+  let destination: string;
+  try {
+    await proposeManualAdjustment({
+      actorUserId: session.user.id,
+      campgroundId,
+      reservationId,
+      kind: text(formData, "adjustmentKind"),
+      amountCents: moneyInputToCents(
+        text(formData, "adjustmentAmount"),
+        "Proposed adjustment",
+      ),
+      currencyCode: text(formData, "currencyCode"),
+      reason: text(formData, "reason"),
       idempotencyKey: text(formData, "idempotencyKey"),
     });
     revalidatePath(path);
-    redirect(
+    destination =
       path +
-        "&saved=" +
-        encodeURIComponent("Append-only financial adjustment recorded."),
-    );
+      "&saved=" +
+      encodeURIComponent(
+        "Adjustment proposal recorded; a different finance manager must approve it before posting.",
+      );
   } catch (error) {
-    redirect(path + "&error=" + encodeURIComponent(errorMessage(error)));
+    destination = path + "&error=" + encodeURIComponent(errorMessage(error));
   }
+  redirect(destination);
+}
+
+export async function decideFinancialAdjustmentAction(formData: FormData) {
+  const campgroundId = text(formData, "campgroundId");
+  const path =
+    "/workspaces/management/command/finance-close?campground=" +
+    encodeURIComponent(campgroundId);
+  const session = await requireStaff(path);
+  let destination: string;
+  try {
+    await decideManualAdjustment({
+      actorUserId: session.user.id,
+      campgroundId,
+      proposalId: text(formData, "proposalId"),
+      decision: text(formData, "decision"),
+      reason: text(formData, "reason"),
+    });
+    revalidatePath(path);
+    destination =
+      path +
+      "&saved=" +
+      encodeURIComponent(
+        "Independent adjustment decision recorded. Approval did not post any financial amount.",
+      );
+  } catch (error) {
+    destination = path + "&error=" + encodeURIComponent(errorMessage(error));
+  }
+  redirect(destination);
 }
 
 export async function recordCancellationForfeitAction(formData: FormData) {

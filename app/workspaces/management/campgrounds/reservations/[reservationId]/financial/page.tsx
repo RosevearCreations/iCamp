@@ -16,6 +16,7 @@ import {
   executeRefundAction,
   recordCancellationForfeitAction,
   recordFinancialAdjustmentAction,
+  proposeFinancialAdjustmentAction,
   rejectRefundAction,
   requestRefundAction,
 } from "../../actions";
@@ -80,6 +81,45 @@ export default async function ReservationFinancialSafeguardsPage({
 
   const mayRefund = authorization.permissions.includes("refund.issue");
   const mayApprove = authorization.permissions.includes("finance.manage");
+  const proposalRows = safeguards.adjustments.filter(
+    (item) =>
+      (item.evidence?.build196 as { type?: string } | undefined)?.type ===
+      "proposal",
+  );
+  const decisionRows = safeguards.adjustments.filter(
+    (item) =>
+      (item.evidence?.build196 as { type?: string } | undefined)?.type ===
+      "decision",
+  );
+  const postedRows = safeguards.adjustments.filter(
+    (item) =>
+      (item.evidence?.build196 as { type?: string } | undefined)?.type ===
+      "posted",
+  );
+  const reviewedProposals = proposalRows.map((item) => {
+    const marker = item.evidence.build196 as {
+      requestedKind: string;
+      requestedAmountCents: number;
+    };
+    const decision = decisionRows.find(
+      (row) =>
+        (row.evidence.build196 as { proposalId?: string }).proposalId ===
+        item.id,
+    );
+    const posted = postedRows.some(
+      (row) =>
+        (row.evidence.build196 as { approvedProposalId?: string })
+          .approvedProposalId === item.id,
+    );
+    return {
+      item,
+      marker,
+      decision:
+        (decision?.evidence.build196 as { decision?: string } | undefined)
+          ?.decision ?? null,
+      posted,
+    };
+  });
   const isCancelled = safeguards.reservation.status === "cancelled";
   const backHref =
     "/workspaces/management/campgrounds/reservations/" +
@@ -436,17 +476,18 @@ export default async function ReservationFinancialSafeguardsPage({
         {mayApprove ? (
           <section className="content-panel">
             <SectionHeading
-              eyebrow="Append-only adjustments"
-              title="Record non-refund financial evidence"
+              eyebrow="Build 196 · Maker stage"
+              title="Propose a non-refund adjustment"
               id="financial-adjustment"
               helpTopic="shell.overview"
             />
             <p>
-              This records a financial adjustment without editing historical
-              quote, payment, receipt or reservation-change evidence.
+              Append-only adjustments require independent approval. Proposals
+              have no monetary effect. A different finance manager must
+              independently approve before posting an append-only adjustment.
             </p>
             <form
-              action={recordFinancialAdjustmentAction}
+              action={proposeFinancialAdjustmentAction}
               className={styles.formGrid}
             >
               <input type="hidden" name="campgroundId" value={campgroundId} />
@@ -467,11 +508,11 @@ export default async function ReservationFinancialSafeguardsPage({
                 </select>
               </label>
               <label>
-                Amount
+                Proposed amount
                 <input
                   name="adjustmentAmount"
                   inputMode="decimal"
-                  defaultValue="0.00"
+                  defaultValue="0.01"
                   required
                 />
               </label>
@@ -485,9 +526,88 @@ export default async function ReservationFinancialSafeguardsPage({
                 />
               </label>
               <button className="primary-button" type="submit">
-                Record append-only adjustment
+                Submit adjustment for independent review
               </button>
             </form>
+          </section>
+        ) : null}
+
+        {reviewedProposals.length ? (
+          <section className="content-panel">
+            <SectionHeading
+              eyebrow="Build 196 · Checker / posting"
+              title="Adjustment proposal decisions"
+              id="financial-adjustment-decisions"
+              helpTopic="shell.overview"
+            />
+            <p>
+              Checker decisions are recorded in the finance close workboard.
+              Approval is not itself a financial posting.
+            </p>
+            {reviewedProposals.map(({ item, marker, decision, posted }) => (
+              <article key={item.id}>
+                <p>
+                  <strong>
+                    {marker.requestedKind} ·{" "}
+                    {formatMoney(
+                      marker.requestedAmountCents,
+                      item.currencyCode,
+                    )}
+                  </strong>{" "}
+                  — {posted ? "posted" : (decision ?? "pending review")}
+                </p>
+                <p>{item.reason}</p>
+                {decision === "approved" && !posted && mayApprove ? (
+                  <form
+                    action={recordFinancialAdjustmentAction}
+                    className={styles.formGrid}
+                  >
+                    <input
+                      type="hidden"
+                      name="campgroundId"
+                      value={campgroundId}
+                    />
+                    <input
+                      type="hidden"
+                      name="reservationId"
+                      value={reservationId}
+                    />
+                    <input
+                      type="hidden"
+                      name="approvedProposalId"
+                      value={item.id}
+                    />
+                    <input
+                      type="hidden"
+                      name="adjustmentKind"
+                      value={marker.requestedKind}
+                    />
+                    <input
+                      type="hidden"
+                      name="adjustmentAmount"
+                      value={(marker.requestedAmountCents / 100).toFixed(2)}
+                    />
+                    <input
+                      type="hidden"
+                      name="currencyCode"
+                      value={item.currencyCode}
+                    />
+                    <input type="hidden" name="reason" value={item.reason} />
+                    <button type="submit" className="primary-button">
+                      Post independently approved adjustment (no provider
+                      payment)
+                    </button>
+                  </form>
+                ) : null}
+              </article>
+            ))}
+            <p>
+              <Link
+                href={`/workspaces/management/command/finance-close?campground=${encodeURIComponent(campgroundId)}`}
+              >
+                Open independent finance review workboard
+              </Link>
+            </p>
           </section>
         ) : null}
 
@@ -502,7 +622,11 @@ export default async function ReservationFinancialSafeguardsPage({
             {safeguards.adjustments.map((adjustment) => (
               <article key={adjustment.id}>
                 <strong>
-                  {adjustment.adjustmentKind} ·{" "}
+                  {(
+                    adjustment.evidence?.build196 as
+                      { type?: string } | undefined
+                  )?.type ?? adjustment.adjustmentKind}{" "}
+                  ·{" "}
                   {formatMoney(adjustment.amountCents, adjustment.currencyCode)}
                 </strong>
                 <p>

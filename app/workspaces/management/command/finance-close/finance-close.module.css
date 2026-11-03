@@ -1,0 +1,143 @@
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: 1rem;
+}
+.controls label,
+.decision label,
+.preview label {
+  display: grid;
+  gap: 0.4rem;
+  font-weight: 650;
+}
+.controls input,
+.controls select,
+.decision textarea,
+.preview textarea {
+  color: inherit;
+  background: var(--surface, #fff);
+  border: 1px solid var(--border, #a6b3a4);
+  border-radius: 0.7rem;
+  padding: 0.65rem 0.75rem;
+  min-width: 12rem;
+}
+.controls button {
+  align-self: end;
+}
+.note {
+  color: var(--text-muted, #475569);
+  font-size: 0.9rem;
+  line-height: 1.55;
+}
+.warning {
+  background: #fff3d3;
+  border: 1px solid #af661b;
+  border-radius: 0.75rem;
+  padding: 0.8rem 1rem;
+  color: #45260a;
+}
+.notice {
+  border: 1px solid #438462;
+  border-radius: 0.75rem;
+  padding: 0.8rem 1rem;
+  background: #ecfff3;
+  color: #173e29;
+}
+.meta {
+  display: flex;
+  gap: 0.5rem 1.5rem;
+  flex-wrap: wrap;
+}
+.meta p {
+  margin: 0.15rem 0;
+}
+.tableScroll {
+  overflow-x: auto;
+  max-width: 100%;
+  margin-top: 1rem;
+}
+.tableScroll table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 680px;
+  text-align: left;
+}
+.tableScroll th,
+.tableScroll td {
+  border-bottom: 1px solid var(--border, #d1d5db);
+  padding: 0.8rem 0.6rem;
+  vertical-align: top;
+}
+.tableScroll tbody tr:hover {
+  background: var(--surface-hover, #edf3ed);
+}
+.tableScroll small {
+  display: block;
+  color: var(--text-muted, #475569);
+  max-width: 16rem;
+  overflow-wrap: anywhere;
+  margin-top: 0.35rem;
+}
+.critical,
+.attention {
+  border-radius: 1rem;
+  font-weight: 700;
+  padding: 0.2rem 0.55rem;
+}
+.critical {
+  background: #fee2e2;
+  color: #7f1d1d;
+}
+.attention {
+  background: #fef3c7;
+  color: #78350f;
+}
+.proposals {
+  display: grid;
+  gap: 1rem;
+}
+.proposal {
+  border: 1px solid var(--border, #cbd5e1);
+  border-radius: 1rem;
+  padding: 1rem;
+  overflow-wrap: anywhere;
+}
+.proposal p {
+  margin: 0.3rem 0 0.8rem;
+}
+.decision {
+  display: flex;
+  align-items: end;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+.decision label {
+  min-width: min(100%, 20rem);
+  flex: 1;
+}
+.decision textarea {
+  min-height: 4rem;
+  width: 100%;
+}
+.preview {
+  display: grid;
+  gap: 1rem;
+}
+.preview textarea {
+  width: 100%;
+  font-family: ui-monospace, SFMono-Regular, monospace;
+}
+@media print {
+  .controls,
+  .decision,
+  .preview {
+    display: none;
+  }
+  .tableScroll {
+    overflow: visible;
+  }
+  .tableScroll table {
+    min-width: 0;
+  }
+}
