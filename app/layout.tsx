@@ -5,6 +5,7 @@ import { ServiceWorkerRegistration } from "@/components/service-worker-registrat
 import "./globals.css";
 import "./standard-theme.css";
 import "./command194.css";
+import "./forecast195.css";
 
 export const metadata: Metadata = {
   applicationName: "iCamp",

@@ -2,9 +2,9 @@
 
 Current program: **iCamp2027**
 
-## Approved Build Batch 171–200 (30 defined; Build 194 release scope)
+## Approved Build Batch 171–200 (30 defined; Build 195 release scope)
 
-Planning baseline: **Build 170**. The following is the approved **30-build** batch. Builds 171–193 are promoted with verified production release evidence. Build 194's implementation and acceptance gates are documented in [`BUILD_194_OPERATIONS_COMMAND_ACCEPTANCE.md`](BUILD_194_OPERATIONS_COMMAND_ACCEPTANCE.md). CI, hosted migration and live production readback remain required before Build 194 is GREEN; later builds remain planned. Full scope and safety boundaries are in [`BUILD_171_200_FUTURE_QUEUE.md`](BUILD_171_200_FUTURE_QUEUE.md).
+Planning baseline: **Build 170**. The following is the approved **30-build** batch. Builds 171–194 have verified production release evidence; Build 194's implementation is described in [`BUILD_194_OPERATIONS_COMMAND_ACCEPTANCE.md`](BUILD_194_OPERATIONS_COMMAND_ACCEPTANCE.md). Build 195's new source-grounded forward planning and export controls are documented in [`BUILD_195_FORWARD_OCCUPANCY_ACCEPTANCE.md`](BUILD_195_FORWARD_OCCUPANCY_ACCEPTANCE.md). Build 195 must pass independent CI, authenticated scope checks and exact-commit live production readback before it can be declared GREEN. Later builds remain planned. Full scope and safety boundaries are in [`BUILD_171_200_FUTURE_QUEUE.md`](BUILD_171_200_FUTURE_QUEUE.md).
 
 | Build | Planned scope | Primary benefit |
 | --- | --- | --- |
@@ -31,8 +31,8 @@ Planning baseline: **Build 170**. The following is the approved **30-build** bat
 | **191 — PROMOTED** | Vendor Service Requests, Contract/SLA & Follow-Up Evidence | Improve external service accountability. |
 | **192 — PROMOTED** | Store Inventory, POS Session & Stock Reconciliation | Improve operational inventory accuracy. |
 | **193 — PROMOTED** | Seasonal Renewal, Winterization & Spring-Reopening Owner Queue | Connect seasonal operations end to end. |
-| **194 — RELEASE SCOPE** | Role-Aware Operations Dashboard, Saved Layouts & Actionable Drilldowns | Make management screens more usable. |
-| 195 | Source-Grounded Occupancy Forecasts, Scenario Confidence & Export Provenance | Improve planning without fabricated predictions. |
+| **194 — PROMOTED** | Role-Aware Operations Dashboard, Saved Layouts & Actionable Drilldowns | Make management screens more usable. |
+| **195 — RELEASE SCOPE** | Source-Grounded Occupancy Forecasts, Scenario Confidence & Export Provenance | Improve planning without fabricated predictions. |
 | 196 | Financial Exception Review, Refund Readiness & End-of-Day Close | Improve auditable financial controls. |
 | 197 | Guest Privacy Requests, Consent History, Retention & Export | Strengthen privacy operations. |
 | 198 | Backup/Restore Drills, Performance Budgets & Incident Runbooks | Strengthen resilience and recovery. |
