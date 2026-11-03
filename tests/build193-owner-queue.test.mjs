@@ -42,6 +42,6 @@ test("Build 193 queue shows current-source safety deficits and in-app handoff on
   );
   assert.match(page, /requireStaff/);
   assert.match(page, /NOT READY/);
-  assert.match(page, /outbound IVR, SMS and MMS remain disconnected/);
-  assert.match(page, /no assignment is marked ready/i);
+  assert.match(page, /outbound IVR, SMS and MMS\s+remain disconnected/);
+  assert.match(page, /No\s+assignment is marked ready/i);
 });
