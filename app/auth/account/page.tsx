@@ -70,6 +70,11 @@ export default async function AccountPage() {
                 </Link>
               </p>
               <p>
+                <Link href="/guest/privacy">
+                  My privacy requests, consent history & data export →
+                </Link>
+              </p>
+              <p>
                 <Link href="/guest/booking-drafts">
                   Resume or delete my booking drafts →
                 </Link>

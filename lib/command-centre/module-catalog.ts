@@ -62,6 +62,15 @@ export function modulesForPermissions(
       permission: ["finance.read", "finance.manage"],
     },
     {
+      title: "Guest privacy & retention requests",
+      subtitle:
+        "Consent history, human review stages and source-linked privacy decisions",
+      category: "Guest services",
+      href: "/workspaces/management/campgrounds/privacy",
+      icon: "◈",
+      permission: ["guest.manage"],
+    },
+    {
       title: "Camper assistance board",
       subtitle: "Case stages, urgency and staff ownership",
       category: "Guest services",
