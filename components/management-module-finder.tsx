@@ -101,7 +101,6 @@ export function ManagementModuleFinder({
   );
   const [showHelp, setShowHelp] = useState(false);
 
-
   const authorized = useMemo(
     () => new Set(modules.map((m) => m.href)),
     [modules],
