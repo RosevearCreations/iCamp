@@ -1,9 +1,21 @@
 import type { CampgroundModule } from "@/components/management-module-finder";
 
-const reservationPermissions = ["reservation.read", "reservation.create", "reservation.modify", "reservation.cancel"];
-const maintenancePermissions = ["maintenance.read", "maintenance.create", "maintenance.assign", "maintenance.complete"];
+const reservationPermissions = [
+  "reservation.read",
+  "reservation.create",
+  "reservation.modify",
+  "reservation.cancel",
+];
+const maintenancePermissions = [
+  "maintenance.read",
+  "maintenance.create",
+  "maintenance.assign",
+  "maintenance.complete",
+];
 
-export function modulesForPermissions(permissions: string[]): CampgroundModule[] {
+export function modulesForPermissions(
+  permissions: string[],
+): CampgroundModule[] {
   const allowed = (keys: string[]) =>
     keys.some((key) => permissions.includes(key));
   const modules: (CampgroundModule & { permission: string[] })[] = [
@@ -176,11 +188,16 @@ export function modulesForPermissions(permissions: string[]): CampgroundModule[]
     },
     {
       title: "Seasonal owner readiness",
-      subtitle: "Renewal intentions, winter and spring evidence, owner follow-ups",
+      subtitle:
+        "Renewal intentions, winter and spring evidence, owner follow-ups",
       category: "Property",
       href: "/workspaces/management/campgrounds/seasonal/owner-queue",
       icon: "❄",
-      permission: ["seasonal.owner.read","seasonal.owner.record","seasonal.owner.review"],
+      permission: [
+        "seasonal.owner.read",
+        "seasonal.owner.record",
+        "seasonal.owner.review",
+      ],
     },
     {
       title: "Staff shifts and handoffs",
@@ -188,7 +205,7 @@ export function modulesForPermissions(permissions: string[]): CampgroundModule[]
       category: "Administration",
       href: "/workspaces/management/campgrounds/staff-shifts",
       icon: "◷",
-      permission: ["staff.shift.self","schedule.manage","staff.manage"],
+      permission: ["staff.shift.self", "schedule.manage", "staff.manage"],
     },
     {
       title: "Vendor requests and SLAs",
@@ -196,7 +213,7 @@ export function modulesForPermissions(permissions: string[]): CampgroundModule[]
       category: "Property",
       href: "/workspaces/management/campgrounds/vendors",
       icon: "⚒",
-      permission: ["vendor.read","vendor.manage","vendor.invoice.review"],
+      permission: ["vendor.read", "vendor.manage", "vendor.invoice.review"],
     },
     {
       title: "Store stock and register",
@@ -204,7 +221,7 @@ export function modulesForPermissions(permissions: string[]): CampgroundModule[]
       category: "Administration",
       href: "/workspaces/management/campgrounds/store/operations",
       icon: "▤",
-      permission: ["inventory.read","inventory.manage","inventory.audit"],
+      permission: ["inventory.read", "inventory.manage", "inventory.audit"],
     },
     {
       title: "Accommodation and asset status",
@@ -212,7 +229,15 @@ export function modulesForPermissions(permissions: string[]): CampgroundModule[]
       category: "Property",
       href: "/workspaces/management/campgrounds/status",
       icon: "◈",
-      permission: ["accommodation.read","accommodation.manage","asset.read","asset.manage","equipment.read","equipment.manage","campground.operations.manage"],
+      permission: [
+        "accommodation.read",
+        "accommodation.manage",
+        "asset.read",
+        "asset.manage",
+        "equipment.read",
+        "equipment.manage",
+        "campground.operations.manage",
+      ],
     },
     {
       title: "System status and readiness",
@@ -272,4 +297,3 @@ export function modulesForPermissions(permissions: string[]): CampgroundModule[]
       href,
     }));
 }
-

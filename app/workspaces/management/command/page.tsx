@@ -3,9 +3,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 
 import { AppShell } from "@/components/app-shell";
-import {
-  ManagementModuleFinder,
-} from "@/components/management-module-finder";
+import { ManagementModuleFinder } from "@/components/management-module-finder";
 import { requireStaff } from "@/lib/auth/current-session";
 import {
   getCampgroundAuthorization,
@@ -38,7 +36,6 @@ const maintenancePermissions = [
   "maintenance.complete",
 ];
 
-
 function count(value: number | null) {
   return value === null ? "—" : value.toLocaleString("en-CA");
 }
@@ -56,7 +53,11 @@ function availabilityMessage(
 export default async function ManagementCommandPage({
   searchParams,
 }: Readonly<{
-  searchParams: Promise<{ campground?: string; view?: string; commandNotice?: string }>;
+  searchParams: Promise<{
+    campground?: string;
+    view?: string;
+    commandNotice?: string;
+  }>;
 }>) {
   const path = "/workspaces/management/command";
   const session = await requireStaff(path);
@@ -116,24 +117,29 @@ export default async function ManagementCommandPage({
   const savedViewResult = await getCommandViews({
     userId: session.user.id,
     campgroundId: selected.campgroundId,
-  }).then((views) => ({ views, failed: false as const }))
+  })
+    .then((views) => ({ views, failed: false as const }))
     .catch(() => ({ views: [], failed: true as const }));
   const savedViews = savedViewResult.views;
   const activeView =
     params.view === "reset"
       ? null
-      : savedViews.find((view) => view.id === params.view) ??
+      : (savedViews.find((view) => view.id === params.view) ??
         savedViews.find((view) => view.isDefault) ??
-        null;
+        null);
   const moduleCatalog = modulesForPermissions(access);
 
   const kpis = [
     {
       id: "sites",
       label: "Active accommodation sites",
-      href: access.includes("accommodation.read") || access.includes("accommodation.manage")
-        ? `/workspaces/management/campgrounds/accommodations${base}`
-        : mayReadMaintenance ? `/workspaces/maintenance/work-orders${base}` : null,
+      href:
+        access.includes("accommodation.read") ||
+        access.includes("accommodation.manage")
+          ? `/workspaces/management/campgrounds/accommodations${base}`
+          : mayReadMaintenance
+            ? `/workspaces/maintenance/work-orders${base}`
+            : null,
       source: "Authorized campground accommodation or maintenance inventory",
       value: snapshot.siteCount,
       detail: "All active sites in this property",
@@ -143,7 +149,9 @@ export default async function ManagementCommandPage({
     {
       id: "arrivals",
       label: "Arrivals in next 7 days",
-      href: mayReadReservations ? `/workspaces/management/campgrounds/reservations${base}` : null,
+      href: mayReadReservations
+        ? `/workspaces/management/campgrounds/reservations${base}`
+        : null,
       source: "Current authorized reservation desk snapshot (up to 250 rows)",
       value: snapshot.arrivalsThisWeek,
       detail: "From visible reservation rows (up to 250)",
@@ -153,7 +161,9 @@ export default async function ManagementCommandPage({
     {
       id: "work_orders",
       label: "Open work orders",
-      href: mayReadMaintenance ? `/workspaces/maintenance/work-orders${base}` : null,
+      href: mayReadMaintenance
+        ? `/workspaces/maintenance/work-orders${base}`
+        : null,
       source: "Current authorized maintenance work-order records",
       value: snapshot.openWorkOrders,
       detail: "Property maintenance queue",
@@ -163,7 +173,9 @@ export default async function ManagementCommandPage({
     {
       id: "financial",
       label: "Financial review flags",
-      href: mayReadReservations ? `/workspaces/management/campgrounds/reservations${base}` : null,
+      href: mayReadReservations
+        ? `/workspaces/management/campgrounds/reservations${base}`
+        : null,
       source: "Reservation review indicators only; no payment action",
       value: snapshot.financialReviews,
       detail: "From visible reservation rows (up to 250)",
@@ -172,16 +184,20 @@ export default async function ManagementCommandPage({
     },
   ];
   const metricPositions = new Map(
-    (activeView?.kpiOrder ?? ["sites", "arrivals", "work_orders", "financial"])
-      .map((key, index) => [key, index]),
+    (
+      activeView?.kpiOrder ?? ["sites", "arrivals", "work_orders", "financial"]
+    ).map((key, index) => [key, index]),
   );
   const orderedKpis = [...kpis].sort(
-    (a, b) => (metricPositions.get(a.id) ?? 99) - (metricPositions.get(b.id) ?? 99),
+    (a, b) =>
+      (metricPositions.get(a.id) ?? 99) - (metricPositions.get(b.id) ?? 99),
   );
 
   return (
     <AppShell>
-      <div className={`page-stack camp-command command194-dashboard ${activeView?.density === "compact" ? "command194-dashboard--compact" : ""}`}>
+      <div
+        className={`page-stack camp-command command194-dashboard ${activeView?.density === "compact" ? "command194-dashboard--compact" : ""}`}
+      >
         <nav className="breadcrumbs" aria-label="Breadcrumb">
           <Link href="/">iCamp</Link>
           <span aria-hidden="true">/</span>
@@ -194,8 +210,9 @@ export default async function ManagementCommandPage({
           <p className="eyebrow">Build 194 · Personalized Operations Command</p>
           <h1>Campground Operations Command</h1>
           <p className="hero-panel__lead">
-            Role-aware management, I.T., status and statistics with saved layout preferences.
-            Every source metric is recalculated from the selected campground.
+            Role-aware management, I.T., status and statistics with saved layout
+            preferences. Every source metric is recalculated from the selected
+            campground.
           </p>
           <div className="camp-command__hero-actions">
             <Link className="primary-link" href={`/booking/map${base}`}>
@@ -234,16 +251,20 @@ export default async function ManagementCommandPage({
         </section>
 
         {params.commandNotice ? (
-          <p className="ops-inline-note" role="status">{params.commandNotice}</p>
+          <p className="ops-inline-note" role="status">
+            {params.commandNotice}
+          </p>
         ) : null}
         {savedViewResult.failed ? (
           <p className="ops-inline-note" role="alert">
-            Layout storage is temporarily unavailable. The live campground cards below are read-only and remain permission-gated.
+            Layout storage is temporarily unavailable. The live campground cards
+            below are read-only and remain permission-gated.
           </p>
         ) : null}
-        {(reservationError || maintenanceError) ? (
+        {reservationError || maintenanceError ? (
           <p className="ops-inline-note" role="alert">
-            One or more authorized source services could not be read. Missing values are shown as unavailable, not as zero.
+            One or more authorized source services could not be read. Missing
+            values are shown as unavailable, not as zero.
           </p>
         ) : null}
         <section
@@ -269,11 +290,21 @@ export default async function ManagementCommandPage({
                 <details className="command194-dashboard__inspector">
                   <summary>ⓘ Inspect source and drilldown</summary>
                   <p>{item.source}</p>
-                  <p>Read at {snapshot.asOf} · {snapshot.reservationRowsCapped ? "Reservation preview bounded at 250 rows" : "Current authorized preview"}</p>
+                  <p>
+                    Read at {snapshot.asOf} ·{" "}
+                    {snapshot.reservationRowsCapped
+                      ? "Reservation preview bounded at 250 rows"
+                      : "Current authorized preview"}
+                  </p>
                   {item.href ? (
-                    <Link href={item.href}>Open authorized source records ↗</Link>
+                    <Link href={item.href}>
+                      Open authorized source records ↗
+                    </Link>
                   ) : (
-                    <span>Direct source access requires an additional campground role.</span>
+                    <span>
+                      Direct source access requires an additional campground
+                      role.
+                    </span>
                   )}
                 </details>
               </div>
