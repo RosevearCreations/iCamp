@@ -57,6 +57,8 @@ begin
     raise exception 'Duplicate management KPI order keys';
   end if;
   if tg_op='INSERT' then
+    -- Lock the user record to serialize the eight-layout limit across devices.
+    perform 1 from icamp_private.user_accounts where id=actor for update;
     if (select count(*) from icamp_private.management_command_views
         where campground_id=new.campground_id and user_id=actor)>=8 then
       raise exception 'Maximum eight saved layouts per user and campground';
