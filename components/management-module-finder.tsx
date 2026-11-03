@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 
 import type {
   CommandView,
@@ -101,18 +101,6 @@ export function ManagementModuleFinder({
   );
   const [showHelp, setShowHelp] = useState(false);
 
-  useEffect(() => {
-    setTerm(activeView?.searchTerm ?? "");
-    setCategory(activeView?.category ?? "All tools");
-    setPerspective(activeView?.perspective ?? "all");
-    setDensity(activeView?.density ?? "comfortable");
-    setFavorites(activeView?.favoriteHrefs ?? []);
-    setKpiOrder(activeView?.kpiOrder ?? initialKpis);
-    setViewLabel(activeView?.label ?? "");
-    setUpdateExisting(false);
-    setMakeDefault(activeView?.isDefault ?? false);
-    setOnlyFavorites(false);
-  }, [activeView?.id, activeView?.rowVersion, campgroundId]);
 
   const authorized = useMemo(
     () => new Set(modules.map((m) => m.href)),
