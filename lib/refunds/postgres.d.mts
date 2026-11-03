@@ -173,12 +173,12 @@ export function recordReservationFinancialAdjustment(input: {
   actorUserId: string;
   campgroundId: string;
   reservationId: string;
+  approvedProposalId: string;
   adjustmentKind: "credit" | "charge" | "forfeit" | "writeoff";
   financialEffect: "customer_credit" | "customer_debit" | "retained" | "none";
   amountCents: number;
   currencyCode: string;
   reason: string;
-  idempotencyKey?: string;
 }): Promise<Record<string, unknown>>;
 
 export function recordCancellationForfeit(input: {

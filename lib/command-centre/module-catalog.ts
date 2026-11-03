@@ -53,6 +53,15 @@ export function modulesForPermissions(
       permission: ["reports.read", "reservation.read", "accommodation.read"],
     },
     {
+      title: "Financial exceptions & day close",
+      subtitle:
+        "Refund approvals, source-linked variances and non-posting close worksheet",
+      category: "Administration",
+      href: "/workspaces/management/command/finance-close",
+      icon: "▣",
+      permission: ["finance.read", "finance.manage"],
+    },
+    {
       title: "Camper assistance board",
       subtitle: "Case stages, urgency and staff ownership",
       category: "Guest services",
