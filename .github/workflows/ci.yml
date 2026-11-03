@@ -175,6 +175,9 @@ jobs:
       - name: Verify Build 192 stock concurrency, POS sessions and independent count/till review
         run: npm run build192:verify
 
+      - name: Verify Build 194 staff-only saved layouts, optimistic versions and campground RLS
+        run: npm run build194:verify
+
       - name: Verify authentication lifecycle
         run: npm run auth:verify
 

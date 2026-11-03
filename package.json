@@ -27,6 +27,7 @@
     "build190:verify": "node scripts/verify-build190-staff-readiness.mjs",
     "build191:verify": "node scripts/verify-build191-vendor-service.mjs",
     "build192:verify": "node scripts/verify-build192-store-ops.mjs",
+    "build194:verify": "node scripts/verify-build194-command-views.mjs",
     "auth:verify": "node scripts/verify-auth-lifecycle.mjs",
     "authz:verify": "node scripts/verify-authorization-lifecycle.mjs",
     "audit:verify": "node scripts/verify-audit-lifecycle.mjs",

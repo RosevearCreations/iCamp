@@ -3,16 +3,15 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 
 import { AppShell } from "@/components/app-shell";
-import {
-  ManagementModuleFinder,
-  type CampgroundModule,
-} from "@/components/management-module-finder";
+import { ManagementModuleFinder } from "@/components/management-module-finder";
 import { requireStaff } from "@/lib/auth/current-session";
 import {
   getCampgroundAuthorization,
   listAssignedCampgrounds,
 } from "@/lib/authz/postgres.mjs";
 import { buildManagementSnapshot } from "@/lib/command-centre/management.mjs";
+import { getCommandViews } from "@/lib/command-centre/layout-postgres.mjs";
+import { modulesForPermissions } from "@/lib/command-centre/module-catalog";
 import { getMaintenanceWorkOrderBoard } from "@/lib/maintenance-work-orders/postgres.mjs";
 import { listReservationManagementConsole } from "@/lib/reservation-management/postgres.mjs";
 
@@ -37,228 +36,6 @@ const maintenancePermissions = [
   "maintenance.complete",
 ];
 
-function modulesForPermissions(permissions: string[]): CampgroundModule[] {
-  const allowed = (keys: string[]) =>
-    keys.some((key) => permissions.includes(key));
-  const modules: (CampgroundModule & { permission: string[] })[] = [
-    {
-      title: "Capacity & occupancy",
-      subtitle: "14-day booking coverage and operable inventory trends",
-      category: "Analytics",
-      href: "/workspaces/management/command/capacity",
-      icon: "▥",
-      permission: ["reports.read", "reservation.read", "accommodation.read"],
-    },
-    {
-      title: "Seasonal site utilization",
-      subtitle: "Six months of booked and seasonal site-night trends",
-      category: "Analytics",
-      href: "/workspaces/management/command/seasonal",
-      icon: "▤",
-      permission: ["reports.read", "reservation.read", "accommodation.read"],
-    },
-    {
-      title: "Accommodation segment comparisons",
-      subtitle: "Campsite, cottage and permanent unit booking coverage",
-      category: "Analytics",
-      href: "/workspaces/management/command/segments",
-      icon: "▥",
-      permission: ["reports.read", "reservation.read", "accommodation.read"],
-    },
-    {
-      title: "Seasonal capacity forecast variance",
-      subtitle:
-        "Month-to-date actuals against a three-month historical baseline",
-      category: "Analytics",
-      href: "/workspaces/management/command/forecast",
-      icon: "▤",
-      permission: ["reports.read", "reservation.read", "accommodation.read"],
-    },
-    {
-      title: "Camper assistance board",
-      subtitle: "Case stages, urgency and staff ownership",
-      category: "Guest services",
-      href: "/workspaces/management/command/assistance",
-      icon: "◈",
-      permission: [
-        "reports.read",
-        "assistance.triage",
-        "assistance.escalate",
-        "assistance.communicate",
-        "assistance.close",
-        "campground.operations.manage",
-      ],
-    },
-    {
-      title: "Camper resolution timeline",
-      subtitle: "Case history, closure evidence and resolution times",
-      category: "Guest services",
-      href: "/workspaces/management/command/resolutions",
-      icon: "◷",
-      permission: [
-        "reports.read",
-        "assistance.triage",
-        "assistance.escalate",
-        "assistance.communicate",
-        "assistance.close",
-        "campground.operations.manage",
-      ],
-    },
-    {
-      title: "Camper escalation aging",
-      subtitle: "24/72-hour attention, acknowledgment and follow-up",
-      category: "Guest services",
-      href: "/workspaces/management/command/escalations",
-      icon: "◷",
-      permission: [
-        "reports.read",
-        "assistance.triage",
-        "assistance.escalate",
-        "assistance.communicate",
-        "assistance.close",
-        "campground.operations.manage",
-      ],
-    },
-    {
-      title: "Standard theme owner review",
-      subtitle: "Inspect screens, collect visual acceptance feedback",
-      category: "Administration",
-      href: "/settings/themes/acceptance",
-      icon: "✧",
-      permission: ["reports.read"],
-    },
-    {
-      title: "Reservation desk",
-      subtitle: "Booking edits, check-in flow and guest arrivals",
-      category: "Bookings",
-      href: "/workspaces/management/campgrounds/reservations",
-      icon: "▣",
-      permission: reservationPermissions,
-    },
-    {
-      title: "Accommodation inventory",
-      subtitle: "Site types, operating state and inventory",
-      category: "Bookings",
-      href: "/workspaces/management/campgrounds/accommodations",
-      icon: "⌂",
-      permission: ["accommodation.read", "accommodation.manage"],
-    },
-    {
-      title: "Availability calendar",
-      subtitle: "Open and closed dates by accommodation",
-      category: "Bookings",
-      href: "/workspaces/management/campgrounds/availability",
-      icon: "▦",
-      permission: [
-        "reservation.read",
-        "reservation.create",
-        "reservation.modify",
-        "accommodation.read",
-        "campground.operations.manage",
-      ],
-    },
-    {
-      title: "Guest assistance",
-      subtitle: "Case triage, staff ownership and escalation",
-      category: "Guest services",
-      href: "/workspaces/management/campgrounds/assistance",
-      icon: "♧",
-      permission: [
-        "assistance.triage",
-        "assistance.escalate",
-        "assistance.communicate",
-        "assistance.close",
-        "campground.operations.manage",
-      ],
-    },
-    {
-      title: "Maintenance work orders",
-      subtitle: "Open repairs, blockers and technician follow-up",
-      category: "Property",
-      href: "/workspaces/maintenance/work-orders",
-      icon: "⚒",
-      permission: maintenancePermissions,
-    },
-    {
-      title: "Gate and security status",
-      subtitle: "Access events, passes and gate health",
-      category: "Property",
-      href: "/workspaces/security/dashboard",
-      icon: "⬡",
-      permission: [
-        "gate.state.read",
-        "access.events.read",
-        "access.credential.issue",
-        "access.credential.revoke",
-      ],
-    },
-    {
-      title: "Campground settings",
-      subtitle: "Property sections, policies and operations",
-      category: "Administration",
-      href: "/workspaces/management/campgrounds",
-      icon: "⚙",
-      permission: ["campground.configuration"],
-    },
-    {
-      title: "Payment operations",
-      subtitle: "Campground financial and payment records",
-      category: "Administration",
-      href: "/workspaces/management/campgrounds/payments",
-      icon: "◇",
-      permission: ["campground.configuration"],
-    },
-  ];
-  return modules
-    .filter((module) => {
-      if (module.href === "/workspaces/security/dashboard") {
-        return (
-          permissions.includes("gate.state.read") &&
-          permissions.includes("access.events.read") &&
-          allowed(["access.credential.issue", "access.credential.revoke"])
-        );
-      }
-      if (
-        [
-          "/workspaces/management/command/capacity",
-          "/workspaces/management/command/seasonal",
-          "/workspaces/management/command/segments",
-          "/workspaces/management/command/forecast",
-        ].includes(module.href)
-      ) {
-        return ["reports.read", "reservation.read", "accommodation.read"].every(
-          (key) => permissions.includes(key),
-        );
-      }
-      if (
-        [
-          "/workspaces/management/command/assistance",
-          "/workspaces/management/command/resolutions",
-          "/workspaces/management/command/escalations",
-        ].includes(module.href)
-      ) {
-        return (
-          permissions.includes("reports.read") &&
-          allowed([
-            "assistance.triage",
-            "assistance.escalate",
-            "assistance.communicate",
-            "assistance.close",
-            "campground.operations.manage",
-          ])
-        );
-      }
-      return allowed(module.permission);
-    })
-    .map(({ title, subtitle, category, icon, href }) => ({
-      title,
-      subtitle,
-      category,
-      icon,
-      href,
-    }));
-}
-
 function count(value: number | null) {
   return value === null ? "—" : value.toLocaleString("en-CA");
 }
@@ -276,7 +53,11 @@ function availabilityMessage(
 export default async function ManagementCommandPage({
   searchParams,
 }: Readonly<{
-  searchParams: Promise<{ campground?: string }>;
+  searchParams: Promise<{
+    campground?: string;
+    view?: string;
+    commandNotice?: string;
+  }>;
 }>) {
   const path = "/workspaces/management/command";
   const session = await requireStaff(path);
@@ -333,41 +114,90 @@ export default async function ManagementCommandPage({
   const reservationError = reservationsResult.status === "rejected";
   const maintenanceError = maintenanceResult.status === "rejected";
   const base = `?campground=${encodeURIComponent(selected.campgroundId)}`;
+  const savedViewResult = await getCommandViews({
+    userId: session.user.id,
+    campgroundId: selected.campgroundId,
+  })
+    .then((views) => ({ views, failed: false as const }))
+    .catch(() => ({ views: [], failed: true as const }));
+  const savedViews = savedViewResult.views;
+  const activeView =
+    params.view === "reset"
+      ? null
+      : (savedViews.find((view) => view.id === params.view) ??
+        savedViews.find((view) => view.isDefault) ??
+        null);
+  const moduleCatalog = modulesForPermissions(access);
 
   const kpis = [
     {
+      id: "sites",
       label: "Active accommodation sites",
+      href:
+        access.includes("accommodation.read") ||
+        access.includes("accommodation.manage")
+          ? `/workspaces/management/campgrounds/accommodations${base}`
+          : mayReadMaintenance
+            ? `/workspaces/maintenance/work-orders${base}`
+            : null,
+      source: "Authorized campground accommodation or maintenance inventory",
       value: snapshot.siteCount,
       detail: "All active sites in this property",
       icon: "⌂",
       tone: "green",
     },
     {
+      id: "arrivals",
       label: "Arrivals in next 7 days",
+      href: mayReadReservations
+        ? `/workspaces/management/campgrounds/reservations${base}`
+        : null,
+      source: "Current authorized reservation desk snapshot (up to 250 rows)",
       value: snapshot.arrivalsThisWeek,
       detail: "From visible reservation rows (up to 250)",
       icon: "▦",
       tone: "blue",
     },
     {
+      id: "work_orders",
       label: "Open work orders",
+      href: mayReadMaintenance
+        ? `/workspaces/maintenance/work-orders${base}`
+        : null,
+      source: "Current authorized maintenance work-order records",
       value: snapshot.openWorkOrders,
       detail: "Property maintenance queue",
       icon: "⚒",
       tone: "amber",
     },
     {
+      id: "financial",
       label: "Financial review flags",
+      href: mayReadReservations
+        ? `/workspaces/management/campgrounds/reservations${base}`
+        : null,
+      source: "Reservation review indicators only; no payment action",
       value: snapshot.financialReviews,
       detail: "From visible reservation rows (up to 250)",
       icon: "◇",
       tone: "blue",
     },
   ];
+  const metricPositions = new Map(
+    (
+      activeView?.kpiOrder ?? ["sites", "arrivals", "work_orders", "financial"]
+    ).map((key, index) => [key, index] as const),
+  );
+  const orderedKpis = [...kpis].sort(
+    (a, b) =>
+      (metricPositions.get(a.id) ?? 99) - (metricPositions.get(b.id) ?? 99),
+  );
 
   return (
     <AppShell>
-      <div className="page-stack camp-command">
+      <div
+        className={`page-stack camp-command command194-dashboard ${activeView?.density === "compact" ? "command194-dashboard--compact" : ""}`}
+      >
         <nav className="breadcrumbs" aria-label="Breadcrumb">
           <Link href="/">iCamp</Link>
           <span aria-hidden="true">/</span>
@@ -377,11 +207,12 @@ export default async function ManagementCommandPage({
         </nav>
 
         <section className="hero-panel camp-command__hero">
-          <p className="eyebrow">Build 161 · Standard / Fresh Meadow</p>
+          <p className="eyebrow">Build 194 · Personalized Operations Command</p>
           <h1>Campground Operations Command</h1>
           <p className="hero-panel__lead">
-            One clear view of your sites, upcoming campers, work orders and
-            management tools. Every number comes from your selected campground.
+            Role-aware management, I.T., status and statistics with saved layout
+            preferences. Every source metric is recalculated from the selected
+            campground.
           </p>
           <div className="camp-command__hero-actions">
             <Link className="primary-link" href={`/booking/map${base}`}>
@@ -415,15 +246,32 @@ export default async function ManagementCommandPage({
             </button>
           </form>
           <span className="ops-pill">
-            Read-only snapshot · {snapshot.today}
+            Read-only source snapshot · {snapshot.today}
           </span>
         </section>
 
+        {params.commandNotice ? (
+          <p className="ops-inline-note" role="status">
+            {params.commandNotice}
+          </p>
+        ) : null}
+        {savedViewResult.failed ? (
+          <p className="ops-inline-note" role="alert">
+            Layout storage is temporarily unavailable. The live campground cards
+            below are read-only and remain permission-gated.
+          </p>
+        ) : null}
+        {reservationError || maintenanceError ? (
+          <p className="ops-inline-note" role="alert">
+            One or more authorized source services could not be read. Missing
+            values are shown as unavailable, not as zero.
+          </p>
+        ) : null}
         <section
           className="camp-command__kpis"
           aria-label="Campground overview"
         >
-          {kpis.map((item) => (
+          {orderedKpis.map((item) => (
             <article
               className={`camp-command__kpi camp-command__kpi--${item.tone}`}
               key={item.label}
@@ -436,9 +284,29 @@ export default async function ManagementCommandPage({
                 <strong>{count(item.value)}</strong>
                 <small>
                   {item.value === null
-                    ? "No authorized data available"
+                    ? "Source restricted or currently unavailable — not zero"
                     : item.detail}
                 </small>
+                <details className="command194-dashboard__inspector">
+                  <summary>ⓘ Inspect source and drilldown</summary>
+                  <p>{item.source}</p>
+                  <p>
+                    Read at {snapshot.asOf} ·{" "}
+                    {snapshot.reservationRowsCapped
+                      ? "Reservation preview bounded at 250 rows"
+                      : "Current authorized preview"}
+                  </p>
+                  {item.href ? (
+                    <Link href={item.href}>
+                      Open authorized source records ↗
+                    </Link>
+                  ) : (
+                    <span>
+                      Direct source access requires an additional campground
+                      role.
+                    </span>
+                  )}
+                </details>
               </div>
               <span className="camp-command__spark" aria-hidden="true" />
             </article>
@@ -573,8 +441,13 @@ export default async function ManagementCommandPage({
         </div>
 
         <ManagementModuleFinder
-          modules={modulesForPermissions(access)}
+          key={`${selected.campgroundId}:${activeView?.id ?? "reset"}:${activeView?.rowVersion ?? 0}`}
+          modules={moduleCatalog}
           campgroundId={selected.campgroundId}
+          savedViews={savedViews}
+          activeView={activeView}
+          preferencesAvailable={!savedViewResult.failed}
+          sourceAsOf={snapshot.asOf}
         />
 
         <section className="content-panel ops-detail-card camp-command__safety">
