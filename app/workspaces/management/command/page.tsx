@@ -186,7 +186,7 @@ export default async function ManagementCommandPage({
   const metricPositions = new Map(
     (
       activeView?.kpiOrder ?? ["sites", "arrivals", "work_orders", "financial"]
-    ).map((key, index) => [key, index]),
+    ).map((key, index) => [key, index] as const),
   );
   const orderedKpis = [...kpis].sort(
     (a, b) =>
@@ -441,6 +441,7 @@ export default async function ManagementCommandPage({
         </div>
 
         <ManagementModuleFinder
+          key={`${selected.campgroundId}:${activeView?.id ?? "reset"}:${activeView?.rowVersion ?? 0}`}
           modules={moduleCatalog}
           campgroundId={selected.campgroundId}
           savedViews={savedViews}
