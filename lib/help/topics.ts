@@ -11,6 +11,21 @@ export interface HelpTopic {
 }
 
 export const helpTopics = {
+  "guest.privacy": {
+    id: "guest.privacy",
+    slug: "guest-privacy-requests-consent-retention-export",
+    title: "Guest privacy requests, consent & retention review",
+    summary:
+      "Read your own saved consent preferences, request a manual privacy review and export a bounded copy of account-linked campground data.",
+    details: [
+      "Guest requests are recorded without free-form notes or identity document uploads. A request enters the campground-specific staff queue, and duplicate category/scope requests within 24 hours are declined.",
+      "Saved-profile privacy settings and account-owned communication consent events are listed separately. A contact preference is not blanket marketing permission, and events from unlinked endpoints may need a manual review.",
+      "Your own no-store JSON export contains current saved profile details, up to 100 account-linked stays and receipts, and capped consent/request history. Review the file's coverage.incomplete flag and ask for manual access if more evidence exists.",
+      "No automatic deletion or legal retention deadline is configured. Review stages are human follow-up markers, not claims that external records were erased or disclosed. Legal-hold and statutory-retention decisions require separate verification.",
+    ],
+    audience: "operational",
+    related: ["auth.sessions"],
+  },
   "permanent.owner-followup-aging": {
     id: "permanent.owner-followup-aging",
     slug: "owner-export-followup-aging-independent-decision-reassessment",

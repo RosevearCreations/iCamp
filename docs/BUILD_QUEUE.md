@@ -33,8 +33,8 @@ Planning baseline: **Build 170**. The following is the approved **30-build** bat
 | **193 — PROMOTED** | Seasonal Renewal, Winterization & Spring-Reopening Owner Queue | Connect seasonal operations end to end. |
 | **194 — PROMOTED** | Role-Aware Operations Dashboard, Saved Layouts & Actionable Drilldowns | Make management screens more usable. |
 | **195 — PROMOTED** | Source-Grounded Occupancy Forecasts, Scenario Confidence & Export Provenance | Improve planning without fabricated predictions. |
-| **196 — RELEASE SCOPE** | Financial Exception Review, Refund Readiness & End-of-Day Close | Improve auditable financial controls. |
-| 197 | Guest Privacy Requests, Consent History, Retention & Export | Strengthen privacy operations. |
+| **196 — PROMOTED** | Financial Exception Review, Refund Readiness & End-of-Day Close | Improve auditable financial controls. |
+| **197 — RELEASE SCOPE** | Guest Privacy Requests, Consent History, Retention & Export | Strengthen privacy operations. |
 | 198 | Backup/Restore Drills, Performance Budgets & Incident Runbooks | Strengthen resilience and recovery. |
 | 199 | Tenant Subscription Sandbox Lifecycle & Legal Consent Gate | Prepare billing safely; activation stays held. |
 | 200 | Full Guest/Staff Pilot Acceptance, Omnichannel Proof Review & Go-Live Decision | Verify real journeys without bypassing holds. |
