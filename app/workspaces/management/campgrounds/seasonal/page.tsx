@@ -101,9 +101,14 @@ export default async function SeasonalAssignmentsPage({
         <section className="hero-panel">
           <p className="eyebrow">Build 047 · Long-term site lifecycle</p>
           <h1>Seasonal & yearly assignment foundation</h1>
-          <p><Link className="primary-link" href="/workspaces/management/campgrounds/seasonal/owner-queue">
-            Open Build 193 seasonal renewal and owner readiness queue
-          </Link></p>
+          <p>
+            <Link
+              className="primary-link"
+              href="/workspaces/management/campgrounds/seasonal/owner-queue"
+            >
+              Open Build 193 seasonal renewal and owner readiness queue
+            </Link>
+          </p>
           <p className="hero-panel__lead">
             Assign active seasonal/yearly campsites and permanent units while
             keeping Build 035 availability authoritative. Package charges are
