@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 
 import { AppShell } from "@/components/app-shell";
 import { ForecastSavedViews } from "@/components/forecast-saved-views";
+import { ForwardOccupancyPanel } from "@/components/forward-occupancy-panel";
 import { requireStaff } from "@/lib/auth/current-session";
 import {
   getCampgroundAuthorization,
@@ -14,13 +15,15 @@ import {
   FORECAST_WINDOWS,
   summarizeCapacityForecastVariance,
 } from "@/lib/command-centre/capacity-forecast-core.mjs";
+import { buildForwardOccupancyForecast } from "@/lib/command-centre/forward-occupancy-core.mjs";
+import { getCampgroundForwardOccupancySource } from "@/lib/command-centre/forward-occupancy-postgres.mjs";
 import { getCampgroundSegmentComparison } from "@/lib/command-centre/segment-comparison-postgres.mjs";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
-  title: "Seasonal Capacity Forecast Variance · iCamp",
+  title: "Seasonal Occupancy Planning & Capacity Variance · iCamp",
   description:
-    "Campground-scoped month-to-date booking coverage scenarios grounded in recorded historical rates.",
+    "Campground-scoped seasonal occupancy planning with evidence gates, backtests, source-labelled exports and historical capacity comparisons.",
 };
 
 const names: Record<string, string> = {
@@ -36,6 +39,8 @@ export default async function CapacityForecastPage({
     campground?: string;
     window?: string;
     scenario?: string;
+    horizon?: string;
+    planning?: string;
   }>;
 }>) {
   const path = "/workspaces/management/command/forecast";
@@ -47,6 +52,12 @@ export default async function CapacityForecastPage({
     params.scenario === "low" || params.scenario === "high"
       ? params.scenario
       : "weighted";
+  const horizon: 1 | 2 | 3 =
+    params.horizon === "1" ? 1 : params.horizon === "2" ? 2 : 3;
+  const planning: "low" | "typical" | "high" =
+    params.planning === "low" || params.planning === "high"
+      ? params.planning
+      : "typical";
   const assigned = await listAssignedCampgrounds(session.user.id);
   const authorized = (
     await Promise.all(
@@ -68,10 +79,27 @@ export default async function CapacityForecastPage({
     authorized.find((item) => item.campgroundId === params.campground) ??
     authorized[0];
   const base = `?campground=${encodeURIComponent(selected.campgroundId)}`;
-  const source = await getCampgroundSegmentComparison({
-    userId: session.user.id,
-    campgroundId: selected.campgroundId,
-  }).catch(() => null);
+  const [source, forwardSource] = await Promise.all([
+    getCampgroundSegmentComparison({
+      userId: session.user.id,
+      campgroundId: selected.campgroundId,
+    }).catch(() => null),
+    getCampgroundForwardOccupancySource({
+      userId: session.user.id,
+      campgroundId: selected.campgroundId,
+    }).catch(() => null),
+  ]);
+  let forwardReport = null;
+  if (forwardSource) {
+    try {
+      forwardReport = buildForwardOccupancyForecast(forwardSource, {
+        horizon,
+        scenario: planning,
+      });
+    } catch {
+      // A malformed or inaccessible source must never produce projected numbers.
+    }
+  }
   const scenarioResults = source
     ? (() => {
         try {
@@ -114,12 +142,13 @@ export default async function CapacityForecastPage({
         </nav>
         <section className="hero-panel camp-command__hero">
           <p className="eyebrow">
-            Build 171 · Standard / Scenario Recovery Integrity Exceptions
+            Build 195 · Source-grounded outlook and historical comparisons
           </p>
-          <h1>Seasonal Capacity Forecast Variance</h1>
+          <h1>Seasonal Occupancy Planning & Capacity Variance</h1>
           <p className="hero-panel__lead">
-            Explore low, typical and high historical booking-rate comparisons
-            across two, three or five completed months of campground records.
+            Plan future occupancy only when comparable seasonal records are
+            sufficient, and review the original low, typical and high historical
+            booking-rate comparisons separately.
           </p>
           <div className="camp-command__hero-actions">
             <Link
@@ -143,6 +172,8 @@ export default async function CapacityForecastPage({
           <form method="get" className="camp-command__scope-form">
             <input type="hidden" name="window" value={lookbackMonths} />
             <input type="hidden" name="scenario" value={scenario} />
+            <input type="hidden" name="horizon" value={horizon} />
+            <input type="hidden" name="planning" value={planning} />
             <label htmlFor="forecast-campground">Campground</label>
             <select
               id="forecast-campground"
@@ -161,6 +192,14 @@ export default async function CapacityForecastPage({
           </form>
           <span className="ops-pill">Read-only · Not a booking prediction</span>
         </section>
+        <ForwardOccupancyPanel
+          report={forwardReport}
+          campgroundId={selected.campgroundId}
+          horizon={horizon}
+          planning={planning}
+          historyWindow={lookbackMonths}
+          historyScenario={scenario}
+        />
         <section
           className="content-panel ops-detail-card camp-forecast__scenarios"
           aria-labelledby="scenario-heading"
@@ -179,6 +218,8 @@ export default async function CapacityForecastPage({
               name="campground"
               value={selected.campgroundId}
             />
+            <input type="hidden" name="horizon" value={horizon} />
+            <input type="hidden" name="planning" value={planning} />
             <label htmlFor="forecast-window">
               Historical window
               <select
