@@ -59,6 +59,12 @@ const itLinks = [
     icon: "▣",
   },
   {
+    label: "Subscription sandbox studio",
+    detail: "Signed synthetic event lifecycle and independent consent gates",
+    href: "/workspaces/it-analysis/subscription-sandbox",
+    icon: "◇",
+  },
+  {
     label: "Comms Hub connections",
     detail: "Independent proof intake — no external GETs",
     href: "/integration/comms-hub",

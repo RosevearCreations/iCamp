@@ -29,6 +29,12 @@ export default function SubscriptionFoundationPage() {
             <Link className="primary-link" href="/launch/readiness">
               Launch checklist
             </Link>
+            <Link
+              className="secondary-link"
+              href="/workspaces/it-analysis/subscription-sandbox"
+            >
+              Build 199 sandbox studio (staff only)
+            </Link>
             <Link className="secondary-link" href="/integration/comms-hub">
               Connection centre
             </Link>

@@ -119,6 +119,8 @@ export const permissions = [
   "vendor.manage",
   "finance.read",
   "finance.manage",
+  "subscription.sandbox.run",
+  "subscription.sandbox.review",
   "reports.read",
   "audit.read",
   "announcement.send",
