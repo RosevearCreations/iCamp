@@ -7,6 +7,7 @@
 - `npm run build198:db-budget`: 20 sampled source-scoped read-only SQL queries against a seeded synthetic organization, 250 ms p95 target, no writes or arbitrary SQL.
 - `npm run build198:http-budget`: 20 requests each to public health and readiness routes with 500 ms/750 ms p95 targets. Exits nonzero on non-2xx or timeout. Test coverage includes a local synthetic 503 outage; operator invocation requires an explicitly provided app origin and does not mutate the destination.
 - GitHub CI `Database migrations` job now seeds/verifies the fixture and runs the two recovery/database probes. Source/restore counts, authorization denial and measured timing are in the workflow output; health probe synthetic success/failure is covered by `node --test` and can be run against a staffed nonproduction preview.
+- CI runs the backup CLI inside the same PostgreSQL 17 Alpine image as its test database, preventing host-client major-version mismatches. Local invocations use locally installed PostgreSQL 17 tools.
 - Contextual help includes the drill and explicit human-controlled rollback/replay decision gates. No new database migrations are necessary.
 
 ## How to reproduce safely

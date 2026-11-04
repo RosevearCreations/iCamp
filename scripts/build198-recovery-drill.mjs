@@ -39,6 +39,39 @@ const connection = {
   PGPASSWORD: source.password,
 };
 
+async function postgresTool(binary, args) {
+  const useVersionMatchedContainer = process.env.GITHUB_ACTIONS === "true";
+  // GitHub runners may install a PostgreSQL 16 CLI while CI's server is 17.
+  // Use the same official PG17 image in CI; local operators use their own PG17 tools.
+  const command = useVersionMatchedContainer ? "docker" : binary;
+  const commandArgs = useVersionMatchedContainer
+    ? [
+        "run",
+        "--rm",
+        "--network=host",
+        "--mount",
+        `type=bind,src=${workspace},dst=/drill`,
+        "-e",
+        "PGHOST",
+        "-e",
+        "PGPORT",
+        "-e",
+        "PGUSER",
+        "-e",
+        "PGPASSWORD",
+        "postgres:17-alpine",
+        binary,
+        ...args.map((arg) =>
+          arg === snapshotFile ? "/drill/synthetic.dump" : arg,
+        ),
+      ]
+    : args;
+  await exec(command, commandArgs, {
+    env: { ...process.env, ...connection },
+    maxBuffer: 1024 * 1024,
+  });
+}
+
 const checks = [
   ["organizations", "public.organizations"],
   ["campgrounds", "public.campgrounds"],
@@ -104,35 +137,28 @@ try {
     );
   }
 
-  await exec(
-    "pg_dump",
-    ["--no-password", "-Fc", "-f", snapshotFile, "-d", source.database],
-    {
-      env: { ...process.env, ...connection },
-      maxBuffer: 1024 * 1024,
-    },
-  );
+  await postgresTool("pg_dump", [
+    "--no-password",
+    "-Fc",
+    "-f",
+    snapshotFile,
+    "-d",
+    source.database,
+  ]);
 
   await admin.connect();
   adminConnected = true;
   // Exact identifier is internally generated; never accepts input or points at production.
   await admin.query(`create database "${name}"`);
   created = true;
-  await exec(
-    "pg_restore",
-    [
-      "--no-password",
-      "--no-owner",
-      "--exit-on-error",
-      "-d",
-      name,
-      snapshotFile,
-    ],
-    {
-      env: { ...process.env, ...connection },
-      maxBuffer: 1024 * 1024,
-    },
-  );
+  await postgresTool("pg_restore", [
+    "--no-password",
+    "--no-owner",
+    "--exit-on-error",
+    "-d",
+    name,
+    snapshotFile,
+  ]);
 
   await restoreClient.connect();
   restoredConnected = true;
