@@ -16,7 +16,16 @@ export default function CommsHubConnectionPage() {
             Local contract self-check and separate private approval gate.
           </p>
         </section>
-        <p className="hero-panel__lead"><a href="https://rosevear-comms-hub.devilndovelive.workers.dev/" target="_blank" rel="noopener noreferrer">Open Rosevear Comms Hub · six-app connection centre</a> — public discovery only; signed private access remains HOLD.</p>
+        <p className="hero-panel__lead">
+          <a
+            href="https://rosevear-comms-hub.devilndovelive.workers.dev/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Open Rosevear Comms Hub · six-app connection centre
+          </a>{" "}
+          — public discovery only; signed private access remains HOLD.
+        </p>
         <LocalCheck />
         <Link href="/integration/ql258">Owner intake worksheet</Link>
       </div>
