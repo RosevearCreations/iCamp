@@ -1,0 +1,35 @@
+{
+  "schema": "rosevear.integration.discovery.v1",
+  "manifest_version": "1.0.0",
+  "source_id": "icamp",
+  "source_app_id": "icamp",
+  "source_role": "business_shell",
+  "repository": "RosevearCreations/iCamp",
+  "source_revision": "ql333-discovery-v1",
+  "issuer": "icamp",
+  "audience": "rosevear-master",
+  "tenant_boundary": "platform_shell",
+  "legacy_integration_v1": {
+    "app_id": "icamp",
+    "method": "GET",
+    "allowed_paths": [
+      "/api/integration/v1/health",
+      "/api/integration/v1/capabilities"
+    ],
+    "authorization": "source_owned_required"
+  },
+  "transport": {
+    "origin": null,
+    "manifest_path": "/.well-known/rosevear-integration-manifest.json",
+    "redirects": "DENY"
+  },
+  "requested_scope": "public_nonsecret_discovery_only",
+  "failure_behavior": "HOLD_AND_QUARANTINE",
+  "signature": {
+    "algorithm": "Ed25519",
+    "key_id": null,
+    "value": null,
+    "state": "AWAITING_INDEPENDENT_SOURCE_SIGNER"
+  },
+  "connection_state": "DISCONNECTED / HOLD"
+}
