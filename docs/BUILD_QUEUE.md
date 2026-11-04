@@ -2,9 +2,9 @@
 
 Current program: **iCamp2027**
 
-## Approved Build Batch 171–200 (30 defined; Build 200 release scope)
+## Approved Build Batch 171–200 (30 defined; Build 200 promoted)
 
-Planning baseline: **Build 170**. The following is the approved **30-build** batch. Builds 171–199 have verified production release evidence. Build 198's nonproduction recovery proof and performance budgets are documented in [`BUILD_198_RESILIENCE_ACCEPTANCE.md`](BUILD_198_RESILIENCE_ACCEPTANCE.md). Build 199's guarded synthetic lifecycle and consent readiness are documented in [`BUILD_199_SUBSCRIPTION_SANDBOX_ACCEPTANCE.md`](BUILD_199_SUBSCRIPTION_SANDBOX_ACCEPTANCE.md). Build 200's source-grounded guest/staff pilot workboard and secure Comms Hub trust review are documented in [`BUILD_200_PILOT_ACCEPTANCE.md`](BUILD_200_PILOT_ACCEPTANCE.md); production promotion and independent owner sign-off are separate gates. Full scope and safety boundaries are in [`BUILD_171_200_FUTURE_QUEUE.md`](BUILD_171_200_FUTURE_QUEUE.md).
+Planning baseline: **Build 170**. The approved 30-build batch reached application Production GREEN for Builds 171–200. Build 200's source-grounded guest/staff pilot workboard and Comms Hub trust review are documented in [`BUILD_200_PILOT_ACCEPTANCE.md`](BUILD_200_PILOT_ACCEPTANCE.md); its verified production SHA was `ce143dbf55e215780cd8070ef1e51916c1986af4` (GitHub PR #507; five exact-main checks and Vercel production ready). This is not independent owner acceptance of a real pilot or activation of private communications. The Build 201 continuation, including reproducible retest notes and signed TEST readiness, is in [`BUILD_201_RETEST_HANDSHAKE_ACCEPTANCE.md`](BUILD_201_RETEST_HANDSHAKE_ACCEPTANCE.md). Full earlier scope and safety boundaries remain in [`BUILD_171_200_FUTURE_QUEUE.md`](BUILD_171_200_FUTURE_QUEUE.md).
 
 | Build | Planned scope | Primary benefit |
 | --- | --- | --- |
@@ -37,11 +37,13 @@ Planning baseline: **Build 170**. The following is the approved **30-build** bat
 | **197 — PROMOTED** | Guest Privacy Requests, Consent History, Retention & Export | Strengthen privacy operations. |
 | **198 — PROMOTED** | Backup/Restore Drills, Performance Budgets & Incident Runbooks | Strengthen resilience and recovery. |
 | **199 — PROMOTED** | Tenant Subscription Sandbox Lifecycle & Legal Consent Gate | Prepare billing safely; activation stays held. |
-| **200 — RELEASE SCOPE** | Full Guest/Staff Pilot Acceptance, Omnichannel Proof Review & Go-Live Decision | Verify real journeys without bypassing holds. |
+| **200 — PROMOTED** | Full Guest/Staff Pilot Acceptance, Omnichannel Proof Review & Go-Live Decision | Verify real journeys without bypassing holds. |
 
 **Queue policy:** Each build must pass the operating-model requirements and dev/main production gates before being called GREEN. These are **planned requirements**, not claims that the capabilities already exist. Do not enable tenant billing, campground charges, external SMS/voice, cross-app gateway calls, gate actions or live dispatch merely because a build ships: **Billing / Omnichannel remain HELD / DISCONNECTED** pending original independent evidence, legal/provider review and explicit owner authorization. Preserve real-source readback, tenant RLS, auditability, accessibility and Web/PWA + safe nonvisual/staff-assisted parity throughout.
 
-Next proposed after the Build 200 checkpoint: **Build 201 — Pilot Finding Remediation, Real-Device Retest & Trusted Comms Hub Nonproduction Handshake Readiness**. Scope must follow verified independent evidence; no production channel activation by assumption.
+**Build 201 — RELEASE SCOPE:** Pilot Finding Remediation, Real-Device Retest & Trusted Comms Hub Nonproduction Handshake Readiness. Recover tab-safe local finding references, strict portable retest handoff, explicit real-device/test follow-up, I.T. source-trust readback and fixture-only signed nonproduction denial regression. Real staff/device, independent signer, trusted Hub peer and test authorization remain missing; promotion cannot grant live channel access.
+
+Next proposed after Build 201: **Build 202 — Independent Pilot Evidence Intake, Trusted Peer Enrollment Review & Scoped TEST Handshake Witness**. Require authentic new owner/device and external source receipts before enabling any connection.
 
 ---
 

@@ -238,6 +238,9 @@ jobs:
       - name: Build 200 guest/staff source inventory and nonactivation decision audit
         run: npm run build200:source-audit
 
+      - name: Build 201 isolated synthetic handshake and production-denial security audit
+        run: npm run build201:handshake-drill
+
       - name: Show migration history
         run: >-
           psql "$DATABASE_URL"

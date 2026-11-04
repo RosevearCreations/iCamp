@@ -32,6 +32,7 @@
     "build198:db-budget": "node scripts/build198-db-budget.mjs",
     "build198:http-budget": "node scripts/build198-performance-probe.mjs",
     "build200:source-audit": "node scripts/build200-pilot-source-audit.mjs",
+    "build201:handshake-drill": "node scripts/build201-nonproduction-handshake-drill.mjs",
     "auth:verify": "node scripts/verify-auth-lifecycle.mjs",
     "authz:verify": "node scripts/verify-authorization-lifecycle.mjs",
     "audit:verify": "node scripts/verify-audit-lifecycle.mjs",
