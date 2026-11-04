@@ -12,12 +12,24 @@
   "legacy_integration_v1": {
     "app_id": "icamp",
     "method": "GET",
-    "allowed_paths": ["/api/integration/v1/health", "/api/integration/v1/capabilities"],
+    "allowed_paths": [
+      "/api/integration/v1/health",
+      "/api/integration/v1/capabilities"
+    ],
     "authorization": "source_owned_required"
   },
-  "transport": {"origin": null, "manifest_path": "/.well-known/rosevear-integration-manifest.json", "redirects": "DENY"},
+  "transport": {
+    "origin": null,
+    "manifest_path": "/.well-known/rosevear-integration-manifest.json",
+    "redirects": "DENY"
+  },
   "requested_scope": "public_nonsecret_discovery_only",
   "failure_behavior": "HOLD_AND_QUARANTINE",
-  "signature": {"algorithm": "Ed25519", "key_id": null, "value": null, "state": "AWAITING_INDEPENDENT_SOURCE_SIGNER"},
+  "signature": {
+    "algorithm": "Ed25519",
+    "key_id": null,
+    "value": null,
+    "state": "AWAITING_INDEPENDENT_SOURCE_SIGNER"
+  },
   "connection_state": "DISCONNECTED / HOLD"
 }
