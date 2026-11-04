@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { AppShell } from "@/components/app-shell";
 import { LocalCheck } from "./LocalCheck";
+import { CommsTransportCheck } from "./transport-check";
 
 export const metadata: Metadata = { title: "Comms Hub Connection · iCamp" };
 
@@ -27,6 +28,7 @@ export default function CommsHubConnectionPage() {
           — public discovery only; signed private access remains HOLD.
         </p>
         <LocalCheck />
+        <CommsTransportCheck />
         <Link href="/integration/ql258">Owner intake worksheet</Link>
       </div>
     </AppShell>

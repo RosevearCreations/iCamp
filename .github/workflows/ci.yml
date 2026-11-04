@@ -235,6 +235,9 @@ jobs:
           ICAMP_APP_ENV: test
           ICAMP_DRILL_ACK: ISOLATED_TEST_ONLY
 
+      - name: Build 200 guest/staff source inventory and nonactivation decision audit
+        run: npm run build200:source-audit
+
       - name: Show migration history
         run: >-
           psql "$DATABASE_URL"
