@@ -656,6 +656,8 @@ export const helpTopics = {
       "Public health information is deliberately limited.",
       "An external watchdog is required to detect a completely non-responsive application.",
       "Queue, media and communications health are shown only as sanitized aggregate operational signals.",
+      "The resilience workspace separates live operational signals from isolated CI recovery drills; test timings are never presented as production RPO/RTO.",
+      "Recovery exercises require local synthetic data, and queue replay or deployment rollback requires separately authorized operator action.",
     ],
     audience: "public",
   },
