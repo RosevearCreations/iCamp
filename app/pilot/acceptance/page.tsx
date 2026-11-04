@@ -4,6 +4,7 @@ import Link from "next/link";
 import { AppShell } from "@/components/app-shell";
 import { AcceptanceWorksheet } from "./worksheet";
 import { Build200Review } from "./build200-review";
+import { Build201Retest } from "./build201-retest";
 
 export const metadata: Metadata = {
   title: "Pilot acceptance · iCamp",
@@ -14,16 +15,21 @@ export default function PilotAcceptancePage() {
     <AppShell>
       <main className="page-stack">
         <section className="hero-panel">
-          <p className="eyebrow">Build 200 · Pilot acceptance checkpoint</p>
-          <h1>Camp Rosevear · full guest &amp; staff walkthrough</h1>
+          <p className="eyebrow">
+            Build 201 · Field retest and trust readiness
+          </p>
+          <h1>Camp Rosevear · pilot findings and guest/staff retest</h1>
           <p className="hero-panel__lead">
             Open the real guest and staff modules in sequence, record issue
             references, and keep source-file proof separate from real-device and
-            independent acceptance. This workboard cannot activate payments,
-            communications, test accounts or a public go-live.
+            independent acceptance. Build 201 keeps local notes available during
+            navigation and adds portable device retest references. This
+            workboard cannot activate payments, communications, test accounts or
+            a public go-live.
           </p>
         </section>
         <Build200Review />
+        <Build201Retest />
         <details className="content-panel">
           <summary>Original six-area pilot worksheet (Build 155)</summary>
           <AcceptanceWorksheet />

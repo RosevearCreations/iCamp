@@ -93,7 +93,13 @@ export function Build200Review() {
             <h3>{journey.title}</h3>
             <p>{journey.manual}</p>
             <p>
-              <Link href={journey.href}>Open actual workflow</Link>
+              <Link
+                href={journey.href}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Open actual workflow (new tab)
+              </Link>
             </p>
             <label htmlFor={`build200-status-${journey.id}`}>
               Our observation

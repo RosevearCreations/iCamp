@@ -3,6 +3,7 @@ import Link from "next/link";
 import { AppShell } from "@/components/app-shell";
 import { LocalCheck } from "./LocalCheck";
 import { CommsTransportCheck } from "./transport-check";
+import { Build201HandshakePreflight } from "./handshake-preflight";
 
 export const metadata: Metadata = { title: "Comms Hub Connection · iCamp" };
 
@@ -29,6 +30,7 @@ export default function CommsHubConnectionPage() {
         </p>
         <LocalCheck />
         <CommsTransportCheck />
+        <Build201HandshakePreflight />
         <Link href="/integration/ql258">Owner intake worksheet</Link>
       </div>
     </AppShell>
