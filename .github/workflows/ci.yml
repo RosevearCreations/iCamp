@@ -223,6 +223,18 @@ jobs:
       - name: Verify synthetic demo campground
         run: npm run demo:verify
 
+      - name: Build 198 isolated backup and restore with tenant-isolation proof
+        run: npm run build198:restore-drill
+        env:
+          ICAMP_APP_ENV: test
+          ICAMP_DRILL_ACK: ISOLATED_TEST_ONLY
+
+      - name: Build 198 synthetic scoped database performance budget
+        run: npm run build198:db-budget
+        env:
+          ICAMP_APP_ENV: test
+          ICAMP_DRILL_ACK: ISOLATED_TEST_ONLY
+
       - name: Show migration history
         run: >-
           psql "$DATABASE_URL"

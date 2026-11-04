@@ -2,9 +2,9 @@
 
 Current program: **iCamp2027**
 
-## Approved Build Batch 171–200 (30 defined; Build 196 release scope)
+## Approved Build Batch 171–200 (30 defined; Build 198 release scope)
 
-Planning baseline: **Build 170**. The following is the approved **30-build** batch. Builds 171–195 have verified production release evidence. Build 195's source-grounded forward planning and CSV provenance controls are documented in [`BUILD_195_FORWARD_OCCUPANCY_ACCEPTANCE.md`](BUILD_195_FORWARD_OCCUPANCY_ACCEPTANCE.md). Build 196's source-backed financial review and restricted daily close are documented in [`BUILD_196_FINANCIAL_CLOSE_ACCEPTANCE.md`](BUILD_196_FINANCIAL_CLOSE_ACCEPTANCE.md); promotion remains gated on independent CI, authorization checks and exact-commit live production readback. Later builds remain planned. Full scope and safety boundaries are in [`BUILD_171_200_FUTURE_QUEUE.md`](BUILD_171_200_FUTURE_QUEUE.md).
+Planning baseline: **Build 170**. The following is the approved **30-build** batch. Builds 171–197 have verified production release evidence. Build 196's source-backed financial review and restricted daily close are documented in [`BUILD_196_FINANCIAL_CLOSE_ACCEPTANCE.md`](BUILD_196_FINANCIAL_CLOSE_ACCEPTANCE.md). Build 197's privacy protections are documented in [`BUILD_197_GUEST_PRIVACY_ACCEPTANCE.md`](BUILD_197_GUEST_PRIVACY_ACCEPTANCE.md). Build 198's nonproduction recovery proof and performance budgets are documented in [`BUILD_198_RESILIENCE_ACCEPTANCE.md`](BUILD_198_RESILIENCE_ACCEPTANCE.md); promotion is gated on independent CI and exact-commit live production readback. Later builds remain planned. Full scope and safety boundaries are in [`BUILD_171_200_FUTURE_QUEUE.md`](BUILD_171_200_FUTURE_QUEUE.md).
 
 | Build | Planned scope | Primary benefit |
 | --- | --- | --- |
@@ -34,8 +34,8 @@ Planning baseline: **Build 170**. The following is the approved **30-build** bat
 | **194 — PROMOTED** | Role-Aware Operations Dashboard, Saved Layouts & Actionable Drilldowns | Make management screens more usable. |
 | **195 — PROMOTED** | Source-Grounded Occupancy Forecasts, Scenario Confidence & Export Provenance | Improve planning without fabricated predictions. |
 | **196 — PROMOTED** | Financial Exception Review, Refund Readiness & End-of-Day Close | Improve auditable financial controls. |
-| **197 — RELEASE SCOPE** | Guest Privacy Requests, Consent History, Retention & Export | Strengthen privacy operations. |
-| 198 | Backup/Restore Drills, Performance Budgets & Incident Runbooks | Strengthen resilience and recovery. |
+| **197 — PROMOTED** | Guest Privacy Requests, Consent History, Retention & Export | Strengthen privacy operations. |
+| **198 — RELEASE SCOPE** | Backup/Restore Drills, Performance Budgets & Incident Runbooks | Strengthen resilience and recovery. |
 | 199 | Tenant Subscription Sandbox Lifecycle & Legal Consent Gate | Prepare billing safely; activation stays held. |
 | 200 | Full Guest/Staff Pilot Acceptance, Omnichannel Proof Review & Go-Live Decision | Verify real journeys without bypassing holds. |
 

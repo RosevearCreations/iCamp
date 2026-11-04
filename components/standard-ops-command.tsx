@@ -40,6 +40,13 @@ const managementLinks = [
 
 const itLinks = [
   {
+    label: "Resilience & recovery",
+    detail:
+      "Isolated restore drills, performance budgets and incident response",
+    href: "/workspaces/it-analysis/resilience",
+    icon: "↺",
+  },
+  {
     label: "System status",
     detail: "Public-safe live check and deployment version",
     href: "/status",
