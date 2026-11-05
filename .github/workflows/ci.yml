@@ -57,6 +57,9 @@ jobs:
       - name: Verify telephone/SMS workflow parity harness
         run: npm run parity:verify
 
+      - name: Verify Build 202 ephemeral signed TEST witness denials
+        run: npm run build202:scoped-witness
+
       - name: Build
         run: npm run build
 

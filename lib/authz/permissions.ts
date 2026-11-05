@@ -139,6 +139,8 @@ export const permissions = [
   "it.diagnostics.read",
   "it.incident.manage",
   "it.integration.read",
+  "pilot.evidence.intake",
+  "pilot.evidence.review",
   "it.release.read",
   "it.diagnostics.export",
   "system.status.publish",
