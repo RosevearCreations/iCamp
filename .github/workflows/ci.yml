@@ -2,9 +2,13 @@ name: CI
 
 on:
   push:
-    branches: [dev, main]
+    branches: [main]
   pull_request:
     branches: [dev, main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 permissions:
   contents: read
@@ -62,6 +66,9 @@ jobs:
 
       - name: Verify Build 203 nonproduction runbook remains NO-GO
         run: npm run build203:runbook
+
+      - name: Verify Build 204 protected CI event and gate contract
+        run: npm run build204:ci-contract
 
       - name: Build
         run: npm run build
