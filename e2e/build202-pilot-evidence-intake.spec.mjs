@@ -9,7 +9,7 @@ test("Build 202 displays unverified source intake alongside prior pilot retest",
       name: /Independent pilot evidence intake & peer enrollment review/i,
     }),
   ).toBeVisible();
-  await expect(page.getByText("DISCONNECTED / HOLD")).toBeVisible();
+  await expect(page.getByText("DISCONNECTED / HOLD").first()).toBeVisible();
   await expect(
     page.getByRole("button", { name: "Submit unverified evidence claim" }),
   ).toBeDisabled();

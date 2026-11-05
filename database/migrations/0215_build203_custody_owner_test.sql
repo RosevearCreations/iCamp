@@ -3,7 +3,7 @@
 insert into icamp_private.permission_catalog(permission_key,description,risk_level)
 values
  ('pilot.custody.reconcile','Review second independent-source custody *claims* without certifying the issuer','high'),
- ('pilot.test.authorize','Record or withdraw owner intent for isolated nonproduction TEST only','critical')
+ ('pilot.test.authorize','Record or withdraw owner intent for isolated nonproduction TEST only','high')
 on conflict(permission_key) do nothing;
 
 insert into icamp_private.role_permissions(role_id,permission_key)
