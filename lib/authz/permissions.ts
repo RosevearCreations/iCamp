@@ -141,6 +141,8 @@ export const permissions = [
   "it.integration.read",
   "pilot.evidence.intake",
   "pilot.evidence.review",
+  "pilot.custody.reconcile",
+  "pilot.test.authorize",
   "it.release.read",
   "it.diagnostics.export",
   "system.status.publish",

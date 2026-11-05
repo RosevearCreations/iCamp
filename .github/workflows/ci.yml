@@ -60,6 +60,9 @@ jobs:
       - name: Verify Build 202 ephemeral signed TEST witness denials
         run: npm run build202:scoped-witness
 
+      - name: Verify Build 203 nonproduction runbook remains NO-GO
+        run: npm run build203:runbook
+
       - name: Build
         run: npm run build
 

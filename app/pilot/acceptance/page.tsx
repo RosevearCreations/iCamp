@@ -6,6 +6,7 @@ import { AcceptanceWorksheet } from "./worksheet";
 import { Build200Review } from "./build200-review";
 import { Build201Retest } from "./build201-retest";
 import { Build202EvidenceIntake } from "./build202-evidence-intake";
+import { Build203CustodyWorkbench } from "./build203-custody-workbench";
 
 export const metadata: Metadata = {
   title: "Pilot acceptance · iCamp",
@@ -32,6 +33,7 @@ export default function PilotAcceptancePage() {
         <Build200Review />
         <Build201Retest />
         <Build202EvidenceIntake />
+        <Build203CustodyWorkbench />
         <details className="content-panel">
           <summary>Original six-area pilot worksheet (Build 155)</summary>
           <AcceptanceWorksheet />
