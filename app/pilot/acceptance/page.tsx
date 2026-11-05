@@ -5,6 +5,7 @@ import { AppShell } from "@/components/app-shell";
 import { AcceptanceWorksheet } from "./worksheet";
 import { Build200Review } from "./build200-review";
 import { Build201Retest } from "./build201-retest";
+import { Build202EvidenceIntake } from "./build202-evidence-intake";
 
 export const metadata: Metadata = {
   title: "Pilot acceptance · iCamp",
@@ -16,7 +17,7 @@ export default function PilotAcceptancePage() {
       <main className="page-stack">
         <section className="hero-panel">
           <p className="eyebrow">
-            Build 201 · Field retest and trust readiness
+            Build 202 · Independent source evidence and TEST gate
           </p>
           <h1>Camp Rosevear · pilot findings and guest/staff retest</h1>
           <p className="hero-panel__lead">
@@ -30,6 +31,7 @@ export default function PilotAcceptancePage() {
         </section>
         <Build200Review />
         <Build201Retest />
+        <Build202EvidenceIntake />
         <details className="content-panel">
           <summary>Original six-area pilot worksheet (Build 155)</summary>
           <AcceptanceWorksheet />
