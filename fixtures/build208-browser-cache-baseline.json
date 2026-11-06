@@ -1,0 +1,44 @@
+{
+  "schema": "icamp.build208.reviewed-browser-cache-baseline.v1",
+  "source": "GITHUB_ACTIONS_JOB_STEPS_AND_LOGS_READ_ONLY",
+  "observedOn": "2026-11-06",
+  "stages": {
+    "coldPR": {
+      "runId": 42221352913,
+      "jobId": 127903905167,
+      "commit": "3922aac96d2e3758607b8ffa8c1cd2234b2b3080",
+      "browserCache": "MISS",
+      "jobSeconds": 84,
+      "browserRestoreSeconds": 0,
+      "chromiumInstallSeconds": 17,
+      "result": "success"
+    },
+    "warmPR": {
+      "runId": 42221880390,
+      "jobId": 127905696919,
+      "commit": "8c8f8724f25109eef87d529505245c188af25e79",
+      "browserCache": "HIT",
+      "jobSeconds": 79,
+      "browserRestoreSeconds": 4,
+      "chromiumInstallSeconds": 9,
+      "result": "success"
+    },
+    "coldMainOutlier": {
+      "runId": 42222247675,
+      "jobId": 127906880336,
+      "commit": "68e00b3ae313383688b14d42065575e446066491",
+      "runnerVersion": "26.04",
+      "browserCache": "MISS",
+      "jobSeconds": 651,
+      "chromiumInstallSeconds": 580,
+      "ubuntuMirror": "azure.archive.ubuntu.com",
+      "aptPayloadMB": 21.9,
+      "aptFetchSeconds": 563,
+      "aptReportedKBPerSecond": 38.8,
+      "result": "success"
+    }
+  },
+  "observationOnly": true,
+  "browserRegressionApproved": false,
+  "protectedGatesChanged": false
+}
