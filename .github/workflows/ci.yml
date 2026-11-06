@@ -24,6 +24,7 @@ jobs:
         uses: actions/checkout@v7
 
       - name: Use Node.js 24
+        id: node-cache
         uses: actions/setup-node@v7
         with:
           node-version: 24
@@ -32,6 +33,12 @@ jobs:
 
       - name: Install dependencies
         run: npm ci --ignore-scripts --prefer-offline --no-audit --no-fund
+
+      - name: Record Build 207 locked npm cache evidence
+        env:
+          ICAMP_CI_LANE: verify
+          ICAMP_NPM_CACHE_HIT: ${{ steps.node-cache.outputs.cache-hit }}
+        run: node scripts/build207-cache-witness.mjs
 
       - name: Apply formatter in verification workspace
         run: npm exec prettier -- --write .
@@ -75,6 +82,9 @@ jobs:
 
       - name: Verify Build 206 locked cache and required-gate safety
         run: npm run build206:cache-contract
+
+      - name: Verify Build 207 warm-run and browser cache safety
+        run: npm run build207:cache-contract
 
       - name: Build
         run: npm run build
@@ -125,6 +135,7 @@ jobs:
         uses: actions/checkout@v7
 
       - name: Use Node.js 24
+        id: node-cache
         uses: actions/setup-node@v7
         with:
           node-version: 24
@@ -134,8 +145,22 @@ jobs:
       - name: Install dependencies
         run: npm ci --ignore-scripts --prefer-offline --no-audit --no-fund
 
+      - name: Restore exact-lock Chromium browser cache
+        id: browser-cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-icamp-chromium-${{ hashFiles('package-lock.json') }}
+
       - name: Install Chromium
         run: npx playwright install --with-deps chromium
+
+      - name: Record Build 207 installed Chromium and cache evidence
+        env:
+          ICAMP_CI_LANE: browser
+          ICAMP_NPM_CACHE_HIT: ${{ steps.node-cache.outputs.cache-hit }}
+          ICAMP_BROWSER_CACHE_HIT: ${{ steps.browser-cache.outputs.cache-hit }}
+        run: node scripts/build207-cache-witness.mjs --browser
 
       - name: Run browser end-to-end harness
         run: npm run e2e:test
@@ -175,6 +200,7 @@ jobs:
         uses: actions/checkout@v7
 
       - name: Use Node.js 24
+        id: node-cache
         uses: actions/setup-node@v7
         with:
           node-version: 24
@@ -183,6 +209,12 @@ jobs:
 
       - name: Install dependencies
         run: npm ci --ignore-scripts --prefer-offline --no-audit --no-fund
+
+      - name: Record Build 207 locked npm cache evidence
+        env:
+          ICAMP_CI_LANE: database
+          ICAMP_NPM_CACHE_HIT: ${{ steps.node-cache.outputs.cache-hit }}
+        run: node scripts/build207-cache-witness.mjs
 
       - name: Install PostgreSQL client
         run: |
