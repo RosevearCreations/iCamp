@@ -77,6 +77,21 @@ test("Build 209 verifies source identity and treats malformed or missing cache e
     parseBrowserJobLog("Install Chromium took 999s", candidate).mirror,
     null,
   );
+  assert.equal(
+    parseBrowserJobLog(
+      "Fetched 21.9 MB in 9min 23s https://other.example/?m=azure.archive.ubuntu.com",
+      candidate,
+    ).mirror,
+    null,
+    "The expected mirror must match the parsed URL hostname, not a substring",
+  );
+  assert.equal(
+    parseBrowserJobLog(
+      "Fetched 21.9 MB in 9min 23s https://azure.archive.ubuntu.com.evil.example",
+      candidate,
+    ).mirror,
+    null,
+  );
 });
 
 test("Build 209 never combines Ubuntu versions or accepts one cold/warm pair as an SLA", () => {

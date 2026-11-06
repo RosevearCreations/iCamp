@@ -71,8 +71,17 @@ export function parseBrowserJobLog(logText, candidate) {
   const aptFetchSeconds = fetchMatch
     ? Number(fetchMatch[1] ?? 0) * 60 + Number(fetchMatch[2])
     : null;
-  const mirror = logText.includes("azure.archive.ubuntu.com")
-    ? "azure.archive.ubuntu.com"
+  const mirrorHost = "azure.archive.ubuntu.com";
+  const mirror = [...logText.matchAll(/https?:\/\/[^\s<>"']+/g)].some(
+    ([rawUrl]) => {
+      try {
+        return new URL(rawUrl).hostname === mirrorHost;
+      } catch {
+        return false;
+      }
+    },
+  )
+    ? mirrorHost
     : null;
   return {
     ...candidate,
