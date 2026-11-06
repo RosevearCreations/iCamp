@@ -1,7 +1,11 @@
-import { mkdir, writeFile } from "node:fs/promises";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { CHROMIUM_INSTALL_REVIEW_BUDGET_SECONDS } from "./build208-browser-runtime-diagnostics.mjs";
+import {
+  analyzeBuild209,
+  fetchBrowserLogEvidence,
+} from "./build209-release-trends.mjs";
 
 // These are monitoring budgets, NOT replacements for protected job timeouts.
 export const REQUIRED_CHECK_BUDGETS = Object.freeze({
@@ -469,6 +473,40 @@ export function formatSummary(evidence) {
     "",
     `Observed commit-stage groups: ${evidence.throughput.observedGroups}; only successful complete five-check groups count. GitHub gate elapsed excludes Vercel deployment and is never an owner release/Comms Hub authorization.`,
   );
+  if (evidence.build209) {
+    const { crossReleaseCache, ubuntuMirrorAlerts, protectedPromotionSLA } =
+      evidence.build209;
+    lines.push(
+      "",
+      "### Build 209 — cross-release cache, Ubuntu mirror and protected SLA review",
+      "",
+      `Job log witnesses: **${crossReleaseCache.verifiedJobWitnesses}/${crossReleaseCache.reviewedJobLogs}**; cold/warm trend: **${crossReleaseCache.state}**. OS versions are never combined.`,
+      "",
+      "| Runner OS | Cold runs | Warm runs | Cold p50 | Warm p50 | Evidence |",
+      "| --- | ---: | ---: | ---: | ---: | --- |",
+    );
+    for (const [os, item] of Object.entries(crossReleaseCache.byRunnerOS)) {
+      lines.push(
+        `| ${os} | ${item.coldSamples} | ${item.warmSamples} | ${item.coldP50Seconds ?? "—"}s | ${item.warmP50Seconds ?? "—"}s | ${item.state} |`,
+      );
+    }
+    lines.push(
+      "",
+      `Ubuntu mirror alerts: **${ubuntuMirrorAlerts.state}**, confirmed ${ubuntuMirrorAlerts.confirmedAlerts.length}; log sources unavailable: ${ubuntuMirrorAlerts.recentLogSourcesUnavailable}. Historical stall remains pinned; unverified logs are never a clean bill of health.`,
+      "",
+      "| Protected stage | Complete releases | p90 to 5 gates | Diagnostic budget | SLA review |",
+      "| --- | ---: | ---: | ---: | --- |",
+    );
+    for (const [stage, data] of Object.entries(protectedPromotionSLA.stages)) {
+      lines.push(
+        `| ${stage} | ${data.fullyProtectedSampleCount} | ${data.gateP90Seconds ?? "—"}s | ${data.monitoringBudgetSeconds}s | ${data.state} |`,
+      );
+    }
+    lines.push(
+      "",
+      "Alerts are read-only. Monitor budgets do not replace timeout, security, browser, database, owner or production requirements.",
+    );
+  }
   lines.push(
     "",
     "Budgets are diagnostic only. All five required GitHub checks, failure behavior, and release approvals remain unchanged.",
@@ -492,6 +530,23 @@ async function main() {
   try {
     const runJobs = await fetchGitHubHistory();
     evidence = analyzeHistory(runJobs);
+    const reviewedBaseline = JSON.parse(
+      await readFile(
+        resolve(projectRoot, "fixtures/build208-browser-cache-baseline.json"),
+        "utf8",
+      ),
+    );
+    let logRecords = [];
+    try {
+      logRecords = await fetchBrowserLogEvidence(runJobs);
+    } catch {
+      // Diagnostic source failure must not assert a healthy cache or mirror.
+    }
+    evidence.build209 = analyzeBuild209({
+      logRecords,
+      throughput: evidence.throughput,
+      reviewedBaseline,
+    });
   } catch (error) {
     // This must not be mistaken for a completed, green measurement or fake data.
     const reason =
@@ -505,6 +560,15 @@ async function main() {
       ...analyzeHistory([], "GITHUB_ACTIONS_HISTORY_UNAVAILABLE"),
       sourceFailure: reason,
     };
+  }
+  if (!evidence.build209) {
+    evidence.build209 = analyzeBuild209({
+      logRecords: [],
+      throughput: evidence.throughput,
+      reviewedBaseline: null,
+    });
+    evidence.build209.sourceFailure =
+      evidence.sourceFailure ?? "BUILD209_SOURCE_UNAVAILABLE";
   }
   evidence.generatedAt = new Date().toISOString();
   evidence.context = {

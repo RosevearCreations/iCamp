@@ -89,6 +89,9 @@ jobs:
       - name: Verify Build 208 cold-runner diagnostics and protected gates
         run: npm run build208:ci-contract
 
+      - name: Verify Build 209 cross-release monitoring and protected SLA contract
+        run: npm run build209:ci-contract
+
       - name: Build
         run: npm run build
 
