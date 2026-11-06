@@ -70,7 +70,8 @@ test("Build 207 distinguishes observed HIT, MISS and absent signals without inve
   const record = buildCacheRecord({
     lane: "browser",
     npmHit: "true",
-    browserHit: "false",
+    browserHit: "",
+    browserRestoreCompleted: true,
     lockSha256: digest,
     browserExecutableVerified: true,
   });
@@ -80,6 +81,13 @@ test("Build 207 distinguishes observed HIT, MISS and absent signals without inve
   assert.match(formatCacheSummary(record), /mandatory installation/);
   assert.throws(() =>
     buildCacheRecord({ lane: "browser", lockSha256: digest }),
+  );
+  assert.throws(() =>
+    buildCacheRecord({
+      lane: "browser",
+      lockSha256: digest,
+      browserExecutableVerified: true,
+    }),
   );
   assert.throws(() =>
     buildCacheRecord({ lane: "verify", lockSha256: "not_sha" }),

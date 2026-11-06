@@ -160,6 +160,7 @@ jobs:
           ICAMP_CI_LANE: browser
           ICAMP_NPM_CACHE_HIT: ${{ steps.node-cache.outputs.cache-hit }}
           ICAMP_BROWSER_CACHE_HIT: ${{ steps.browser-cache.outputs.cache-hit }}
+          ICAMP_BROWSER_CACHE_RESTORE_COMPLETED: ${{ steps.browser-cache.outcome == 'success' }}
         run: node scripts/build207-cache-witness.mjs --browser
 
       - name: Run browser end-to-end harness

@@ -13,6 +13,7 @@ export function buildCacheRecord({
   lane,
   npmHit,
   browserHit,
+  browserRestoreCompleted = false,
   lockSha256,
   browserExecutableVerified = false,
 }) {
@@ -26,11 +27,20 @@ export function buildCacheRecord({
   if (browser && !browserExecutableVerified) {
     throw new Error("CHROMIUM_EXECUTABLE_NOT_VERIFIED");
   }
+  if (browser && !browserRestoreCompleted) {
+    throw new Error("CHROMIUM_CACHE_RESTORE_NOT_VERIFIED");
+  }
   return {
     schema: "icamp.build207.cache-witness.v1",
     lane,
     npmCache: cacheState(npmHit),
-    browserCache: browser ? cacheState(browserHit) : "NOT_APPLICABLE",
+    // actions/cache leaves cache-hit empty for an absent key. Only interpret
+    // this as MISS after the restore step itself has succeeded.
+    browserCache: browser
+      ? browserHit === ""
+        ? "MISS"
+        : cacheState(browserHit)
+      : "NOT_APPLICABLE",
     lockSha256,
     cleanInstallRequired: true,
     chromiumInstalled: browser ? browserExecutableVerified : null,
@@ -69,6 +79,8 @@ async function main() {
     lane: process.env.ICAMP_CI_LANE,
     npmHit: process.env.ICAMP_NPM_CACHE_HIT,
     browserHit: process.env.ICAMP_BROWSER_CACHE_HIT,
+    browserRestoreCompleted:
+      process.env.ICAMP_BROWSER_CACHE_RESTORE_COMPLETED === "true",
     lockSha256,
     browserExecutableVerified,
   });

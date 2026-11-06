@@ -47,6 +47,10 @@ export function verifyBuild207CacheContract(inputs) {
   );
   assert.match(
     browser,
+    /ICAMP_BROWSER_CACHE_RESTORE_COMPLETED: \$\{\{ steps\.browser-cache\.outcome == 'success' \}\}/,
+  );
+  assert.match(
+    browser,
     /run: node scripts\/build207-cache-witness\.mjs --browser/,
   );
   assert.match(ci, /run: npm run build207:cache-contract/);
