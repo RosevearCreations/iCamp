@@ -12,6 +12,7 @@ concurrency:
 
 permissions:
   contents: read
+  actions: read
 
 jobs:
   verify:
@@ -87,6 +88,21 @@ jobs:
           name: npm-audit-full
           path: npm-audit-full.json
           retention-days: 3
+
+      - name: Capture Build 205 historical CI queue and runtime evidence
+        if: always()
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: node scripts/build205-ci-runtime-diagnostics.mjs
+
+      - name: Upload Build 205 CI queue and runtime evidence
+        if: always()
+        uses: actions/upload-artifact@v6
+        with:
+          name: build205-ci-runtime-evidence
+          path: artifacts/build205-ci-runtime.json
+          if-no-files-found: error
+          retention-days: 14
 
   e2e:
     name: Browser end-to-end
