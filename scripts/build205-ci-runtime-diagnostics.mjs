@@ -24,6 +24,84 @@ const MINIMUM_SAMPLES = 3;
 const MAX_RUNS = 12;
 const projectRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 
+export function analyzeProtectedTrends(runJobs) {
+  const comparisons = {};
+  for (const [check, budget] of Object.entries(REQUIRED_CHECK_BUDGETS)) {
+    const [workflowName, jobName] = check.split(" / ");
+    const observations = runJobs
+      .filter(({ run }) => run?.name === workflowName)
+      .flatMap(({ run, jobs }) =>
+        (jobs ?? [])
+          .filter((job) => job.name === jobName && job.conclusion === "success")
+          .map((job) => ({
+            createdAt: Date.parse(run.created_at ?? ""),
+            runId: run.id,
+            queueSeconds: safeSeconds(run.created_at, job.started_at),
+            runtimeSeconds: safeSeconds(job.started_at, job.completed_at),
+          })),
+      )
+      .filter(
+        (observation) =>
+          Number.isFinite(observation.createdAt) &&
+          observation.queueSeconds !== null &&
+          observation.runtimeSeconds !== null,
+      )
+      .sort((a, b) => b.createdAt - a.createdAt || b.runId - a.runId);
+    const latest = observations.slice(0, 2);
+    const previous = observations.slice(2, 4);
+    const recentQueue = percentile(
+      latest.map((item) => item.queueSeconds),
+      0.9,
+    );
+    const formerQueue = percentile(
+      previous.map((item) => item.queueSeconds),
+      0.9,
+    );
+    const recentRuntime = percentile(
+      latest.map((item) => item.runtimeSeconds),
+      0.9,
+    );
+    const formerRuntime = percentile(
+      previous.map((item) => item.runtimeSeconds),
+      0.9,
+    );
+    const enough = latest.length === 2 && previous.length === 2;
+    const regressed =
+      enough &&
+      (recentQueue > budget.queueSeconds ||
+        recentRuntime > budget.runtimeSeconds ||
+        (recentQueue > formerQueue * 1.25 && recentQueue - formerQueue >= 30) ||
+        (recentRuntime > formerRuntime * 1.25 &&
+          recentRuntime - formerRuntime >= 30));
+    comparisons[check] = {
+      recentSampleCount: latest.length,
+      previousSampleCount: previous.length,
+      recentQueueP90Seconds: recentQueue,
+      previousQueueP90Seconds: formerQueue,
+      recentRuntimeP90Seconds: recentRuntime,
+      previousRuntimeP90Seconds: formerRuntime,
+      status: !enough
+        ? "INSUFFICIENT_TREND_EVIDENCE"
+        : regressed
+          ? "OWNER_PERFORMANCE_REVIEW_REQUIRED"
+          : "MONITORING_TREND_ACCEPTABLE",
+    };
+  }
+  const statuses = Object.values(comparisons).map((item) => item.status);
+  return {
+    schema: "icamp.build206.ci-trend-acceptance.v1",
+    state: statuses.includes("OWNER_PERFORMANCE_REVIEW_REQUIRED")
+      ? "REVIEW_REQUIRED"
+      : statuses.includes("INSUFFICIENT_TREND_EVIDENCE")
+        ? "INSUFFICIENT_WINDOW_EVIDENCE"
+        : "MONITORING_TRENDS_ACCEPTABLE",
+    window: "TWO_RECENT_VS_TWO_PRIOR_COMPLETED_SUCCESSFUL_JOBS",
+    checks: comparisons,
+    releaseGateChanged: false,
+    acceptedByOwner: false,
+  };
+}
+
 export function safeSeconds(start, end) {
   const first = Date.parse(start ?? "");
   const last = Date.parse(end ?? "");
@@ -118,6 +196,7 @@ export function analyzeHistory(runJobs, source = "GITHUB_ACTIONS_READ_ONLY") {
     sampledJobs: samples.length,
     checks,
     samples,
+    trend: analyzeProtectedTrends(runJobs),
     protectedGatesModified: false,
     releaseApprovalGranted: false,
     commsHandshakeAuthorized: false,
@@ -194,6 +273,19 @@ export function formatSummary(evidence) {
   lines.push(
     "",
     ...diagnostics,
+    "",
+    `Build 206 trend state: **${evidence.trend.state}**. Requires two recent and two previous successful job samples per check; never substitutes for required release checks.`,
+    "",
+    "| Protected check | Prior queue p90 | Recent queue p90 | Prior runtime p90 | Recent runtime p90 | Trend review |",
+    "| --- | ---: | ---: | ---: | ---: | --- |",
+  );
+  for (const [name, trend] of Object.entries(evidence.trend.checks)) {
+    const seconds = (value) => (value === null ? "—" : `${value}s`);
+    lines.push(
+      `| ${name} | ${seconds(trend.previousQueueP90Seconds)} | ${seconds(trend.recentQueueP90Seconds)} | ${seconds(trend.previousRuntimeP90Seconds)} | ${seconds(trend.recentRuntimeP90Seconds)} | ${trend.status} |`,
+    );
+  }
+  lines.push(
     "",
     "Budgets are diagnostic only. All five required GitHub checks, failure behavior, and release approvals remain unchanged.",
   );
