@@ -2,7 +2,7 @@
 
 ## Evidence and scope
 
-The existing CI `Verify` job now extends its Build 205 read-only GitHub Actions diagnostic. It inspects up to **four** most recent completed browser job logs (two requests concurrently; eight-second request timeout). Only the recognized Build 208 JSON witness with matching run ID, commit, install outcome and Ubuntu 24.04 version can qualify as measured cold/warm evidence. Raw job logs are not saved in the artifact. Missing, inaccessible, malformed or incomplete log records remain **UNAVAILABLE**, not successful cache hits.
+The existing CI `Verify` job now extends its Build 205 read-only GitHub Actions diagnostic. It inspects up to **four** most recent completed browser job logs (two requests concurrently; eight-second request timeout). Only the recognized Build 208 JSON witness with matching run ID, install outcome and Ubuntu 24.04 version can qualify as measured cold/warm evidence. On `main`, the commit must match the Actions head SHA exactly. On PRs, GitHub sets `GITHUB_SHA` to the temporary merge commit while the Actions run API returns the PR head SHA: we record that checkout separately as `PR_WORKFLOW_SYNTHETIC_MERGE_SHA` and keep the exact-run-ID constraint. This is monitoring evidence, not a cryptographic signature. Raw job logs are not saved in the artifact. Missing, inaccessible, malformed or incomplete log records remain **UNAVAILABLE**, not successful cache hits.
 
 The previous reviewed Build 207 baseline remains pinned in [`fixtures/build208-browser-cache-baseline.json`](../fixtures/build208-browser-cache-baseline.json):
 

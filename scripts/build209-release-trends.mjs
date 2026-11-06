@@ -48,9 +48,16 @@ export function parseBrowserJobLog(logText, candidate) {
     if (index < 0) continue;
     try {
       const parsed = JSON.parse(line.slice(index).trim());
+      const checkoutCommitMatchesHead = parsed.commit === candidate.commit;
+      // GitHub sets GITHUB_SHA to refs/pull/N/merge on pull_request events.
+      // The Actions run API instead reports the PR head SHA. Both are
+      // 40-character commits, but only the job's exact run ID binds the
+      // diagnostic to a GitHub source; this is not a signed trust decision.
+      const pullRequestMergeCheckout =
+        candidate.stage === "PR" && /^[a-f0-9]{40}$/.test(parsed.commit);
       if (
         String(parsed.runId) === String(candidate.runId) &&
-        parsed.commit === candidate.commit &&
+        (checkoutCommitMatchesHead || pullRequestMergeCheckout) &&
         parsed.source === "SAME_JOB_UTC_WALL_CLOCK" &&
         parsed.runnerOSVersion === "24.04" &&
         ["HIT", "MISS"].includes(parsed.browserCache) &&
@@ -90,6 +97,12 @@ export function parseBrowserJobLog(logText, candidate) {
     browserCache: witness?.browserCache ?? null,
     installSeconds: witness?.installSeconds ?? null,
     installOutcome: witness?.installOutcome ?? null,
+    checkoutCommit: witness?.commit ?? null,
+    checkoutCommitBinding: witness
+      ? witness.commit === candidate.commit
+        ? "RUN_HEAD_SHA_MATCHED"
+        : "PR_WORKFLOW_SYNTHETIC_MERGE_SHA"
+      : "UNVERIFIED",
     mirror,
     aptFetchSeconds,
   };
