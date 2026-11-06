@@ -36,6 +36,7 @@
     "build202:scoped-witness": "node scripts/build202-scoped-test-witness.mjs",
     "build203:runbook": "node scripts/build203-nonproduction-runbook.mjs",
     "build204:ci-contract": "node scripts/verify-build204-ci-contract.mjs",
+    "build205:ci-diagnostics": "node scripts/build205-ci-runtime-diagnostics.mjs",
     "auth:verify": "node scripts/verify-auth-lifecycle.mjs",
     "authz:verify": "node scripts/verify-authorization-lifecycle.mjs",
     "audit:verify": "node scripts/verify-audit-lifecycle.mjs",

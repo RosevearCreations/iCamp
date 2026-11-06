@@ -1,5 +1,5 @@
 .next/
-node_modules/
+node_modules
 coverage/
 dist/
 *.log
@@ -16,4 +16,5 @@ Thumbs.db
 *.pfx
 playwright-report/
 test-results/
+artifacts/
 *.tsbuildinfo
