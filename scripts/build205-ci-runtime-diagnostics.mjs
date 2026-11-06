@@ -117,6 +117,106 @@ export function percentile(values, quantile) {
   return sorted[Math.ceil(quantile * sorted.length) - 1];
 }
 
+// Read-only time-to-five-protected-checks, measured from GitHub's recorded
+// workflow creation until the last required job completion. It does not include
+// Vercel deployment time or confer a production/TEST handshake authorization.
+export function analyzeReleaseThroughput(runJobs) {
+  const grouped = new Map();
+  for (const { run, jobs } of runJobs) {
+    if (!Object.hasOwn(REQUIRED_WORKFLOWS, run?.name)) continue;
+    if (!run.head_sha || !["push", "pull_request"].includes(run.event))
+      continue;
+    const stage =
+      run.event === "push" && run.head_branch === "main"
+        ? "MAIN"
+        : run.event === "pull_request"
+          ? "PR"
+          : null;
+    if (!stage) continue;
+    const key = `${stage}:${run.head_sha}`;
+    if (!grouped.has(key)) {
+      grouped.set(key, { stage, commit: run.head_sha, workflows: new Map() });
+    }
+    const group = grouped.get(key);
+    const previous = group.workflows.get(run.name);
+    if (
+      !previous ||
+      Date.parse(run.created_at ?? "") >
+        Date.parse(previous.run.created_at ?? "")
+    ) {
+      group.workflows.set(run.name, { run, jobs: jobs ?? [] });
+    }
+  }
+
+  const groups = [...grouped.values()].map(({ stage, commit, workflows }) => {
+    const eligible = [];
+    const missing = [];
+    for (const [workflow, names] of Object.entries(REQUIRED_WORKFLOWS)) {
+      const evidence = workflows.get(workflow);
+      for (const name of names) {
+        const job = evidence?.jobs.find((item) => item.name === name);
+        if (
+          evidence?.run.status !== "completed" ||
+          evidence.run.conclusion !== "success" ||
+          job?.conclusion !== "success" ||
+          safeSeconds(evidence.run.created_at, job.completed_at) === null
+        ) {
+          missing.push(`${workflow} / ${name}`);
+        } else {
+          eligible.push({ run: evidence.run, job });
+        }
+      }
+    }
+    const first =
+      eligible.length === 5
+        ? Math.min(...eligible.map(({ run }) => Date.parse(run.created_at)))
+        : null;
+    const last =
+      eligible.length === 5
+        ? Math.max(...eligible.map(({ job }) => Date.parse(job.completed_at)))
+        : null;
+    return {
+      stage,
+      commit,
+      state: missing.length
+        ? "INCOMPLETE_REQUIRED_GATES"
+        : "ALL_FIVE_CHECKS_OBSERVED",
+      gateSeconds: first === null ? null : Math.round((last - first) / 1000),
+      missing,
+      runIds: [...new Set(eligible.map(({ run }) => run.id))],
+    };
+  });
+  const stages = Object.fromEntries(
+    ["PR", "MAIN"].map((stage) => {
+      const seconds = groups
+        .filter((item) => item.stage === stage && item.gateSeconds !== null)
+        .map((item) => item.gateSeconds);
+      return [
+        stage,
+        {
+          completedPromotions: seconds.length,
+          p50Seconds: percentile(seconds, 0.5),
+          p90Seconds: percentile(seconds, 0.9),
+          state:
+            seconds.length >= 2
+              ? "OBSERVED_BASELINE"
+              : "INSUFFICIENT_COMPLETE_PROMOTIONS",
+        },
+      ];
+    }),
+  );
+  return {
+    schema: "icamp.build207.release-throughput.v1",
+    measurement: "GITHUB_FIVE_REQUIRED_GATES_ONLY",
+    observedGroups: groups.length,
+    stages,
+    groups,
+    includesVercelDeployment: false,
+    productionReleaseAuthorized: false,
+    commsHandshakeAuthorized: false,
+  };
+}
+
 export function analyzeHistory(runJobs, source = "GITHUB_ACTIONS_READ_ONLY") {
   const samples = [];
   for (const { run, jobs } of runJobs) {
@@ -197,6 +297,7 @@ export function analyzeHistory(runJobs, source = "GITHUB_ACTIONS_READ_ONLY") {
     checks,
     samples,
     trend: analyzeProtectedTrends(runJobs),
+    throughput: analyzeReleaseThroughput(runJobs),
     protectedGatesModified: false,
     releaseApprovalGranted: false,
     commsHandshakeAuthorized: false,
@@ -285,6 +386,22 @@ export function formatSummary(evidence) {
       `| ${name} | ${seconds(trend.previousQueueP90Seconds)} | ${seconds(trend.recentQueueP90Seconds)} | ${seconds(trend.previousRuntimeP90Seconds)} | ${seconds(trend.recentRuntimeP90Seconds)} | ${trend.status} |`,
     );
   }
+  lines.push(
+    "",
+    "### Build 207 — complete protected-gate throughput baseline",
+    "",
+    "| Gate stage | Completed SHA groups | p50 to five checks | p90 to five checks | Evidence state |",
+    "| --- | ---: | ---: | ---: | --- |",
+  );
+  for (const [stage, data] of Object.entries(evidence.throughput.stages)) {
+    lines.push(
+      `| ${stage} | ${data.completedPromotions} | ${data.p50Seconds === null ? "—" : `${data.p50Seconds}s`} | ${data.p90Seconds === null ? "—" : `${data.p90Seconds}s`} | ${data.state} |`,
+    );
+  }
+  lines.push(
+    "",
+    `Observed commit-stage groups: ${evidence.throughput.observedGroups}; only successful complete five-check groups count. GitHub gate elapsed excludes Vercel deployment and is never an owner release/Comms Hub authorization.`,
+  );
   lines.push(
     "",
     "Budgets are diagnostic only. All five required GitHub checks, failure behavior, and release approvals remain unchanged.",
