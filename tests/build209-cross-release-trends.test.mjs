@@ -69,6 +69,20 @@ test("Build 209 verifies source identity and treats malformed or missing cache e
     parseBrowserJobLog(jobLog({ runId: 123 }), candidate).state,
     "NO_VALID_JOB_WITNESS",
   );
+  const pr = { ...candidate, stage: "PR" };
+  const syntheticMergeLog = jobLog().replace(
+    candidate.commit,
+    "57c642585a9fe2c60a0cfdcc06f986dd07fd762e",
+  );
+  assert.equal(
+    parseBrowserJobLog(syntheticMergeLog, pr).checkoutCommitBinding,
+    "PR_WORKFLOW_SYNTHETIC_MERGE_SHA",
+  );
+  assert.equal(
+    parseBrowserJobLog(syntheticMergeLog, candidate).state,
+    "NO_VALID_JOB_WITNESS",
+    "A push/main diagnostic must exactly match the recorded head SHA",
+  );
   assert.equal(
     parseBrowserJobLog("{" + "invalid JSON", candidate).state,
     "NO_VALID_JOB_WITNESS",
