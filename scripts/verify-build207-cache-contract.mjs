@@ -15,9 +15,10 @@ export function verifyBuild207CacheContract(inputs) {
     3,
     "Each lane needs a cache-hit witness",
   );
-  assert.equal(
-    count("ICAMP_NPM_CACHE_HIT: ${{ steps.node-cache.outputs.cache-hit }}"),
-    3,
+  assert.ok(
+    count("ICAMP_NPM_CACHE_HIT: ${{ steps.node-cache.outputs.cache-hit }}") >=
+      3,
+    "Preserve three cache witnesses; later diagnostic steps may reuse the observed output",
   );
   assert.equal(count("run: node scripts/build207-cache-witness.mjs"), 3);
   assert.equal(
@@ -31,7 +32,7 @@ export function verifyBuild207CacheContract(inputs) {
   assert.match(browser, /path: ~\/\.cache\/ms-playwright/);
   assert.match(
     browser,
-    /key: \$\{\{ runner\.os \}\}-icamp-chromium-\$\{\{ hashFiles\('package-lock\.json'\) \}\}/,
+    /key: \$\{\{ runner\.os \}\}-(?:ubuntu24\.04-)?icamp-chromium-\$\{\{ hashFiles\('package-lock\.json'\) \}\}/,
   );
   assert.doesNotMatch(
     browser,

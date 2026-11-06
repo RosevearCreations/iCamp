@@ -86,6 +86,9 @@ jobs:
       - name: Verify Build 207 warm-run and browser cache safety
         run: npm run build207:cache-contract
 
+      - name: Verify Build 208 cold-runner diagnostics and protected gates
+        run: npm run build208:ci-contract
+
       - name: Build
         run: npm run build
 
@@ -121,7 +124,9 @@ jobs:
 
   e2e:
     name: Browser end-to-end
-    runs-on: ubuntu-latest
+    # Hold the browser image at Ubuntu 24.04 while investigating the Ubuntu
+    # 26.04 apt mirror outlier observed in Build 207's main check.
+    runs-on: ubuntu-24.04
     timeout-minutes: 20
     env:
       NEXT_PUBLIC_APP_ENV: test
@@ -150,10 +155,32 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.cache/ms-playwright
-          key: ${{ runner.os }}-icamp-chromium-${{ hashFiles('package-lock.json') }}
+          key: ${{ runner.os }}-ubuntu24.04-icamp-chromium-${{ hashFiles('package-lock.json') }}
+
+      - name: Begin Build 208 Chromium install timing
+        run: node scripts/build208-browser-runtime-diagnostics.mjs --start
 
       - name: Install Chromium
+        id: chromium-install
         run: npx playwright install --with-deps chromium
+
+      - name: Record Build 208 Chromium cold-runner timing
+        if: always() && steps.chromium-install.outcome != 'skipped'
+        env:
+          ICAMP_CHROMIUM_INSTALL_OUTCOME: ${{ steps.chromium-install.outcome }}
+          ICAMP_NPM_CACHE_HIT: ${{ steps.node-cache.outputs.cache-hit }}
+          ICAMP_BROWSER_CACHE_HIT: ${{ steps.browser-cache.outputs.cache-hit }}
+          ICAMP_BROWSER_CACHE_RESTORE_COMPLETED: ${{ steps.browser-cache.outcome == 'success' }}
+        run: node scripts/build208-browser-runtime-diagnostics.mjs --finish
+
+      - name: Upload Build 208 Chromium install timing evidence
+        if: always() && steps.chromium-install.outcome != 'skipped'
+        uses: actions/upload-artifact@v6
+        with:
+          name: build208-chromium-install-evidence
+          path: artifacts/build208-chromium-install.json
+          if-no-files-found: error
+          retention-days: 14
 
       - name: Record Build 207 installed Chromium and cache evidence
         env:

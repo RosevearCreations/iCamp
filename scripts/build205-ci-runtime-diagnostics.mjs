@@ -1,6 +1,7 @@
 import { mkdir, writeFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { CHROMIUM_INSTALL_REVIEW_BUDGET_SECONDS } from "./build208-browser-runtime-diagnostics.mjs";
 
 // These are monitoring budgets, NOT replacements for protected job timeouts.
 export const REQUIRED_CHECK_BUDGETS = Object.freeze({
@@ -217,6 +218,63 @@ export function analyzeReleaseThroughput(runJobs) {
   };
 }
 
+export function analyzeChromiumInstallHistory(runJobs) {
+  const samples = runJobs
+    .filter(({ run }) => run?.name === "CI")
+    .flatMap(({ run, jobs }) =>
+      (jobs ?? [])
+        .filter((job) => job.name === "Browser end-to-end")
+        .flatMap((job) =>
+          (job.steps ?? [])
+            .filter((step) => step.name === "Install Chromium")
+            .map((step) => ({
+              runId: run.id,
+              jobId: job.id,
+              commit: run.head_sha,
+              stage:
+                run.event === "push" && run.head_branch === "main"
+                  ? "MAIN"
+                  : run.event === "pull_request"
+                    ? "PR"
+                    : "OTHER",
+              outcome: step.conclusion ?? "UNVERIFIED",
+              seconds: safeSeconds(step.started_at, step.completed_at),
+              observedAt: Date.parse(run.created_at ?? ""),
+            })),
+        ),
+    )
+    .filter(
+      (record) => record.seconds !== null && Number.isFinite(record.observedAt),
+    )
+    .sort((a, b) => b.observedAt - a.observedAt || b.runId - a.runId)
+    .slice(0, 6);
+  const outliers = samples.filter(
+    (item) => item.seconds > CHROMIUM_INSTALL_REVIEW_BUDGET_SECONDS,
+  );
+  return {
+    schema: "icamp.build208.chromium-install-history.v1",
+    source: "GITHUB_ACTIONS_COMPLETED_JOB_STEP_TIMESTAMPS",
+    sampleCount: samples.length,
+    p90InstallSeconds: percentile(
+      samples.map((item) => item.seconds),
+      0.9,
+    ),
+    outlierCount: outliers.length,
+    reviewBudgetSeconds: CHROMIUM_INSTALL_REVIEW_BUDGET_SECONDS,
+    state:
+      outliers.length > 0
+        ? "COLD_RUNNER_INSTALL_REVIEW_REQUIRED"
+        : samples.length < 3
+          ? "INSUFFICIENT_HISTORICAL_INSTALL_STEPS"
+          : "MONITORING_WITHIN_BUDGET",
+    samples,
+    // A completed GitHub job cannot establish why apt was slow. The original
+    // Ubuntu mirror attribution is separately pinned to the Build 207 log.
+    rootCauseInferredFromStepTimes: false,
+    releaseApprovalGranted: false,
+  };
+}
+
 export function analyzeHistory(runJobs, source = "GITHUB_ACTIONS_READ_ONLY") {
   const samples = [];
   for (const { run, jobs } of runJobs) {
@@ -298,6 +356,7 @@ export function analyzeHistory(runJobs, source = "GITHUB_ACTIONS_READ_ONLY") {
     samples,
     trend: analyzeProtectedTrends(runJobs),
     throughput: analyzeReleaseThroughput(runJobs),
+    chromiumHistory: analyzeChromiumInstallHistory(runJobs),
     protectedGatesModified: false,
     releaseApprovalGranted: false,
     commsHandshakeAuthorized: false,
@@ -398,6 +457,14 @@ export function formatSummary(evidence) {
       `| ${stage} | ${data.completedPromotions} | ${data.p50Seconds === null ? "—" : `${data.p50Seconds}s`} | ${data.p90Seconds === null ? "—" : `${data.p90Seconds}s`} | ${data.state} |`,
     );
   }
+  lines.push(
+    "",
+    "### Build 208 — Chromium install history (GitHub job step timestamps)",
+    "",
+    `Samples: ${evidence.chromiumHistory.sampleCount}; p90: ${evidence.chromiumHistory.p90InstallSeconds ?? "—"}s; over ${evidence.chromiumHistory.reviewBudgetSeconds}s: ${evidence.chromiumHistory.outlierCount}; diagnostic: **${evidence.chromiumHistory.state}**.`,
+    "",
+    "Any mirror attribution must come from the specific job logs, not elapsed time alone. No required check or release approval is altered.",
+  );
   lines.push(
     "",
     `Observed commit-stage groups: ${evidence.throughput.observedGroups}; only successful complete five-check groups count. GitHub gate elapsed excludes Vercel deployment and is never an owner release/Comms Hub authorization.`,
