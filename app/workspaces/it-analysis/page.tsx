@@ -64,6 +64,28 @@ export default async function ItAnalysisPage() {
 
         <StandardOpsCommand area="it-analysis" />
 
+        <section
+          className="content-panel"
+          aria-labelledby="retention-sla-heading"
+        >
+          <SectionHeading
+            eyebrow="Build 217 · Private evidence"
+            title="Evidence retention and custody SLA"
+            id="retention-sla-heading"
+            helpTopic="it.analysis"
+            trailing={<span className="build-chip">Owner review · HOLD</span>}
+          />
+          <p>
+            Review signed custody checkpoint diversity, owner renewal outcomes,
+            and expiry escalation windows. Private evidence remains offline.
+          </p>
+          <p>
+            <Link href="/workspaces/it-analysis/custody-retention">
+              Open the evidence retention dashboard
+            </Link>
+          </p>
+        </section>
+
         <div
           className="standard-command__metrics"
           aria-label="Real I.T. operational readings"
