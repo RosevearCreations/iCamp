@@ -13,6 +13,7 @@ import {
 } from "./build211-runner-artifact-sla.mjs";
 import { analyzeBuild212 } from "./build212-escalation-custody.mjs";
 import { analyzeBuild213 } from "./build213-cohort-custody-reconciliation.mjs";
+import { analyzeBuild214Aging } from "./build214-owner-custody-register.mjs";
 
 // These are monitoring budgets, NOT replacements for protected job timeouts.
 export const REQUIRED_CHECK_BUDGETS = Object.freeze({
@@ -621,6 +622,16 @@ export function formatSummary(evidence) {
       `### Build 213 — SOURCE UNAVAILABLE: ${evidence.build213.sourceFailure}. No cohorts, archive custody or owner signature inferred.`,
     );
   }
+  if (evidence.build214) {
+    const { aging } = evidence.build214;
+    lines.push(
+      "",
+      "### Build 214 — original CI evidence aging alerts and offline authority handoff",
+      "",
+      `Aging: **${aging.state}**; original artifacts reviewed ${aging.originalArtifactsReviewed}; renewal/conflict alerts ${aging.alerts.length}. This read-only CI run has no external ledger, signed owner decisions or independent archive copy.`,
+      "Register only original bytes and independently signed receipts offline, then separately pin the ledger head against replacement/truncation. Neither an alert nor a registry entry is a production or Comms TEST approval.",
+    );
+  }
   lines.push(
     "",
     "Budgets are diagnostic only. All five required GitHub checks, failure behavior, and release approvals remain unchanged.",
@@ -693,6 +704,13 @@ async function main() {
         build212: evidence.build212,
         sourceRunLimit: MAX_REVIEWED_RUNS,
       });
+      evidence.build214 = {
+        schema: "icamp.build214.owner-handoff-aging.v1",
+        aging: analyzeBuild214Aging(evidence.build211.artifactReview),
+        externalRegistryState: "NOT_IMPORTED_INTO_CI_OWNER_REVIEW_REQUIRED",
+        automatedOwnerSignature: false,
+        releaseApprovalGranted: false,
+      };
     } catch {
       evidence.build211 = {
         schema: "icamp.build211.runner-artifact-sla.v1",
@@ -764,6 +782,15 @@ async function main() {
         "BUILD213_SOURCE_UNAVAILABLE",
       releaseApprovalGranted: false,
       commsTestHandshakeAuthorized: false,
+    };
+  }
+  if (!evidence.build214) {
+    evidence.build214 = {
+      schema: "icamp.build214.owner-handoff-aging.v1",
+      aging: analyzeBuild214Aging(evidence.build211.artifactReview),
+      externalRegistryState: "NOT_IMPORTED_INTO_CI_OWNER_REVIEW_REQUIRED",
+      automatedOwnerSignature: false,
+      releaseApprovalGranted: false,
     };
   }
   evidence.generatedAt = new Date().toISOString();
