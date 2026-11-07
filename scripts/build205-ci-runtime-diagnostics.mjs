@@ -19,6 +19,7 @@ import { analyzeBuild216Ci } from "./build216-checkpoint-renewal-timeline.mjs";
 import { analyzeBuild217Ci } from "./build217-custody-retention-dashboard.mjs";
 import { analyzeBuild218Ci } from "./build218-source-recheck-portability.mjs";
 import { analyzeBuild219Ci } from "./build219-runner-manifest-closure.mjs";
+import { analyzeBuild220Ci } from "./build220-byte-custody-closure.mjs";
 
 // These are monitoring budgets, NOT replacements for protected job timeouts.
 export const REQUIRED_CHECK_BUDGETS = Object.freeze({
@@ -679,6 +680,14 @@ export function formatSummary(evidence) {
       `External authority: **${evidence.build219.state}**. The reviewed CI fixture contains no private owner keys, real independent runner signatures, archived ZIP bytes or verified retention exception closure. All original external trust gates remain HOLD.`,
     );
   }
+  if (evidence.build220) {
+    lines.push(
+      "",
+      "### Build 220 — original ZIP byte readback and cross-device owner exception review",
+      "",
+      `Private custody state: **${evidence.build220.state}**. Real original ZIP bytes and owner/custodian signing devices are not accessible to CI. The local byte digest and signed owner review never establish independent original-download provenance, immutable storage or a closed retention exception. Comms TEST remains unauthorized.`,
+    );
+  }
   lines.push(
     "",
     "Budgets are diagnostic only. All five required GitHub checks, failure behavior, and release approvals remain unchanged.",
@@ -845,6 +854,7 @@ async function main() {
   evidence.build217 = analyzeBuild217Ci(evidence.build216);
   evidence.build218 = analyzeBuild218Ci(evidence.build217);
   evidence.build219 = analyzeBuild219Ci(evidence.build218);
+  evidence.build220 = analyzeBuild220Ci(evidence.build219);
   evidence.generatedAt = new Date().toISOString();
   evidence.context = {
     runId: process.env.GITHUB_RUN_ID ?? null,
