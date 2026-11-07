@@ -92,6 +92,9 @@ jobs:
       - name: Verify Build 209 cross-release monitoring and protected SLA contract
         run: npm run build209:ci-contract
 
+      - name: Verify Build 210 reviewed history and protected queue diagnostics
+        run: npm run build210:ci-contract
+
       - name: Build
         run: npm run build
 
