@@ -107,6 +107,9 @@ jobs:
       - name: Verify Build 214 external-registration and evidence-aging safety
         run: npm run build214:ci-contract
 
+      - name: Verify Build 215 independent anchor and owner expiry safety
+        run: npm run build215:ci-contract
+
       - name: Build
         run: npm run build
 
