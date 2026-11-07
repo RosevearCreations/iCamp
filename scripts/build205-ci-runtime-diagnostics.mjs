@@ -15,6 +15,7 @@ import { analyzeBuild212 } from "./build212-escalation-custody.mjs";
 import { analyzeBuild213 } from "./build213-cohort-custody-reconciliation.mjs";
 import { analyzeBuild214Aging } from "./build214-owner-custody-register.mjs";
 import { analyzeBuild215Ci } from "./build215-independent-anchor-triage.mjs";
+import { analyzeBuild216Ci } from "./build216-checkpoint-renewal-timeline.mjs";
 
 // These are monitoring budgets, NOT replacements for protected job timeouts.
 export const REQUIRED_CHECK_BUDGETS = Object.freeze({
@@ -642,6 +643,15 @@ export function formatSummary(evidence) {
       "The private registry, independent reviewer signature and owner SLA receipts are deliberately absent from CI. Use the local Build 215 verification/triage command with independently pinned authority; do not infer storage independence, owner consent, production approval or a Comms TEST connection.",
     );
   }
+  if (evidence.build216) {
+    lines.push(
+      "",
+      "### Build 216 — independent checkpoint rotation and owner renewal follow-up",
+      "",
+      `Private state: **${evidence.build216.state}**; prior original-artifact aging alerts: ${evidence.build216.publicOriginalArtifactAlerts ?? "unavailable"}.`,
+      "Signed head rotations, owner renewal choices, and source-linked expiry timelines are reviewed offline only. This CI evidence does not import private ledgers or grant owner approval, retained custody, or Comms TEST authority.",
+    );
+  }
   lines.push(
     "",
     "Budgets are diagnostic only. All five required GitHub checks, failure behavior, and release approvals remain unchanged.",
@@ -804,6 +814,7 @@ async function main() {
     };
   }
   evidence.build215 = analyzeBuild215Ci(evidence.build214);
+  evidence.build216 = analyzeBuild216Ci(evidence.build215);
   evidence.generatedAt = new Date().toISOString();
   evidence.context = {
     runId: process.env.GITHUB_RUN_ID ?? null,
