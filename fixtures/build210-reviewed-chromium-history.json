@@ -1,0 +1,59 @@
+{
+  "schema": "icamp.build210.reviewed-chromium-history.v1",
+  "source": "GITHUB_ACTIONS_COMPLETED_JOB_ARTIFACTS_REVIEWED_2026_11_06",
+  "observedOn": "2026-11-06",
+  "retentionNote": "GitHub-hosted artifacts expire after 14 days; pinned digests preserve the original reviewed fingerprints, not an independently archived copy.",
+  "observations": [
+    {
+      "runId": 42283370957,
+      "jobId": 128117835590,
+      "headSha": "dca6d31d0fca40ab9949d97c6ce4c0515e42f8d4",
+      "stage": "PR",
+      "runnerOSVersion": "24.04",
+      "browserCache": "MISS",
+      "installSeconds": 27,
+      "jobOutcome": "success",
+      "artifactId": 13536566569,
+      "artifactDigest": "sha256:32caeae80afc57a82a85a9798e9ad10792357386e36f96a2721aeab44546aa82"
+    },
+    {
+      "runId": 42283842267,
+      "jobId": 128119443302,
+      "headSha": "7c893cbbb08719c9b5cc4888d9890bc7cdf2b951",
+      "stage": "MAIN",
+      "runnerOSVersion": "24.04",
+      "browserCache": "MISS",
+      "installSeconds": 24,
+      "jobOutcome": "success",
+      "artifactId": 13536442191,
+      "artifactDigest": "sha256:2ab8557b7f98e63628d2ee54b68203b86a0da5a36c29239030eeb283aa0ecfcd"
+    },
+    {
+      "runId": 42314169541,
+      "jobId": 128222624336,
+      "headSha": "c026c2a4bbdfb1c83ee8563103c0789f664d4cba",
+      "stage": "PR",
+      "runnerOSVersion": "24.04",
+      "browserCache": "HIT",
+      "installSeconds": 13,
+      "jobOutcome": "success",
+      "artifactId": 13550410411,
+      "artifactDigest": "sha256:ebbd41e99c96741f36c8ac31b1177e45abf9d34e2954d1e9129729bc070e08e6"
+    },
+    {
+      "runId": 42314518303,
+      "jobId": 128223755510,
+      "headSha": "e5578bed114aaa0db4700813767750bba8312ac4",
+      "stage": "MAIN",
+      "runnerOSVersion": "24.04",
+      "browserCache": "HIT",
+      "installSeconds": 16,
+      "jobOutcome": "success",
+      "artifactId": 13548984321,
+      "artifactDigest": "sha256:4fe0fb67e34b9830f2596338d6f2fa28c48cacd604161315d0ad6a8941044c05"
+    }
+  ],
+  "monitoringOnly": true,
+  "ownerAcceptedSla": false,
+  "trustedCommsTestAuthorized": false
+}

@@ -6,6 +6,7 @@ import {
   analyzeBuild209,
   fetchBrowserLogEvidence,
 } from "./build209-release-trends.mjs";
+import { analyzeBuild210 } from "./build210-queue-history-triage.mjs";
 
 // These are monitoring budgets, NOT replacements for protected job timeouts.
 export const REQUIRED_CHECK_BUDGETS = Object.freeze({
@@ -507,6 +508,38 @@ export function formatSummary(evidence) {
       "Alerts are read-only. Monitor budgets do not replace timeout, security, browser, database, owner or production requirements.",
     );
   }
+  if (evidence.build210?.retainedCacheHistory) {
+    const { retainedCacheHistory, queueSaturation, latencyExceptions } =
+      evidence.build210;
+    lines.push(
+      "",
+      "### Build 210 — retained cold/warm evidence and protected queue triage",
+      "",
+      `History: **${retainedCacheHistory.state}**; retained ${retainedCacheHistory.deduplicatedSampleCount} unique observations (${retainedCacheHistory.archivedReviewedSamples} reviewed artifacts, ${retainedCacheHistory.freshVerifiedJobLogs} newly observed logs); conflicts: ${retainedCacheHistory.conflicts.length}.`,
+      "",
+      "| Reviewed OS | Cold | Warm | Cold p50 | Warm p50 | Trend state |",
+      "| --- | ---: | ---: | ---: | ---: | --- |",
+    );
+    for (const [os, sample] of Object.entries(
+      retainedCacheHistory.byRunnerOS,
+    )) {
+      lines.push(
+        `| ${os} | ${sample.coldSamples} | ${sample.warmSamples} | ${sample.coldP50Seconds ?? "—"}s | ${sample.warmP50Seconds ?? "—"}s | ${sample.state} |`,
+      );
+    }
+    lines.push(
+      "",
+      `Queue: **${queueSaturation.state}**; required job observations ${queueSaturation.totalRequiredJobObservations}; exceptions ${queueSaturation.largestObservedQueueDelays.length}; overlapping-run pairs sampled ${queueSaturation.sampledOverlappingRunPairs.length}. Queue timings cannot establish runner pool saturation or mirror causality.`,
+      `Release latency: **${latencyExceptions.state}**; observed exceptions ${latencyExceptions.exceptionCount}; incomplete five-gate cohorts excluded ${latencyExceptions.incompleteFiveGateGroupsExcluded}.`,
+      "",
+      "This is read-only performance triage. Neither the reviewed artifact digests nor observed queue timings approve a production release, Comms TEST, or a new SLA.",
+    );
+  } else if (evidence.build210) {
+    lines.push(
+      "",
+      `### Build 210 — SOURCE UNAVAILABLE: ${evidence.build210.sourceFailure}. No queue or cache state has been assumed green.`,
+    );
+  }
   lines.push(
     "",
     "Budgets are diagnostic only. All five required GitHub checks, failure behavior, and release approvals remain unchanged.",
@@ -547,6 +580,21 @@ async function main() {
       throughput: evidence.throughput,
       reviewedBaseline,
     });
+    const reviewedHistory = JSON.parse(
+      await readFile(
+        resolve(
+          projectRoot,
+          "fixtures/build210-reviewed-chromium-history.json",
+        ),
+        "utf8",
+      ),
+    );
+    evidence.build210 = analyzeBuild210({
+      history: reviewedHistory,
+      logRecords,
+      runJobs,
+      historical: evidence,
+    });
   } catch (error) {
     // This must not be mistaken for a completed, green measurement or fake data.
     const reason =
@@ -569,6 +617,16 @@ async function main() {
     });
     evidence.build209.sourceFailure =
       evidence.sourceFailure ?? "BUILD209_SOURCE_UNAVAILABLE";
+  }
+  if (!evidence.build210) {
+    // A source outage is never a fabricated green historical comparison.
+    evidence.build210 = {
+      schema: "icamp.build210.queue-history-latency.v1",
+      state: "GITHUB_ACTIONS_OR_REVIEWED_ARCHIVE_UNAVAILABLE",
+      sourceFailure: evidence.sourceFailure ?? "BUILD210_SOURCE_UNAVAILABLE",
+      releaseApprovalGranted: false,
+      commsTestHandshakeAuthorized: false,
+    };
   }
   evidence.generatedAt = new Date().toISOString();
   evidence.context = {
