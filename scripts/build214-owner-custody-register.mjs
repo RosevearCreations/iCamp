@@ -267,6 +267,16 @@ async function requireExternalLedger(path) {
   }
 }
 
+export async function readExternalRegistrationLedger(
+  path,
+  { now = Date.now() } = {},
+) {
+  await requireExternalLedger(path);
+  const lines = await readLedger(path);
+  verifyRegistrationLedger(lines, { now });
+  return lines;
+}
+
 export async function registerExternalEvidence(
   path,
   registration,
