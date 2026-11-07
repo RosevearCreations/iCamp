@@ -12,6 +12,7 @@ import {
   fetchReviewedArtifactMetadata,
 } from "./build211-runner-artifact-sla.mjs";
 import { analyzeBuild212 } from "./build212-escalation-custody.mjs";
+import { analyzeBuild213 } from "./build213-cohort-custody-reconciliation.mjs";
 
 // These are monitoring budgets, NOT replacements for protected job timeouts.
 export const REQUIRED_CHECK_BUDGETS = Object.freeze({
@@ -32,7 +33,8 @@ export const REQUIRED_WORKFLOWS = Object.freeze({
 });
 
 const MINIMUM_SAMPLES = 3;
-const MAX_RUNS = 12;
+export const MAX_REVIEWED_RUNS = 30;
+const MAX_RUNS = MAX_REVIEWED_RUNS;
 const projectRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 
 export function analyzeProtectedTrends(runJobs) {
@@ -591,6 +593,34 @@ export function formatSummary(evidence) {
       `### Build 212 — SOURCE UNAVAILABLE: ${evidence.build212.sourceFailure}. No signed owner decision or long-term custody proof inferred.`,
     );
   }
+  if (evidence.build213?.cohortAccrual) {
+    const { cohortAccrual, externalArchiveCustody, signedSlaDecision } =
+      evidence.build213;
+    lines.push(
+      "",
+      "### Build 213 — complete five-gate cohort accrual and independently verified custody readiness",
+      "",
+      `Cohort status: **${cohortAccrual.state}**; reviewed ${cohortAccrual.actualCompletedWorkflowRunsInspected} of at most ${cohortAccrual.maximumCompletedWorkflowRunsInspected} completed runs. Only full five-gate, commit-matched, successful PR/main groups qualify.`,
+      "",
+      "| Stage | Complete five-gate cohorts | More required | Incomplete excluded | State |",
+      "| --- | ---: | ---: | ---: | --- |",
+    );
+    for (const [stage, row] of Object.entries(cohortAccrual.stages)) {
+      lines.push(
+        `| ${stage} | ${row.fullyProtectedCohorts} | ${row.needAdditionalCohorts} | ${row.incompleteExcluded} | ${row.state} |`,
+      );
+    }
+    lines.push(
+      "",
+      `External archive readback: **${externalArchiveCustody.state}**; original copies independently verified: ${externalArchiveCustody.verifiedOriginalCopies}. Signed owner decision: **${signedSlaDecision.state}**.`,
+      "Independent ZIP digest and pinned-custodian checks, as well as an exact owner-signed SLA receipt, can be verified offline by the dedicated Build 213 command. Neither is present or authorized automatically in CI.",
+    );
+  } else if (evidence.build213) {
+    lines.push(
+      "",
+      `### Build 213 — SOURCE UNAVAILABLE: ${evidence.build213.sourceFailure}. No cohorts, archive custody or owner signature inferred.`,
+    );
+  }
   lines.push(
     "",
     "Budgets are diagnostic only. All five required GitHub checks, failure behavior, and release approvals remain unchanged.",
@@ -657,6 +687,12 @@ async function main() {
         now: Date.now(),
       });
       evidence.build212 = analyzeBuild212({ build211: evidence.build211 });
+      evidence.build213 = analyzeBuild213({
+        runJobs,
+        build211: evidence.build211,
+        build212: evidence.build212,
+        sourceRunLimit: MAX_REVIEWED_RUNS,
+      });
     } catch {
       evidence.build211 = {
         schema: "icamp.build211.runner-artifact-sla.v1",
@@ -716,6 +752,18 @@ async function main() {
         "BUILD212_SOURCE_UNAVAILABLE",
       ownerApprovalGranted: false,
       trustedCommsTestAuthorized: false,
+    };
+  }
+  if (!evidence.build213) {
+    evidence.build213 = {
+      schema: "icamp.build213.cohort-custody-sla-reconciliation.v1",
+      state: "GITHUB_RUNS_OR_INDEPENDENT_CUSTODY_SOURCE_UNAVAILABLE",
+      sourceFailure:
+        evidence.build212.sourceFailure ??
+        evidence.sourceFailure ??
+        "BUILD213_SOURCE_UNAVAILABLE",
+      releaseApprovalGranted: false,
+      commsTestHandshakeAuthorized: false,
     };
   }
   evidence.generatedAt = new Date().toISOString();

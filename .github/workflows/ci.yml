@@ -101,6 +101,9 @@ jobs:
       - name: Verify Build 212 escalation custody and signed owner decision safety
         run: npm run build212:ci-contract
 
+      - name: Verify Build 213 cohort source and offline custody proof safety
+        run: npm run build213:ci-contract
+
       - name: Build
         run: npm run build
 

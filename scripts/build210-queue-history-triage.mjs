@@ -325,7 +325,7 @@ export function analyzeBuild210({ history, logRecords, runJobs, historical }) {
     retainedCacheHistory: retained,
     queueSaturation: queue,
     latencyExceptions: exceptions,
-    sampleWindow: "LATEST_12_COMPLETED_WORKFLOW_RUNS_PLUS_REVIEWED_ARCHIVE",
+    sampleWindow: "LATEST_30_COMPLETED_WORKFLOW_RUNS_PLUS_REVIEWED_ARCHIVE",
     doesNotEstablishRunnerPoolCapacity: true,
     protectedChecksModified: false,
     monitoringOnly: true,
