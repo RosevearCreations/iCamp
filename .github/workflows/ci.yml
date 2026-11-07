@@ -116,6 +116,9 @@ jobs:
       - name: Verify Build 217 custody diversity and offline SLA dashboard safety
         run: npm run build217:ci-contract
 
+      - name: Verify Build 218 owner-scoped source recheck and evidence portability safety
+        run: npm run build218:ci-contract
+
       - name: Build
         run: npm run build
 
