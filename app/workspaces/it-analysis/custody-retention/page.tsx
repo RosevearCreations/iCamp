@@ -117,6 +117,33 @@ export default async function CustodyRetentionPage() {
             </Link>
           </p>
         </section>
+
+        <section
+          className="content-panel"
+          aria-labelledby="source-recheck-heading"
+        >
+          <SectionHeading
+            id="source-recheck-heading"
+            eyebrow="Build 218 · Owner controlled"
+            title="Original source recheck &amp; portable evidence"
+            helpTopic="it.analysis"
+            trailing={
+              <span className="build-chip">Manual approval · HOLD</span>
+            }
+          />
+          <p>
+            Generate a scheduled review list for expiring GitHub artifacts,
+            acknowledge SLA exceptions with actual owner signatures, and export
+            a redacted cross-custodian evidence summary. Source GETs require an
+            explicit owner-approved local command. No credential, signed receipt
+            or archive copy is sent to the production page.
+          </p>
+          <p>
+            <a href="https://github.com/RosevearCreations/iCamp/blob/main/docs/BUILD_218_SOURCE_RECHECK_OWNER_EXCEPTION_PORTABILITY.md">
+              Build 218 source recheck and evidence export guide
+            </a>
+          </p>
+        </section>
       </div>
     </AppShell>
   );
