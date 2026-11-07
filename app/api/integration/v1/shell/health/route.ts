@@ -1,10 +1,18 @@
 import { NextResponse } from "next/server";
 import { verifyICampShellGet } from "@/lib/integration-v1/ql335-shell.mjs";
+import { handleQl364SourceHealth } from "@/lib/integration-v1/ql364-source-health.mjs";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 
 async function respond(request: Request) {
+  if (request.headers.has("x-rosevear-ql362-request")) {
+    return handleQl364SourceHealth({
+      request,
+      sourceId: "icamp",
+      repository: "iCamp",
+    });
+  }
   const result = await verifyICampShellGet({
     method: request.method,
     path: "/api/integration/v1/shell/health",
