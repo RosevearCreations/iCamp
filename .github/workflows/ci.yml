@@ -119,6 +119,9 @@ jobs:
       - name: Verify Build 218 owner-scoped source recheck and evidence portability safety
         run: npm run build218:ci-contract
 
+      - name: Verify Build 219 separate runner and manifest signatures with fail-closed retention review
+        run: npm run build219:ci-contract
+
       - name: Build
         run: npm run build
 

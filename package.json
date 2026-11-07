@@ -55,6 +55,8 @@
     "build217:dashboard": "node scripts/build217-custody-retention-dashboard.mjs",
     "build218:ci-contract": "node scripts/verify-build218-ci-contract.mjs",
     "build218:workbench": "node scripts/build218-source-recheck-portability.mjs",
+    "build219:ci-contract": "node scripts/verify-build219-ci-contract.mjs",
+    "build219:workbench": "node scripts/build219-runner-manifest-closure.mjs",
     "auth:verify": "node scripts/verify-auth-lifecycle.mjs",
     "authz:verify": "node scripts/verify-authorization-lifecycle.mjs",
     "audit:verify": "node scripts/verify-audit-lifecycle.mjs",
