@@ -144,6 +144,33 @@ export default async function CustodyRetentionPage() {
             </a>
           </p>
         </section>
+        <section
+          className="content-panel"
+          aria-labelledby="runner-manifest-heading"
+        >
+          <SectionHeading
+            id="runner-manifest-heading"
+            eyebrow="Build 219 · Independent signed review"
+            title="Runner attestation, portable manifest &amp; closure review"
+            helpTopic="it.analysis"
+            trailing={
+              <span className="build-chip">Signed field evidence · HOLD</span>
+            }
+          />
+          <p>
+            Review separately pinned operator attestations for approved
+            read-only source checks and independent custodian signatures over
+            redacted portable evidence. The offline closure workbench verifies
+            matching artifact references but never treats GitHub metadata as
+            original archive bytes or closes a retention exception
+            automatically.
+          </p>
+          <p>
+            <a href="https://github.com/RosevearCreations/iCamp/blob/main/docs/BUILD_219_RUNNER_ATTESTATION_MANIFEST_CLOSURE.md">
+              Build 219 operator attestation and exception review guide
+            </a>
+          </p>
+        </section>
       </div>
     </AppShell>
   );
