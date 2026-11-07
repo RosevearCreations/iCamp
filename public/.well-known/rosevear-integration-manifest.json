@@ -5,7 +5,7 @@
   "source_app_id": "icamp",
   "source_role": "business_shell",
   "repository": "RosevearCreations/iCamp",
-  "source_revision": "ql333-discovery-v1",
+  "source_revision": "dc1369338a4b191fc72031b7e62f7e48fd805bcd",
   "issuer": "icamp",
   "audience": "rosevear-master",
   "tenant_boundary": "platform_shell",

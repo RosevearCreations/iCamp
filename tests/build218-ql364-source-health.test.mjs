@@ -175,6 +175,20 @@ test("QL364 rejects scope escalation, expiry, wrong source, unverified signer an
   assert.equal(
     (
       await handleQl364SourceHealth({
+        request: new Request("https://unapproved.example" + QL364_PATH, {
+          headers: { "x-rosevear-ql362-request": encode(intent()) },
+        }),
+        sourceId,
+        repository,
+        now,
+        ...privateAdapters(),
+      })
+    ).status,
+    403,
+  );
+  assert.equal(
+    (
+      await handleQl364SourceHealth({
         request: request(intent()),
         sourceId,
         repository,
@@ -185,4 +199,33 @@ test("QL364 rejects scope escalation, expiry, wrong source, unverified signer an
     ).status,
     503,
   );
+  for (const bad of [
+    { originalIssuerVerified: false },
+    { sourceOwnerVerified: false },
+    { masterOwnerVerified: false },
+    { originalSignerCustodyVerified: false },
+    { revoked: true },
+    { sourceCommitSha: "f".repeat(40) },
+    { manifestSha256: "f".repeat(64) },
+    { sourceSignerSpkiSha256: "0".repeat(64) },
+  ]) {
+    const adapters = privateAdapters();
+    const approve = adapters.approveOriginalGet;
+    assert.equal(
+      (
+        await handleQl364SourceHealth({
+          request: request(intent()),
+          sourceId,
+          repository,
+          now,
+          ...adapters,
+          approveOriginalGet: async (input) => ({
+            ...(await approve(input)),
+            ...bad,
+          }),
+        })
+      ).status,
+      bad.sourceSignerSpkiSha256 ? 503 : 403,
+    );
+  }
 });
