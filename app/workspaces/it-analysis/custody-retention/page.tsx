@@ -198,6 +198,33 @@ export default async function CustodyRetentionPage() {
             </a>
           </p>
         </section>
+        <section
+          className="content-panel"
+          aria-labelledby="source-retention-closure-heading"
+        >
+          <SectionHeading
+            id="source-retention-closure-heading"
+            eyebrow="Build 221 · Final Comms attachment"
+            title="Independent provenance, retention and owner closure audit"
+            helpTopic="it.analysis"
+            trailing={
+              <span className="build-chip">Comms connection · HOLD</span>
+            }
+          />
+          <p>
+            Verify independently pinned external source and retention reviewer
+            signatures alongside the original ZIP, custody ledger and owner
+            decision. The offline audit requires distinct signer keys and never
+            treats reviewer claims as an original GitHub issuer, immutable
+            storage or an authorized private Comms GET. Campground tenants,
+            reservations, visitors and gate actions remain outside this scope.
+          </p>
+          <p>
+            <a href="https://github.com/RosevearCreations/iCamp/blob/main/docs/BUILD_221_PROVENANCE_RETENTION_COMMS_FINAL.md">
+              Build 221 final iCamp–Comms handoff and field instructions
+            </a>
+          </p>
+        </section>
       </div>
     </AppShell>
   );

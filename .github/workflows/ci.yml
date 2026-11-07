@@ -125,6 +125,9 @@ jobs:
       - name: Verify Build 220 original ZIP readback and independent offline closure safety
         run: npm run build220:ci-contract
 
+      - name: Verify Build 221 independent provenance and retention review safety
+        run: npm run build221:ci-contract
+
       - name: Build
         run: npm run build
 
