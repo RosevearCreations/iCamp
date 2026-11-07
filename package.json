@@ -51,6 +51,8 @@
     "build215:triage": "node scripts/build215-independent-anchor-triage.mjs",
     "build216:ci-contract": "node scripts/verify-build216-ci-contract.mjs",
     "build216:workbench": "node scripts/build216-checkpoint-renewal-timeline.mjs",
+    "build217:ci-contract": "node scripts/verify-build217-ci-contract.mjs",
+    "build217:dashboard": "node scripts/build217-custody-retention-dashboard.mjs",
     "auth:verify": "node scripts/verify-auth-lifecycle.mjs",
     "authz:verify": "node scripts/verify-authorization-lifecycle.mjs",
     "audit:verify": "node scripts/verify-audit-lifecycle.mjs",

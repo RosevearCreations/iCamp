@@ -16,6 +16,7 @@ import { analyzeBuild213 } from "./build213-cohort-custody-reconciliation.mjs";
 import { analyzeBuild214Aging } from "./build214-owner-custody-register.mjs";
 import { analyzeBuild215Ci } from "./build215-independent-anchor-triage.mjs";
 import { analyzeBuild216Ci } from "./build216-checkpoint-renewal-timeline.mjs";
+import { analyzeBuild217Ci } from "./build217-custody-retention-dashboard.mjs";
 
 // These are monitoring budgets, NOT replacements for protected job timeouts.
 export const REQUIRED_CHECK_BUDGETS = Object.freeze({
@@ -652,6 +653,14 @@ export function formatSummary(evidence) {
       "Signed head rotations, owner renewal choices, and source-linked expiry timelines are reviewed offline only. This CI evidence does not import private ledgers or grant owner approval, retained custody, or Comms TEST authority.",
     );
   }
+  if (evidence.build217) {
+    lines.push(
+      "",
+      "### Build 217 — offline custodian diversity and retention SLA dashboard",
+      "",
+      `External evidence: **${evidence.build217.state}**. Signer diversity, actual owner renewal outcomes and source archive retention must be reviewed independently outside CI. The I.T. dashboard only links to the offline workbench; no production approval or Comms TEST is inferred.`,
+    );
+  }
   lines.push(
     "",
     "Budgets are diagnostic only. All five required GitHub checks, failure behavior, and release approvals remain unchanged.",
@@ -815,6 +824,7 @@ async function main() {
   }
   evidence.build215 = analyzeBuild215Ci(evidence.build214);
   evidence.build216 = analyzeBuild216Ci(evidence.build215);
+  evidence.build217 = analyzeBuild217Ci(evidence.build216);
   evidence.generatedAt = new Date().toISOString();
   evidence.context = {
     runId: process.env.GITHUB_RUN_ID ?? null,
