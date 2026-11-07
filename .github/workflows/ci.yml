@@ -113,6 +113,9 @@ jobs:
       - name: Verify Build 216 checkpoint rotation and renewal review safety
         run: npm run build216:ci-contract
 
+      - name: Verify Build 217 custody diversity and offline SLA dashboard safety
+        run: npm run build217:ci-contract
+
       - name: Build
         run: npm run build
 
