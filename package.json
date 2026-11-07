@@ -49,6 +49,8 @@
     "build214:register": "node scripts/build214-owner-custody-register.mjs",
     "build215:ci-contract": "node scripts/verify-build215-ci-contract.mjs",
     "build215:triage": "node scripts/build215-independent-anchor-triage.mjs",
+    "build216:ci-contract": "node scripts/verify-build216-ci-contract.mjs",
+    "build216:workbench": "node scripts/build216-checkpoint-renewal-timeline.mjs",
     "auth:verify": "node scripts/verify-auth-lifecycle.mjs",
     "authz:verify": "node scripts/verify-authorization-lifecycle.mjs",
     "audit:verify": "node scripts/verify-audit-lifecycle.mjs",

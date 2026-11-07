@@ -110,6 +110,9 @@ jobs:
       - name: Verify Build 215 independent anchor and owner expiry safety
         run: npm run build215:ci-contract
 
+      - name: Verify Build 216 checkpoint rotation and renewal review safety
+        run: npm run build216:ci-contract
+
       - name: Build
         run: npm run build
 
