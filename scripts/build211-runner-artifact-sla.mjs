@@ -320,7 +320,7 @@ export function buildOwnerSlaPacket({
         : "READY_FOR_OWNER_REVIEW_NOT_APPROVED",
     stages,
     sourceCompletenessCaveat:
-      "LATEST_12_COMPLETED_WORKFLOWS_DOES_NOT_GUARANTEE_THREE_COMPLETE_COHORTS_PER_STAGE",
+      "LATEST_30_COMPLETED_WORKFLOWS_DOES_NOT_GUARANTEE_THREE_COMPLETE_COHORTS_PER_STAGE",
     decision: {
       owner: null,
       acceptedAt: null,
