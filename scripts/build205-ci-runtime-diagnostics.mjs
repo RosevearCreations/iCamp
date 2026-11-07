@@ -18,6 +18,7 @@ import { analyzeBuild215Ci } from "./build215-independent-anchor-triage.mjs";
 import { analyzeBuild216Ci } from "./build216-checkpoint-renewal-timeline.mjs";
 import { analyzeBuild217Ci } from "./build217-custody-retention-dashboard.mjs";
 import { analyzeBuild218Ci } from "./build218-source-recheck-portability.mjs";
+import { analyzeBuild219Ci } from "./build219-runner-manifest-closure.mjs";
 
 // These are monitoring budgets, NOT replacements for protected job timeouts.
 export const REQUIRED_CHECK_BUDGETS = Object.freeze({
@@ -670,6 +671,14 @@ export function formatSummary(evidence) {
       `External recheck status: **${evidence.build218.state}**. No owner credentials, private signed receipts or original artifact bytes are imported into CI. Source rechecks require owner-approved read-only field execution and do not renew retention or approve a Comms TEST.`,
     );
   }
+  if (evidence.build219) {
+    lines.push(
+      "",
+      "### Build 219 — pinned runner attestations, independent portability and retention review",
+      "",
+      `External authority: **${evidence.build219.state}**. The reviewed CI fixture contains no private owner keys, real independent runner signatures, archived ZIP bytes or verified retention exception closure. All original external trust gates remain HOLD.`,
+    );
+  }
   lines.push(
     "",
     "Budgets are diagnostic only. All five required GitHub checks, failure behavior, and release approvals remain unchanged.",
@@ -835,6 +844,7 @@ async function main() {
   evidence.build216 = analyzeBuild216Ci(evidence.build215);
   evidence.build217 = analyzeBuild217Ci(evidence.build216);
   evidence.build218 = analyzeBuild218Ci(evidence.build217);
+  evidence.build219 = analyzeBuild219Ci(evidence.build218);
   evidence.generatedAt = new Date().toISOString();
   evidence.context = {
     runId: process.env.GITHUB_RUN_ID ?? null,
