@@ -57,6 +57,8 @@
     "build218:workbench": "node scripts/build218-source-recheck-portability.mjs",
     "build219:ci-contract": "node scripts/verify-build219-ci-contract.mjs",
     "build219:workbench": "node scripts/build219-runner-manifest-closure.mjs",
+    "build220:ci-contract": "node scripts/verify-build220-ci-contract.mjs",
+    "build220:workbench": "node scripts/build220-byte-custody-closure.mjs",
     "auth:verify": "node scripts/verify-auth-lifecycle.mjs",
     "authz:verify": "node scripts/verify-authorization-lifecycle.mjs",
     "audit:verify": "node scripts/verify-audit-lifecycle.mjs",
