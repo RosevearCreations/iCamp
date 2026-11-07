@@ -14,6 +14,7 @@ import {
 import { analyzeBuild212 } from "./build212-escalation-custody.mjs";
 import { analyzeBuild213 } from "./build213-cohort-custody-reconciliation.mjs";
 import { analyzeBuild214Aging } from "./build214-owner-custody-register.mjs";
+import { analyzeBuild215Ci } from "./build215-independent-anchor-triage.mjs";
 
 // These are monitoring budgets, NOT replacements for protected job timeouts.
 export const REQUIRED_CHECK_BUDGETS = Object.freeze({
@@ -632,6 +633,15 @@ export function formatSummary(evidence) {
       "Register only original bytes and independently signed receipts offline, then separately pin the ledger head against replacement/truncation. Neither an alert nor a registry entry is a production or Comms TEST approval.",
     );
   }
+  if (evidence.build215) {
+    lines.push(
+      "",
+      "### Build 215 — independent ledger anchors and owner renewal escalation handoff",
+      "",
+      `External anchor: **${evidence.build215.state}**. Original GitHub artifact aging alerts: ${evidence.build215.originalArtifactAlerts ?? "source unavailable"}.`,
+      "The private registry, independent reviewer signature and owner SLA receipts are deliberately absent from CI. Use the local Build 215 verification/triage command with independently pinned authority; do not infer storage independence, owner consent, production approval or a Comms TEST connection.",
+    );
+  }
   lines.push(
     "",
     "Budgets are diagnostic only. All five required GitHub checks, failure behavior, and release approvals remain unchanged.",
@@ -793,6 +803,7 @@ async function main() {
       releaseApprovalGranted: false,
     };
   }
+  evidence.build215 = analyzeBuild215Ci(evidence.build214);
   evidence.generatedAt = new Date().toISOString();
   evidence.context = {
     runId: process.env.GITHUB_RUN_ID ?? null,
