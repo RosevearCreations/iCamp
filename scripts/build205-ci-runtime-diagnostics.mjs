@@ -11,6 +11,7 @@ import {
   analyzeBuild211,
   fetchReviewedArtifactMetadata,
 } from "./build211-runner-artifact-sla.mjs";
+import { analyzeBuild212 } from "./build212-escalation-custody.mjs";
 
 // These are monitoring budgets, NOT replacements for protected job timeouts.
 export const REQUIRED_CHECK_BUDGETS = Object.freeze({
@@ -571,6 +572,25 @@ export function formatSummary(evidence) {
       `### Build 211 — SOURCE UNAVAILABLE: ${evidence.build211.sourceFailure}. No owner SLA acceptance inferred.`,
     );
   }
+  if (evidence.build212?.ownerSlaDecision) {
+    const { runnerEscalation, evidenceCustody, ownerSlaDecision } =
+      evidence.build212;
+    lines.push(
+      "",
+      "### Build 212 — runner escalation receipts and independent owner decisions",
+      "",
+      `Runner escalation: **${runnerEscalation.state}**; evidence-linked draft receipts: ${runnerEscalation.draftCount}. No provider case or capacity cause is invented.`,
+      `Long-term custody: **${evidenceCustody.state}**; originals reviewed: ${evidenceCustody.originalCount}; independently verified immutable copies: ${evidenceCustody.verifiedLongTermImmutableCopies}. Existing artifact expiry does not establish durable custody.`,
+      `Owner SLA signature: **${ownerSlaDecision.state}**; authenticated signed decision: ${ownerSlaDecision.authenticatedSignedDecision}; scope is CI monitoring only, never a release or Comms TEST approval.`,
+      "",
+      "Owner review requires a separately pinned Ed25519 owner public key and explicit offline owner signature for the exact evidence fingerprint; no private key or implicit consent is present in CI.",
+    );
+  } else if (evidence.build212) {
+    lines.push(
+      "",
+      `### Build 212 — SOURCE UNAVAILABLE: ${evidence.build212.sourceFailure}. No signed owner decision or long-term custody proof inferred.`,
+    );
+  }
   lines.push(
     "",
     "Budgets are diagnostic only. All five required GitHub checks, failure behavior, and release approvals remain unchanged.",
@@ -636,6 +656,7 @@ async function main() {
         artifactMetadata,
         now: Date.now(),
       });
+      evidence.build212 = analyzeBuild212({ build211: evidence.build211 });
     } catch {
       evidence.build211 = {
         schema: "icamp.build211.runner-artifact-sla.v1",
@@ -683,6 +704,18 @@ async function main() {
       state: "GITHUB_ACTIONS_SOURCE_UNAVAILABLE",
       sourceFailure: evidence.sourceFailure ?? "BUILD211_SOURCE_UNAVAILABLE",
       ownerApprovalGranted: false,
+    };
+  }
+  if (!evidence.build212) {
+    evidence.build212 = {
+      schema: "icamp.build212.escalation-sla-custody.v1",
+      state: "GITHUB_ACTIONS_OR_SIGNER_EVIDENCE_UNAVAILABLE",
+      sourceFailure:
+        evidence.build211.sourceFailure ??
+        evidence.sourceFailure ??
+        "BUILD212_SOURCE_UNAVAILABLE",
+      ownerApprovalGranted: false,
+      trustedCommsTestAuthorized: false,
     };
   }
   evidence.generatedAt = new Date().toISOString();
