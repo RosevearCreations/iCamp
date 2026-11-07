@@ -171,6 +171,33 @@ export default async function CustodyRetentionPage() {
             </a>
           </p>
         </section>
+        <section
+          className="content-panel"
+          aria-labelledby="original-byte-review-heading"
+        >
+          <SectionHeading
+            id="original-byte-review-heading"
+            eyebrow="Build 220 · Original archive custody"
+            title="Original ZIP byte readback &amp; owner closure review"
+            helpTopic="it.analysis"
+            trailing={
+              <span className="build-chip">External provenance · HOLD</span>
+            }
+          />
+          <p>
+            A supervised offline workbench hashes locally held original artifact
+            ZIP bytes against their registered source digest and verifies
+            separate custodian and owner-signed review receipts. Matching bytes
+            alone cannot prove the ZIP came from the original provider,
+            establish immutable storage or close a retention exception. No
+            private files enter this production page.
+          </p>
+          <p>
+            <a href="https://github.com/RosevearCreations/iCamp/blob/main/docs/BUILD_220_ORIGINAL_BYTES_OWNER_CLOSURE.md">
+              Build 220 original archive and owner closure guide
+            </a>
+          </p>
+        </section>
       </div>
     </AppShell>
   );
