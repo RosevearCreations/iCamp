@@ -7,6 +7,10 @@ import {
   fetchBrowserLogEvidence,
 } from "./build209-release-trends.mjs";
 import { analyzeBuild210 } from "./build210-queue-history-triage.mjs";
+import {
+  analyzeBuild211,
+  fetchReviewedArtifactMetadata,
+} from "./build211-runner-artifact-sla.mjs";
 
 // These are monitoring budgets, NOT replacements for protected job timeouts.
 export const REQUIRED_CHECK_BUDGETS = Object.freeze({
@@ -540,6 +544,33 @@ export function formatSummary(evidence) {
       `### Build 210 — SOURCE UNAVAILABLE: ${evidence.build210.sourceFailure}. No queue or cache state has been assumed green.`,
     );
   }
+  if (evidence.build211?.ownerSla) {
+    const { runnerContention, artifactReview, ownerSla } = evidence.build211;
+    lines.push(
+      "",
+      "### Build 211 — runner assignment, artifact renewal and owner SLA review",
+      "",
+      `Runner assignments: **${runnerContention.state}**; identified ${runnerContention.observedRunnerNames} runner names in ${runnerContention.observedRequiredJobs} required jobs; delayed jobs ${runnerContention.delayedRequiredJobs.length}. GitHub-hosted pool capacity is not observable from job metadata.`,
+      `Original artifact expiry: **${artifactReview.state}**; reviewed ${artifactReview.reviewedCount}, expiring ${artifactReview.expiringCount}, expired ${artifactReview.expiredCount}, source unavailable/conflicted ${artifactReview.unavailableOrConflicted}. Fresh CI artifacts do not renew old originals.`,
+      "",
+      "| Protected stage | Complete 5-gate cohorts | p50 | p90 | Monitoring budget | Owner evidence |",
+      "| --- | ---: | ---: | ---: | ---: | --- |",
+    );
+    for (const [stage, row] of Object.entries(ownerSla.stages)) {
+      lines.push(
+        `| ${stage} | ${row.completeFiveGateCohorts} | ${row.p50Seconds ?? "—"}s | ${row.p90Seconds ?? "—"}s | ${row.monitoringBudgetSeconds}s | ${row.state} |`,
+      );
+    }
+    lines.push(
+      "",
+      `Owner SLA state: **${ownerSla.state}**; signed owner decision: **${ownerSla.decision.status}**. Historical evidence is monitoring only, with no automatic approval or workflow bypass.`,
+    );
+  } else if (evidence.build211) {
+    lines.push(
+      "",
+      `### Build 211 — SOURCE UNAVAILABLE: ${evidence.build211.sourceFailure}. No owner SLA acceptance inferred.`,
+    );
+  }
   lines.push(
     "",
     "Budgets are diagnostic only. All five required GitHub checks, failure behavior, and release approvals remain unchanged.",
@@ -595,6 +626,24 @@ async function main() {
       runJobs,
       historical: evidence,
     });
+    try {
+      const artifactMetadata =
+        await fetchReviewedArtifactMetadata(reviewedHistory);
+      evidence.build211 = analyzeBuild211({
+        runJobs,
+        historical: evidence,
+        history: reviewedHistory,
+        artifactMetadata,
+        now: Date.now(),
+      });
+    } catch {
+      evidence.build211 = {
+        schema: "icamp.build211.runner-artifact-sla.v1",
+        state: "DIAGNOSTIC_SOURCE_UNAVAILABLE",
+        sourceFailure: "ARTIFACT_OR_RUNNER_EVIDENCE_UNAVAILABLE",
+        ownerApprovalGranted: false,
+      };
+    }
   } catch (error) {
     // This must not be mistaken for a completed, green measurement or fake data.
     const reason =
@@ -626,6 +675,14 @@ async function main() {
       sourceFailure: evidence.sourceFailure ?? "BUILD210_SOURCE_UNAVAILABLE",
       releaseApprovalGranted: false,
       commsTestHandshakeAuthorized: false,
+    };
+  }
+  if (!evidence.build211) {
+    evidence.build211 = {
+      schema: "icamp.build211.runner-artifact-sla.v1",
+      state: "GITHUB_ACTIONS_SOURCE_UNAVAILABLE",
+      sourceFailure: evidence.sourceFailure ?? "BUILD211_SOURCE_UNAVAILABLE",
+      ownerApprovalGranted: false,
     };
   }
   evidence.generatedAt = new Date().toISOString();

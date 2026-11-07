@@ -95,6 +95,9 @@ jobs:
       - name: Verify Build 210 reviewed history and protected queue diagnostics
         run: npm run build210:ci-contract
 
+      - name: Verify Build 211 runner and artifact SLA evidence safety
+        run: npm run build211:ci-contract
+
       - name: Build
         run: npm run build
 
