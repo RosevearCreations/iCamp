@@ -98,6 +98,9 @@ jobs:
       - name: Verify Build 211 runner and artifact SLA evidence safety
         run: npm run build211:ci-contract
 
+      - name: Verify Build 212 escalation custody and signed owner decision safety
+        run: npm run build212:ci-contract
+
       - name: Build
         run: npm run build
 
