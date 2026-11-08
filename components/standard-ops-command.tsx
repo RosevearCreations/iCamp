@@ -71,9 +71,10 @@ const itLinks = [
     icon: "↔",
   },
   {
-    label: "Launch checklist",
-    detail: "Readiness receipts without activating services",
-    href: "/launch/readiness",
+    label: "Current deployment truth",
+    detail:
+      "Runtime status and distinct commercial activation gates; historic checklists are archived",
+    href: "/workspaces/it-analysis/release-status",
     icon: "☑",
   },
 ];
@@ -104,9 +105,10 @@ export function StandardOpsCommand({ area }: { area: CommandArea }) {
         },
         {
           title: "Omnichannel gateway",
-          value: "DISCONNECTED",
-          detail: "Independent proof still required",
-          tone: "hold",
+          value: "VERIFY AT SOURCE",
+          detail:
+            "See Comms Hub live operator status; no static connection claim",
+          tone: "info",
           icon: "↔",
         },
         {

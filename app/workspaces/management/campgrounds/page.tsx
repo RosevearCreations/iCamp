@@ -582,6 +582,32 @@ export default async function CampgroundAdministrationPage({
 
         <section
           className="content-panel"
+          aria-labelledby="booking-services-heading"
+        >
+          <SectionHeading
+            eyebrow="Optional booking extras · Build 233"
+            title="Campground services and add-on catalogue"
+            id="booking-services-heading"
+            helpTopic="campground.structure"
+          />
+          <p>
+            Configure dumping stations, freshwater, propane, firewood, equipment
+            rentals and other optional services for the guest booking process.
+            Each campground controls its own prices and visibility.
+          </p>
+          <Link
+            className="primary-link primary-link--dark"
+            href={
+              "/workspaces/management/campgrounds/services?campground=" +
+              encodeURIComponent(structure.campground.id)
+            }
+          >
+            Manage booking services and add-ons
+          </Link>
+        </section>
+
+        <section
+          className="content-panel"
           aria-labelledby="published-facility-rules-heading"
         >
           <SectionHeading

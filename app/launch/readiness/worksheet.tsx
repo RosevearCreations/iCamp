@@ -24,7 +24,7 @@ export function LaunchWorksheet() {
 
   return (
     <section className="content-panel">
-      <h2>Seven release checks</h2>
+      <h2>Seven historical commercial-go-live checks</h2>
       <p>
         Selections are temporary, remain in this browser tab and cannot
         independently approve a release. Do not enter credentials or customer
@@ -56,7 +56,10 @@ export function LaunchWorksheet() {
           </select>
         </label>
       ))}
-      <p>Launch gate: HOLD · Billing: OFF · External services: OFF</p>
+      <p>
+        Historical worksheet: unverified owner inputs. This is not a live
+        deployment or integration status result.
+      </p>
       <button className="primary-button" type="button" onClick={copyPacket}>
         Copy readiness report
       </button>{" "}

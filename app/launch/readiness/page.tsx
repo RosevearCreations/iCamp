@@ -3,24 +3,29 @@ import Link from "next/link";
 import { AppShell } from "@/components/app-shell";
 import { LaunchWorksheet } from "./worksheet";
 
-export const metadata: Metadata = { title: "Launch readiness · iCamp" };
+export const metadata: Metadata = {
+  title: "Historical commercial launch worksheet · iCamp",
+};
 
 export default function LaunchReadinessPage() {
   return (
     <AppShell>
       <main className="page-stack">
         <section className="hero-panel">
-          <p className="eyebrow">Build 156 · Release gate</p>
-          <h1>Launch, tenant billing and connections</h1>
+          <p className="eyebrow">
+            Historical Build 156 worksheet · commercial go-live only
+          </p>
+          <h1>Legacy commercial launch checklist</h1>
           <p className="hero-panel__lead">
-            Track the evidence needed before paid campground operations begin.
-            This is an owner-reported readiness worksheet, not a production
-            activation switch or independent approval.
+            This older owner-reported worksheet is retained for audit history.
+            Its fixed statuses do not describe the current deployed build or
+            block normal campground product features. It cannot authorize paid
+            subscriptions or external-service activation.
           </p>
         </section>
         <LaunchWorksheet />
         <section className="content-panel">
-          <h2>Required before opening to paying campgrounds</h2>
+          <h2>Separate commercial activation requirements</h2>
           <p>
             Legal terms and privacy review, a provider contract, genuine
             isolated tenant and payment tests, consent checks, connected device
@@ -29,6 +34,10 @@ export default function LaunchReadinessPage() {
             commands are performed by this page.
           </p>
           <Link href="/pilot/acceptance">Pilot acceptance</Link>
+          {" · "}
+          <Link href="/workspaces/it-analysis/release-status">
+            Current release status
+          </Link>
           {" · "}
           <Link href="/launch/audit">Build 158 billing and evidence audit</Link>
           {" · "}
