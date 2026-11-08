@@ -3,6 +3,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 
 import { AppShell } from "@/components/app-shell";
+import { GuestArrivalGuide } from "@/components/guest-arrival-guide";
 import { MyStayProgress } from "@/components/my-stay-progress";
 import { requireSignedIn } from "@/lib/auth/current-session";
 import { getOwnArrivalPlanBundle } from "@/lib/arrival-planner/postgres.mjs";
@@ -256,6 +257,11 @@ export default async function GuestHubPage({
         ) : null}
 
         <MyStayProgress stay={stay} view="hub" />
+        <GuestArrivalGuide
+          stay={stay}
+          arrival={arrival}
+          arrivalAvailable={arrivalResult.status === "fulfilled"}
+        />
 
         <div className={styles.columns}>
           <div className={styles.mainColumn}>

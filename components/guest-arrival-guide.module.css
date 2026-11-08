@@ -1,0 +1,139 @@
+.panel {
+  display: grid;
+  gap: 1rem;
+  min-width: 0;
+  padding: clamp(1rem, 3vw, 1.6rem);
+  border: 1px solid var(--border, #d8e2da);
+  border-radius: 1.2rem;
+  background: var(--surface, #fff);
+  color: var(--text, #20372e);
+}
+
+.heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+}
+
+.heading h2 {
+  margin: 0 0 0.4rem;
+  font-size: clamp(1.25rem, 3vw, 1.7rem);
+}
+
+.heading p,
+.guidance p,
+.note {
+  margin: 0;
+  line-height: 1.5;
+}
+
+.kicker {
+  margin: 0 0 0.4rem !important;
+  font-size: 0.78rem;
+  font-weight: 750;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-muted, #466153);
+}
+
+.badge {
+  border-radius: 999px;
+  padding: 0.4rem 0.65rem;
+  background: #e9edf0;
+  color: #354954;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.facts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin: 0;
+}
+
+.fact {
+  min-width: 0;
+  border: 1px solid var(--border, #d8e2da);
+  border-radius: 0.8rem;
+  padding: 0.9rem;
+  background: var(--background, #f8faf8);
+}
+
+.fact dt {
+  font-weight: 750;
+  margin-bottom: 0.4rem;
+}
+
+.fact dd {
+  margin: 0;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.guidance,
+.notices,
+.unknown {
+  border-radius: 0.8rem;
+  padding: 0.9rem;
+  background: var(--background, #f8faf8);
+}
+
+.guidance h3,
+.notices h3 {
+  margin: 0 0 0.6rem;
+  font-size: 1rem;
+}
+
+.notices,
+.unknown {
+  border-left: 4px solid #996b18;
+}
+
+.notices ul {
+  margin: 0;
+  padding-left: 1.2rem;
+}
+
+.links {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.6rem;
+}
+
+.links a {
+  display: flex;
+  align-items: center;
+  padding: 0.85rem;
+  min-height: 3rem;
+  border: 1px solid #b7d3c2;
+  border-radius: 0.75rem;
+  background: #f0f7f1;
+  color: #16422f;
+  text-decoration: none;
+  font-weight: 700;
+}
+
+.links a:hover,
+.links a:focus-visible {
+  background: #e2efe6;
+}
+
+.links a:focus-visible {
+  outline: 3px solid #236443;
+  outline-offset: 2px;
+}
+
+.note {
+  font-size: 0.85rem;
+  color: var(--text-muted, #466153);
+}
+
+@media (max-width: 560px) {
+  .facts,
+  .links {
+    grid-template-columns: 1fr;
+  }
+}
