@@ -3,8 +3,10 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { AppShell } from "@/components/app-shell";
+import { BookingJourney } from "@/components/booking-journey";
 import { SectionHeading } from "@/components/section-heading";
 import { getPublicAccommodationDetail } from "@/lib/public-accommodation-detail/postgres.mjs";
+import { accommodationFitHighlights } from "@/lib/public-accommodation-detail/fit-summary.mjs";
 import { parsePublicQuoteSelections } from "@/lib/public-accommodation-detail/quote-preview.mjs";
 
 import { startReservationCheckoutAction } from "./checkout/actions";
@@ -110,6 +112,11 @@ export default async function PublicAccommodationDetailPage({
   const optionalCharges = detail.bookingCharges.items.filter(
     (item) => item.applicationMode === "optional",
   );
+  const fitHighlights = accommodationFitHighlights({
+    kind: detail.accommodation.kind,
+    facts: detail.facts,
+    rules: detail.rules,
+  });
 
   return (
     <AppShell>
@@ -141,6 +148,38 @@ export default async function PublicAccommodationDetailPage({
             {" · "}
             {detail.dates.nights}{" "}
             {detail.dates.nights === 1 ? "night" : "nights"}
+          </p>
+        </section>
+
+        <BookingJourney current="review" mapHref={mapHref} />
+
+        <section className="content-panel" aria-labelledby="quick-fit-heading">
+          <SectionHeading
+            eyebrow="Suitability at a glance"
+            title="Check the important fit details"
+            id="quick-fit-heading"
+            helpTopic="shell.overview"
+          />
+          <p>
+            These are campground-published details, not a certification or a
+            promise that a specific party, RV or access need will fit. Missing
+            information stays explicitly unverified. Final compatibility and
+            availability are checked again during checkout.
+          </p>
+          <dl className={styles.facts}>
+            {fitHighlights.map((fact) => (
+              <div key={fact.label} className={styles.fact}>
+                <dt>{fact.label}</dt>
+                <dd>{fact.value}</dd>
+              </div>
+            ))}
+          </dl>
+          <p>
+            <a href="#features-heading">All accommodation features</a>
+            {" · "}
+            <a href="#rules-heading">Campground rules</a>
+            {" · "}
+            <a href="#continue-heading">Continue to checkout</a>
           </p>
         </section>
 

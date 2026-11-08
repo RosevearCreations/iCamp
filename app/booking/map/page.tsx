@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import { AppShell } from "@/components/app-shell";
+import { BookingJourney } from "@/components/booking-journey";
 import { SectionHeading } from "@/components/section-heading";
 import { filterPublicDiscoveryItems } from "@/lib/public-booking-map/discovery.mjs";
 import {
@@ -187,6 +188,8 @@ export default async function PublicBookingMapPage({
             verified route or step-free path.
           </p>
         </section>
+
+        <BookingJourney current="discover" mapHref="/booking/map" />
 
         <section
           className="content-panel"
