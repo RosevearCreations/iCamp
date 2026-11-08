@@ -93,16 +93,16 @@ export default async function AccountPage() {
                   </li>
                 ))}
               </ul>
-              <Link href="/workspaces/management/campgrounds">
-                Open campground workspace
+              <Link href="/campground">
+                Open my assigned campground workspace
               </Link>
             </section>
           ) : null}
 
           {session.user.accountType === "staff" ? (
             <p>
-              <Link href="/platform">
-                Platform administration (verified operators only)
+              <Link href="/sysop">
+                Master Sysop shell (Ree/Jack verified operators only)
               </Link>
             </p>
           ) : null}

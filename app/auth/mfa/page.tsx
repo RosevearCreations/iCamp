@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 
 import { AppShell } from "@/components/app-shell";
 import { requireSignedIn } from "@/lib/auth/current-session";
+import { sysopReturnPath } from "@/lib/platform/shell.mjs";
 
 import { MfaPanel } from "./mfa-panel";
 
@@ -10,8 +11,13 @@ export const metadata: Metadata = {
 };
 export const dynamic = "force-dynamic";
 
-export default async function MfaPage() {
+export default async function MfaPage({
+  searchParams,
+}: Readonly<{
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}>) {
   const session = await requireSignedIn("/auth/mfa");
+  const next = sysopReturnPath((await searchParams).next);
   return (
     <AppShell>
       <main className="page-stack">
@@ -24,7 +30,7 @@ export default async function MfaPage() {
             their elevated assurance after 15 minutes.
           </p>
         </section>
-        <MfaPanel />
+        <MfaPanel returnPath={next} />
       </main>
     </AppShell>
   );
