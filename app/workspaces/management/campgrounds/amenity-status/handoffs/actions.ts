@@ -7,6 +7,7 @@ import { requireStaff } from "@/lib/auth/current-session";
 import {
   createAmenityHandoff,
   decideAmenityHandoff,
+  recordAmenityHandoffFollowup,
 } from "@/lib/amenity-handoffs/postgres.mjs";
 
 const path = "/workspaces/management/campgrounds/amenity-status/handoffs";
@@ -27,11 +28,35 @@ function errorCode(error: unknown) {
   const text = error instanceof Error ? error.message : "";
   if (/changed|refresh|revision/i.test(text)) return "conflict";
   if (/already exists/i.test(text)) return "duplicate";
+  if (/already recorded recently/i.test(text)) return "duplicate_followup";
   if (/migration/i.test(text)) return "migration";
   if (/not authorized|permission|authority/i.test(text)) return "denied";
   if (/invalid|must be|choose|unsupported|unavailable/i.test(text))
     return "invalid";
   return "failed";
+}
+
+export async function recordAmenityFollowupAction(formData: FormData) {
+  const campgroundId = field(formData, "campgroundId");
+  const session = await requireStaff(path);
+  let result = "followup_saved";
+  try {
+    await recordAmenityHandoffFollowup({
+      actorUserId: session.user.id,
+      actorSessionId: session.sessionId,
+      campgroundId,
+      handoffId: field(formData, "handoffId"),
+      input: {
+        eventKind: field(formData, "eventKind"),
+        outcome: field(formData, "outcome"),
+        note: field(formData, "note"),
+        expectedRowVersion: field(formData, "rowVersion"),
+      },
+    });
+  } catch (error) {
+    result = errorCode(error);
+  }
+  outcome(campgroundId, result);
 }
 
 export async function createAmenityHandoffAction(formData: FormData) {
