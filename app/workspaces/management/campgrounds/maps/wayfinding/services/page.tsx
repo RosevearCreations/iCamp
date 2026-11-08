@@ -89,6 +89,14 @@ export default async function AmenityServicesEditorPage({
             review date. These statements are not live capacity, a certified
             step-free route or permission to enter a facility.
           </p>
+          <div className="hero-actions">
+            <Link
+              className="secondary-link"
+              href="/workspaces/management/campgrounds/amenity-status"
+            >
+              Staff amenity status board
+            </Link>
+          </div>
         </section>
         {params.result && feedback[params.result] ? (
           <p className={styles.notice} role="status">
