@@ -22,7 +22,7 @@ test("Build 201 pilot finding survives refresh and navigation without becoming a
   await page.goto("/integration/comms-hub");
   await expect(
     page.getByRole("heading", {
-      name: /Trusted Comms Hub nonproduction handshake preflight/i,
+      name: /Comms Hub connection and legacy diagnostics/i,
     }),
   ).toBeVisible();
   await page.goto("/pilot/acceptance");
