@@ -3,6 +3,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 
 import { AppShell } from "@/components/app-shell";
+import { MyStayProgress } from "@/components/my-stay-progress";
 import { SectionHeading } from "@/components/section-heading";
 import { requireSignedIn } from "@/lib/auth/current-session";
 import { getGuestRulePublications } from "@/lib/campground-rules/postgres.mjs";
@@ -122,7 +123,7 @@ export default async function MyStayPage({
         </nav>
 
         <section className="hero-panel">
-          <p className="eyebrow">Build 051 · Guest portal</p>
+          <p className="eyebrow">Build 225 · Guest portal</p>
           <h1>My Stay</h1>
           <p className="hero-panel__lead">
             One secure place for your reservation, accommodation, campground
@@ -158,6 +159,8 @@ export default async function MyStayPage({
             </Link>
           </div>
         </section>
+
+        {detail ? <MyStayProgress stay={detail} view="details" /> : null}
 
         <section className="content-panel">
           <SectionHeading

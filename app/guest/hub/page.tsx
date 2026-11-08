@@ -3,6 +3,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 
 import { AppShell } from "@/components/app-shell";
+import { MyStayProgress } from "@/components/my-stay-progress";
 import { requireSignedIn } from "@/lib/auth/current-session";
 import { getOwnArrivalPlanBundle } from "@/lib/arrival-planner/postgres.mjs";
 import { getGuestRulePublications } from "@/lib/campground-rules/postgres.mjs";
@@ -186,7 +187,7 @@ export default async function GuestHubPage({
 
         <header className={styles.hero}>
           <div className={styles.heroTop}>
-            <p className={styles.kicker}>iCamp · Your stay companion</p>
+            <p className={styles.kicker}>Build 225 · Your stay companion</p>
             <span className={styles.stateBadge}>
               {readable(stay.reservation.status)}
             </span>
@@ -253,6 +254,8 @@ export default async function GuestHubPage({
             </div>
           </nav>
         ) : null}
+
+        <MyStayProgress stay={stay} view="hub" />
 
         <div className={styles.columns}>
           <div className={styles.mainColumn}>
