@@ -154,6 +154,14 @@ export default async function MaintenanceWorkOrdersPage({
             Create one canonical maintenance record, route it to active staff,
             capture work evidence, and preserve its complete status history.
           </p>
+          <div className="hero-actions">
+            <Link
+              className="secondary-link"
+              href={`/workspaces/management/campgrounds/amenity-status?campground=${encodeURIComponent(selected.campgroundId)}`}
+            >
+              Facility status and guest-information gaps
+            </Link>
+          </div>
         </section>
 
         {params.saved ? (
