@@ -53,6 +53,7 @@ export function AppShell({
           <Link href="/workspaces/guest">My stay</Link>
           <Link href="/events">Events</Link>
           <Link href="/workspaces/front-desk">Staff workspace</Link>
+          <Link href="/campground">My campground</Link>
           <Link href="/status">Status</Link>
         </nav>
 
@@ -89,6 +90,14 @@ export function AppShell({
                 </ul>
               </div>
             ))}
+            <div className="sidebar__group">
+              <p className="sidebar__group-label">Assigned campground</p>
+              <ul className="workspace-nav">
+                <li>
+                  <Link href="/campground">Tenant workspace home</Link>
+                </li>
+              </ul>
+            </div>
             <details className="sidebar__group sidebar__advanced">
               <summary>Administration &amp; system tools</summary>
               <ul className="workspace-nav">
