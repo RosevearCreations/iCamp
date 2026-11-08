@@ -3,6 +3,10 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 
 import { AppShell } from "@/components/app-shell";
+import {
+  BookingJourney,
+  CheckoutSectionLinks,
+} from "@/components/booking-journey";
 import { SectionHeading } from "@/components/section-heading";
 import { requireSignedIn } from "@/lib/auth/current-session";
 import { formatMoney } from "@/lib/pricing/core.mjs";
@@ -122,6 +126,14 @@ export default async function ReservationCheckoutPage({
       (item) => item.applicationMode === "automatic",
     ) ?? [];
   const limits = checkout.capacity?.effectiveLimits;
+  const fullMapHref =
+    `${mapHref}&arrivalDate=${encodeURIComponent(checkout.dates.arrivalDate)}` +
+    `&departureDate=${encodeURIComponent(checkout.dates.departureDate)}`;
+  const detailHref =
+    `/booking/accommodations/${encodeURIComponent(checkout.accommodation.id)}` +
+    `?campground=${encodeURIComponent(checkout.campground.slug)}` +
+    `&arrivalDate=${encodeURIComponent(checkout.dates.arrivalDate)}` +
+    `&departureDate=${encodeURIComponent(checkout.dates.departureDate)}`;
 
   return (
     <AppShell>
@@ -150,6 +162,14 @@ export default async function ReservationCheckoutPage({
             server revalidates the hold and all booking rules when you submit.
           </p>
         </section>
+
+        <BookingJourney
+          current="checkout"
+          mapHref={fullMapHref}
+          detailHref={detailHref}
+        />
+
+        <CheckoutSectionLinks />
 
         {errorMessage ? (
           <section className="content-panel" aria-live="polite">

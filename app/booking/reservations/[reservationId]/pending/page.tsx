@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 
 import { AppShell } from "@/components/app-shell";
+import { BookingJourney } from "@/components/booking-journey";
 import { SectionHeading } from "@/components/section-heading";
 import { requireSignedIn } from "@/lib/auth/current-session";
 import { getReservationPaymentSummary } from "@/lib/payments/postgres.mjs";
@@ -75,6 +76,8 @@ export default async function PendingReservationPage({
             {reservation.dates.arrivalDate} to {reservation.dates.departureDate}
           </p>
         </section>
+
+        <BookingJourney current="reservation" mapHref={mapHref} />
 
         <section className="content-panel">
           <SectionHeading
