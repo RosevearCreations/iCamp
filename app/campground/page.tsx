@@ -102,6 +102,13 @@ export default async function CampgroundPage({
             </li>
             <li>
               <Link
+                href={`/workspaces/management/campgrounds/services?${scope}`}
+              >
+                Booking services and add-ons
+              </Link>
+            </li>
+            <li>
+              <Link
                 href={`/workspaces/management/campgrounds/maps/wayfinding/services?${scope}`}
               >
                 Guest services and accessible wayfinding
