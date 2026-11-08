@@ -1,17 +1,21 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 
-import { AppShell } from "@/components/app-shell";
+import { SysopShell } from "@/components/sysop-shell";
 import { requireStaff } from "@/lib/auth/current-session";
 import { getPlatformOverview } from "@/lib/platform/postgres.mjs";
 
 export const metadata: Metadata = {
   title: "Platform administration · iCamp",
+  robots: { index: false, follow: false },
 };
 export const dynamic = "force-dynamic";
 
 export default async function PlatformPage() {
   const session = await requireStaff("/platform");
+  if (session.assuranceLevel !== "aal2") {
+    redirect("/auth/mfa?next=%2Fplatform");
+  }
   const summary = await getPlatformOverview(
     session.user.id,
     session.assuranceLevel,
@@ -21,10 +25,10 @@ export default async function PlatformPage() {
   }
 
   return (
-    <AppShell>
+    <SysopShell>
       <main className="page-stack standard-ops-page">
         <section className="hero-panel meadow-hero">
-          <p className="eyebrow">Platform operator · Build 160</p>
+          <p className="eyebrow">Protected Sysop statistics · Build 232</p>
           <h1>iCamp application management</h1>
           <p className="hero-panel__lead">
             Verified platform-wide totals. This is separate from a campground
@@ -79,6 +83,6 @@ export default async function PlatformPage() {
           </p>
         </section>
       </main>
-    </AppShell>
+    </SysopShell>
   );
 }
