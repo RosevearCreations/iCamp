@@ -66,6 +66,29 @@ export default async function ItAnalysisPage() {
 
         <section
           className="content-panel"
+          aria-labelledby="release-truth-heading"
+        >
+          <SectionHeading
+            eyebrow="Current state · Build 233"
+            title="Deployment truth and historic checklist cleanup"
+            id="release-truth-heading"
+            helpTopic="it.analysis"
+          />
+          <p>
+            The original prelaunch and Comms evidence worksheets predate this
+            release. Their unverified flags are historical, not a reason to
+            block normal campground operations. Paid billing and external
+            service activation retain independent security checks.
+          </p>
+          <p>
+            <Link href="/workspaces/it-analysis/release-status">
+              Open current release status
+            </Link>
+          </p>
+        </section>
+
+        <section
+          className="content-panel"
           aria-labelledby="retention-sla-heading"
         >
           <SectionHeading
@@ -73,7 +96,11 @@ export default async function ItAnalysisPage() {
             title="Evidence retention and custody SLA"
             id="retention-sla-heading"
             helpTopic="it.analysis"
-            trailing={<span className="build-chip">Owner review · HOLD</span>}
+            trailing={
+              <span className="build-chip">
+                Offline evidence · separate review
+              </span>
+            }
           />
           <p>
             Review signed custody checkpoint diversity, owner renewal outcomes,

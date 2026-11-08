@@ -15,10 +15,11 @@ export default function Ql258Page() {
       <main className="page-stack">
         <section className="hero-panel">
           <p className="eyebrow">Build 154 · QL-258</p>
-          <h1>iCamp evidence and activation HOLD</h1>
+          <h1>Historical QL-258 owner evidence review</h1>
           <p className="hero-panel__lead">
-            Application deployment and six-app integration are separate
-            decisions. No gateway operation is enabled by this worksheet.
+            This October 2026 owner-intake checkpoint is preserved as historical
+            evidence. Application deployment and live six-app integration remain
+            separate decisions. No gateway operation is enabled here.
           </p>
         </section>
         <section className="content-panel">
@@ -30,17 +31,23 @@ export default function Ql258Page() {
             separate verification.
           </p>
           <p>
-            Camp Rosevear remains a synthetic, inactive campground in the
-            existing database. Production test logins are not activated and
-            private signer custody has not been independently verified.
+            At that original checkpoint Camp Rosevear was synthetic and
+            inactive, production test logins had not been activated, and private
+            signer custody had not been independently verified. This is not a
+            current database status check.
           </p>
         </section>
         <Worksheet />
         <section className="content-panel">
           <p>
-            No owner TEST approval has been given. The integration remains
-            DISCONNECTED / HOLD with twelve live pilot holds.
+            This worksheet recorded no owner TEST approval and twelve pilot
+            holds in its original review. It is not a current Comms Hub
+            connection reading or a prerequisite for campground editing.
           </p>
+          <Link href="/workspaces/it-analysis/release-status">
+            Current release status
+          </Link>
+          {" · "}
           <Link href="/status">Back to iCamp status</Link>
         </section>
       </main>
