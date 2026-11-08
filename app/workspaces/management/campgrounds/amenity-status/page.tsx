@@ -131,9 +131,15 @@ export default async function StaffAmenityStatusPage({
             reach the guest directory.
           </p>
           <div className="hero-actions">
+            <Link
+              className="primary-link"
+              href={`/workspaces/management/campgrounds/amenity-status/handoffs?campground=${encodeURIComponent(selected.campgroundId)}`}
+            >
+              Shift handoffs &amp; guest review queue
+            </Link>
             {mayReadMaintenance ? (
               <Link
-                className="primary-link"
+                className="secondary-link"
                 href={`/workspaces/maintenance/work-orders?campground=${encodeURIComponent(selected.campgroundId)}`}
               >
                 Open maintenance work orders
