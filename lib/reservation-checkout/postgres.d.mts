@@ -62,6 +62,10 @@ export interface ReservationCheckoutContext {
       chargeKind: string;
       applicationMode: string;
       priceLabel: string;
+      pricingBasis: "per_stay" | "per_night" | "per_unit" | "percent_of_stay";
+      unitPriceCents: number | null;
+      percentageBasisPoints: number | null;
+      currencyCode: string;
       minimumQuantity: number;
       maximumQuantity: number;
     }>;

@@ -87,9 +87,14 @@ export default async function PublicAccommodationDetailPage({
     `&arrivalDate=${encodeURIComponent(detail.dates.arrivalDate)}` +
     `&departureDate=${encodeURIComponent(detail.dates.departureDate)}`;
   const checkoutReady =
-    detail.availability.selectable && detail.rateSummary.status === "quoted";
+    detail.availability.selectable &&
+    detail.rateSummary.status === "quoted" &&
+    !inputError &&
+    !detail.selectionError;
   const checkoutError = query.checkoutError
-    ? "Checkout could not start because the selected accommodation or dates are no longer available."
+    ? query.checkoutError === "invalid-extra"
+      ? "Invalid service selections. Review the extras and reprice before checkout."
+      : "Checkout could not start because the selected accommodation or dates are no longer available."
     : null;
   const draftError =
     query.draftError === "consent"
@@ -241,8 +246,16 @@ export default async function PublicAccommodationDetailPage({
                   <input
                     name={`quantity${index}`}
                     type="number"
-                    min={1}
-                    max={100}
+                    min={
+                      optionalCharges.find(
+                        (item) => item.code === selections[index - 1]?.code,
+                      )?.minimumQuantity ?? 1
+                    }
+                    max={
+                      optionalCharges.find(
+                        (item) => item.code === selections[index - 1]?.code,
+                      )?.maximumQuantity ?? 100
+                    }
                     step={1}
                     defaultValue={selections[index - 1]?.quantity ?? 1}
                   />
@@ -330,8 +343,9 @@ export default async function PublicAccommodationDetailPage({
           />
           <p>
             Prices below come from the server-authoritative campground charge
-            catalogue. Optional items are not added to a reservation until Build
-            041 checkout.
+            catalogue. Only services offered throughout the selected dates
+            appear. Optional items are added only after checkout revalidates
+            their price and availability.
           </p>
           {detail.bookingCharges.items.length > 0 ? (
             <ul>
@@ -521,6 +535,20 @@ export default async function PublicAccommodationDetailPage({
                 name="departureDate"
                 value={detail.dates.departureDate}
               />
+              {selections.map((selection, index) => (
+                <span key={selection.code}>
+                  <input
+                    type="hidden"
+                    name={`extra${index + 1}`}
+                    value={selection.code}
+                  />
+                  <input
+                    type="hidden"
+                    name={`quantity${index + 1}`}
+                    value={selection.quantity}
+                  />
+                </span>
+              ))}
               <button className="primary-button" type="submit">
                 Continue to reservation checkout
               </button>
