@@ -161,6 +161,12 @@ export default async function MaintenanceWorkOrdersPage({
             >
               Facility status and guest-information gaps
             </Link>
+            <Link
+              className="secondary-link"
+              href={`/workspaces/management/campgrounds/amenity-status/handoffs?campground=${encodeURIComponent(selected.campgroundId)}`}
+            >
+              Shift handoffs &amp; issue ownership
+            </Link>
           </div>
         </section>
 
