@@ -20,24 +20,15 @@ export default function HomePage() {
             whole camping experience.
           </p>
           <div className="hero-actions">
-            <Link className="primary-link" href="/workspaces/public">
-              Explore the public shell
+            <Link className="primary-link" href="/booking/map">
+              Find a campsite or cottage
             </Link>
-            <Link className="secondary-link" href="/events">
-              Events & recreation
+            <Link className="secondary-link" href="/workspaces/guest">
+              My stay and reservations
             </Link>
-            <Link className="secondary-link" href="/rentals">
-              Amenities & rental planning
+            <Link className="secondary-link" href="/workspaces/front-desk">
+              Staff workspace (sign-in required)
             </Link>
-            <Link className="secondary-link" href="/store">
-              Campground guest store
-            </Link>
-            <Link className="secondary-link" href="/reviews">
-              Verified guest reviews
-            </Link>
-            <a className="secondary-link" href="#workspaces">
-              View all workspaces
-            </a>
             {publicConfig.environment !== "production" ? (
               <Link className="secondary-link" href="/demo">
                 Open demo campground
@@ -60,7 +51,7 @@ export default function HomePage() {
               <small>See sites and availability</small>
             </span>
           </Link>
-          <Link className="ops-kpi ops-kpi--link" href="/workspaces/management">
+          <Link className="ops-kpi ops-kpi--link" href="/events">
             <span
               className="ops-kpi__icon ops-kpi__icon--amber"
               aria-hidden="true"
@@ -68,12 +59,12 @@ export default function HomePage() {
               ▦
             </span>
             <span>
-              <span>Operations</span>
-              <strong>Management</strong>
-              <small>Campground workspace</small>
+              <span>Discover</span>
+              <strong>Events &amp; activities</strong>
+              <small>Plan things to do</small>
             </span>
           </Link>
-          <Link className="ops-kpi ops-kpi--link" href="/launch/subscriptions">
+          <Link className="ops-kpi ops-kpi--link" href="/workspaces/front-desk">
             <span
               className="ops-kpi__icon ops-kpi__icon--blue"
               aria-hidden="true"
@@ -81,9 +72,9 @@ export default function HomePage() {
               ↔
             </span>
             <span>
-              <span>Connections</span>
-              <strong>Readiness centre</strong>
-              <small>Billing and evidence gates</small>
+              <span>Campground team</span>
+              <strong>Front desk</strong>
+              <small>Staff sign-in required</small>
             </span>
           </Link>
         </section>

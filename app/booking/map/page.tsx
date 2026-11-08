@@ -3,15 +3,12 @@ import Link from "next/link";
 
 import { AppShell } from "@/components/app-shell";
 import { SectionHeading } from "@/components/section-heading";
-import {
-  filterPublicDiscoveryItems,
-  normalizePublicDiscoveryFilters,
-} from "@/lib/public-booking-map/discovery.mjs";
+import { filterPublicDiscoveryItems } from "@/lib/public-booking-map/discovery.mjs";
 import {
   getPublicBookingMapSnapshot,
   listPublishedBookingCampgrounds,
 } from "@/lib/public-booking-map/postgres.mjs";
-import { normalizePublicBookingMapFilters } from "@/lib/public-booking-map/core.mjs";
+import { parsePublicBookingSearch } from "@/lib/public-booking-map/search.mjs";
 
 import { DiscoveryResults } from "./discovery-results";
 
@@ -88,17 +85,64 @@ export default async function PublicBookingMapPage({
   const selected =
     campgrounds.find((campground) => campground.slug === params.campground) ??
     campgrounds[0];
-  const arrivalDate = params.arrivalDate ?? isoDate(0);
-  const departureDate = params.departureDate ?? isoDate(1);
-  const kind = params.kind ?? "all";
-  const availability = params.availability ?? "all";
-  const mapFilters = normalizePublicBookingMapFilters({
-    arrivalDate,
-    departureDate,
-    kind,
-    availability,
+  const search = parsePublicBookingSearch(params, {
+    arrivalDate: isoDate(0),
+    departureDate: isoDate(1),
   });
-  const discoveryFilters = normalizePublicDiscoveryFilters(params);
+
+  if (!search.ok) {
+    return (
+      <AppShell>
+        <div className="page-stack">
+          <section className="hero-panel">
+            <p className="eyebrow">Accommodation search</p>
+            <h1>Let’s fix your search</h1>
+            <p className="hero-panel__lead" role="alert">
+              {search.message} No availability lookup or reservation was made.
+            </p>
+          </section>
+          <section
+            className="content-panel"
+            aria-labelledby="retry-dates-title"
+          >
+            <h2 id="retry-dates-title">Try different dates</h2>
+            <form method="get" className="form-grid">
+              <input type="hidden" name="campground" value={selected.slug} />
+              <label>
+                Arrival date
+                <input
+                  type="date"
+                  name="arrivalDate"
+                  defaultValue={isoDate(0)}
+                  required
+                />
+              </label>
+              <label>
+                Departure date
+                <input
+                  type="date"
+                  name="departureDate"
+                  defaultValue={isoDate(1)}
+                  required
+                />
+              </label>
+              <button type="submit">Search available stays</button>
+            </form>
+            <p>
+              Advanced filters have been reset. We will check availability only
+              after the dates are valid.
+            </p>
+            <Link href="/workspaces/public">
+              Back to campground exploration
+            </Link>
+          </section>
+        </div>
+      </AppShell>
+    );
+  }
+
+  const { mapFilters, discoveryFilters } = search;
+  const { arrivalDate, departureDate, availability } = mapFilters;
 
   const snapshot = await getPublicBookingMapSnapshot({
     campgroundSlug: selected.slug,
