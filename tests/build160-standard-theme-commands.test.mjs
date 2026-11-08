@@ -18,7 +18,7 @@ test("Build 160 retains Standard as the canonical grass/meadow theme and semanti
   assert.match(source("app/standard-theme.css"), /@media \(max-width: 48rem\)/);
 });
 
-test("Build 160 Management/I.T. commands preserve permission gates, real-only stats and service HOLD", () => {
+test("Build 160 Management/I.T. commands preserve permission gates, real-only stats and separately scoped service holds", () => {
   const workspace = source("app/workspaces/[workspace]/page.tsx");
   const command = source("components/standard-ops-command.tsx");
   const platform = source("app/platform/page.tsx");
@@ -28,7 +28,7 @@ test("Build 160 Management/I.T. commands preserve permission gates, real-only st
   assert.match(workspace, /<StandardOpsCommand area=/);
   assert.match(command, /getSafeItSnapshot/);
   assert.match(command, /runSandboxLifecycleFixture/);
-  assert.match(command, /DISCONNECTED/);
+  assert.match(command, /VERIFY AT SOURCE/);
   assert.match(command, /OFF \/ HELD/);
   assert.match(platform, /requireStaff/);
   assert.match(platform, /getPlatformOverview/);
