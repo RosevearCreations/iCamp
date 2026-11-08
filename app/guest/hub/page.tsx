@@ -456,8 +456,11 @@ export default async function GuestHubPage({
                     Documents not issued yet
                   </span>
                 )}
+                <Link href={selectHref("/guest/services")}>
+                  Campground service directory <span>→</span>
+                </Link>
                 <Link href={mapHref}>
-                  Campground amenities &amp; wayfinding <span>→</span>
+                  Published campground map <span>→</span>
                 </Link>
                 <Link href="/guest/events">
                   Events &amp; activity requests <span>→</span>

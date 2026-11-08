@@ -362,6 +362,13 @@ export default async function MyStayPage({
               <div className={styles.history}>
                 <article>
                   <strong>Campground map</strong>
+                  <p>
+                    <Link
+                      href={`/guest/services?reservation=${encodeURIComponent(detail.reservation.id)}`}
+                    >
+                      Browse the campground service directory →
+                    </Link>
+                  </p>
                   {mapHref ? (
                     <p>
                       <Link href={mapHref}>
