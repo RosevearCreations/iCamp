@@ -1,3 +1,5 @@
+import type { PublicAmenityService } from "./service-review.mjs";
+
 export const publicAmenityKinds: readonly string[];
 export interface PublicWayfindingPoint {
   id: string;
@@ -7,6 +9,7 @@ export interface PublicWayfindingPoint {
   description: string;
   accessibilityNote: string;
   landmarkHint: string;
+  service?: PublicAmenityService | null;
   x: number;
   y: number;
 }
@@ -30,6 +33,10 @@ export function publicWayfindingPoint(
     description: string;
     accessibilityNote?: string;
     landmarkHint?: string;
+    serviceReviewedAt?: string | Date | null;
+    serviceOperatingStatus?: string | null;
+    serviceHoursSummary?: string | null;
+    serviceAccessibilityDetails?: string | null;
     pointGeometry?: unknown;
   },
   sourceWidth: number,

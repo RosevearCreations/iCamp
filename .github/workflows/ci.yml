@@ -294,6 +294,9 @@ jobs:
       - name: Verify all database contracts
         run: npm run db:verify
 
+      - name: Verify Build 228 default-private service publication, RLS and expiry guard
+        run: npm run build228:verify
+
       - name: Verify Build 187 incident closure, privacy RLS and immutable evidence
         run: npm run build187:verify
 
