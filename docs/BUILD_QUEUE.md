@@ -1,5 +1,9 @@
 # iCamp Active Build Queue
 
+**Build 223 — Guided Guest Booking Journey, Accommodation Fit Clarity & Checkout Progress:** four-step guest navigation, source-grounded suitability highlights, checkout section wayfinding, and unchanged protected hold/payment checks. See [`BUILD_223_GUEST_BOOKING_JOURNEY_FIT_PROGRESS.md`](BUILD_223_GUEST_BOOKING_JOURNEY_FIT_PROGRESS.md). Production promotion evidence is reported separately.
+
+**Suggested next product focus:** Build 224 — Reservation-change clarity, cancellation preview and mobile guest recovery. Continue app functionality; no Comms readiness work is queued.
+
 **Build 222 — Camper Task Navigation & Safe Booking Search Recovery:** focused return to core usability and security after Comms integration. Prioritize booking, My Stay and staff access; gracefully reject invalid booking search input without querying accommodation availability. See [`BUILD_222_CAMPER_TASK_NAVIGATION_BOOKING_SEARCH.md`](BUILD_222_CAMPER_TASK_NAVIGATION_BOOKING_SEARCH.md). Promotion status requires protected `dev`/`main` and Vercel proof; completion evidence is reported separately.
 
 **Suggested next product focus:** Guest booking-date guidance and reservation progress clarity, informed by actual camper/staff usability feedback. No further Comms readiness build is queued here.
