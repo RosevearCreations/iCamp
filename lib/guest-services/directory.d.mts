@@ -27,6 +27,9 @@ export function buildGuestServiceDirectory(input: {
     accessibilityNote: string | null;
     landmarkHint: string | null;
     mapHref: string;
+    hoursSummary: string | null;
+    accessibilityDetails: string | null;
+    serviceReviewedAt: string | null;
     availabilityLabel: string;
   }>;
 };

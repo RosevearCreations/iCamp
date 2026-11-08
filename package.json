@@ -21,6 +21,7 @@
     "verify": "npm run format:check && npm run lint && npm run typecheck && npm test && npm run build",
     "db:migrate": "node scripts/apply-database-migrations.mjs",
     "db:verify": "node scripts/verify-database.mjs",
+    "build228:verify": "node scripts/verify-build228-amenity-service-publications.mjs",
     "build187:verify": "node scripts/verify-build187-security-incidents.mjs",
     "build188:verify": "node scripts/verify-build188-access-reconciliation.mjs",
     "build189:verify": "node scripts/verify-build189-offline-sync.mjs",

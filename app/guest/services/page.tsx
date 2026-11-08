@@ -148,9 +148,10 @@ export default async function GuestServicesPage({
           <p className="eyebrow">Build 227 · Campground services</p>
           <h1>Find campground facilities</h1>
           <p className="hero-panel__lead">
-            Browse amenities that staff published on the campground map. These
-            are location descriptions, not live opening hours, operating
-            clearance, accessibility-route certification or entry permission.
+            Browse amenities that staff published on the campground map.
+            Campground-reviewed service hours and operating updates appear only
+            when separately published; they are never live capacity,
+            accessibility-route certification or entry permission.
           </p>
           <div className="hero-actions">
             <Link className="primary-link" href={scoped("/guest/stay")}>
@@ -250,9 +251,9 @@ export default async function GuestServicesPage({
                 <button type="submit">Search</button>
               </form>
               <p className={styles.caution} role="status">
-                Opening hours, closures, capacity and step-free routes are not
-                certified by these map points. Check with the office before
-                visiting a facility.
+                Hours and closures appear only when separately reviewed by the
+                campground, with a review date. Capacity and step-free routes
+                are not certified here. Confirm with the office before visiting.
               </p>
             </section>
 
@@ -274,6 +275,18 @@ export default async function GuestServicesPage({
                     {item.landmarkHint ? (
                       <p>
                         <strong>Landmark note:</strong> {item.landmarkHint}
+                      </p>
+                    ) : null}
+                    {item.hoursSummary ? (
+                      <p>
+                        <strong>Campground-published hours:</strong>{" "}
+                        {item.hoursSummary}
+                      </p>
+                    ) : null}
+                    {item.accessibilityDetails ? (
+                      <p>
+                        <strong>Campground-reviewed access details:</strong>{" "}
+                        {item.accessibilityDetails}
                       </p>
                     ) : null}
                     <p className={styles.unknown}>{item.availabilityLabel}</p>
