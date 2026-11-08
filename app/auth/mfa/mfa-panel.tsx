@@ -3,7 +3,9 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-export function MfaPanel() {
+export function MfaPanel({
+  returnPath = "/auth/account",
+}: Readonly<{ returnPath?: string }>) {
   const router = useRouter();
   const [password, setPassword] = useState("");
   const [seed, setSeed] = useState("");
@@ -62,7 +64,7 @@ export function MfaPanel() {
       setSeed("");
       setUri("");
       setCode("");
-      router.push("/auth/account");
+      router.push(returnPath);
       router.refresh();
     } catch (error) {
       setMessage(
