@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 
 import { AppShell } from "@/components/app-shell";
+import { BookingExtrasSelector } from "@/components/booking-extras-selector";
 import {
   BookingJourney,
   CheckoutSectionLinks,
@@ -10,6 +11,7 @@ import {
 import { SectionHeading } from "@/components/section-heading";
 import { requireSignedIn } from "@/lib/auth/current-session";
 import { formatMoney } from "@/lib/pricing/core.mjs";
+import { parsePublicQuoteSelections } from "@/lib/public-accommodation-detail/quote-preview.mjs";
 import { getReservationCheckout } from "@/lib/reservation-checkout/postgres.mjs";
 
 import { finalizeReservationCheckoutAction } from "./actions";
@@ -121,6 +123,25 @@ export default async function ReservationCheckoutPage({
     checkout.bookingCharges?.items.filter(
       (item) => item.applicationMode === "optional",
     ) ?? [];
+  let selectedExtras: Array<{ code: string; quantity: number }> = [];
+  let extrasWarning: string | null = null;
+  try {
+    selectedExtras = parsePublicQuoteSelections(query);
+    if (
+      selectedExtras.some(
+        (item) => !optionalItems.some((option) => option.code === item.code),
+      )
+    ) {
+      extrasWarning =
+        "Some extras have become unavailable for these dates. Select the available services below.";
+      selectedExtras = selectedExtras.filter((item) =>
+        optionalItems.some((option) => option.code === item.code),
+      );
+    }
+  } catch {
+    extrasWarning =
+      "The previous extra selections were invalid. Please choose again.";
+  }
   const automaticItems =
     checkout.bookingCharges?.items.filter(
       (item) => item.applicationMode === "automatic",
@@ -434,37 +455,27 @@ export default async function ReservationCheckoutPage({
 
           <section className="content-panel">
             <SectionHeading
-              eyebrow="Add-ons, passes & fees"
-              title="Choose optional booking charges"
+              eyebrow="Build 234 · Guest-selected camping services"
+              title="Select add-ons and see the updated estimate"
               id="checkout-addons"
               helpTopic="shell.overview"
             />
-            {optionalItems.length > 0 ? (
-              optionalItems.map((item) => (
-                <div key={item.id}>
-                  <label>
-                    <input
-                      type="checkbox"
-                      name="chargeCode"
-                      value={item.code}
-                    />{" "}
-                    <strong>{item.displayName}</strong> · {item.priceLabel}
-                  </label>
-                  <label>
-                    <span>Quantity</span>
-                    <input
-                      name={`quantity__${item.code}`}
-                      type="number"
-                      min={item.minimumQuantity}
-                      max={item.maximumQuantity}
-                      defaultValue={item.minimumQuantity}
-                    />
-                  </label>
-                  {item.description ? <p>{item.description}</p> : null}
-                </div>
-              ))
+            {extrasWarning ? (
+              <p role="alert" className="form-message form-message--error">
+                {extrasWarning}
+              </p>
+            ) : null}
+            {rateAvailable && checkout.rateQuote.totalCents !== null ? (
+              <BookingExtrasSelector
+                items={optionalItems}
+                initialSelections={selectedExtras}
+                nights={checkout.dates.nights}
+                staySubtotalCents={checkout.rateQuote.totalCents}
+                automaticTotalCents={automaticTotal}
+                currencyCode={checkout.rateQuote.currencyCode ?? "CAD"}
+              />
             ) : (
-              <p>No optional add-ons or passes are configured.</p>
+              <p>Live pricing is unavailable; we cannot estimate add-ons.</p>
             )}
 
             {automaticItems.length > 0 ? (

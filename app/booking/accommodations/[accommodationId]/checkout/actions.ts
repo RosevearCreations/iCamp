@@ -3,6 +3,10 @@
 import { redirect } from "next/navigation";
 
 import { requireSignedIn } from "@/lib/auth/current-session";
+import {
+  parsePublicQuoteSelections,
+  PUBLIC_QUOTE_EXTRA_SLOTS,
+} from "@/lib/public-accommodation-detail/quote-preview.mjs";
 import { checkoutErrorCode } from "@/lib/reservation-checkout/core.mjs";
 import {
   finalizeReservationCheckout,
@@ -27,11 +31,27 @@ function detailPath(
   );
 }
 
-function checkoutPath(accommodationId: string, holdId: string) {
-  return (
+function checkoutPath(
+  accommodationId: string,
+  holdId: string,
+  selections: Array<{ code: string; quantity: number }> = [],
+) {
+  const path =
     `/booking/accommodations/${encodeURIComponent(accommodationId)}/checkout` +
-    `?hold=${encodeURIComponent(holdId)}`
-  );
+    `?hold=${encodeURIComponent(holdId)}`;
+  return withExtraSelections(path, selections);
+}
+
+function withExtraSelections(
+  path: string,
+  selections: Array<{ code: string; quantity: number }>,
+) {
+  const query = new URLSearchParams(path.split("?")[1] ?? "");
+  selections.forEach((selection, index) => {
+    query.set(`extra${index + 1}`, selection.code);
+    query.set(`quantity${index + 1}`, String(selection.quantity));
+  });
+  return path.split("?")[0] + "?" + query.toString();
 }
 
 function requireGuest(
@@ -53,7 +73,20 @@ export async function startReservationCheckoutAction(formData: FormData) {
     arrivalDate,
     departureDate,
   );
-  const session = await requireSignedIn(returnPath);
+  let selections: Array<{ code: string; quantity: number }>;
+  try {
+    const extras: Record<string, string> = {};
+    for (let index = 1; index <= PUBLIC_QUOTE_EXTRA_SLOTS; index += 1) {
+      extras[`extra${index}`] = field(formData, `extra${index}`);
+      extras[`quantity${index}`] = field(formData, `quantity${index}`) || "1";
+    }
+    selections = parsePublicQuoteSelections(extras);
+  } catch {
+    redirect(returnPath + "&checkoutError=invalid-extra");
+  }
+  const session = await requireSignedIn(
+    withExtraSelections(returnPath, selections),
+  );
   requireGuest(session);
 
   let holdId = "";
@@ -72,7 +105,7 @@ export async function startReservationCheckoutAction(formData: FormData) {
     redirect(returnPath + `&checkoutError=${encodeURIComponent(code)}`);
   }
 
-  redirect(checkoutPath(accommodationId, holdId));
+  redirect(checkoutPath(accommodationId, holdId, selections));
 }
 
 export async function finalizeReservationCheckoutAction(formData: FormData) {
