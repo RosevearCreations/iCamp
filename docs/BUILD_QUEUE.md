@@ -1,5 +1,9 @@
 # iCamp Active Build Queue
 
+**Build 222 — Camper Task Navigation & Safe Booking Search Recovery:** focused return to core usability and security after Comms integration. Prioritize booking, My Stay and staff access; gracefully reject invalid booking search input without querying accommodation availability. See [`BUILD_222_CAMPER_TASK_NAVIGATION_BOOKING_SEARCH.md`](BUILD_222_CAMPER_TASK_NAVIGATION_BOOKING_SEARCH.md). Promotion status requires protected `dev`/`main` and Vercel proof; completion evidence is reported separately.
+
+**Suggested next product focus:** Guest booking-date guidance and reservation progress clarity, informed by actual camper/staff usability feedback. No further Comms readiness build is queued here.
+
 Current program: **iCamp2027**
 
 ## Approved Build Batch 171–200 (30 defined; Build 200 promoted)

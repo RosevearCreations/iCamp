@@ -49,11 +49,10 @@ export function AppShell({
 
         <nav className="topbar__quicklinks" aria-label="Quick navigation">
           <Link href="/">Overview</Link>
-          <Link href="/booking/map">Site map</Link>
-          <Link href="/workspaces/management">Management</Link>
-          <Link href="/workspaces/management/command">Command</Link>
-          <Link href="/workspaces/it-analysis">I.T.</Link>
-          <Link href="/launch/subscriptions">I.T. & Billing</Link>
+          <Link href="/booking/map">Find a stay</Link>
+          <Link href="/workspaces/guest">My stay</Link>
+          <Link href="/events">Events</Link>
+          <Link href="/workspaces/front-desk">Staff workspace</Link>
           <Link href="/status">Status</Link>
         </nav>
 
@@ -90,8 +89,8 @@ export function AppShell({
                 </ul>
               </div>
             ))}
-            <div className="sidebar__group">
-              <p className="sidebar__group-label">Connectivity & launch</p>
+            <details className="sidebar__group sidebar__advanced">
+              <summary>Administration &amp; system tools</summary>
               <ul className="workspace-nav">
                 <li>
                   <Link href="/workspaces/management/command">
@@ -123,7 +122,7 @@ export function AppShell({
                   <Link href="/status">System status</Link>
                 </li>
               </ul>
-            </div>
+            </details>
           </nav>
 
           <div className="sidebar__principle">
