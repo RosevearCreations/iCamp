@@ -3,6 +3,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 
 import { AppShell } from "@/components/app-shell";
+import { GuestArrivalGuide } from "@/components/guest-arrival-guide";
 import { SectionHeading } from "@/components/section-heading";
 import { requireSignedIn } from "@/lib/auth/current-session";
 import { arrivalReadiness } from "@/lib/arrival-planner/core.mjs";
@@ -124,6 +125,7 @@ export default async function GuestArrivalPlannerPage({
         </section>
         {stay && readiness ? (
           <>
+            <GuestArrivalGuide stay={stay} arrival={bundle} />
             {params.saved === "1" ? (
               <p role="status" className="content-panel">
                 Your arrival details were saved internally. The reservation,
