@@ -149,6 +149,14 @@ export default async function OperationalAssetsPage({
             and fleet: map linkage, ownership and meter facts, plus a current
             operating-state hook ready for later maintenance and status flows.
           </p>
+          <div className="hero-actions">
+            <Link
+              className="secondary-link"
+              href="/workspaces/management/campgrounds/amenity-status"
+            >
+              Staff amenity status &amp; maintenance
+            </Link>
+          </div>
         </section>
 
         {params.saved ? (
