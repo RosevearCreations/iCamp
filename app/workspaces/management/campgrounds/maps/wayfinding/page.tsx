@@ -77,6 +77,14 @@ export default async function WayfindingReviewPage({
             campground&apos;s statements, not independent certification or
             automatic turn-by-turn directions.
           </p>
+          <div className="hero-actions">
+            <Link
+              className="primary-link"
+              href="/workspaces/management/campgrounds/maps/wayfinding/services"
+            >
+              Service hours and accessibility editor →
+            </Link>
+          </div>
         </section>
 
         {params.saved ? (
