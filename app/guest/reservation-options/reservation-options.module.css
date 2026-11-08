@@ -1,0 +1,85 @@
+.choices {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.85rem;
+  margin-top: 1rem;
+}
+
+.choice {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding: 1rem;
+  border: 1px solid var(--border, #cad1dc);
+  border-radius: 0.8rem;
+  background: var(--surface, #fff);
+  min-width: 0;
+}
+
+.choice strong,
+.choice span {
+  display: block;
+}
+
+.choice span {
+  font-size: 0.9rem;
+}
+
+.choice a {
+  margin-top: auto;
+  font-weight: 650;
+  text-underline-offset: 0.2em;
+}
+
+.choice a:focus-visible {
+  outline: 3px solid #6266a9;
+  outline-offset: 3px;
+}
+
+.facts {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.8rem;
+  margin: 1rem 0;
+}
+
+.facts div {
+  min-width: 0;
+  padding: 0.8rem;
+  border: 1px solid var(--border, #cad1dc);
+  border-radius: 0.65rem;
+}
+
+.facts dt {
+  font-size: 0.9rem;
+}
+
+.facts dd {
+  margin: 0.35rem 0 0;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.section {
+  scroll-margin-top: 1rem;
+}
+
+.status {
+  font-weight: 650;
+}
+
+@media (max-width: 760px) {
+  .choices,
+  .facts {
+    grid-template-columns: 1fr;
+  }
+
+  .choice {
+    padding: 0.85rem;
+  }
+
+  .section form button,
+  .choice a {
+    min-height: 44px;
+  }
+}

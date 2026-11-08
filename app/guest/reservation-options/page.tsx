@@ -6,6 +6,7 @@ import { redirect } from "next/navigation";
 
 import { QuoteSummary } from "@/app/booking/accommodations/[accommodationId]/quote-summary";
 import { AppShell } from "@/components/app-shell";
+import { GuestReviewReason } from "@/components/guest-review-reason";
 import { SectionHeading } from "@/components/section-heading";
 import { requireSignedIn } from "@/lib/auth/current-session";
 import { listMyStays } from "@/lib/my-stay/postgres.mjs";
@@ -21,6 +22,7 @@ import {
   submitReservationReviewAction,
   withdrawReservationReviewAction,
 } from "./actions";
+import styles from "./reservation-options.module.css";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
@@ -170,14 +172,48 @@ export default async function GuestReservationOptionsPage({
           <span>Reservation options</span>
         </nav>
         <section className="hero-panel">
-          <p className="eyebrow">Build 176 · Review before any decision</p>
+          <p className="eyebrow">Build 224 · Guest reservation decisions</p>
           <h1>Change or cancel? Understand your options first.</h1>
           <p className="hero-panel__lead">
             {stay.reservation.campground.name} ·{" "}
             {stay.reservation.accommodation.code} ·{" "}
             {stay.reservation.arrivalDate} to {stay.reservation.departureDate}
           </p>
+          <p>
+            Nothing changes until the campground reviews and separately approves
+            a request. Compare your options below, then choose whether to submit
+            anything.
+          </p>
         </section>
+        <nav className="content-panel" aria-label="Reservation options guide">
+          <h2>What would you like to do?</h2>
+          <div className={styles.choices}>
+            <div className={styles.choice}>
+              <strong>Keep this booking</strong>
+              <span>No changes, fees or requests.</span>
+              <a href="#reservation-keep">Keep my dates</a>
+            </div>
+            <div className={styles.choice}>
+              <strong>Consider new dates</strong>
+              <span>
+                Compare an available public quote; staff decide adjustments.
+              </span>
+              <a href="#reservation-date-preview">Explore a date change</a>
+            </div>
+            <div className={styles.choice}>
+              <strong>Understand cancellation</strong>
+              <span>
+                Read current policy and any source-backed refund estimate.
+              </span>
+              <a href="#reservation-cancel-preview">See cancellation terms</a>
+            </div>
+          </div>
+          <p>
+            Any request is an internal staff-review request, not a cancellation,
+            reservation change or refund instruction. You can check its status
+            under <a href="#reservation-review-requests">My review requests</a>.
+          </p>
+        </nav>
         {params.saved === "1" ? (
           <p role="status" className="content-panel">
             Your staff-review request was saved internally. Your reservation
@@ -194,7 +230,7 @@ export default async function GuestReservationOptionsPage({
             {errors[params.error]}
           </p>
         ) : null}
-        <section className="content-panel">
+        <section className={`content-panel ${styles.section}`}>
           <SectionHeading
             eyebrow="Your confirmed booking record"
             title="What stays in place"
@@ -233,7 +269,7 @@ export default async function GuestReservationOptionsPage({
             to be zero.
           </p>
         </section>
-        <section className="content-panel">
+        <section className={`content-panel ${styles.section}`}>
           <SectionHeading
             eyebrow="Option 1 · No action"
             title="Keep my reservation"
@@ -248,7 +284,7 @@ export default async function GuestReservationOptionsPage({
             Keep my booking and return to My Stay
           </Link>
         </section>
-        <section className="content-panel">
+        <section className={`content-panel ${styles.section}`}>
           <SectionHeading
             eyebrow="Option 2 · Availability and repricing"
             title="Explore different dates"
@@ -313,6 +349,12 @@ export default async function GuestReservationOptionsPage({
                     balance.
                   </p>
                   <QuoteSummary quote={freshDetail.quotePreview} />
+                  <p className={styles.status}>
+                    The new public quote is only a comparison. Your recorded
+                    payments, fees and original reservation do not change here.
+                    Staff must check any difference before approving an
+                    amendment.
+                  </p>
                 </>
               ) : (
                 <p role="alert">
@@ -362,17 +404,14 @@ export default async function GuestReservationOptionsPage({
                     name="idempotencyKey"
                     value={randomUUID()}
                   />
-                  <label>
-                    Reason for the date change
-                    <textarea
-                      name="reason"
-                      minLength={10}
-                      maxLength={500}
-                      rows={3}
-                      required
-                      placeholder="Tell the office what needs to change"
-                    />
-                  </label>
+                  <GuestReviewReason
+                    guestId={session.user.id}
+                    reservationId={selected.id}
+                    kind="change_dates"
+                    label="Reason for the date change"
+                    placeholder="Tell the office what needs to change"
+                    clearOnSuccess={params.saved === "1"}
+                  />
                   <label>
                     <input type="checkbox" name="confirmReview" required /> I
                     understand this only submits an internal staff-review
@@ -386,7 +425,7 @@ export default async function GuestReservationOptionsPage({
             </>
           ) : null}
         </section>
-        <section className="content-panel">
+        <section className={`content-panel ${styles.section}`}>
           <SectionHeading
             eyebrow="Option 3 · Current campground policy"
             title="Cancellation preview and request"
@@ -420,6 +459,35 @@ export default async function GuestReservationOptionsPage({
           {cancellation.status === "estimated" &&
           cancellation.recommendation ? (
             <>
+              <dl className={styles.facts}>
+                <div>
+                  <dt>Captured payments on record</dt>
+                  <dd>
+                    {formatMoney(
+                      cancellation.capturedCents,
+                      stay.payment.currencyCode,
+                    )}
+                  </dd>
+                </div>
+                <div>
+                  <dt>Refunds already recorded</dt>
+                  <dd>
+                    {formatMoney(
+                      cancellation.refundedCents,
+                      stay.payment.currencyCode,
+                    )}
+                  </dd>
+                </div>
+                <div>
+                  <dt>Possible refund under current policy</dt>
+                  <dd>
+                    {formatMoney(
+                      cancellation.recommendation.recommendedRefundCents,
+                      stay.payment.currencyCode,
+                    )}
+                  </dd>
+                </div>
+              </dl>
               <p role="status">
                 <strong>Illustrative policy recommendation:</strong>{" "}
                 {formatMoney(
@@ -465,17 +533,14 @@ export default async function GuestReservationOptionsPage({
                 value={policy?.rowVersion ?? ""}
               />
               <input type="hidden" name="idempotencyKey" value={randomUUID()} />
-              <label>
-                Reason for requesting cancellation review
-                <textarea
-                  name="reason"
-                  minLength={10}
-                  maxLength={500}
-                  rows={3}
-                  required
-                  placeholder="Explain your cancellation question or circumstances"
-                />
-              </label>
+              <GuestReviewReason
+                guestId={session.user.id}
+                reservationId={selected.id}
+                kind="cancellation_review"
+                label="Reason for requesting cancellation review"
+                placeholder="Explain your cancellation question or circumstances"
+                clearOnSuccess={params.saved === "1"}
+              />
               <label>
                 <input type="checkbox" name="confirmReview" required /> I
                 understand this only requests staff review. It does not cancel
@@ -489,7 +554,7 @@ export default async function GuestReservationOptionsPage({
             <p>Contact the campground office about this reservation state.</p>
           )}
         </section>
-        <section className="content-panel">
+        <section className={`content-panel ${styles.section}`}>
           <SectionHeading
             eyebrow="Internal follow-up · no outbound messages"
             title="My review requests"

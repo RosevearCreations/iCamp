@@ -1,0 +1,33 @@
+.field {
+  display: grid;
+  gap: 0.55rem;
+  min-width: 0;
+}
+
+.field textarea {
+  width: 100%;
+  min-width: 0;
+}
+
+.guidance,
+.notice {
+  margin: 0;
+  color: var(--text-muted, #566176);
+  font-size: 0.92rem;
+}
+
+.consent {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.55rem;
+  line-height: 1.45;
+}
+
+.consent input {
+  flex: 0 0 auto;
+  margin-top: 0.25rem;
+}
+
+.field button {
+  justify-self: start;
+}
