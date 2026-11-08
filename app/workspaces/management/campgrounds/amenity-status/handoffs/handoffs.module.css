@@ -121,6 +121,42 @@
 .meta {
   font-size: 0.87rem;
 }
+.slaStatus,
+.dueSoon,
+.overdue {
+  border-radius: 0.7rem;
+  border: 1px solid var(--border, #86909b);
+  padding: 0.6rem 0.75rem;
+  font-variant-numeric: tabular-nums;
+}
+.dueSoon {
+  background: #fff1c7;
+  color: #5a3900;
+  border-color: #ba851c;
+}
+.overdue {
+  background: #ffe0e0;
+  color: #6d1717;
+  border-color: #c34d4d;
+}
+.eventTimeline {
+  border-left: 3px solid var(--border, #86909b);
+  margin: 0.85rem 0;
+  padding-left: 1rem;
+}
+.eventTimeline h4 {
+  margin-bottom: 0.45rem;
+}
+.eventTimeline ol {
+  margin: 0;
+  padding-left: 1.2rem;
+}
+.eventTimeline li {
+  padding-bottom: 0.65rem;
+}
+.eventTimeline li p {
+  margin: 0.2rem 0 0;
+}
 .tabs {
   display: flex;
   gap: 0.55rem;

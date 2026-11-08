@@ -11,6 +11,9 @@ import {
   listStaffAmenityAssets,
 } from "@/lib/amenity-status/postgres.mjs";
 import {
+  amenityFollowupOutcomes,
+  canRecordHandoffFollowup,
+  evaluateHandoffSla,
   handoffActorCanAct,
   amenityHandoffPriorities,
 } from "@/lib/amenity-handoffs/core.mjs";
@@ -23,14 +26,15 @@ import {
 import {
   createAmenityHandoffAction,
   decideAmenityHandoffAction,
+  recordAmenityFollowupAction,
 } from "./actions";
 import styles from "./handoffs.module.css";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
-  title: "Amenity shift handoffs & guest review · iCamp",
+  title: "Amenity handoff SLA & guest follow-through · iCamp",
   description:
-    "Staff shift handoff, issue assignment, acknowledgement and separate campground-owner guest-information review.",
+    "Cross-shift aging and maintenance response targets with private supervisor escalations and owner guest-information review follow-through.",
   robots: { index: false, follow: false },
 };
 
@@ -65,6 +69,10 @@ const results: Record<string, string> = {
     "The original campground database must apply Build 230 migration 0217 first.",
   failed:
     "The change could not be saved. No guest information was changed. Please retry or contact the campground manager.",
+  followup_saved:
+    "Private follow-up evidence saved. No guest publication, messaging or maintenance completion occurred.",
+  duplicate_followup:
+    "An identical follow-up was already saved recently. Review the latest timeline before trying again.",
 };
 
 function pretty(value: string) {
@@ -78,6 +86,22 @@ function stamp(value: string | Date | null) {
     ? "Not recorded"
     : `${date.toISOString().slice(0, 16).replace("T", " ")} UTC`;
 }
+
+function duration(minutes: number | null) {
+  if (minutes === null) return "Unknown";
+  const total = Math.abs(minutes);
+  if (total < 60) return `${total}m`;
+  if (total < 1440) return `${Math.floor(total / 60)}h ${total % 60}m`;
+  return `${Math.floor(total / 1440)}d ${Math.floor((total % 1440) / 60)}h`;
+}
+
+const slaOrder: Record<string, number> = {
+  overdue: 0,
+  due_soon: 1,
+  on_track: 2,
+  unknown: 3,
+  complete: 4,
+};
 
 export default async function AmenityHandoffPage({
   searchParams,
@@ -141,18 +165,35 @@ export default async function AmenityHandoffPage({
       )
       .map((item) => item.assetId),
   );
-  const tab = ["open", "guest_review", "closed", "all"].includes(
-    params.tab ?? "",
-  )
+  const timedItems = ledger.items.map((item) => ({
+    ...item,
+    sla: evaluateHandoffSla(item),
+  }));
+  const tab = [
+    "open",
+    "overdue",
+    "due_soon",
+    "guest_review",
+    "closed",
+    "all",
+  ].includes(params.tab ?? "")
     ? params.tab
     : "open";
-  const visible = ledger.items.filter((item) => {
-    if (tab === "guest_review")
-      return item.kind === "guest_review" && item.status !== "closed";
-    if (tab === "open") return item.status !== "closed";
-    if (tab === "closed") return item.status === "closed";
-    return true;
-  });
+  const visible = timedItems
+    .filter((item) => {
+      if (tab === "guest_review")
+        return item.kind === "guest_review" && item.status !== "closed";
+      if (tab === "overdue") return item.sla.state === "overdue";
+      if (tab === "due_soon") return item.sla.state === "due_soon";
+      if (tab === "open") return item.status !== "closed";
+      if (tab === "closed") return item.status === "closed";
+      return true;
+    })
+    .sort(
+      (a, b) =>
+        (slaOrder[a.sla.state] ?? 9) - (slaOrder[b.sla.state] ?? 9) ||
+        (a.sla.dueAt ?? "").localeCompare(b.sla.dueAt ?? ""),
+    );
   const scoped = (url: string) =>
     `${url}?campground=${encodeURIComponent(selected.campgroundId)}`;
 
@@ -171,14 +212,29 @@ export default async function AmenityHandoffPage({
           <span>Shift handoffs</span>
         </nav>
         <section className="hero-panel">
-          <p className="eyebrow">Build 230 · Staff coordination</p>
-          <h1>Shift handoffs &amp; guest review</h1>
+          <p className="eyebrow">
+            Build 231 · Cross-shift escalation &amp; follow-through
+          </p>
+          <h1>Shift handoffs, deadlines &amp; guest review</h1>
           <p className="hero-panel__lead">
             Leave a durable next-shift action, assign responsibility and
             acknowledge follow-through. Flag guest-information gaps for owner
             review. Handoffs and review decisions are private staff records;
             they never change the public service directory or certify that a
             facility is safe to enter.
+          </p>
+          <p>
+            Response windows are internal planning targets, not guaranteed
+            service levels or emergency response. Urgent issues that present a
+            safety risk still require direct contact with the campground duty
+            manager.
+          </p>
+          <p>
+            Response targets: urgent 1-hour acknowledgement and 4-hour
+            follow-through; important 4-hour acknowledgement and 24-hour
+            follow-through; normal 24-hour acknowledgement and 72-hour
+            follow-through. Guest-owner review uses the follow-through target
+            from the original request, even if the handoff is reassigned.
           </p>
           <div className="hero-actions">
             <Link
@@ -224,6 +280,17 @@ export default async function AmenityHandoffPage({
             </p>
           </section>
         ) : null}
+        {ledger.migrationReady && !ledger.followupReady ? (
+          <section className="content-panel" role="status">
+            <h2>Build 231 original database update required</h2>
+            <p>
+              Migration 0218 is not available on the connected campground
+              database. Deadline indicators remain informational; supervisor
+              escalation and owner follow-up forms are disabled until it is
+              applied.
+            </p>
+          </section>
+        ) : null}
 
         <section className="content-panel">
           <h2>Choose campground</h2>
@@ -246,6 +313,24 @@ export default async function AmenityHandoffPage({
             </button>
           </form>
           <div className={styles.metrics} aria-label="Handoff status counts">
+            <p>
+              <strong>
+                {ledger.migrationReady
+                  ? timedItems.filter((item) => item.sla.state === "overdue")
+                      .length
+                  : "—"}
+              </strong>
+              <span>Overdue response targets</span>
+            </p>
+            <p>
+              <strong>
+                {ledger.migrationReady
+                  ? timedItems.filter((item) => item.sla.state === "due_soon")
+                      .length
+                  : "—"}
+              </strong>
+              <span>Due soon</span>
+            </p>
             <p>
               <strong>
                 {ledger.migrationReady
@@ -444,6 +529,8 @@ export default async function AmenityHandoffPage({
             <nav className={styles.tabs} aria-label="Filter handoffs">
               {[
                 { key: "open", label: "Active" },
+                { key: "overdue", label: "Overdue" },
+                { key: "due_soon", label: "Due soon" },
                 { key: "guest_review", label: "Guest review" },
                 { key: "closed", label: "Closed" },
                 { key: "all", label: "All" },
@@ -481,6 +568,22 @@ export default async function AmenityHandoffPage({
                   assignedToUserId: item.assignedToUserId,
                   ...ledger.permissions,
                 });
+                const canEscalate =
+                  ledger.followupReady &&
+                  canRecordHandoffFollowup({
+                    eventKind: "escalation",
+                    kind: item.kind,
+                    status: item.status,
+                    ...ledger.permissions,
+                  });
+                const canReview =
+                  ledger.followupReady &&
+                  canRecordHandoffFollowup({
+                    eventKind: "guest_followup",
+                    kind: item.kind,
+                    status: item.status,
+                    ...ledger.permissions,
+                  });
                 return (
                   <article className={styles.entry} key={item.id}>
                     <div className={styles.entryHead}>
@@ -513,6 +616,34 @@ export default async function AmenityHandoffPage({
                           ? "Assigned staff"
                           : "Unassigned")}
                     </p>
+                    <p
+                      className={
+                        item.sla.state === "overdue"
+                          ? styles.overdue
+                          : item.sla.state === "due_soon"
+                            ? styles.dueSoon
+                            : styles.slaStatus
+                      }
+                    >
+                      <strong>{pretty(item.sla.phase)} target:</strong>{" "}
+                      {item.sla.state === "complete"
+                        ? "Closed"
+                        : item.sla.state === "unknown"
+                          ? "Timing unavailable"
+                          : `${pretty(item.sla.state)} · ${
+                              item.sla.remainingMinutes! < 0
+                                ? `${duration(item.sla.remainingMinutes)} late`
+                                : `${duration(item.sla.remainingMinutes)} left`
+                            } · due ${stamp(item.sla.dueAt)}`}
+                      {item.sla.ageMinutes !== null
+                        ? ` · ${duration(item.sla.ageMinutes)} old`
+                        : ""}
+                    </p>
+                    {item.escalationCount > 0 ? (
+                      <p className={styles.meta}>
+                        Escalations recorded: {item.escalationCount}
+                      </p>
+                    ) : null}
                     {item.acknowledgedAt ? (
                       <p className={styles.meta}>
                         Acknowledged {stamp(item.acknowledgedAt)}
@@ -536,8 +667,127 @@ export default async function AmenityHandoffPage({
                         </Link>
                       </p>
                     ) : null}
+                    {item.followups.length ? (
+                      <div className={styles.eventTimeline}>
+                        <h4>Recent private follow-through</h4>
+                        <ol>
+                          {item.followups.map((event) => (
+                            <li key={event.id}>
+                              <strong>{pretty(event.kind)}</strong>
+                              {event.outcome
+                                ? ` · ${pretty(event.outcome)}`
+                                : ""}
+                              {` · ${stamp(event.createdAt)}`}
+                              <p>{event.note}</p>
+                            </li>
+                          ))}
+                        </ol>
+                        {item.eventCount > item.followups.length ? (
+                          <p className={styles.meta}>
+                            Showing latest {item.followups.length} of{" "}
+                            {item.eventCount} audit-backed events.
+                          </p>
+                        ) : null}
+                      </div>
+                    ) : null}
                     {item.status !== "closed" ? (
                       <div className={styles.actions}>
+                        {canEscalate ? (
+                          <form
+                            action={recordAmenityFollowupAction}
+                            className={styles.actionForm}
+                          >
+                            <input
+                              type="hidden"
+                              name="campgroundId"
+                              value={selected.campgroundId}
+                            />
+                            <input
+                              type="hidden"
+                              name="handoffId"
+                              value={item.id}
+                            />
+                            <input
+                              type="hidden"
+                              name="rowVersion"
+                              value={item.rowVersion}
+                            />
+                            <input
+                              type="hidden"
+                              name="eventKind"
+                              value="escalation"
+                            />
+                            <label>
+                              Supervisor escalation note
+                              <textarea
+                                name="note"
+                                required
+                                minLength={8}
+                                maxLength={500}
+                                rows={2}
+                                placeholder="Who was contacted and what follow-up is required?"
+                              />
+                            </label>
+                            <button type="submit" className="secondary-button">
+                              Record escalation
+                            </button>
+                          </form>
+                        ) : null}
+                        {canReview ? (
+                          <form
+                            action={recordAmenityFollowupAction}
+                            className={styles.actionForm}
+                          >
+                            <input
+                              type="hidden"
+                              name="campgroundId"
+                              value={selected.campgroundId}
+                            />
+                            <input
+                              type="hidden"
+                              name="handoffId"
+                              value={item.id}
+                            />
+                            <input
+                              type="hidden"
+                              name="rowVersion"
+                              value={item.rowVersion}
+                            />
+                            <input
+                              type="hidden"
+                              name="eventKind"
+                              value="guest_followup"
+                            />
+                            <label>
+                              Owner review outcome
+                              <select
+                                name="outcome"
+                                required
+                                defaultValue="needs_more_evidence"
+                              >
+                                {amenityFollowupOutcomes.map((outcome) => (
+                                  <option value={outcome} key={outcome}>
+                                    {pretty(outcome)}
+                                  </option>
+                                ))}
+                              </select>
+                            </label>
+                            <label>
+                              Guest-information follow-through
+                              <textarea
+                                name="note"
+                                required
+                                minLength={8}
+                                maxLength={500}
+                                rows={2}
+                                placeholder="Evidence reviewed and next owner action; publication remains separate."
+                              />
+                            </label>
+                            <button type="submit" className="secondary-button">
+                              Save owner follow-up
+                            </button>
+                          </form>
+                        ) : null}
                         {ledger.permissions.canAssign ? (
                           <form
                             action={decideAmenityHandoffAction}

@@ -18,6 +18,15 @@ export interface AmenityHandoffRow {
   rowVersion: number;
   createdAt: string | Date;
   updatedAt: string | Date;
+  escalationCount: number;
+  eventCount: number;
+  followups: Array<{
+    id: string;
+    kind: string;
+    outcome: string | null;
+    note: string;
+    createdAt: string | Date;
+  }>;
 }
 export interface HandoffPermissions {
   canRead: boolean;
@@ -32,6 +41,7 @@ export function listAmenityHandoffs(input: {
   campgroundId: string;
 }): Promise<{
   migrationReady: boolean;
+  followupReady: boolean;
   items: AmenityHandoffRow[];
   staff: Array<{ id: string; label: string }>;
   permissions: HandoffPermissions;
@@ -59,5 +69,17 @@ export function decideAmenityHandoff(input: {
     action: unknown;
     expectedRowVersion: unknown;
     resolutionNote?: unknown;
+  };
+}): Promise<string>;
+export function recordAmenityHandoffFollowup(input: {
+  actorUserId: string;
+  actorSessionId?: string | null;
+  campgroundId: string;
+  handoffId: string;
+  input: {
+    eventKind: unknown;
+    outcome?: unknown;
+    note: unknown;
+    expectedRowVersion: unknown;
   };
 }): Promise<string>;
