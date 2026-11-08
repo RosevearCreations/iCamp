@@ -1,0 +1,99 @@
+.journey,
+.jumpNav {
+  border: 1px solid var(--line);
+  border-radius: 1rem;
+  background: var(--surface);
+  padding: 1rem;
+}
+
+.intro {
+  margin: 0 0 0.8rem;
+  font-weight: 800;
+}
+
+.stages {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.7rem;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.stage,
+.active {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.55rem;
+  min-width: 0;
+  padding: 0.7rem;
+  border: 1px solid var(--line);
+  border-radius: 0.75rem;
+  background: var(--surface-soft);
+}
+
+.active {
+  border: 2px solid var(--brand);
+  background: #edf5ed;
+}
+
+.number {
+  flex: 0 0 auto;
+  display: grid;
+  width: 1.65rem;
+  height: 1.65rem;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--brand);
+  color: white;
+  font-weight: 850;
+}
+
+.stages strong,
+.stages small {
+  display: block;
+  line-height: 1.4;
+}
+
+.stages strong {
+  font-size: 0.9rem;
+}
+
+.stages small {
+  color: var(--muted);
+  font-size: 0.75rem;
+}
+
+.stages .current {
+  color: var(--brand);
+  font-weight: 800;
+}
+
+.stages a,
+.jumpNav a {
+  text-underline-offset: 0.2rem;
+}
+
+.jumpNav p {
+  margin: 0.4rem 0;
+}
+
+.jumpNav ol {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.2rem;
+  padding-left: 1.5rem;
+  margin-bottom: 0;
+}
+
+@media (max-width: 64rem) {
+  .stages {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 32rem) {
+  .stages {
+    grid-template-columns: 1fr;
+  }
+}
