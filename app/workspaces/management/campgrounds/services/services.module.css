@@ -24,6 +24,13 @@
   align-content: start;
   gap: 0.3rem;
 }
+.windowGroup {
+  display: grid;
+  gap: 0.6rem;
+  padding: 0.8rem;
+  border: 1px solid var(--border, #9eaba1);
+  border-radius: 0.5rem;
+}
 .fields input,
 .fields select,
 .selector select,
