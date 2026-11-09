@@ -9,6 +9,7 @@ import {
   reviewCampgroundFulfillmentException,
   updateCampgroundFulfillment,
 } from "@/lib/booking-charges/fulfillment-postgres.mjs";
+import { updateCampgroundFulfillmentPlanningSettings } from "@/lib/booking-charges/fulfillment-forecast-postgres.mjs";
 
 const path = "/workspaces/management/campgrounds/service-fulfillment";
 
@@ -96,6 +97,38 @@ export async function reviewFulfillmentExceptionAction(form: FormData) {
     result = "reviewed";
   } catch {
     // Do not disclose untrusted work identities, notes, or internal SQL errors.
+  }
+  revalidatePath(path);
+  redirect(
+    `${path}?campground=${encodeURIComponent(campgroundId)}&result=${result}`,
+  );
+}
+
+export async function updateFulfillmentForecastSettingsAction(form: FormData) {
+  const campgroundId = field(form, "campgroundId");
+  const session = await requireCampgroundPermission(
+    campgroundId,
+    "schedule.manage",
+    path,
+  );
+  let result = "forecast-error";
+  try {
+    await updateCampgroundFulfillmentPlanningSettings({
+      actorUserId: session.user.id,
+      actorSessionId: session.sessionId,
+      campgroundId,
+      expectedRowVersion: Number(field(form, "forecastRowVersion")),
+      morningStart: field(form, "morningStart"),
+      morningEnd: field(form, "morningEnd"),
+      afternoonStart: field(form, "afternoonStart"),
+      afternoonEnd: field(form, "afternoonEnd"),
+      eveningStart: field(form, "eveningStart"),
+      eveningEnd: field(form, "eveningEnd"),
+      maxUnitsPerStaffWindow: field(form, "maxUnitsPerStaffWindow"),
+    });
+    result = "forecast-saved";
+  } catch {
+    // A failed shift authorization or private roster lookup is never echoed.
   }
   revalidatePath(path);
   redirect(
