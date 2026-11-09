@@ -13,10 +13,13 @@ import {
   listCampgroundFulfillment,
   type FulfillmentJob,
 } from "@/lib/booking-charges/fulfillment-postgres.mjs";
+import { FULFILLMENT_FORECAST_LABELS } from "@/lib/booking-charges/fulfillment-forecast-core.mjs";
+import { getCampgroundFulfillmentForecast } from "@/lib/booking-charges/fulfillment-forecast-postgres.mjs";
 
 import {
   assignFulfillmentAction,
   reviewFulfillmentExceptionAction,
+  updateFulfillmentForecastSettingsAction,
   updateFulfillmentAction,
 } from "./actions";
 import styles from "../services/services.module.css";
@@ -50,11 +53,13 @@ function JobCard({
   campgroundId,
   canManageStaff,
   staff,
+  forecastStatus,
 }: {
   job: FulfillmentJob;
   campgroundId: string;
   canManageStaff: boolean;
   staff: { userId: string; label: string }[];
+  forecastStatus?: string;
 }) {
   const options = transitions[job.jobState] ?? [];
   const currentWorker = staff.find(
@@ -96,6 +101,14 @@ function JobCard({
           : "Unassigned"}
       </p>
       {job.staffNote ? <p>Staff note: {job.staffNote}</p> : null}
+      {forecastStatus ? (
+        <p>
+          Shift outlook:{" "}
+          <strong>
+            {FULFILLMENT_FORECAST_LABELS[forecastStatus] ?? forecastStatus}
+          </strong>
+        </p>
+      ) : null}
       {canManageStaff && job.jobState !== "completed" ? (
         <details>
           <summary>Assign or transfer this work</summary>
@@ -299,6 +312,11 @@ export default async function ServiceFulfillmentPage({
     userId: session.user.id,
     campgroundId: selected.campgroundId,
   });
+  const forecast = await getCampgroundFulfillmentForecast({
+    userId: session.user.id,
+    campgroundId: selected.campgroundId,
+    activeStaffIds: queue.staff.map((person) => person.userId),
+  });
   const outstanding = queue.jobs.filter(
     (job) => job.jobState !== "completed",
   ).length;
@@ -324,11 +342,12 @@ export default async function ServiceFulfillmentPage({
           <span>Fulfillment</span>
         </nav>
         <section className="hero-panel meadow-hero">
-          <p className="eyebrow">Campground product · Build 236</p>
-          <h1>Staff assignment &amp; add-on fulfillment</h1>
+          <p className="eyebrow">Campground product · Build 237</p>
+          <h1>Staff availability &amp; fulfillment forecasts</h1>
           <p className="hero-panel__lead">
             Assign reservation-linked extras to campground staff, balance the
-            work queue and review fulfillment exceptions with a durable history.
+            work queue and review shift coverage, recorded unavailability and
+            campground-approved capacity limits before dispatch decisions.
           </p>
         </section>
         <section className="content-panel">
@@ -371,6 +390,17 @@ export default async function ServiceFulfillmentPage({
             <p role="status" className={styles.notice}>
               Exception review recorded. Work remains blocked until separately
               rescheduled.
+            </p>
+          ) : null}
+          {params.result === "forecast-saved" ? (
+            <p role="status" className={styles.notice}>
+              Campground forecast assumptions saved and audited.
+            </p>
+          ) : null}
+          {params.result === "forecast-error" ? (
+            <p role="alert">
+              Forecast settings were not saved. Refresh the page and check
+              permissions, local time ranges and the current settings version.
             </p>
           ) : null}
           {params.result === "assignment-error" ||
@@ -445,6 +475,200 @@ export default async function ServiceFulfillmentPage({
             )}
           </section>
         ) : null}
+        {queue.canManageStaff && !forecast.canForecast ? (
+          <section className="content-panel">
+            <SectionHeading
+              eyebrow="Shift privacy"
+              title="Forecast access requires scheduling permission"
+              id="fulfillment-forecast-access"
+              helpTopic="campground.structure"
+            />
+            <p>
+              Assignment supervision alone does not disclose employee shift or
+              availability records. An authorized campground owner can grant
+              separate scheduling permission to the appropriate manager.
+            </p>
+          </section>
+        ) : null}
+        {forecast.canForecast ? (
+          <section className="content-panel">
+            <SectionHeading
+              eyebrow="Campground-only shift intelligence · Build 237"
+              title="Availability, shift conflicts and capacity outlook"
+              id="fulfillment-forecast"
+              helpTopic="campground.structure"
+            />
+            <p>
+              Local time zone: <strong>{forecast.timezone}</strong>. This
+              read-only outlook covers the next {forecast.horizonDays} days of
+              current reservation add-ons. It uses recorded shifts,
+              cancellations and employee unavailability; a missing shift means{" "}
+              <em>not on record</em>, not proof someone cannot work.
+            </p>
+            <details>
+              <summary>
+                Configure local service windows and workload limits
+              </summary>
+              <form
+                action={updateFulfillmentForecastSettingsAction}
+                className={styles.form}
+              >
+                <input
+                  type="hidden"
+                  name="campgroundId"
+                  value={selected.campgroundId}
+                />
+                <input
+                  type="hidden"
+                  name="forecastRowVersion"
+                  value={forecast.settings?.rowVersion ?? 0}
+                />
+                <p>
+                  A campground scheduling manager must enter its own actual
+                  service-window times. Windows must be ordered, nonoverlapping
+                  and fall between 04:00 and 23:59 local time. Nothing is
+                  assumed for an unconfigured campground.
+                </p>
+                <div className={styles.fields}>
+                  {(["morning", "afternoon", "evening"] as const).map(
+                    (window) => {
+                      const startKey = `${window}Start` as const;
+                      const endKey = `${window}End` as const;
+                      return (
+                        <div className={styles.windowGroup} key={window}>
+                          <strong>
+                            {window.charAt(0).toUpperCase() + window.slice(1)}
+                          </strong>
+                          <label>
+                            Start
+                            <input
+                              type="time"
+                              name={startKey}
+                              defaultValue={forecast.settings?.[startKey] ?? ""}
+                              min="04:00"
+                              max="23:59"
+                              step={60}
+                              required
+                            />
+                          </label>
+                          <label>
+                            End
+                            <input
+                              type="time"
+                              name={endKey}
+                              defaultValue={forecast.settings?.[endKey] ?? ""}
+                              min="04:00"
+                              max="23:59"
+                              step={60}
+                              required
+                            />
+                          </label>
+                        </div>
+                      );
+                    },
+                  )}
+                  <label>
+                    Maximum units per employee per service window (optional)
+                    <input
+                      type="number"
+                      name="maxUnitsPerStaffWindow"
+                      min={1}
+                      max={1000}
+                      step={1}
+                      defaultValue={
+                        forecast.settings?.maxUnitsPerStaffWindow ?? ""
+                      }
+                      placeholder="Leave blank for coverage only"
+                    />
+                  </label>
+                </div>
+                <p>
+                  Units measure add-on quantities, not hours or employee
+                  productivity. Changing this limit records a planning decision;
+                  it does not alter booked charges or employee shifts.
+                </p>
+                <button type="submit" className="primary-button">
+                  Save campground forecast assumptions
+                </button>
+              </form>
+            </details>
+            <p>
+              <Link
+                href={`/workspaces/management/campgrounds/staff-shifts?campground=${encodeURIComponent(selected.campgroundId)}`}
+              >
+                Review source shifts and staff availability
+              </Link>
+            </p>
+            {forecast.settings ? null : (
+              <p role="status">
+                No campground service-window policy is configured. Coverage is
+                unknown until the owner sets and saves the local times.
+              </p>
+            )}
+            {forecast.truncated ? (
+              <p role="alert">
+                Only the first 250 forecast groups are visible. Additional
+                worker/date groups require pagination before full coverage
+                review.
+              </p>
+            ) : null}
+            {forecast.rows.length ? (
+              <div className={styles.tableScroller}>
+                <table className={styles.loadTable}>
+                  <caption>
+                    Current 30-day campground staff coverage and workload
+                    warnings
+                  </caption>
+                  <thead>
+                    <tr>
+                      <th scope="col">Local service date</th>
+                      <th scope="col">Window</th>
+                      <th scope="col">Assigned staff</th>
+                      <th scope="col">Jobs / units</th>
+                      <th scope="col">Planning evidence</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {forecast.rows.map((row, index) => (
+                      <tr
+                        key={`${row.serviceDate}-${row.serviceWindow}-${row.assignedUserId ?? "unassigned"}-${index}`}
+                      >
+                        <td>{row.serviceDate}</td>
+                        <td>{row.serviceWindow}</td>
+                        <th scope="row">
+                          {row.assignedUserId
+                            ? (queue.staff.find(
+                                (person) =>
+                                  person.userId === row.assignedUserId,
+                              )?.label ?? "Former or unavailable staff")
+                            : "Unassigned"}
+                        </th>
+                        <td>
+                          {row.jobs} / {row.units}
+                          {row.maxUnitsPerStaffWindow === null
+                            ? ""
+                            : ` (limit ${row.maxUnitsPerStaffWindow})`}
+                        </td>
+                        <td>
+                          {FULFILLMENT_FORECAST_LABELS[row.status] ??
+                            row.status}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            ) : (
+              <p>No active add-on demand falls in the next 30 local days.</p>
+            )}
+            <p>
+              Forecasts are advisory, not employee attendance or safety
+              clearance. Only campground-authorized supervisors may make an
+              actual assignment, and no forecast automatically dispatches work
+              or sends guest messages.
+            </p>
+          </section>
+        ) : null}
         {blocked.length ? (
           <section className="content-panel">
             <SectionHeading
@@ -467,6 +691,14 @@ export default async function ServiceFulfillmentPage({
                   campgroundId={selected.campgroundId}
                   canManageStaff={queue.canManageStaff}
                   staff={queue.staff}
+                  forecastStatus={
+                    forecast.rows.find(
+                      (row) =>
+                        row.serviceDate === job.serviceDate &&
+                        row.serviceWindow === job.serviceWindow &&
+                        row.assignedUserId === job.assignedUserId,
+                    )?.status
+                  }
                 />
               ))}
             </div>
@@ -494,6 +726,14 @@ export default async function ServiceFulfillmentPage({
                   campgroundId={selected.campgroundId}
                   canManageStaff={queue.canManageStaff}
                   staff={queue.staff}
+                  forecastStatus={
+                    forecast.rows.find(
+                      (row) =>
+                        row.serviceDate === job.serviceDate &&
+                        row.serviceWindow === job.serviceWindow &&
+                        row.assignedUserId === job.assignedUserId,
+                    )?.status
+                  }
                 />
               ))}
             </div>
