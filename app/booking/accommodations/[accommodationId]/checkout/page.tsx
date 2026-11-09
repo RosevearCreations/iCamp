@@ -26,6 +26,9 @@ export const metadata: Metadata = {
 };
 
 function checkoutErrorMessage(code: string) {
+  if (code === "ICAMP_SERVICE_CAPACITY_EXCEEDED") {
+    return "One of the selected extras has reached its shared daily capacity. Remove that extra or ask the campground about another date. No reservation or payment was created.";
+  }
   if (code === "ICAMP_CHECKOUT_HOLD_EXPIRED") {
     return "Your temporary hold expired. Return to the booking map and select the accommodation again.";
   }
