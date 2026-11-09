@@ -46,6 +46,30 @@
   border-radius: 0.5rem;
   color: #143e21;
 }
+.tableScroller {
+  max-width: 100%;
+  overflow-x: auto;
+}
+.loadTable {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+.loadTable th,
+.loadTable td {
+  padding: 0.65rem;
+  border-bottom: 1px solid var(--border, #9eaba1);
+}
+.reviewHistory {
+  margin: 0.75rem 0;
+  padding-left: 1.5rem;
+}
+.reviewHistory li {
+  margin-bottom: 0.65rem;
+}
+.reviewHistory p {
+  margin: 0.2rem 0;
+}
 .list {
   display: grid;
   gap: 1rem;
