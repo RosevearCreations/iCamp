@@ -127,6 +127,22 @@ function PriceFields({ entry }: { entry?: CampgroundServiceEntry }) {
         />
       </label>
       <label>
+        Shared daily capacity (optional)
+        <input
+          name="dailyCapacity"
+          type="number"
+          min="1"
+          max="10000"
+          step="1"
+          placeholder="No daily limit"
+          defaultValue={entry?.dailyCapacity ?? ""}
+        />
+        <small>
+          Maximum total units booked across reservations for one service date.
+          Blank means unlimited.
+        </small>
+      </label>
+      <label>
         Available from (optional)
         <input
           name="startsOn"
@@ -205,7 +221,7 @@ export default async function CampgroundServicesPage({
           <span>Services and add-ons</span>
         </nav>
         <section className="hero-panel meadow-hero">
-          <p className="eyebrow">Campground product · Build 233</p>
+          <p className="eyebrow">Campground product · Build 235</p>
           <h1>Services &amp; booking add-ons</h1>
           <p className="hero-panel__lead">
             Each campground controls its own optional services. Campers can
@@ -238,6 +254,13 @@ export default async function CampgroundServicesPage({
           <p>
             <strong>{catalog.campgroundName}</strong>: {catalog.entries.length}{" "}
             catalogue entries · {countVisible} currently published and active.
+          </p>
+          <p>
+            <Link
+              href={`/workspaces/management/campgrounds/service-fulfillment?campground=${encodeURIComponent(selected.campgroundId)}`}
+            >
+              Open reservation add-on fulfillment queue
+            </Link>
           </p>
           {notice ? (
             <p role="status" className={styles.notice}>
@@ -326,6 +349,12 @@ export default async function CampgroundServicesPage({
                           : `${centsToDollars(entry.unitPriceCents)} ${entry.currencyCode}`}{" "}
                         · {entry.pricingBasis.replaceAll("_", " ")}
                       </p>
+                      {entry.editable ? (
+                        <p>
+                          Daily capacity: {entry.dailyCapacity ?? "Unlimited"}{" "}
+                          units
+                        </p>
+                      ) : null}
                     </div>
                     <strong>
                       {!entry.isActive
@@ -421,9 +450,10 @@ export default async function CampgroundServicesPage({
           <h2>Booking and capacity notes</h2>
           <p>
             Published extras are eligible only within their date window. Minimum
-            and maximum quantities apply <strong>per booking</strong>, not to
-            campground-wide stock or staff capacity. Fulfilment and global
-            inventory controls remain separate operations.
+            and maximum quantities apply <strong>per booking</strong>. Optional
+            daily capacity is enforced across active reservation add-on jobs at
+            checkout and when staff reschedule a service. A capacity limit is
+            not a real-time stock or staffing integration.
           </p>
           <p>
             <Link href="/booking/map">Review the guest booking experience</Link>
