@@ -109,6 +109,13 @@ export default async function CampgroundPage({
             </li>
             <li>
               <Link
+                href={`/workspaces/management/campgrounds/service-fulfillment?${scope}`}
+              >
+                Reservation add-on fulfillment queue
+              </Link>
+            </li>
+            <li>
+              <Link
                 href={`/workspaces/management/campgrounds/maps/wayfinding/services?${scope}`}
               >
                 Guest services and accessible wayfinding
