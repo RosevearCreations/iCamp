@@ -15,6 +15,7 @@ export interface ServiceCatalogInput {
   unitLabel?: string;
   minimumQuantity: number | string;
   maximumQuantity: number | string;
+  dailyCapacity?: number | string | null;
   startsOn?: string;
   endsOn?: string;
   priceDollars: string;
@@ -28,6 +29,7 @@ export interface ValidatedServiceCatalogInput {
   unitLabel: string;
   minimumQuantity: number;
   maximumQuantity: number;
+  dailyCapacity: number | null;
   startsOn: string | null;
   endsOn: string | null;
   unitPriceCents: number;

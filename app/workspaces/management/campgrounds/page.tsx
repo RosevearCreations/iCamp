@@ -604,6 +604,16 @@ export default async function CampgroundAdministrationPage({
           >
             Manage booking services and add-ons
           </Link>
+          <p>
+            <Link
+              href={
+                "/workspaces/management/campgrounds/service-fulfillment?campground=" +
+                encodeURIComponent(structure.campground.id)
+              }
+            >
+              Schedule and review reserved add-on work
+            </Link>
+          </p>
         </section>
 
         <section

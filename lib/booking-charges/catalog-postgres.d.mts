@@ -13,6 +13,7 @@ export interface CampgroundServiceEntry {
   currencyCode: string;
   minimumQuantity: number;
   maximumQuantity: number;
+  dailyCapacity: number | null;
   startsOn: string | null;
   endsOn: string | null;
   isPublic: boolean;

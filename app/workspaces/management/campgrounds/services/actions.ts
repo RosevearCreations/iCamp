@@ -36,6 +36,7 @@ function input(data: FormData) {
     unitLabel: field(data, "unitLabel"),
     minimumQuantity: field(data, "minimumQuantity"),
     maximumQuantity: field(data, "maximumQuantity"),
+    dailyCapacity: field(data, "dailyCapacity"),
     startsOn: field(data, "startsOn"),
     endsOn: field(data, "endsOn"),
     isPublic: data.get("isPublic") === "on",
