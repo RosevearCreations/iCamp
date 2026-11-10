@@ -15,9 +15,19 @@ import {
 } from "@/lib/booking-charges/fulfillment-postgres.mjs";
 import { FULFILLMENT_FORECAST_LABELS } from "@/lib/booking-charges/fulfillment-forecast-core.mjs";
 import { getCampgroundFulfillmentForecast } from "@/lib/booking-charges/fulfillment-forecast-postgres.mjs";
+import {
+  DISPATCH_ACK_LABELS,
+  DISPATCH_COMPLETION_LABELS,
+} from "@/lib/booking-charges/fulfillment-dispatch-core.mjs";
+import {
+  listCampgroundDispatchEvidence,
+  type FulfillmentDispatchEvidence,
+} from "@/lib/booking-charges/fulfillment-dispatch-postgres.mjs";
 
 import {
+  acknowledgeFulfillmentDispatchAction,
   assignFulfillmentAction,
+  dispatchFulfillmentAction,
   reviewFulfillmentExceptionAction,
   updateFulfillmentForecastSettingsAction,
   updateFulfillmentAction,
@@ -54,17 +64,22 @@ function JobCard({
   canManageStaff,
   staff,
   forecastStatus,
+  dispatchHistory,
+  currentUserId,
 }: {
   job: FulfillmentJob;
   campgroundId: string;
   canManageStaff: boolean;
   staff: { userId: string; label: string }[];
   forecastStatus?: string;
+  dispatchHistory: FulfillmentDispatchEvidence[];
+  currentUserId: string;
 }) {
   const options = transitions[job.jobState] ?? [];
   const currentWorker = staff.find(
     (person) => person.userId === job.assignedUserId,
   );
+  const latestDispatch = dispatchHistory[0];
   const lastServiceDate = new Date(
     Date.parse(`${job.departureDate}T00:00:00Z`) - 86_400_000,
   )
@@ -108,6 +123,157 @@ function JobCard({
             {FULFILLMENT_FORECAST_LABELS[forecastStatus] ?? forecastStatus}
           </strong>
         </p>
+      ) : null}
+      {latestDispatch ? (
+        <div className={styles.dispatchEvidence}>
+          <h4>Dispatch handoff and service-level evidence</h4>
+          <p>
+            Issued{" "}
+            {latestDispatch.dispatch.dispatchedAt
+              .slice(0, 16)
+              .replace("T", " ")}{" "}
+            UTC
+            {latestDispatch.classification?.status === "superseded"
+              ? " · Superseded by a task or assignment change"
+              : " · Current assignment handoff"}
+          </p>
+          <p>
+            Worker response due:{" "}
+            {latestDispatch.dispatch.acknowledgementDueAt
+              .slice(0, 16)
+              .replace("T", " ")}{" "}
+            UTC ·{" "}
+            <strong>
+              {DISPATCH_ACK_LABELS[
+                latestDispatch.classification?.acknowledgement ?? ""
+              ] ?? "Awaiting evidence"}
+            </strong>
+          </p>
+          <p>
+            Completion target:{" "}
+            {latestDispatch.dispatch.completionDueAt
+              ? `${latestDispatch.dispatch.completionDueAt.slice(0, 16).replace("T", " ")} UTC`
+              : "Not set"}{" "}
+            ·{" "}
+            <strong>
+              {DISPATCH_COMPLETION_LABELS[
+                latestDispatch.classification?.completion ?? ""
+              ] ?? "No evidence"}
+            </strong>
+          </p>
+          {latestDispatch.dispatch.responseNote ? (
+            <p>Worker reply: {latestDispatch.dispatch.responseNote}</p>
+          ) : null}
+          {latestDispatch.classification?.canAcknowledge &&
+          latestDispatch.dispatch.assignedUserId === currentUserId ? (
+            <form
+              action={acknowledgeFulfillmentDispatchAction}
+              className={styles.form}
+            >
+              <input type="hidden" name="campgroundId" value={campgroundId} />
+              <input
+                type="hidden"
+                name="dispatchId"
+                value={latestDispatch.dispatch.id}
+              />
+              <div className={styles.fields}>
+                <label>
+                  My acknowledgement
+                  <select name="response" required>
+                    <option value="accepted">I received this assignment</option>
+                    <option value="needs_support">
+                      I need supervisor support
+                    </option>
+                  </select>
+                </label>
+                <label>
+                  Worker note (required when asking for support)
+                  <input
+                    name="ackNote"
+                    maxLength={300}
+                    placeholder="Relevant handoff details"
+                  />
+                </label>
+              </div>
+              <p>
+                This records receipt of the assignment, not attendance,
+                completion, permission to contact guests or permission to
+                operate a gate.
+              </p>
+              <button type="submit" className="secondary-button">
+                Record my acknowledgement
+              </button>
+            </form>
+          ) : null}
+          {dispatchHistory.length > 1 ? (
+            <details>
+              <summary>Earlier handoff evidence</summary>
+              <ol className={styles.reviewHistory}>
+                {dispatchHistory.slice(1).map((entry) => (
+                  <li key={entry.dispatch.id}>
+                    {entry.dispatch.dispatchedAt.slice(0, 16).replace("T", " ")}{" "}
+                    UTC ·{" "}
+                    {entry.classification?.status === "superseded"
+                      ? "Superseded"
+                      : "Current"}{" "}
+                    ·{" "}
+                    {DISPATCH_ACK_LABELS[
+                      entry.classification?.acknowledgement ?? ""
+                    ] ?? "Unknown"}
+                  </li>
+                ))}
+              </ol>
+            </details>
+          ) : null}
+        </div>
+      ) : null}
+      {canManageStaff &&
+      job.assignedUserId &&
+      ["scheduled", "in_progress"].includes(job.jobState) ? (
+        <details>
+          <summary>Issue dispatch handoff to assigned worker</summary>
+          <form action={dispatchFulfillmentAction} className={styles.form}>
+            <input type="hidden" name="campgroundId" value={campgroundId} />
+            <input type="hidden" name="jobId" value={job.id} />
+            <input
+              type="hidden"
+              name="assignedUserId"
+              value={job.assignedUserId}
+            />
+            <input type="hidden" name="rowVersion" value={job.rowVersion} />
+            <input
+              type="hidden"
+              name="assignmentVersion"
+              value={job.assignmentVersion}
+            />
+            <div className={styles.fields}>
+              <label>
+                Worker acknowledgement target (minutes)
+                <input
+                  type="number"
+                  name="acknowledgementMinutes"
+                  min={5}
+                  max={10080}
+                  required
+                  placeholder="Set a campground target"
+                />
+              </label>
+              <label>
+                Completion target (UTC; optional)
+                <input type="datetime-local" name="completionTargetUtc" />
+              </label>
+            </div>
+            <p>
+              Supervisor-set targets are recorded, not inferred. A new handoff
+              requires the current job and assignment versions; repeated
+              submission of the same version is rejected. No worker notification
+              or guest communication is sent automatically.
+            </p>
+            <button type="submit" className="primary-button">
+              Record dispatch handoff
+            </button>
+          </form>
+        </details>
       ) : null}
       {canManageStaff && job.jobState !== "completed" ? (
         <details>
@@ -317,6 +483,34 @@ export default async function ServiceFulfillmentPage({
     campgroundId: selected.campgroundId,
     activeStaffIds: queue.staff.map((person) => person.userId),
   });
+  const dispatchEvidence = await listCampgroundDispatchEvidence({
+    userId: session.user.id,
+    campgroundId: selected.campgroundId,
+  });
+  const dispatchesByJob = new Map<string, FulfillmentDispatchEvidence[]>();
+  for (const item of dispatchEvidence.entries) {
+    const history = dispatchesByJob.get(item.dispatch.jobId) ?? [];
+    history.push(item);
+    dispatchesByJob.set(item.dispatch.jobId, history);
+  }
+  const latestDispatches = [...dispatchesByJob.values()].map(
+    (history) => history[0],
+  );
+  const overdueAcknowledgements = latestDispatches.filter(
+    (item) =>
+      item.classification?.status === "current" &&
+      item.classification.acknowledgement === "overdue",
+  ).length;
+  const supportRequests = latestDispatches.filter(
+    (item) =>
+      item.classification?.status === "current" &&
+      item.classification.acknowledgement === "support_requested",
+  ).length;
+  const overdueCompletions = latestDispatches.filter(
+    (item) =>
+      item.classification?.status === "current" &&
+      item.classification.completion === "overdue",
+  ).length;
   const outstanding = queue.jobs.filter(
     (job) => job.jobState !== "completed",
   ).length;
@@ -386,6 +580,24 @@ export default async function ServiceFulfillmentPage({
               Staff assignment saved and audited.
             </p>
           ) : null}
+          {params.result === "dispatched" ? (
+            <p role="status" className={styles.notice}>
+              Assignment handoff and its explicit response target were recorded.
+            </p>
+          ) : null}
+          {params.result === "acknowledged" ? (
+            <p role="status" className={styles.notice}>
+              Worker acknowledgement saved as an immutable receipt.
+            </p>
+          ) : null}
+          {params.result === "dispatch-error" ||
+          params.result === "ack-error" ? (
+            <p role="alert">
+              Handoff or acknowledgement was not saved. Refresh and confirm the
+              current assignment, permissions, version and deadline; a receipt
+              may already exist for this dispatch.
+            </p>
+          ) : null}
           {params.result === "reviewed" ? (
             <p role="status" className={styles.notice}>
               Exception review recorded. Work remains blocked until separately
@@ -423,6 +635,46 @@ export default async function ServiceFulfillmentPage({
               tasks require a later queue page.
             </p>
           ) : null}
+        </section>
+        <section className="content-panel">
+          <SectionHeading
+            eyebrow="Campground worker and supervisor · Build 238"
+            title="Dispatch handoff and fulfillment SLA evidence"
+            id="dispatch-sla"
+            helpTopic="campground.structure"
+          />
+          <p>
+            These are explicit campground work handoffs—not automatic messages,
+            guaranteed staffing or guest-facing promises. A worker records
+            receipt only for work currently assigned to their account.
+            Supervisors see campground-wide receipts; other workers see only
+            their own dispatches.
+          </p>
+          {queue.canManageStaff ? (
+            <p>
+              Current visible dispatches: {latestDispatches.length} · Worker
+              acknowledgement overdue:{" "}
+              <strong>{overdueAcknowledgements}</strong> · Support requested:{" "}
+              <strong>{supportRequests}</strong> · Completion target overdue:{" "}
+              <strong>{overdueCompletions}</strong>.
+            </p>
+          ) : (
+            <p>
+              Only personally assigned dispatch receipts are visible in this
+              view.
+            </p>
+          )}
+          {dispatchEvidence.truncated || queue.truncated ? (
+            <p role="alert">
+              Dispatch or job evidence is truncated. These counts are for the
+              visible records, not a complete campground SLA audit.
+            </p>
+          ) : null}
+          <p>
+            Response and completion timestamps are recorded in UTC. A missed
+            target is evidence for supervisor follow-up, never automatic
+            payroll, billing, a penalty or a Comms Hub escalation.
+          </p>
         </section>
         {queue.canManageStaff ? (
           <section className="content-panel">
@@ -691,6 +943,8 @@ export default async function ServiceFulfillmentPage({
                   campgroundId={selected.campgroundId}
                   canManageStaff={queue.canManageStaff}
                   staff={queue.staff}
+                  dispatchHistory={dispatchesByJob.get(job.id) ?? []}
+                  currentUserId={session.user.id}
                   forecastStatus={
                     forecast.rows.find(
                       (row) =>
@@ -726,6 +980,8 @@ export default async function ServiceFulfillmentPage({
                   campgroundId={selected.campgroundId}
                   canManageStaff={queue.canManageStaff}
                   staff={queue.staff}
+                  dispatchHistory={dispatchesByJob.get(job.id) ?? []}
+                  currentUserId={session.user.id}
                   forecastStatus={
                     forecast.rows.find(
                       (row) =>
