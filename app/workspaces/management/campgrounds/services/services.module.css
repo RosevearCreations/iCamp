@@ -77,6 +77,19 @@
 .reviewHistory p {
   margin: 0.2rem 0;
 }
+.dispatchEvidence {
+  padding: 0.9rem;
+  margin-top: 0.85rem;
+  background: var(--surface, #f5f8f4);
+  border: 1px solid var(--border, #9eaba1);
+  border-radius: 0.6rem;
+}
+.dispatchEvidence h4 {
+  margin: 0 0 0.45rem;
+}
+.dispatchEvidence p {
+  margin: 0.35rem 0;
+}
 .list {
   display: grid;
   gap: 1rem;
