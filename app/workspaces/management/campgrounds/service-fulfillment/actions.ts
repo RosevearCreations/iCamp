@@ -10,6 +10,10 @@ import {
   updateCampgroundFulfillment,
 } from "@/lib/booking-charges/fulfillment-postgres.mjs";
 import { updateCampgroundFulfillmentPlanningSettings } from "@/lib/booking-charges/fulfillment-forecast-postgres.mjs";
+import {
+  acknowledgeCampgroundDispatch,
+  dispatchCampgroundFulfillment,
+} from "@/lib/booking-charges/fulfillment-dispatch-postgres.mjs";
 
 const path = "/workspaces/management/campgrounds/service-fulfillment";
 
@@ -129,6 +133,63 @@ export async function updateFulfillmentForecastSettingsAction(form: FormData) {
     result = "forecast-saved";
   } catch {
     // A failed shift authorization or private roster lookup is never echoed.
+  }
+  revalidatePath(path);
+  redirect(
+    `${path}?campground=${encodeURIComponent(campgroundId)}&result=${result}`,
+  );
+}
+
+export async function dispatchFulfillmentAction(form: FormData) {
+  const campgroundId = field(form, "campgroundId");
+  const session = await requireCampgroundPermission(
+    campgroundId,
+    "staff.manage",
+    path,
+  );
+  let result = "dispatch-error";
+  try {
+    await dispatchCampgroundFulfillment({
+      actorUserId: session.user.id,
+      actorSessionId: session.sessionId,
+      campgroundId,
+      jobId: field(form, "jobId"),
+      assignedUserId: field(form, "assignedUserId"),
+      expectedJobVersion: Number(field(form, "rowVersion")),
+      expectedAssignmentVersion: Number(field(form, "assignmentVersion")),
+      acknowledgementMinutes: field(form, "acknowledgementMinutes"),
+      completionTargetUtc: field(form, "completionTargetUtc"),
+    });
+    result = "dispatched";
+  } catch {
+    // Keep staff identifiers and private deadline validation out of the URL.
+  }
+  revalidatePath(path);
+  redirect(
+    `${path}?campground=${encodeURIComponent(campgroundId)}&result=${result}`,
+  );
+}
+
+export async function acknowledgeFulfillmentDispatchAction(form: FormData) {
+  const campgroundId = field(form, "campgroundId");
+  const session = await requireCampgroundPermission(
+    campgroundId,
+    "reservation.modify",
+    path,
+  );
+  let result = "ack-error";
+  try {
+    await acknowledgeCampgroundDispatch({
+      actorUserId: session.user.id,
+      actorSessionId: session.sessionId,
+      campgroundId,
+      dispatchId: field(form, "dispatchId"),
+      response: field(form, "response"),
+      note: field(form, "ackNote"),
+    });
+    result = "acknowledged";
+  } catch {
+    // No private dispatch or roster details leak through status parameters.
   }
   revalidatePath(path);
   redirect(
