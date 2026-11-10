@@ -21,13 +21,22 @@ import {
 } from "@/lib/booking-charges/fulfillment-dispatch-core.mjs";
 import {
   listCampgroundDispatchEvidence,
+  listCampgroundSlaFollowups,
+  type FulfillmentAssignmentTransition,
   type FulfillmentDispatchEvidence,
+  type FulfillmentSlaFollowup,
 } from "@/lib/booking-charges/fulfillment-dispatch-postgres.mjs";
+import {
+  needsSlaFollowup,
+  SLA_EXCEPTION_LABELS,
+  SLA_FOLLOWUP_LABELS,
+} from "@/lib/booking-charges/fulfillment-followup-core.mjs";
 
 import {
   acknowledgeFulfillmentDispatchAction,
   assignFulfillmentAction,
   dispatchFulfillmentAction,
+  recordFulfillmentSlaFollowupAction,
   reviewFulfillmentExceptionAction,
   updateFulfillmentForecastSettingsAction,
   updateFulfillmentAction,
@@ -65,6 +74,8 @@ function JobCard({
   staff,
   forecastStatus,
   dispatchHistory,
+  assignmentTransitions,
+  slaFollowups,
   currentUserId,
 }: {
   job: FulfillmentJob;
@@ -73,6 +84,8 @@ function JobCard({
   staff: { userId: string; label: string }[];
   forecastStatus?: string;
   dispatchHistory: FulfillmentDispatchEvidence[];
+  assignmentTransitions: FulfillmentAssignmentTransition[];
+  slaFollowups: Map<string, FulfillmentSlaFollowup[]>;
   currentUserId: string;
 }) {
   const options = transitions[job.jobState] ?? [];
@@ -228,6 +241,114 @@ function JobCard({
         </div>
       ) : null}
       {canManageStaff &&
+      dispatchHistory.some((entry) =>
+        needsSlaFollowup(entry.classification),
+      ) ? (
+        <div className={styles.dispatchEvidence}>
+          <h4>Supervisor SLA exception follow-up</h4>
+          <p>
+            These decisions document investigation and resolution; they do not
+            change the job, send a message, adjust payroll or override a missed
+            deadline.
+          </p>
+          {dispatchHistory
+            .filter((entry) => needsSlaFollowup(entry.classification))
+            .map((entry) => {
+              const history = slaFollowups.get(entry.dispatch.id) ?? [];
+              const last = history[0];
+              return (
+                <details key={entry.dispatch.id}>
+                  <summary>
+                    Dispatch {entry.dispatch.id.slice(0, 8)} ·{" "}
+                    {last
+                      ? (SLA_FOLLOWUP_LABELS[last.state] ?? last.state)
+                      : "Awaiting supervisor follow-up"}
+                  </summary>
+                  <p>
+                    Evidence:{" "}
+                    {[
+                      entry.classification?.acknowledgement,
+                      entry.classification?.completion,
+                    ].join(" / ")}
+                    . Superseded assignments remain historical.
+                  </p>
+                  {history.length ? (
+                    <ol className={styles.reviewHistory}>
+                      {history.map((review) => (
+                        <li key={review.id}>
+                          <strong>
+                            {SLA_FOLLOWUP_LABELS[review.state] ?? review.state}
+                          </strong>{" "}
+                          · {review.reviewedAt.slice(0, 16).replace("T", " ")}{" "}
+                          UTC
+                          <p>
+                            {review.signals
+                              .map(
+                                (signal) =>
+                                  SLA_EXCEPTION_LABELS[signal] ?? signal,
+                              )
+                              .join(" · ")}
+                          </p>
+                          <p>{review.note}</p>
+                        </li>
+                      ))}
+                    </ol>
+                  ) : null}
+                  <form
+                    action={recordFulfillmentSlaFollowupAction}
+                    className={styles.form}
+                  >
+                    <input
+                      type="hidden"
+                      name="campgroundId"
+                      value={campgroundId}
+                    />
+                    <input
+                      type="hidden"
+                      name="dispatchId"
+                      value={entry.dispatch.id}
+                    />
+                    <input
+                      type="hidden"
+                      name="previousReviewId"
+                      value={last?.id ?? ""}
+                    />
+                    <div className={styles.fields}>
+                      <label>
+                        Supervisor decision
+                        <select name="reviewState" required>
+                          <option value="investigating">Investigating</option>
+                          <option value="awaiting_worker">
+                            Awaiting worker clarification
+                          </option>
+                          <option value="resolved">
+                            Resolved with documented evidence
+                          </option>
+                          {last?.state === "resolved" ? (
+                            <option value="reopened">Reopen review</option>
+                          ) : null}
+                        </select>
+                      </label>
+                      <label>
+                        Findings and next steps
+                        <input
+                          name="reviewNote"
+                          maxLength={500}
+                          required
+                          placeholder="Record what happened and who will follow up"
+                        />
+                      </label>
+                    </div>
+                    <button type="submit" className="secondary-button">
+                      Record supervisor follow-up
+                    </button>
+                  </form>
+                </details>
+              );
+            })}
+        </div>
+      ) : null}
+      {canManageStaff &&
       job.assignedUserId &&
       ["scheduled", "in_progress"].includes(job.jobState) ? (
         <details>
@@ -308,22 +429,51 @@ function JobCard({
                 </select>
               </label>
               <label>
-                Assignment note (internal)
+                Assignment note (reason required when changing an assigned
+                worker)
                 <input
                   name="assignmentNote"
                   maxLength={300}
-                  defaultValue={job.assignmentNote}
+                  defaultValue={job.assignedUserId ? "" : job.assignmentNote}
                   placeholder="Shift details or special equipment"
                 />
               </label>
             </div>
             <p>
               Only active staff authorized for this campground can be assigned.
+              Changing or removing an existing worker requires a reason. The
+              prior dispatch becomes stale and a new handoff must be issued
+              manually; nothing is automatically sent to a worker or guest.
             </p>
             <button type="submit" className="primary-button">
               Save staff assignment
             </button>
           </form>
+        </details>
+      ) : null}
+      {canManageStaff && assignmentTransitions.length ? (
+        <details>
+          <summary>Assignment and reassignment history</summary>
+          <ol className={styles.reviewHistory}>
+            {assignmentTransitions.map((event) => (
+              <li key={event.id}>
+                <strong>
+                  {event.previousUserId
+                    ? event.assignedUserId
+                      ? "Reassigned worker"
+                      : "Unassigned worker"
+                    : "Assigned worker"}
+                </strong>{" "}
+                · revision {event.assignmentVersion} ·{" "}
+                {event.recordedAt.slice(0, 16).replace("T", " ")} UTC
+                {event.reason ? <p>Reason: {event.reason}</p> : null}
+              </li>
+            ))}
+          </ol>
+          <p>
+            History begins with migration 0224; earlier changes are not
+            invented.
+          </p>
         </details>
       ) : null}
       {job.jobState === "blocked" && canManageStaff ? (
@@ -487,6 +637,24 @@ export default async function ServiceFulfillmentPage({
     userId: session.user.id,
     campgroundId: selected.campgroundId,
   });
+  const supervisorEvidence = queue.canManageStaff
+    ? await listCampgroundSlaFollowups({
+        userId: session.user.id,
+        campgroundId: selected.campgroundId,
+      })
+    : { transitions: [], followups: [], truncated: false };
+  const transitionsByJob = new Map<string, FulfillmentAssignmentTransition[]>();
+  for (const item of supervisorEvidence.transitions) {
+    const history = transitionsByJob.get(item.jobId) ?? [];
+    history.push(item);
+    transitionsByJob.set(item.jobId, history);
+  }
+  const followupsByDispatch = new Map<string, FulfillmentSlaFollowup[]>();
+  for (const item of supervisorEvidence.followups) {
+    const history = followupsByDispatch.get(item.dispatchId) ?? [];
+    history.push(item);
+    followupsByDispatch.set(item.dispatchId, history);
+  }
   const dispatchesByJob = new Map<string, FulfillmentDispatchEvidence[]>();
   for (const item of dispatchEvidence.entries) {
     const history = dispatchesByJob.get(item.dispatch.jobId) ?? [];
@@ -536,8 +704,8 @@ export default async function ServiceFulfillmentPage({
           <span>Fulfillment</span>
         </nav>
         <section className="hero-panel meadow-hero">
-          <p className="eyebrow">Campground product · Build 237</p>
-          <h1>Staff availability &amp; fulfillment forecasts</h1>
+          <p className="eyebrow">Campground product · Build 239</p>
+          <h1>Staff assignments, dispatch and SLA follow-up</h1>
           <p className="hero-panel__lead">
             Assign reservation-linked extras to campground staff, balance the
             work queue and review shift coverage, recorded unavailability and
@@ -570,6 +738,13 @@ export default async function ServiceFulfillmentPage({
             <strong>{queue.campgroundName}</strong> · {outstanding} outstanding
             out of {queue.jobs.length} visible tasks.
           </p>
+          <p>
+            <Link
+              href={`/workspaces/management/campgrounds/worker-inbox?campground=${encodeURIComponent(selected.campgroundId)}`}
+            >
+              Open my worker dispatch inbox (mobile-friendly)
+            </Link>
+          </p>
           {params.result === "updated" ? (
             <p role="status" className={styles.notice}>
               Work update recorded and audited.
@@ -583,6 +758,17 @@ export default async function ServiceFulfillmentPage({
           {params.result === "dispatched" ? (
             <p role="status" className={styles.notice}>
               Assignment handoff and its explicit response target were recorded.
+            </p>
+          ) : null}
+          {params.result === "sla-reviewed" ? (
+            <p role="status" className={styles.notice}>
+              Supervisor SLA review saved with an immutable audit trail.
+            </p>
+          ) : null}
+          {params.result === "sla-review-error" ? (
+            <p role="alert">
+              SLA follow-up was not saved. Refresh the latest dispatch and
+              review history, check the exception evidence and try again.
             </p>
           ) : null}
           {params.result === "acknowledged" ? (
@@ -664,7 +850,9 @@ export default async function ServiceFulfillmentPage({
               view.
             </p>
           )}
-          {dispatchEvidence.truncated || queue.truncated ? (
+          {dispatchEvidence.truncated ||
+          supervisorEvidence.truncated ||
+          queue.truncated ? (
             <p role="alert">
               Dispatch or job evidence is truncated. These counts are for the
               visible records, not a complete campground SLA audit.
@@ -944,6 +1132,8 @@ export default async function ServiceFulfillmentPage({
                   canManageStaff={queue.canManageStaff}
                   staff={queue.staff}
                   dispatchHistory={dispatchesByJob.get(job.id) ?? []}
+                  assignmentTransitions={transitionsByJob.get(job.id) ?? []}
+                  slaFollowups={followupsByDispatch}
                   currentUserId={session.user.id}
                   forecastStatus={
                     forecast.rows.find(
@@ -981,6 +1171,8 @@ export default async function ServiceFulfillmentPage({
                   canManageStaff={queue.canManageStaff}
                   staff={queue.staff}
                   dispatchHistory={dispatchesByJob.get(job.id) ?? []}
+                  assignmentTransitions={transitionsByJob.get(job.id) ?? []}
+                  slaFollowups={followupsByDispatch}
                   currentUserId={session.user.id}
                   forecastStatus={
                     forecast.rows.find(
