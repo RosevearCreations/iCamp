@@ -1,0 +1,65 @@
+.list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 21rem), 1fr));
+  gap: 1rem;
+}
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  min-width: 0;
+  padding: 1.1rem;
+  border: 1px solid var(--border, #9eaba1);
+  border-radius: 0.8rem;
+  background: var(--surface, #f5f8f4);
+}
+.card h3 {
+  margin: 0;
+}
+.card p {
+  margin: 0;
+}
+.status {
+  font-weight: 700;
+}
+.form {
+  display: grid;
+  gap: 0.85rem;
+  margin-top: 0.5rem;
+}
+.form label {
+  display: grid;
+  gap: 0.35rem;
+}
+.form input,
+.form select,
+.form button {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 2.85rem;
+  font: inherit;
+}
+.pager {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.pager a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+}
+.message {
+  padding: 0.8rem;
+  border: 1px solid var(--border, #9eaba1);
+  border-radius: 0.5rem;
+}
+@media (max-width: 480px) {
+  .card {
+    padding: 1rem;
+  }
+  .list {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

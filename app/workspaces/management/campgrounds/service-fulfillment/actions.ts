@@ -13,6 +13,7 @@ import { updateCampgroundFulfillmentPlanningSettings } from "@/lib/booking-charg
 import {
   acknowledgeCampgroundDispatch,
   dispatchCampgroundFulfillment,
+  recordCampgroundSlaFollowup,
 } from "@/lib/booking-charges/fulfillment-dispatch-postgres.mjs";
 
 const path = "/workspaces/management/campgrounds/service-fulfillment";
@@ -190,6 +191,34 @@ export async function acknowledgeFulfillmentDispatchAction(form: FormData) {
     result = "acknowledged";
   } catch {
     // No private dispatch or roster details leak through status parameters.
+  }
+  revalidatePath(path);
+  redirect(
+    `${path}?campground=${encodeURIComponent(campgroundId)}&result=${result}`,
+  );
+}
+
+export async function recordFulfillmentSlaFollowupAction(form: FormData) {
+  const campgroundId = field(form, "campgroundId");
+  const session = await requireCampgroundPermission(
+    campgroundId,
+    "staff.manage",
+    path,
+  );
+  let result = "sla-review-error";
+  try {
+    await recordCampgroundSlaFollowup({
+      actorUserId: session.user.id,
+      actorSessionId: session.sessionId,
+      campgroundId,
+      dispatchId: field(form, "dispatchId"),
+      previousReviewId: field(form, "previousReviewId"),
+      reviewState: field(form, "reviewState"),
+      reviewNote: field(form, "reviewNote"),
+    });
+    result = "sla-reviewed";
+  } catch {
+    // Follow-up access, review and signal details must not leak into the URL.
   }
   revalidatePath(path);
   redirect(
