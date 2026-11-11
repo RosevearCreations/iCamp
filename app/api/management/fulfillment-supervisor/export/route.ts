@@ -6,6 +6,11 @@ import { getCampgroundAuthorization } from "@/lib/authz/postgres.mjs";
 import { buildSupervisorPrivateExport } from "@/lib/booking-charges/fulfillment-continuity-core.mjs";
 import { listSupervisorContinuityEvidence } from "@/lib/booking-charges/fulfillment-continuity-postgres.mjs";
 import { listFulfillmentSupervisorEvidence } from "@/lib/booking-charges/fulfillment-supervisor-postgres.mjs";
+import {
+  buildRecoveryTrendAnalytics,
+  buildAuthorizedSourceReviewExport,
+} from "@/lib/booking-charges/fulfillment-shift-core.mjs";
+import { listShiftRecoveryEvidence } from "@/lib/booking-charges/fulfillment-shift-postgres.mjs";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -25,10 +30,13 @@ export async function GET(request: NextRequest) {
   }
   const params = request.nextUrl.searchParams;
   const campgroundId = params.get("campground") ?? "";
+  const format = params.get("format") ?? "legacy";
   if (
     !UUID.test(campgroundId) ||
-    [...params.keys()].some((key) => key !== "campground") ||
-    params.getAll("campground").length !== 1
+    [...params.keys()].some((key) => !["campground", "format"].includes(key)) ||
+    params.getAll("campground").length !== 1 ||
+    params.getAll("format").length > 1 ||
+    !["legacy", "trend", "case_history"].includes(format)
   ) {
     return new Response("Invalid private export scope.", {
       status: 400,
@@ -47,7 +55,7 @@ export async function GET(request: NextRequest) {
     });
   }
   try {
-    const [supervisor, continuity] = await Promise.all([
+    const [supervisor, continuity, shift] = await Promise.all([
       listFulfillmentSupervisorEvidence({
         userId: session.user.id,
         campgroundId,
@@ -56,15 +64,41 @@ export async function GET(request: NextRequest) {
         userId: session.user.id,
         campgroundId,
       }),
+      format === "legacy"
+        ? Promise.resolve(null)
+        : listShiftRecoveryEvidence({
+            userId: session.user.id,
+            campgroundId,
+          }),
     ]);
     const revision = process.env.VERCEL_GIT_COMMIT_SHA ?? "";
-    const snapshot = buildSupervisorPrivateExport({
-      campgroundId,
-      asOf: new Date().toISOString(),
-      sourceRevision: SHA.test(revision) ? revision : null,
-      supervisor,
-      continuity,
-    });
+    const asOf = new Date().toISOString();
+    const sourceRevision = SHA.test(revision) ? revision : null;
+    const snapshot = shift
+      ? buildAuthorizedSourceReviewExport({
+          campgroundId,
+          generatedAt: asOf,
+          sourceRevision,
+          format,
+          trend: buildRecoveryTrendAnalytics({
+            reviews: shift.reviews,
+            handoffs: shift.handoffs,
+            asOf,
+            days: 7,
+            truncated: shift.truncated,
+          }),
+          reviews: shift.reviews,
+          handoffs: shift.handoffs,
+          truncated:
+            shift.truncated || supervisor.truncated || continuity.truncated,
+        })
+      : buildSupervisorPrivateExport({
+          campgroundId,
+          asOf,
+          sourceRevision,
+          supervisor,
+          continuity,
+        });
     const content = `${JSON.stringify(snapshot, null, 2)}\n`;
     const digest = createHash("sha256").update(content, "utf8").digest("hex");
     return new Response(content, {
