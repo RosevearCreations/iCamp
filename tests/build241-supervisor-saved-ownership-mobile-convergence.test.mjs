@@ -200,7 +200,7 @@ test("MASTER363 iCamp keeps platform identity while public signer and receipt re
   assert.equal(manifest.tenant_boundary, "platform_shell");
   assert.equal(
     manifest.source_revision,
-    "e2d343595363ca9106e7f1dbc60006e3a6c616aa",
+    "1f29c23f5fba7c2326e09873ebff42223622044b",
   );
   assert.equal(manifest.signature.value, null);
   assert.equal(manifest.connection_state, "DISCONNECTED / HOLD");

@@ -21,7 +21,7 @@ export function verifyBuild208CIContract(inputs) {
   );
   assert.match(
     e2e,
-    /name: Install Chromium\n\s+id: chromium-install\n\s+run: npx playwright install --with-deps chromium/,
+    /name: Install Chromium\n\s+id: chromium-install\n(?:\s+#.*\n)*\s+run: npx playwright install chromium/,
   );
   assert.match(
     e2e,

@@ -59,7 +59,7 @@ test("Build 207 retains all five required protected CI jobs and exact-version Ch
   const missingBrowserInstall = structuredClone(workflows);
   missingBrowserInstall.workflows["ci.yml"] = missingBrowserInstall.workflows[
     "ci.yml"
-  ].replace("npx playwright install --with-deps chromium", "true");
+  ].replace("npx playwright install chromium", "true");
   assert.throws(() => verifyBuild207CacheContract(missingBrowserInstall));
 });
 

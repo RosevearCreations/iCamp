@@ -68,7 +68,7 @@ test("Build 016 browser framework is wired into CI", async () => {
   assert.match(packageJson, /"@playwright\/test": "1\.64\.0"/u);
   assert.match(packageJson, /"e2e:test"/u);
   assert.match(workflow, /Browser end-to-end/u);
-  assert.match(workflow, /playwright install --with-deps chromium/u);
+  assert.match(workflow, /playwright install chromium/u);
   assert.match(workflow, /npm run e2e:test/u);
   assert.match(config, /Desktop Chrome/u);
   assert.match(smoke, /Pine Shore Demo Campground/u);
