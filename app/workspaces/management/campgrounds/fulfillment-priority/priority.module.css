@@ -1,0 +1,128 @@
+.filters {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
+  align-items: end;
+  gap: 1rem;
+}
+.filters label {
+  display: grid;
+  gap: 0.4rem;
+  min-width: 0;
+}
+.filters select,
+.filters button {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 2.75rem;
+  font: inherit;
+}
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.7rem;
+  margin-top: 1.3rem;
+}
+.metrics > div {
+  display: flex;
+  flex-direction: column;
+  padding: 0.9rem;
+  border: 1px solid var(--border, #84938b);
+  border-radius: 0.65rem;
+  gap: 0.2rem;
+}
+.metrics strong {
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  font-variant-numeric: tabular-nums;
+}
+.metrics span {
+  overflow-wrap: anywhere;
+}
+.explain {
+  margin-top: 1rem;
+}
+.warning {
+  padding: 1rem;
+  border: 2px solid #9a5b2b;
+  border-radius: 0.5rem;
+}
+.caseList {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 26rem), 1fr));
+  gap: 1rem;
+}
+.case {
+  min-width: 0;
+  padding: 1.1rem;
+  border: 1px solid var(--border, #84938b);
+  border-radius: 0.8rem;
+  background: var(--surface, #f6f8f5);
+  overflow-wrap: anywhere;
+}
+.caseHeader {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+}
+.caseHeader h3 {
+  margin: 0;
+}
+.caseOverline {
+  font-size: 0.85rem;
+  margin: 0 0 0.3rem;
+}
+.ageBand {
+  padding: 0.3rem 0.6rem;
+  border: 1px solid currentColor;
+  border-radius: 0.5rem;
+}
+.details {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 10rem), 1fr));
+  gap: 0.7rem;
+  margin: 1rem 0;
+}
+.details dt {
+  font-size: 0.85rem;
+}
+.details dd {
+  font-weight: 650;
+  margin: 0.25rem 0 0;
+}
+.recovery,
+.reviewNote {
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--border, #84938b);
+}
+.actionLink {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  font-weight: 700;
+}
+.pager {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 1.2rem;
+}
+.pager a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+}
+@media (max-width: 520px) {
+  .metrics {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .case {
+    padding: 0.9rem;
+  }
+  .details {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

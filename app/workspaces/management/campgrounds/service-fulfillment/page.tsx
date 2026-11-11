@@ -99,7 +99,7 @@ function JobCard({
     .toISOString()
     .slice(0, 10);
   return (
-    <article className={styles.item}>
+    <article id={`fulfillment-job-${job.id}`} className={styles.item}>
       <div className={styles.itemHeader}>
         <div>
           <h3>
@@ -704,7 +704,7 @@ export default async function ServiceFulfillmentPage({
           <span>Fulfillment</span>
         </nav>
         <section className="hero-panel meadow-hero">
-          <p className="eyebrow">Campground product · Build 239</p>
+          <p className="eyebrow">Campground product · Build 240</p>
           <h1>Staff assignments, dispatch and SLA follow-up</h1>
           <p className="hero-panel__lead">
             Assign reservation-linked extras to campground staff, balance the
@@ -745,6 +745,15 @@ export default async function ServiceFulfillmentPage({
               Open my worker dispatch inbox (mobile-friendly)
             </Link>
           </p>
+          {queue.canManageStaff ? (
+            <p>
+              <Link
+                href={`/workspaces/management/campgrounds/fulfillment-priority?campground=${encodeURIComponent(selected.campgroundId)}`}
+              >
+                Open supervisor exception priority and aging review
+              </Link>
+            </p>
+          ) : null}
           {params.result === "updated" ? (
             <p role="status" className={styles.notice}>
               Work update recorded and audited.

@@ -1,0 +1,354 @@
+import type { Metadata } from "next";
+import Link from "next/link";
+import { redirect } from "next/navigation";
+
+import { AppShell } from "@/components/app-shell";
+import { SectionHeading } from "@/components/section-heading";
+import { requireStaff } from "@/lib/auth/current-session";
+import {
+  getCampgroundAuthorization,
+  listAssignedCampgrounds,
+} from "@/lib/authz/postgres.mjs";
+import {
+  listCampgroundDispatchEvidence,
+  listCampgroundSlaFollowups,
+  type FulfillmentSlaFollowup,
+} from "@/lib/booking-charges/fulfillment-dispatch-postgres.mjs";
+import {
+  DISPATCH_ACK_LABELS,
+  DISPATCH_COMPLETION_LABELS,
+} from "@/lib/booking-charges/fulfillment-dispatch-core.mjs";
+import { SLA_FOLLOWUP_LABELS } from "@/lib/booking-charges/fulfillment-followup-core.mjs";
+import {
+  FULFILLMENT_PRIORITY_FILTERS,
+  classifyFulfillmentPriority,
+  compareFulfillmentPriority,
+  matchesFulfillmentPriorityFilter,
+  validateFulfillmentPriorityFilter,
+  validateFulfillmentPriorityPage,
+} from "@/lib/booking-charges/fulfillment-priority-core.mjs";
+
+import styles from "./priority.module.css";
+
+export const dynamic = "force-dynamic";
+export const metadata: Metadata = {
+  title: "Fulfillment Priority Review · iCamp",
+  description: "Private campground supervisor exception-aging review",
+  robots: { index: false, follow: false },
+};
+
+const PER_PAGE = 20;
+
+function utc(value: string | null | undefined) {
+  return value ? `${value.slice(0, 16).replace("T", " ")} UTC` : "Not recorded";
+}
+
+function elapsed(minutes: number | null) {
+  if (minutes === null) return "Not measurable from source evidence";
+  if (minutes < 60) return `${minutes} min`;
+  const hours = Math.floor(minutes / 60);
+  return `${hours} hr ${minutes % 60} min`;
+}
+
+export default async function FulfillmentPriorityPage({
+  searchParams,
+}: Readonly<{
+  searchParams: Promise<{
+    campground?: string;
+    filter?: string;
+    page?: string;
+  }>;
+}>) {
+  const path = "/workspaces/management/campgrounds/fulfillment-priority";
+  const session = await requireStaff(path);
+  const params = await searchParams;
+  const assigned = await listAssignedCampgrounds(session.user.id);
+  const allowed = (
+    await Promise.all(
+      assigned.map(async (item) => {
+        const grant = await getCampgroundAuthorization(
+          session.user.id,
+          item.campgroundId,
+        );
+        return grant?.permissions.includes("reservation.modify") &&
+          grant.permissions.includes("staff.manage")
+          ? item
+          : null;
+      }),
+    )
+  ).filter((item): item is NonNullable<typeof item> => item !== null);
+  if (
+    !allowed.length ||
+    (params.campground &&
+      !allowed.some((item) => item.campgroundId === params.campground))
+  ) {
+    redirect("/auth/not-authorized");
+  }
+
+  const selected =
+    allowed.find((item) => item.campgroundId === params.campground) ??
+    allowed[0];
+  const filter = validateFulfillmentPriorityFilter(params.filter);
+  const requestedPage = validateFulfillmentPriorityPage(params.page);
+  const [dispatchEvidence, supervisorEvidence] = await Promise.all([
+    listCampgroundDispatchEvidence({
+      userId: session.user.id,
+      campgroundId: selected.campgroundId,
+    }),
+    listCampgroundSlaFollowups({
+      userId: session.user.id,
+      campgroundId: selected.campgroundId,
+    }),
+  ]);
+  const now = new Date().toISOString();
+  const latestFollowup = new Map<string, FulfillmentSlaFollowup>();
+  for (const followup of supervisorEvidence.followups) {
+    if (!latestFollowup.has(followup.dispatchId)) {
+      latestFollowup.set(followup.dispatchId, followup);
+    }
+  }
+  const cases = dispatchEvidence.entries
+    .map((entry) => {
+      const followup = latestFollowup.get(entry.dispatch.id) ?? null;
+      return {
+        ...entry,
+        followup,
+        priority: classifyFulfillmentPriority({
+          dispatch: entry.dispatch,
+          classification: entry.classification,
+          followup,
+          now,
+        }),
+      };
+    })
+    .sort(compareFulfillmentPriority);
+  const attention = cases.filter((item) => item.priority.isOpen).length;
+  const overdue = cases.filter((item) =>
+    ["overdue", "recheck"].includes(item.priority.category),
+  ).length;
+  const support = cases.filter(
+    (item) => item.priority.category === "support",
+  ).length;
+  const filtered = cases.filter((item) =>
+    matchesFulfillmentPriorityFilter(item.priority, filter),
+  );
+  const totalPages = Math.max(1, Math.ceil(filtered.length / PER_PAGE));
+  const page = Math.min(requestedPage, totalPages);
+  const visible = filtered.slice((page - 1) * PER_PAGE, page * PER_PAGE);
+  const base = `${path}?campground=${encodeURIComponent(selected.campgroundId)}&filter=${filter}`;
+  const truncated = dispatchEvidence.truncated || supervisorEvidence.truncated;
+
+  return (
+    <AppShell>
+      <div className="page-stack standard-ops-page">
+        <nav className="breadcrumbs" aria-label="Breadcrumb">
+          <Link href="/campground">Campground</Link>
+          <span aria-hidden="true">/</span>
+          <Link
+            href={`/workspaces/management/campgrounds/service-fulfillment?campground=${encodeURIComponent(selected.campgroundId)}`}
+          >
+            Fulfillment queue
+          </Link>
+          <span aria-hidden="true">/</span>
+          <span>Supervisor priority</span>
+        </nav>
+        <section className="hero-panel meadow-hero">
+          <p className="eyebrow">Build 240 · Campground supervisors only</p>
+          <h1>Fulfillment exception priority and aging</h1>
+          <p className="hero-panel__lead">
+            Identify missed assignment targets, requests for help and follow-up
+            decisions without changing guest reservations, payroll, payment or
+            job completion. All decisions remain in the campground source queue.
+          </p>
+        </section>
+        <section className="content-panel">
+          <SectionHeading
+            eyebrow="Private, tenant-scoped review"
+            title="Choose campground and priority view"
+            id="priority-scope"
+            helpTopic="campground.structure"
+          />
+          <form method="get" className={styles.filters}>
+            <label>
+              Campground
+              <select name="campground" defaultValue={selected.campgroundId}>
+                {allowed.map((item) => (
+                  <option key={item.campgroundId} value={item.campgroundId}>
+                    {item.campgroundName}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label>
+              Priority view
+              <select name="filter" defaultValue={filter}>
+                {Object.entries(FULFILLMENT_PRIORITY_FILTERS).map(
+                  ([value, label]) => (
+                    <option key={value} value={value}>
+                      {label}
+                    </option>
+                  ),
+                )}
+              </select>
+            </label>
+            <button className="primary-button" type="submit">
+              Refresh priority view
+            </button>
+          </form>
+          <div
+            className={styles.metrics}
+            aria-label="Visible source exceptions"
+          >
+            <div>
+              <strong>{attention}</strong>
+              <span>Open reviews</span>
+            </div>
+            <div>
+              <strong>{overdue}</strong>
+              <span>Overdue / recheck</span>
+            </div>
+            <div>
+              <strong>{support}</strong>
+              <span>Worker support</span>
+            </div>
+          </div>
+          <p className={styles.explain}>
+            Snapshot: {utc(now)}. Aging starts at the earliest recorded support
+            receipt or missed acknowledgement/completion deadline, and stops at
+            an explicit supervisor resolution. Bands (under 1h, 1–4h, 4–24h,
+            24h+) are display groups—not contractual SLA or automatic escalation
+            thresholds. Historical supersession has no recorded end time, so its
+            age cannot be calculated.
+          </p>
+          {truncated ? (
+            <p role="alert" className={styles.warning}>
+              Partial evidence: the source returned a capped set of dispatch or
+              review records (up to 750). Counts and sorting cover visible
+              records only; they are not complete campground totals.
+            </p>
+          ) : (
+            <p className={styles.explain}>
+              Counts cover the dispatch history returned by this campground
+              source (up to three records per job), not all historic evidence.
+            </p>
+          )}
+        </section>
+        <section className="content-panel">
+          <SectionHeading
+            eyebrow={`${FULFILLMENT_PRIORITY_FILTERS[filter]} · ${filtered.length} visible cases`}
+            title="Source-linked supervisor cases"
+            id="priority-cases"
+            helpTopic="campground.structure"
+          />
+          {visible.length ? (
+            <div className={styles.caseList}>
+              {visible.map(
+                ({ dispatch, classification, followup, priority }) => (
+                  <article key={dispatch.id} className={styles.case}>
+                    <div className={styles.caseHeader}>
+                      <div>
+                        <p className={styles.caseOverline}>
+                          Dispatch {dispatch.id.slice(0, 8)} ·{" "}
+                          {priority.category.replaceAll("_", " ")}
+                        </p>
+                        <h3>{priority.title}</h3>
+                      </div>
+                      <strong className={styles.ageBand}>
+                        {priority.ageBand}
+                      </strong>
+                    </div>
+                    <dl className={styles.details}>
+                      <div>
+                        <dt>Exception age</dt>
+                        <dd>{elapsed(priority.ageMinutes)}</dd>
+                      </div>
+                      <div>
+                        <dt>Aging source</dt>
+                        <dd>
+                          {priority.ageSource ??
+                            "No measurable source timestamp"}
+                        </dd>
+                      </div>
+                      <div>
+                        <dt>Worker response</dt>
+                        <dd>
+                          {DISPATCH_ACK_LABELS[
+                            classification?.acknowledgement ?? ""
+                          ] ?? "Unverified"}
+                        </dd>
+                      </div>
+                      <div>
+                        <dt>Completion</dt>
+                        <dd>
+                          {DISPATCH_COMPLETION_LABELS[
+                            classification?.completion ?? ""
+                          ] ?? "Unverified"}
+                        </dd>
+                      </div>
+                      <div>
+                        <dt>Reply deadline</dt>
+                        <dd>{utc(dispatch.acknowledgementDueAt)}</dd>
+                      </div>
+                      <div>
+                        <dt>Completion deadline</dt>
+                        <dd>{utc(dispatch.completionDueAt)}</dd>
+                      </div>
+                      <div>
+                        <dt>Last supervisor review</dt>
+                        <dd>
+                          {followup
+                            ? `${SLA_FOLLOWUP_LABELS[followup.state] ?? followup.state} · ${utc(followup.reviewedAt)}`
+                            : "No recorded review"}
+                        </dd>
+                      </div>
+                    </dl>
+                    {followup ? (
+                      <p className={styles.reviewNote}>
+                        <strong>Recorded supervisor note:</strong>{" "}
+                        {followup.note}
+                      </p>
+                    ) : null}
+                    <p className={styles.recovery}>
+                      <strong>Next step:</strong> {priority.nextStep}
+                    </p>
+                    <Link
+                      className={styles.actionLink}
+                      href={`/workspaces/management/campgrounds/service-fulfillment?campground=${encodeURIComponent(selected.campgroundId)}#fulfillment-job-${dispatch.jobId}`}
+                    >
+                      Review source assignment and record follow-up
+                    </Link>
+                    {priority.category === "history" ? (
+                      <p>
+                        Historical handoff — check the latest assignment before
+                        taking action.
+                      </p>
+                    ) : null}
+                  </article>
+                ),
+              )}
+            </div>
+          ) : (
+            <p role="status">
+              No cases match this view in the returned campground evidence.
+            </p>
+          )}
+          <nav aria-label="Priority case pagination" className={styles.pager}>
+            {page > 1 ? (
+              <Link href={`${base}&page=${page - 1}`}>Previous cases</Link>
+            ) : (
+              <span />
+            )}
+            <span>
+              Page {page} of {totalPages}
+            </span>
+            {page < totalPages ? (
+              <Link href={`${base}&page=${page + 1}`}>Next cases</Link>
+            ) : (
+              <span />
+            )}
+          </nav>
+        </section>
+      </div>
+    </AppShell>
+  );
+}
