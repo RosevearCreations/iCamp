@@ -10,7 +10,55 @@
   min-width: 0;
 }
 .filters select,
+.filters input,
 .filters button {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 2.75rem;
+  font: inherit;
+}
+.savedViews {
+  margin: 1.2rem 0;
+  padding: 1rem;
+  border: 1px solid var(--border, #84938b);
+  border-radius: 0.7rem;
+}
+.shortcuts {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  gap: 0.75rem;
+}
+.shortcuts li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.shortcuts a,
+.shortcuts button {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+}
+.ownership {
+  margin: 0.85rem 0;
+  padding: 0.75rem;
+  border: 1px solid var(--border, #84938b);
+  border-radius: 0.5rem;
+  overflow-wrap: anywhere;
+}
+.ownerForm {
+  display: grid;
+  gap: 0.6rem;
+}
+.ownerForm label {
+  display: grid;
+  gap: 0.35rem;
+}
+.ownerForm input,
+.ownerForm button {
   box-sizing: border-box;
   width: 100%;
   min-height: 2.75rem;
