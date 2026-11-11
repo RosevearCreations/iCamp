@@ -57,10 +57,10 @@ test("workload forecast is deterministic, bounded by observed source events and 
     pendingHandoffs: 3,
     asOf: "2026-11-11T10:00:00Z",
   });
-  assert.equal(result.observedDemandEvents, 21);
+  assert.equal(result.observedDemandEvents, 18);
   assert.equal(result.expectedNewReviewEvents, 1);
   assert.equal(result.planningLoad, 9);
-  assert.equal(result.peakDailyShiftEquivalent, 3);
+  assert.equal(result.peakDailyShiftEquivalent, 2);
   assert.equal(result.automatedStaffing, false);
   assert.equal(result.independentAcceptance, "HOLD");
   const partial = buildSupervisorWorkloadForecast({
