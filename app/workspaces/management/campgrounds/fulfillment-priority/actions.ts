@@ -6,6 +6,10 @@ import { redirect } from "next/navigation";
 import { requireCampgroundPermission } from "@/lib/authz/current-user";
 import { recordSupervisorContinuityReview } from "@/lib/booking-charges/fulfillment-continuity-postgres.mjs";
 import {
+  requestShiftHandoff,
+  decideShiftHandoff,
+} from "@/lib/booking-charges/fulfillment-shift-postgres.mjs";
+import {
   removeSupervisorPriorityView,
   recordSupervisorCaseOwnership,
   saveSupervisorPriorityView,
@@ -106,6 +110,46 @@ export async function recordSupervisorContinuityAction(form: FormData) {
     result = "continuity-recorded";
   } catch {
     // A stale source subject or unowned case cannot silently pass review.
+  }
+  finish(campgroundId, result);
+}
+
+export async function requestShiftHandoffAction(form: FormData) {
+  const { campgroundId, session } = await supervisor(form);
+  let result = "handoff-error";
+  try {
+    await requestShiftHandoff({
+      actorUserId: session.user.id,
+      actorSessionId: session.sessionId,
+      campgroundId,
+      dispatchId: field(form, "dispatchId"),
+      ownerEventId: field(form, "ownerEventId"),
+      targetUserId: field(form, "targetUserId"),
+      note: field(form, "handoffNote"),
+    });
+    result = "handoff-requested";
+  } catch {
+    // Fail closed when the source owner or recipient permission changed.
+  }
+  finish(campgroundId, result);
+}
+
+export async function decideShiftHandoffAction(form: FormData) {
+  const { campgroundId, session } = await supervisor(form);
+  let result = "handoff-error";
+  try {
+    const outcome = field(form, "handoffDecision");
+    await decideShiftHandoff({
+      actorUserId: session.user.id,
+      actorSessionId: session.sessionId,
+      campgroundId,
+      requestId: field(form, "requestId"),
+      decision: outcome,
+      note: field(form, "handoffNote"),
+    });
+    result = outcome === "accept" ? "handoff-accepted" : "handoff-declined";
+  } catch {
+    // The receiving supervisor must refresh before acting on stale handoffs.
   }
   finish(campgroundId, result);
 }
