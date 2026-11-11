@@ -84,6 +84,37 @@
   flex: 1 1 18rem;
   margin: 0;
 }
+.trendScroll {
+  width: 100%;
+  overflow-x: auto;
+}
+.trendTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-variant-numeric: tabular-nums;
+  text-align: left;
+  min-width: 44rem;
+}
+.trendTable caption {
+  text-align: left;
+  margin-block: 0.65rem;
+}
+.trendTable th,
+.trendTable td {
+  padding: 0.65rem;
+  border-bottom: 1px solid var(--border, #84938b);
+}
+.inbox {
+  list-style: none;
+  display: grid;
+  gap: 1rem;
+  padding: 0;
+}
+.inbox li {
+  padding: 1rem;
+  border: 1px solid var(--border, #84938b);
+  border-radius: 0.7rem;
+}
 .metrics {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
