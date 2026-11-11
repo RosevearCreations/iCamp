@@ -58,11 +58,31 @@
   gap: 0.35rem;
 }
 .ownerForm input,
+.ownerForm select,
 .ownerForm button {
   box-sizing: border-box;
   width: 100%;
   min-height: 2.75rem;
   font: inherit;
+}
+.exportRow {
+  margin-block: 1rem;
+  padding: 0.8rem;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  border: 1px solid var(--border, #84938b);
+  border-radius: 0.6rem;
+}
+.exportRow a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+}
+.exportRow p {
+  flex: 1 1 18rem;
+  margin: 0;
 }
 .metrics {
   display: grid;
