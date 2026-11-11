@@ -34,8 +34,12 @@ import {
   DEVICE_REVIEW_DECISIONS,
 } from "@/lib/booking-charges/fulfillment-continuity-core.mjs";
 import { listSupervisorContinuityEvidence } from "@/lib/booking-charges/fulfillment-continuity-postgres.mjs";
+import { buildRecoveryTrendAnalytics } from "@/lib/booking-charges/fulfillment-shift-core.mjs";
+import { listShiftRecoveryEvidence } from "@/lib/booking-charges/fulfillment-shift-postgres.mjs";
 
 import {
+  requestShiftHandoffAction,
+  decideShiftHandoffAction,
   recordCaseOwnershipAction,
   recordSupervisorContinuityAction,
   removePriorityViewAction,
@@ -110,6 +114,7 @@ export default async function FulfillmentPriorityPage({
     supervisorEvidence,
     fieldEvidence,
     continuityEvidence,
+    shiftEvidence,
   ] = await Promise.all([
     listCampgroundDispatchEvidence({
       userId: session.user.id,
@@ -127,9 +132,28 @@ export default async function FulfillmentPriorityPage({
       userId: session.user.id,
       campgroundId: selected.campgroundId,
     }).catch(() => null),
+    listShiftRecoveryEvidence({
+      userId: session.user.id,
+      campgroundId: selected.campgroundId,
+    }).catch(() => null),
   ]);
+  const resolvedHandoffs = new Set(
+    shiftEvidence?.handoffs
+      .filter((event) => event.eventKind !== "request")
+      .map((event) => event.requestId) ?? [],
+  );
   const ownershipByDispatch = new Map(
     fieldEvidence?.ownership.map((item) => [item.dispatchId, item]) ?? [],
+  );
+  const pendingHandoffs =
+    shiftEvidence?.handoffs.filter(
+      (event) =>
+        event.eventKind === "request" &&
+        !resolvedHandoffs.has(event.id) &&
+        ownershipByDispatch.get(event.dispatchId)?.id === event.ownerEventId,
+    ) ?? [];
+  const pendingByDispatch = new Map(
+    pendingHandoffs.map((item) => [item.dispatchId, item]),
   );
   const reportsByDispatch = new Map(
     fieldEvidence?.mobile.map((item) => [item.dispatchId, item]) ?? [],
@@ -143,6 +167,15 @@ export default async function FulfillmentPriorityPage({
       [],
   );
   const now = new Date().toISOString();
+  const trend = shiftEvidence
+    ? buildRecoveryTrendAnalytics({
+        reviews: shiftEvidence.reviews,
+        handoffs: shiftEvidence.handoffs,
+        asOf: now,
+        days: 7,
+        truncated: shiftEvidence.truncated,
+      })
+    : null;
   const latestFollowup = new Map<string, FulfillmentSlaFollowup>();
   for (const followup of supervisorEvidence.followups) {
     if (!latestFollowup.has(followup.dispatchId)) {
@@ -186,7 +219,8 @@ export default async function FulfillmentPriorityPage({
     dispatchEvidence.truncated ||
     supervisorEvidence.truncated ||
     Boolean(fieldEvidence?.truncated) ||
-    Boolean(continuityEvidence?.truncated);
+    Boolean(continuityEvidence?.truncated) ||
+    Boolean(shiftEvidence?.truncated);
 
   return (
     <AppShell>
@@ -203,7 +237,7 @@ export default async function FulfillmentPriorityPage({
           <span>Supervisor priority</span>
         </nav>
         <section className="hero-panel meadow-hero">
-          <p className="eyebrow">Build 242 · Campground supervisors only</p>
+          <p className="eyebrow">Build 243 · Campground supervisors only</p>
           <h1>Fulfillment exception priority and aging</h1>
           <p className="hero-panel__lead">
             Identify missed assignment targets, requests for help and follow-up
@@ -355,6 +389,13 @@ export default async function FulfillmentPriorityPage({
               source tables are installed and accessible.
             </p>
           ) : null}
+          {!shiftEvidence ? (
+            <p role="alert" className={styles.warning}>
+              Build 243 shift handoff source tables could not be verified. Trend
+              history and handoff controls are unavailable until the source
+              migration is installed. Existing priority review stays available.
+            </p>
+          ) : null}
           <div className={styles.exportRow}>
             <a
               className="secondary-button"
@@ -367,6 +408,26 @@ export default async function FulfillmentPriorityPage({
               contains source IDs and decisions but no guest details, worker
               identities or free-text notes; it is not a Master Shell receipt.
             </p>
+            <a
+              className="secondary-button"
+              href={
+                "/api/management/fulfillment-supervisor/export?campground=" +
+                encodeURIComponent(selected.campgroundId) +
+                "&format=trend"
+              }
+            >
+              Download recovery trends (JSON)
+            </a>
+            <a
+              className="secondary-button"
+              href={
+                "/api/management/fulfillment-supervisor/export?campground=" +
+                encodeURIComponent(selected.campgroundId) +
+                "&format=case_history"
+              }
+            >
+              Download review history (JSON)
+            </a>
           </div>
           <div
             className={styles.metrics}
@@ -406,6 +467,141 @@ export default async function FulfillmentPriorityPage({
             </p>
           )}
         </section>
+        <section className="content-panel" aria-labelledby="recovery-trends">
+          <SectionHeading
+            eyebrow="Source review history · trailing seven UTC dates"
+            title="Supervisor recovery and handoff trends"
+            id="recovery-trends"
+            helpTopic="campground.structure"
+          />
+          {trend ? (
+            <>
+              <p className={styles.explain}>
+                Counts are derived from source review and handoff events, not
+                extrapolated cases or promises of SLA compliance. Supervisor
+                resolution is not a verified field-device acceptance.
+              </p>
+              <div className={styles.trendScroll}>
+                <table className={styles.trendTable}>
+                  <caption>
+                    Seven-day campground-private review and shift handoff
+                    history
+                  </caption>
+                  <thead>
+                    <tr>
+                      <th scope="col">UTC date</th>
+                      <th scope="col">Follow-ups resolved</th>
+                      <th scope="col">Escalations</th>
+                      <th scope="col">Device blockers</th>
+                      <th scope="col">Handoffs requested</th>
+                      <th scope="col">Accepted</th>
+                      <th scope="col">Declined</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {trend.buckets.map((bucket) => (
+                      <tr key={bucket.date}>
+                        <th scope="row">{bucket.date}</th>
+                        <td>{bucket.followupsResolved}</td>
+                        <td>{bucket.escalations}</td>
+                        <td>{bucket.deviceBlockers}</td>
+                        <td>{bucket.handoffRequests}</td>
+                        <td>{bucket.handoffAccepted}</td>
+                        <td>{bucket.handoffDeclined}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              {trend.truncated ? (
+                <p role="alert" className={styles.warning}>
+                  Trend history is capped; displayed counts are incomplete.
+                </p>
+              ) : null}
+            </>
+          ) : (
+            <p role="status">No verified shift trend source is available.</p>
+          )}
+          <h3>Receiving supervisor inbox</h3>
+          <p>
+            Accepting a current request explicitly claims the case in the same
+            audited source transaction. Declining leaves ownership unchanged.
+          </p>
+          {pendingHandoffs.filter(
+            (item) => item.incomingUserId === session.user.id,
+          ).length ? (
+            <ul className={styles.inbox}>
+              {pendingHandoffs
+                .filter((item) => item.incomingUserId === session.user.id)
+                .map((request) => (
+                  <li key={request.id}>
+                    <strong>Dispatch {request.dispatchId.slice(0, 8)}</strong>
+                    <p>
+                      Requested {utc(request.recordedAt)} · {request.note}
+                    </p>
+                    <form
+                      action={decideShiftHandoffAction}
+                      className={styles.ownerForm}
+                    >
+                      <input
+                        type="hidden"
+                        name="campgroundId"
+                        value={selected.campgroundId}
+                      />
+                      <input
+                        type="hidden"
+                        name="requestId"
+                        value={request.id}
+                      />
+                      <label>
+                        Receiving shift decision
+                        <select
+                          name="handoffDecision"
+                          required
+                          defaultValue="accept"
+                        >
+                          <option value="accept">Accept and claim case</option>
+                          <option value="decline">
+                            Decline; leave owner unchanged
+                          </option>
+                        </select>
+                      </label>
+                      <label>
+                        Reason and next shift plan (5–300 characters)
+                        <input
+                          name="handoffNote"
+                          minLength={5}
+                          maxLength={300}
+                          required
+                        />
+                      </label>
+                      <button type="submit" className="secondary-button">
+                        Record my decision
+                      </button>
+                    </form>
+                  </li>
+                ))}
+            </ul>
+          ) : (
+            <p>No pending handoffs addressed to you.</p>
+          )}
+          {params.result?.startsWith("handoff-") ? (
+            <p
+              role={params.result === "handoff-error" ? "alert" : "status"}
+              className={
+                params.result === "handoff-error" ? styles.warning : undefined
+              }
+            >
+              {params.result === "handoff-error"
+                ? "Handoff was not recorded. Refresh current owner, pending request and supervisor permissions."
+                : params.result === "handoff-requested"
+                  ? "Shift handoff requested. Current owner stays responsible until the recipient accepts."
+                  : params.result === "handoff-accepted"
+                    ? "Shift handoff accepted and source case ownership updated."
+                    : "Shift handoff declined; source ownership unchanged."}
+            </p>
+          ) : null}
+        </section>
         <section className="content-panel">
           <SectionHeading
             eyebrow={`${FULFILLMENT_PRIORITY_FILTERS[filter]} · ${filtered.length} visible cases`}
@@ -439,6 +635,79 @@ export default async function FulfillmentPriorityPage({
                         {priority.ageBand}
                       </strong>
                     </div>
+                    {ownership?.claimedByUserId === session.user.id &&
+                    classification?.status === "current" &&
+                    priority.isException &&
+                    shiftEvidence ? (
+                      <div className={styles.ownership}>
+                        <h4>Cross-shift owner handoff</h4>
+                        {pendingByDispatch.get(dispatch.id) ? (
+                          <p role="status">
+                            A receiving supervisor decision is pending. You
+                            remain the case owner.
+                          </p>
+                        ) : shiftEvidence.colleagues.length ? (
+                          <form
+                            action={requestShiftHandoffAction}
+                            className={styles.ownerForm}
+                          >
+                            <input
+                              type="hidden"
+                              name="campgroundId"
+                              value={selected.campgroundId}
+                            />
+                            <input
+                              type="hidden"
+                              name="dispatchId"
+                              value={dispatch.id}
+                            />
+                            <input
+                              type="hidden"
+                              name="ownerEventId"
+                              value={ownership.id}
+                            />
+                            <label>
+                              Receiving supervisor
+                              <select
+                                name="targetUserId"
+                                required
+                                defaultValue=""
+                              >
+                                <option value="" disabled>
+                                  Choose an authorized coworker
+                                </option>
+                                {shiftEvidence.colleagues.map((person) => (
+                                  <option
+                                    key={person.userId}
+                                    value={person.userId}
+                                  >
+                                    {person.email}
+                                  </option>
+                                ))}
+                              </select>
+                            </label>
+                            <label>
+                              Shift handoff notes (5–300 characters)
+                              <input
+                                name="handoffNote"
+                                minLength={5}
+                                maxLength={300}
+                                required
+                                placeholder="Current recovery status and next action"
+                              />
+                            </label>
+                            <button type="submit" className="secondary-button">
+                              Request shift handoff
+                            </button>
+                          </form>
+                        ) : (
+                          <p>
+                            No other authorized supervisor is available for a
+                            shift handoff.
+                          </p>
+                        )}
+                      </div>
+                    ) : null}
                     <dl className={styles.details}>
                       <div>
                         <dt>Exception age</dt>
