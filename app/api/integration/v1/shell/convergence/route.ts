@@ -5,14 +5,9 @@ export const runtime = "nodejs";
 
 const SHA = /^[a-f0-9]{40}$/u;
 
-export async function GET(request: Request) {
-  const url = new URL(request.url);
-  if (url.search || url.hash) {
-    return new Response(null, {
-      status: 400,
-      headers: { "Cache-Control": "no-store" },
-    });
-  }
+// This endpoint is public non-secret metadata; Vercel share-link verification can
+// append a transport query string. Never interpret query parameters as authority.
+export async function GET() {
   const actual = process.env.VERCEL_GIT_COMMIT_SHA ?? null;
   const valid = actual !== null && SHA.test(actual);
   const revisionState =

@@ -206,6 +206,8 @@ test("MASTER363 iCamp keeps platform identity while public signer and receipt re
   assert.equal(manifest.connection_state, "DISCONNECTED / HOLD");
   assert.match(build, /VERCEL_GIT_COMMIT_SHA/u);
   assert.match(build, /Production source manifest needs an exact/u);
+  assert.match(route, /export async function GET\(\)/u);
+  assert.doesNotMatch(route, /url\.search/u);
   assert.match(route, /LOCAL_BUILD_REVISION_MATCH/u);
   assert.match(route, /DEPLOYMENT_SELF_REPORT_REQUIRES_INDEPENDENT/u);
   assert.match(route, /signedHealthReceipt: "HOLD_NO_ORIGINAL_SOURCE_SIGNER"/u);
