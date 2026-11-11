@@ -29,9 +29,15 @@ import {
 } from "@/lib/booking-charges/fulfillment-priority-core.mjs";
 import { fieldAcceptanceLabel } from "@/lib/booking-charges/fulfillment-supervisor-core.mjs";
 import { listFulfillmentSupervisorEvidence } from "@/lib/booking-charges/fulfillment-supervisor-postgres.mjs";
+import {
+  CONTINUITY_DECISIONS,
+  DEVICE_REVIEW_DECISIONS,
+} from "@/lib/booking-charges/fulfillment-continuity-core.mjs";
+import { listSupervisorContinuityEvidence } from "@/lib/booking-charges/fulfillment-continuity-postgres.mjs";
 
 import {
   recordCaseOwnershipAction,
+  recordSupervisorContinuityAction,
   removePriorityViewAction,
   savePriorityViewAction,
 } from "./actions";
@@ -99,26 +105,42 @@ export default async function FulfillmentPriorityPage({
     allowed[0];
   const filter = validateFulfillmentPriorityFilter(params.filter);
   const requestedPage = validateFulfillmentPriorityPage(params.page);
-  const [dispatchEvidence, supervisorEvidence, fieldEvidence] =
-    await Promise.all([
-      listCampgroundDispatchEvidence({
-        userId: session.user.id,
-        campgroundId: selected.campgroundId,
-      }),
-      listCampgroundSlaFollowups({
-        userId: session.user.id,
-        campgroundId: selected.campgroundId,
-      }),
-      listFulfillmentSupervisorEvidence({
-        userId: session.user.id,
-        campgroundId: selected.campgroundId,
-      }).catch(() => null),
-    ]);
+  const [
+    dispatchEvidence,
+    supervisorEvidence,
+    fieldEvidence,
+    continuityEvidence,
+  ] = await Promise.all([
+    listCampgroundDispatchEvidence({
+      userId: session.user.id,
+      campgroundId: selected.campgroundId,
+    }),
+    listCampgroundSlaFollowups({
+      userId: session.user.id,
+      campgroundId: selected.campgroundId,
+    }),
+    listFulfillmentSupervisorEvidence({
+      userId: session.user.id,
+      campgroundId: selected.campgroundId,
+    }).catch(() => null),
+    listSupervisorContinuityEvidence({
+      userId: session.user.id,
+      campgroundId: selected.campgroundId,
+    }).catch(() => null),
+  ]);
   const ownershipByDispatch = new Map(
     fieldEvidence?.ownership.map((item) => [item.dispatchId, item]) ?? [],
   );
   const reportsByDispatch = new Map(
     fieldEvidence?.mobile.map((item) => [item.dispatchId, item]) ?? [],
+  );
+  const caseReviewsByDispatch = new Map(
+    continuityEvidence?.caseFollowups.map((item) => [item.dispatchId, item]) ??
+      [],
+  );
+  const deviceReviewsByDispatch = new Map(
+    continuityEvidence?.deviceReviews.map((item) => [item.dispatchId, item]) ??
+      [],
   );
   const now = new Date().toISOString();
   const latestFollowup = new Map<string, FulfillmentSlaFollowup>();
@@ -135,6 +157,8 @@ export default async function FulfillmentPriorityPage({
         followup,
         ownership: ownershipByDispatch.get(entry.dispatch.id) ?? null,
         fieldReport: reportsByDispatch.get(entry.dispatch.id) ?? null,
+        caseReview: caseReviewsByDispatch.get(entry.dispatch.id) ?? null,
+        deviceReview: deviceReviewsByDispatch.get(entry.dispatch.id) ?? null,
         priority: classifyFulfillmentPriority({
           dispatch: entry.dispatch,
           classification: entry.classification,
@@ -161,7 +185,8 @@ export default async function FulfillmentPriorityPage({
   const truncated =
     dispatchEvidence.truncated ||
     supervisorEvidence.truncated ||
-    Boolean(fieldEvidence?.truncated);
+    Boolean(fieldEvidence?.truncated) ||
+    Boolean(continuityEvidence?.truncated);
 
   return (
     <AppShell>
@@ -178,7 +203,7 @@ export default async function FulfillmentPriorityPage({
           <span>Supervisor priority</span>
         </nav>
         <section className="hero-panel meadow-hero">
-          <p className="eyebrow">Build 241 · Campground supervisors only</p>
+          <p className="eyebrow">Build 242 · Campground supervisors only</p>
           <h1>Fulfillment exception priority and aging</h1>
           <p className="hero-panel__lead">
             Identify missed assignment targets, requests for help and follow-up
@@ -227,6 +252,18 @@ export default async function FulfillmentPriorityPage({
           {params.result === "owner-recorded" ? (
             <p role="status">
               The case ownership event was recorded and audited.
+            </p>
+          ) : null}
+          {params.result === "continuity-recorded" ? (
+            <p role="status">
+              The source-linked supervisor review was recorded in the immutable
+              history.
+            </p>
+          ) : null}
+          {params.result === "continuity-error" ? (
+            <p role="alert" className={styles.warning}>
+              The review was not recorded. Refresh this case: ownership, its
+              latest device report, or the previous review may have changed.
             </p>
           ) : null}
           {params.result === "view-error" || params.result === "owner-error" ? (
@@ -311,6 +348,26 @@ export default async function FulfillmentPriorityPage({
               independently applied.
             </p>
           ) : null}
+          {!continuityEvidence ? (
+            <p role="alert" className={styles.warning}>
+              Build 242 continuity source migration is not verified. Case
+              follow-up and device-review actions remain unavailable until the
+              source tables are installed and accessible.
+            </p>
+          ) : null}
+          <div className={styles.exportRow}>
+            <a
+              className="secondary-button"
+              href={`/api/management/fulfillment-supervisor/export?campground=${encodeURIComponent(selected.campgroundId)}`}
+            >
+              Download private source evidence (JSON)
+            </a>
+            <p>
+              Authorized campground supervisors only. This unsigned snapshot
+              contains source IDs and decisions but no guest details, worker
+              identities or free-text notes; it is not a Master Shell receipt.
+            </p>
+          </div>
           <div
             className={styles.metrics}
             aria-label="Visible source exceptions"
@@ -365,6 +422,8 @@ export default async function FulfillmentPriorityPage({
                   followup,
                   ownership,
                   fieldReport,
+                  caseReview,
+                  deviceReview,
                   priority,
                 }) => (
                   <article key={dispatch.id} className={styles.case}>
@@ -488,6 +547,88 @@ export default async function FulfillmentPriorityPage({
                       ) : null}
                     </div>
                     <div className={styles.ownership}>
+                      <h4>Owner follow-up continuity</h4>
+                      <p>
+                        {caseReview
+                          ? `${CONTINUITY_DECISIONS[caseReview.decision] ?? caseReview.decision} · ${utc(caseReview.reviewedAt)}`
+                          : "No owner follow-up review yet"}
+                        {caseReview && caseReview.subjectId !== ownership?.id
+                          ? " · Source ownership changed; review is historical"
+                          : ""}
+                      </p>
+                      {caseReview ? (
+                        <p>Last follow-up note: {caseReview.note}</p>
+                      ) : null}
+                      {classification?.status === "current" &&
+                      priority.isException &&
+                      ownership?.claimedByUserId === session.user.id &&
+                      continuityEvidence ? (
+                        <form
+                          action={recordSupervisorContinuityAction}
+                          className={styles.ownerForm}
+                        >
+                          <input
+                            type="hidden"
+                            name="campgroundId"
+                            value={selected.campgroundId}
+                          />
+                          <input
+                            type="hidden"
+                            name="dispatchId"
+                            value={dispatch.id}
+                          />
+                          <input
+                            type="hidden"
+                            name="subjectId"
+                            value={ownership.id}
+                          />
+                          <input
+                            type="hidden"
+                            name="previousReviewId"
+                            value={caseReview?.id ?? ""}
+                          />
+                          <input
+                            type="hidden"
+                            name="reviewKind"
+                            value="case_followup"
+                          />
+                          <label>
+                            Follow-up decision
+                            <select
+                              name="reviewDecision"
+                              required
+                              defaultValue="supervisor_recheck"
+                            >
+                              {Object.entries(CONTINUITY_DECISIONS).map(
+                                ([value, label]) => (
+                                  <option key={value} value={value}>
+                                    {label}
+                                  </option>
+                                ),
+                              )}
+                            </select>
+                          </label>
+                          <label>
+                            Follow-up explanation (5–300 characters)
+                            <input
+                              name="reviewNote"
+                              required
+                              minLength={5}
+                              maxLength={300}
+                              placeholder="Next action and who will recheck"
+                            />
+                          </label>
+                          <button className="secondary-button" type="submit">
+                            Record my follow-up
+                          </button>
+                        </form>
+                      ) : (
+                        <p>
+                          Claim current ownership first to record a follow-up.
+                        </p>
+                      )}
+                    </div>
+                    <div className={styles.ownership}>
                       <p>
                         <strong>Worker device evidence:</strong>{" "}
                         {fieldAcceptanceLabel(fieldReport)}
@@ -504,6 +645,82 @@ export default async function FulfillmentPriorityPage({
                         Independent field acceptance is HOLD until a separate
                         authorized reviewer confirms actual device evidence.
                       </p>
+                      <h4>Supervisor device-report review</h4>
+                      <p>
+                        {deviceReview
+                          ? `${DEVICE_REVIEW_DECISIONS[deviceReview.decision] ?? deviceReview.decision} · ${utc(deviceReview.reviewedAt)}`
+                          : "Not reviewed by supervisor"}
+                        {deviceReview &&
+                        deviceReview.subjectId !== fieldReport?.id
+                          ? " · New worker report requires recheck"
+                          : ""}
+                      </p>
+                      {deviceReview ? (
+                        <p>Last review note: {deviceReview.note}</p>
+                      ) : null}
+                      {fieldReport &&
+                      fieldReport.reportedByUserId !== session.user.id &&
+                      continuityEvidence ? (
+                        <form
+                          action={recordSupervisorContinuityAction}
+                          className={styles.ownerForm}
+                        >
+                          <input
+                            type="hidden"
+                            name="campgroundId"
+                            value={selected.campgroundId}
+                          />
+                          <input
+                            type="hidden"
+                            name="dispatchId"
+                            value={dispatch.id}
+                          />
+                          <input
+                            type="hidden"
+                            name="subjectId"
+                            value={fieldReport.id}
+                          />
+                          <input
+                            type="hidden"
+                            name="previousReviewId"
+                            value={deviceReview?.id ?? ""}
+                          />
+                          <input
+                            type="hidden"
+                            name="reviewKind"
+                            value="field_device"
+                          />
+                          <label>
+                            Device review decision
+                            <select
+                              name="reviewDecision"
+                              required
+                              defaultValue="needs_retest"
+                            >
+                              {Object.entries(DEVICE_REVIEW_DECISIONS).map(
+                                ([value, label]) => (
+                                  <option key={value} value={value}>
+                                    {label}
+                                  </option>
+                                ),
+                              )}
+                            </select>
+                          </label>
+                          <label>
+                            Review explanation (5–300 characters)
+                            <input
+                              name="reviewNote"
+                              required
+                              minLength={5}
+                              maxLength={300}
+                              placeholder="What needs verification on the device?"
+                            />
+                          </label>
+                          <button className="secondary-button" type="submit">
+                            Record device review
+                          </button>
+                        </form>
+                      ) : null}
                     </div>
                     {followup ? (
                       <p className={styles.reviewNote}>

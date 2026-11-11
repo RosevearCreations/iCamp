@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 import { requireCampgroundPermission } from "@/lib/authz/current-user";
+import { recordSupervisorContinuityReview } from "@/lib/booking-charges/fulfillment-continuity-postgres.mjs";
 import {
   removeSupervisorPriorityView,
   recordSupervisorCaseOwnership,
@@ -83,6 +84,28 @@ export async function recordCaseOwnershipAction(form: FormData) {
     result = "owner-recorded";
   } catch {
     // A conflicting claim never becomes an implicit reassignment.
+  }
+  finish(campgroundId, result);
+}
+
+export async function recordSupervisorContinuityAction(form: FormData) {
+  const { campgroundId, session } = await supervisor(form);
+  let result = "continuity-error";
+  try {
+    await recordSupervisorContinuityReview({
+      actorUserId: session.user.id,
+      actorSessionId: session.sessionId,
+      campgroundId,
+      dispatchId: field(form, "dispatchId"),
+      subjectId: field(form, "subjectId"),
+      previousReviewId: field(form, "previousReviewId"),
+      reviewKind: field(form, "reviewKind"),
+      decision: field(form, "reviewDecision"),
+      note: field(form, "reviewNote"),
+    });
+    result = "continuity-recorded";
+  } catch {
+    // A stale source subject or unowned case cannot silently pass review.
   }
   finish(campgroundId, result);
 }
