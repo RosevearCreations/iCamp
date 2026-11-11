@@ -15,6 +15,7 @@ import {
 } from "@/lib/booking-charges/fulfillment-dispatch-core.mjs";
 import { listWorkerFulfillmentInbox } from "@/lib/booking-charges/fulfillment-dispatch-postgres.mjs";
 import { validateInboxPage } from "@/lib/booking-charges/fulfillment-followup-core.mjs";
+import { workerRecoveryGuidance } from "@/lib/booking-charges/fulfillment-priority-core.mjs";
 
 import { acknowledgeWorkerInboxDispatchAction } from "./actions";
 import styles from "./inbox.module.css";
@@ -81,7 +82,7 @@ export default async function WorkerInboxPage({
           <span>My dispatch inbox</span>
         </nav>
         <section className="hero-panel meadow-hero">
-          <p className="eyebrow">Build 239 · Assigned campground worker only</p>
+          <p className="eyebrow">Build 240 · Assigned campground worker only</p>
           <h1>My dispatch inbox</h1>
           <p className="hero-panel__lead">
             Review your own campground service handoffs and record receipt or a
@@ -176,6 +177,21 @@ export default async function WorkerInboxPage({
                       item.classification?.completion ?? ""
                     ] ?? "Not configured"}
                   </p>
+                  <aside
+                    className={styles.guidance}
+                    aria-label="Mobile handoff recovery guidance"
+                  >
+                    <strong>
+                      {workerRecoveryGuidance(item.classification).title}
+                    </strong>
+                    <p>{workerRecoveryGuidance(item.classification).step}</p>
+                    {workerRecoveryGuidance(item.classification).urgent ? (
+                      <p className={styles.emphasis}>
+                        Supervisor attention may be needed. This page does not
+                        notify them automatically.
+                      </p>
+                    ) : null}
+                  </aside>
                   {item.dispatch.responseNote ? (
                     <p>My note: {item.dispatch.responseNote}</p>
                   ) : null}
