@@ -17,7 +17,10 @@ import { listWorkerFulfillmentInbox } from "@/lib/booking-charges/fulfillment-di
 import { validateInboxPage } from "@/lib/booking-charges/fulfillment-followup-core.mjs";
 import { workerRecoveryGuidance } from "@/lib/booking-charges/fulfillment-priority-core.mjs";
 
-import { acknowledgeWorkerInboxDispatchAction } from "./actions";
+import {
+  acknowledgeWorkerInboxDispatchAction,
+  reportWorkerMobileFieldAction,
+} from "./actions";
 import styles from "./inbox.module.css";
 
 export const dynamic = "force-dynamic";
@@ -82,7 +85,7 @@ export default async function WorkerInboxPage({
           <span>My dispatch inbox</span>
         </nav>
         <section className="hero-panel meadow-hero">
-          <p className="eyebrow">Build 240 · Assigned campground worker only</p>
+          <p className="eyebrow">Build 241 · Assigned campground worker only</p>
           <h1>My dispatch inbox</h1>
           <p className="hero-panel__lead">
             Review your own campground service handoffs and record receipt or a
@@ -121,6 +124,18 @@ export default async function WorkerInboxPage({
             <p role="alert" className={styles.message}>
               No receipt was recorded. Refresh and confirm that this handoff is
               still assigned to you and has not already been acknowledged.
+            </p>
+          ) : null}
+          {params.result === "mobile-recorded" ? (
+            <p role="status" className={styles.message}>
+              Your device observation was recorded for supervisor review. This
+              is worker-reported evidence, not independent device acceptance.
+            </p>
+          ) : null}
+          {params.result === "mobile-error" ? (
+            <p role="alert" className={styles.message}>
+              Device observation was not recorded. Confirm this is still your
+              current assignment, then refresh and try again.
             </p>
           ) : null}
           <p>
@@ -231,6 +246,65 @@ export default async function WorkerInboxPage({
                         Record my response
                       </button>
                     </form>
+                  ) : null}
+                  {item.classification?.status === "current" ? (
+                    <details className={styles.fieldCheck}>
+                      <summary>
+                        Record a field-device usability observation
+                      </summary>
+                      <p>
+                        Report only what you personally tried on this device. Do
+                        not include guest information or passwords. A supervisor
+                        must independently review device acceptance.
+                      </p>
+                      <form
+                        action={reportWorkerMobileFieldAction}
+                        className={styles.form}
+                      >
+                        <input
+                          type="hidden"
+                          name="campgroundId"
+                          value={selected.campgroundId}
+                        />
+                        <input
+                          type="hidden"
+                          name="dispatchId"
+                          value={item.dispatch.id}
+                        />
+                        <label>
+                          Device I used
+                          <select name="deviceKind" required>
+                            <option value="mobile">Phone</option>
+                            <option value="tablet">Tablet</option>
+                            <option value="desktop">Desktop</option>
+                          </select>
+                        </label>
+                        <label>
+                          My result
+                          <select name="fieldOutcome" required>
+                            <option value="usable">
+                              Usable on this device
+                            </option>
+                            <option value="blocked">
+                              Blocked or inaccessible
+                            </option>
+                          </select>
+                        </label>
+                        <label>
+                          What I observed (5–300 characters)
+                          <input
+                            name="fieldNote"
+                            minLength={5}
+                            maxLength={300}
+                            required
+                            placeholder="Which screen or step did you test?"
+                          />
+                        </label>
+                        <button type="submit" className="secondary-button">
+                          Record my device observation
+                        </button>
+                      </form>
+                    </details>
                   ) : null}
                 </article>
               ))}
