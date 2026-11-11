@@ -34,6 +34,17 @@
 .emphasis {
   font-weight: 650;
 }
+.fieldCheck {
+  border-top: 1px solid var(--border, #9eaba1);
+  padding-top: 0.75rem;
+}
+.fieldCheck summary {
+  cursor: pointer;
+  font-weight: 700;
+  min-height: 2.75rem;
+  display: flex;
+  align-items: center;
+}
 .form {
   display: grid;
   gap: 0.85rem;

@@ -27,6 +27,14 @@ import {
   validateFulfillmentPriorityFilter,
   validateFulfillmentPriorityPage,
 } from "@/lib/booking-charges/fulfillment-priority-core.mjs";
+import { fieldAcceptanceLabel } from "@/lib/booking-charges/fulfillment-supervisor-core.mjs";
+import { listFulfillmentSupervisorEvidence } from "@/lib/booking-charges/fulfillment-supervisor-postgres.mjs";
+
+import {
+  recordCaseOwnershipAction,
+  removePriorityViewAction,
+  savePriorityViewAction,
+} from "./actions";
 
 import styles from "./priority.module.css";
 
@@ -57,6 +65,7 @@ export default async function FulfillmentPriorityPage({
     campground?: string;
     filter?: string;
     page?: string;
+    result?: string;
   }>;
 }>) {
   const path = "/workspaces/management/campgrounds/fulfillment-priority";
@@ -90,16 +99,27 @@ export default async function FulfillmentPriorityPage({
     allowed[0];
   const filter = validateFulfillmentPriorityFilter(params.filter);
   const requestedPage = validateFulfillmentPriorityPage(params.page);
-  const [dispatchEvidence, supervisorEvidence] = await Promise.all([
-    listCampgroundDispatchEvidence({
-      userId: session.user.id,
-      campgroundId: selected.campgroundId,
-    }),
-    listCampgroundSlaFollowups({
-      userId: session.user.id,
-      campgroundId: selected.campgroundId,
-    }),
-  ]);
+  const [dispatchEvidence, supervisorEvidence, fieldEvidence] =
+    await Promise.all([
+      listCampgroundDispatchEvidence({
+        userId: session.user.id,
+        campgroundId: selected.campgroundId,
+      }),
+      listCampgroundSlaFollowups({
+        userId: session.user.id,
+        campgroundId: selected.campgroundId,
+      }),
+      listFulfillmentSupervisorEvidence({
+        userId: session.user.id,
+        campgroundId: selected.campgroundId,
+      }).catch(() => null),
+    ]);
+  const ownershipByDispatch = new Map(
+    fieldEvidence?.ownership.map((item) => [item.dispatchId, item]) ?? [],
+  );
+  const reportsByDispatch = new Map(
+    fieldEvidence?.mobile.map((item) => [item.dispatchId, item]) ?? [],
+  );
   const now = new Date().toISOString();
   const latestFollowup = new Map<string, FulfillmentSlaFollowup>();
   for (const followup of supervisorEvidence.followups) {
@@ -113,6 +133,8 @@ export default async function FulfillmentPriorityPage({
       return {
         ...entry,
         followup,
+        ownership: ownershipByDispatch.get(entry.dispatch.id) ?? null,
+        fieldReport: reportsByDispatch.get(entry.dispatch.id) ?? null,
         priority: classifyFulfillmentPriority({
           dispatch: entry.dispatch,
           classification: entry.classification,
@@ -136,7 +158,10 @@ export default async function FulfillmentPriorityPage({
   const page = Math.min(requestedPage, totalPages);
   const visible = filtered.slice((page - 1) * PER_PAGE, page * PER_PAGE);
   const base = `${path}?campground=${encodeURIComponent(selected.campgroundId)}&filter=${filter}`;
-  const truncated = dispatchEvidence.truncated || supervisorEvidence.truncated;
+  const truncated =
+    dispatchEvidence.truncated ||
+    supervisorEvidence.truncated ||
+    Boolean(fieldEvidence?.truncated);
 
   return (
     <AppShell>
@@ -153,7 +178,7 @@ export default async function FulfillmentPriorityPage({
           <span>Supervisor priority</span>
         </nav>
         <section className="hero-panel meadow-hero">
-          <p className="eyebrow">Build 240 · Campground supervisors only</p>
+          <p className="eyebrow">Build 241 · Campground supervisors only</p>
           <h1>Fulfillment exception priority and aging</h1>
           <p className="hero-panel__lead">
             Identify missed assignment targets, requests for help and follow-up
@@ -195,6 +220,97 @@ export default async function FulfillmentPriorityPage({
               Refresh priority view
             </button>
           </form>
+          {params.result === "view-saved" ||
+          params.result === "view-removed" ? (
+            <p role="status">Your personal supervisor view was updated.</p>
+          ) : null}
+          {params.result === "owner-recorded" ? (
+            <p role="status">
+              The case ownership event was recorded and audited.
+            </p>
+          ) : null}
+          {params.result === "view-error" || params.result === "owner-error" ? (
+            <p role="alert" className={styles.warning}>
+              Nothing was saved. Refresh current campground permissions and
+              evidence; a saved view may already exist or another supervisor may
+              have changed ownership.
+            </p>
+          ) : null}
+          <section
+            className={styles.savedViews}
+            aria-label="My supervisor saved views"
+          >
+            <h3>My priority shortcuts</h3>
+            <p>
+              Save up to eight personal filter shortcuts. They never expose
+              another campground or modify worker assignments.
+            </p>
+            {fieldEvidence?.savedViews.length ? (
+              <ul className={styles.shortcuts}>
+                {fieldEvidence.savedViews.map((item) => (
+                  <li key={item.id}>
+                    <Link
+                      href={`${path}?campground=${encodeURIComponent(selected.campgroundId)}&filter=${item.filter}`}
+                    >
+                      {item.label}
+                    </Link>
+                    <form action={removePriorityViewAction}>
+                      <input
+                        type="hidden"
+                        name="campgroundId"
+                        value={selected.campgroundId}
+                      />
+                      <input type="hidden" name="viewId" value={item.id} />
+                      <button
+                        type="submit"
+                        className="secondary-button"
+                        aria-label={`Remove saved view ${item.label}`}
+                      >
+                        Remove
+                      </button>
+                    </form>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p>No personal shortcuts are stored.</p>
+            )}
+            <form action={savePriorityViewAction} className={styles.filters}>
+              <input
+                type="hidden"
+                name="campgroundId"
+                value={selected.campgroundId}
+              />
+              <input type="hidden" name="viewFilter" value={filter} />
+              <label>
+                Shortcut name (2–48 characters)
+                <input
+                  name="viewLabel"
+                  minLength={2}
+                  maxLength={48}
+                  required
+                  placeholder="Today's overdue work"
+                />
+              </label>
+              <button
+                className="secondary-button"
+                disabled={
+                  !fieldEvidence || fieldEvidence.savedViews.length >= 8
+                }
+                type="submit"
+              >
+                Save current filter
+              </button>
+            </form>
+          </section>
+          {!fieldEvidence ? (
+            <p role="alert" className={styles.warning}>
+              Build 241 source tables are not available or could not be
+              verified. Saved views, case ownership and mobile acceptance
+              evidence are on HOLD until the campground database migration is
+              independently applied.
+            </p>
+          ) : null}
           <div
             className={styles.metrics}
             aria-label="Visible source exceptions"
@@ -243,7 +359,14 @@ export default async function FulfillmentPriorityPage({
           {visible.length ? (
             <div className={styles.caseList}>
               {visible.map(
-                ({ dispatch, classification, followup, priority }) => (
+                ({
+                  dispatch,
+                  classification,
+                  followup,
+                  ownership,
+                  fieldReport,
+                  priority,
+                }) => (
                   <article key={dispatch.id} className={styles.case}>
                     <div className={styles.caseHeader}>
                       <div>
@@ -302,6 +425,86 @@ export default async function FulfillmentPriorityPage({
                         </dd>
                       </div>
                     </dl>
+                    <div className={styles.ownership}>
+                      <p>
+                        <strong>Case owner:</strong>{" "}
+                        {!ownership?.claimedByUserId
+                          ? "Unassigned"
+                          : ownership.claimedByUserId === session.user.id
+                            ? "You"
+                            : "Another authorized supervisor"}
+                        {ownership ? ` · ${utc(ownership.recordedAt)}` : ""}
+                      </p>
+                      {ownership ? (
+                        <p>Latest ownership reason: {ownership.reason}</p>
+                      ) : null}
+                      {classification?.status === "current" &&
+                      priority.isException &&
+                      fieldEvidence ? (
+                        <form
+                          action={recordCaseOwnershipAction}
+                          className={styles.ownerForm}
+                        >
+                          <input
+                            type="hidden"
+                            name="campgroundId"
+                            value={selected.campgroundId}
+                          />
+                          <input
+                            type="hidden"
+                            name="dispatchId"
+                            value={dispatch.id}
+                          />
+                          <input
+                            type="hidden"
+                            name="previousEventId"
+                            value={ownership?.id ?? ""}
+                          />
+                          <input
+                            type="hidden"
+                            name="ownerIntent"
+                            value={
+                              ownership?.claimedByUserId === session.user.id
+                                ? "release"
+                                : "claim"
+                            }
+                          />
+                          <label>
+                            Ownership reason (5–300 characters)
+                            <input
+                              name="ownerNote"
+                              minLength={5}
+                              maxLength={300}
+                              required
+                              placeholder="What follow-up will I own?"
+                            />
+                          </label>
+                          <button className="secondary-button" type="submit">
+                            {ownership?.claimedByUserId === session.user.id
+                              ? "Release my ownership"
+                              : "Claim this case"}
+                          </button>
+                        </form>
+                      ) : null}
+                    </div>
+                    <div className={styles.ownership}>
+                      <p>
+                        <strong>Worker device evidence:</strong>{" "}
+                        {fieldAcceptanceLabel(fieldReport)}
+                      </p>
+                      {fieldReport ? (
+                        <p>
+                          {fieldReport.deviceKind} ·{" "}
+                          {utc(fieldReport.reportedAt)}
+                          {" · "}
+                          {fieldReport.observation}
+                        </p>
+                      ) : null}
+                      <p>
+                        Independent field acceptance is HOLD until a separate
+                        authorized reviewer confirms actual device evidence.
+                      </p>
+                    </div>
                     {followup ? (
                       <p className={styles.reviewNote}>
                         <strong>Recorded supervisor note:</strong>{" "}
