@@ -39,8 +39,8 @@ export function verifyBuild207CacheContract(inputs) {
     /restore-keys:/,
     "Never fall back to another browser version cache",
   );
-  assert.match(browser, /run: npx playwright install --with-deps chromium/);
-  assert.equal(count("run: npx playwright install --with-deps chromium"), 1);
+  assert.match(browser, /run: npx playwright install chromium/);
+  assert.equal(count("run: npx playwright install chromium"), 1);
   assert.match(browser, /run: npm run e2e:test/);
   assert.match(
     browser,

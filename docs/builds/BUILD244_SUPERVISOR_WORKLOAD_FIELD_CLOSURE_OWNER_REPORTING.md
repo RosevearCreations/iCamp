@@ -16,3 +16,5 @@ No independent Ed25519 iCamp source signer is enrolled. A source-bound signed HE
 ## Acceptance
 
 `npm run verify` plus GitHub's migration and browser checks on `dev` and `main`, followed by exact production SHA and authenticated/unauthenticated access verification where possible. No simulation or CI apply implies that production database migration or an actual worker device was independently accepted.
+
+Build 244 also pins the database runner to Ubuntu 24.04 and checks its preinstalled `psql`, and installs version-locked Chromium without an external apt mirror. Both database and browser acceptance jobs remain mandatory: this removes the unavailable Ubuntu security mirror as a test setup dependency, not the tests themselves.

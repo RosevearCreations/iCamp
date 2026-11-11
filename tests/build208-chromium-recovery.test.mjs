@@ -74,7 +74,7 @@ test("Build 208 pins the audited browser OS and exact-cache key without bypassin
   const missingInstall = structuredClone(inputs);
   missingInstall.workflows["ci.yml"] = missingInstall.workflows[
     "ci.yml"
-  ].replace("npx playwright install --with-deps chromium", "true");
+  ].replace("npx playwright install chromium", "true");
   assert.throws(() => verifyBuild208CIContract(missingInstall));
 });
 
