@@ -201,7 +201,9 @@ jobs:
 
       - name: Install Chromium
         id: chromium-install
-        run: npx playwright install --with-deps chromium
+        # Ubuntu 24.04 runner already provides browser system libraries.
+        # Avoid a second apt mirror dependency during the GitHub DNS outage.
+        run: npx playwright install chromium
 
       - name: Record Build 208 Chromium cold-runner timing
         if: always() && steps.chromium-install.outcome != 'skipped'
@@ -243,7 +245,9 @@ jobs:
 
   database:
     name: Database migrations
-    runs-on: ubuntu-latest
+    # Ubuntu 24.04 runner includes PostgreSQL tooling; avoid an apt mirror
+    # dependency that failed DNS resolution on Ubuntu 26 in Build 244.
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     services:
       postgres:
@@ -285,8 +289,8 @@ jobs:
 
       - name: Install PostgreSQL client
         run: |
-          sudo apt-get update
-          sudo apt-get install -y postgresql-client
+          command -v psql
+          psql --version
 
       - name: Apply migrations
         run: node scripts/apply-database-migrations.mjs

@@ -36,12 +36,15 @@ import {
 import { listSupervisorContinuityEvidence } from "@/lib/booking-charges/fulfillment-continuity-postgres.mjs";
 import { buildRecoveryTrendAnalytics } from "@/lib/booking-charges/fulfillment-shift-core.mjs";
 import { listShiftRecoveryEvidence } from "@/lib/booking-charges/fulfillment-shift-postgres.mjs";
+import { buildSupervisorWorkloadForecast } from "@/lib/booking-charges/fulfillment-performance-core.mjs";
+import { listFieldClosureEvidence } from "@/lib/booking-charges/fulfillment-performance-postgres.mjs";
 
 import {
   requestShiftHandoffAction,
   decideShiftHandoffAction,
   recordCaseOwnershipAction,
   recordSupervisorContinuityAction,
+  recordFieldClosureAction,
   removePriorityViewAction,
   savePriorityViewAction,
 } from "./actions";
@@ -107,6 +110,11 @@ export default async function FulfillmentPriorityPage({
   const selected =
     allowed.find((item) => item.campgroundId === params.campground) ??
     allowed[0];
+  const selectedGrant = await getCampgroundAuthorization(
+    session.user.id,
+    selected.campgroundId,
+  );
+  const ownerAdmin = Boolean(selectedGrant?.roleCodes.includes("owner_admin"));
   const filter = validateFulfillmentPriorityFilter(params.filter);
   const requestedPage = validateFulfillmentPriorityPage(params.page);
   const [
@@ -115,6 +123,7 @@ export default async function FulfillmentPriorityPage({
     fieldEvidence,
     continuityEvidence,
     shiftEvidence,
+    closureEvidence,
   ] = await Promise.all([
     listCampgroundDispatchEvidence({
       userId: session.user.id,
@@ -133,6 +142,10 @@ export default async function FulfillmentPriorityPage({
       campgroundId: selected.campgroundId,
     }).catch(() => null),
     listShiftRecoveryEvidence({
+      userId: session.user.id,
+      campgroundId: selected.campgroundId,
+    }).catch(() => null),
+    listFieldClosureEvidence({
       userId: session.user.id,
       campgroundId: selected.campgroundId,
     }).catch(() => null),
@@ -166,6 +179,14 @@ export default async function FulfillmentPriorityPage({
     continuityEvidence?.deviceReviews.map((item) => [item.dispatchId, item]) ??
       [],
   );
+  const latestClosures = new Map<
+    string,
+    NonNullable<typeof closureEvidence>["events"][number]
+  >();
+  for (const item of closureEvidence?.events ?? []) {
+    if (!latestClosures.has(item.dispatchId))
+      latestClosures.set(item.dispatchId, item);
+  }
   const now = new Date().toISOString();
   const trend = shiftEvidence
     ? buildRecoveryTrendAnalytics({
@@ -192,6 +213,7 @@ export default async function FulfillmentPriorityPage({
         fieldReport: reportsByDispatch.get(entry.dispatch.id) ?? null,
         caseReview: caseReviewsByDispatch.get(entry.dispatch.id) ?? null,
         deviceReview: deviceReviewsByDispatch.get(entry.dispatch.id) ?? null,
+        fieldClosure: latestClosures.get(entry.dispatch.id) ?? null,
         priority: classifyFulfillmentPriority({
           dispatch: entry.dispatch,
           classification: entry.classification,
@@ -208,6 +230,20 @@ export default async function FulfillmentPriorityPage({
   const support = cases.filter(
     (item) => item.priority.category === "support",
   ).length;
+  const forecast = trend
+    ? buildSupervisorWorkloadForecast({
+        trend,
+        openCases: attention,
+        pendingHandoffs: pendingHandoffs.length,
+        asOf: now,
+        truncated: Boolean(
+          dispatchEvidence.truncated ||
+          supervisorEvidence.truncated ||
+          shiftEvidence?.truncated ||
+          closureEvidence?.truncated,
+        ),
+      })
+    : null;
   const filtered = cases.filter((item) =>
     matchesFulfillmentPriorityFilter(item.priority, filter),
   );
@@ -220,7 +256,8 @@ export default async function FulfillmentPriorityPage({
     supervisorEvidence.truncated ||
     Boolean(fieldEvidence?.truncated) ||
     Boolean(continuityEvidence?.truncated) ||
-    Boolean(shiftEvidence?.truncated);
+    Boolean(shiftEvidence?.truncated) ||
+    Boolean(closureEvidence?.truncated);
 
   return (
     <AppShell>
@@ -396,6 +433,28 @@ export default async function FulfillmentPriorityPage({
               migration is installed. Existing priority review stays available.
             </p>
           ) : null}
+          {!closureEvidence ? (
+            <p role="alert" className={styles.warning}>
+              Build 244 field-closure migration has not been verified in this
+              campground database. Closure recording remains on HOLD.
+            </p>
+          ) : null}
+          {params.result?.startsWith("field-closure-") ? (
+            <p
+              role={
+                params.result === "field-closure-error" ? "alert" : "status"
+              }
+              className={
+                params.result === "field-closure-error"
+                  ? styles.warning
+                  : undefined
+              }
+            >
+              {params.result === "field-closure-error"
+                ? "Field evidence was not recorded. Refresh the current worker report, supervisor review and source permissions."
+                : "Supervisor field closure evidence was recorded in the campground source. Independent acceptance remains HOLD."}
+            </p>
+          ) : null}
           <div className={styles.exportRow}>
             <a
               className="secondary-button"
@@ -428,6 +487,17 @@ export default async function FulfillmentPriorityPage({
             >
               Download review history (JSON)
             </a>
+            {ownerAdmin ? (
+              <a
+                className="secondary-button"
+                href={
+                  "/api/management/fulfillment-supervisor/shift-performance?campground=" +
+                  encodeURIComponent(selected.campgroundId)
+                }
+              >
+                Owner-only shift performance report (JSON)
+              </a>
+            ) : null}
           </div>
           <div
             className={styles.metrics}
@@ -464,6 +534,52 @@ export default async function FulfillmentPriorityPage({
             <p className={styles.explain}>
               Counts cover the dispatch history returned by this campground
               source (up to three records per job), not all historic evidence.
+            </p>
+          )}
+        </section>
+        <section className="content-panel" aria-labelledby="recovery-forecast">
+          <SectionHeading
+            eyebrow="Build 244 · planning estimate, not an automatic assignment"
+            title="Next eight-hour supervisor workload"
+            id="recovery-forecast"
+            helpTopic="campground.structure"
+          />
+          {forecast ? (
+            <>
+              <div
+                className={styles.metrics}
+                aria-label="Forecast planning evidence"
+              >
+                <div>
+                  <strong>{forecast.openCases}</strong>
+                  <span>Current open cases</span>
+                </div>
+                <div>
+                  <strong>{forecast.expectedNewReviewEvents}</strong>
+                  <span>Estimated new review events</span>
+                </div>
+                <div>
+                  <strong>{forecast.planningLoad}</strong>
+                  <span>Planning workload</span>
+                </div>
+              </div>
+              <p className={styles.explain}>
+                {forecast.methodology} Pending receiving handoffs:{" "}
+                {forecast.pendingHandoffs}. Highest observed daily shift
+                equivalent: {forecast.peakDailyShiftEquivalent}. This is an
+                indicative workload estimate only—not a guarantee, staffing
+                order, contractual service target, or field acceptance.
+              </p>
+              {forecast.evidenceCoverage === "PARTIAL_HOLD" ? (
+                <p role="alert" className={styles.warning}>
+                  Partial source evidence: this estimate may omit capped events
+                  or cases.
+                </p>
+              ) : null}
+            </>
+          ) : (
+            <p role="status">
+              Recovery source events unavailable; forecast is on HOLD.
             </p>
           )}
         </section>
@@ -620,6 +736,7 @@ export default async function FulfillmentPriorityPage({
                   fieldReport,
                   caseReview,
                   deviceReview,
+                  fieldClosure,
                   priority,
                 }) => (
                   <article key={dispatch.id} className={styles.case}>
@@ -990,6 +1107,105 @@ export default async function FulfillmentPriorityPage({
                           </button>
                         </form>
                       ) : null}
+                      <h4>Field-acceptance closure evidence · source only</h4>
+                      <p>
+                        {fieldClosure
+                          ? `${fieldClosure.decision === "closure_reviewed" ? "Supervisor closure evidence recorded" : "Recheck required"} · ${utc(fieldClosure.recordedAt)} · source ${fieldClosure.evidenceReference}`
+                          : "No field-closure source evidence recorded"}
+                      </p>
+                      <p>
+                        A source closure records a supervisor&apos;s review of
+                        the worker report. Independent device acceptance remains
+                        HOLD until separately witnessed; it does not close the
+                        job, authorize billing or notify guests.
+                      </p>
+                      {fieldReport &&
+                      deviceReview &&
+                      fieldReport.reportedByUserId !== session.user.id &&
+                      deviceReview.subjectId === fieldReport.id &&
+                      closureEvidence ? (
+                        <form
+                          action={recordFieldClosureAction}
+                          className={styles.ownerForm}
+                        >
+                          <input
+                            type="hidden"
+                            name="campgroundId"
+                            value={selected.campgroundId}
+                          />
+                          <input
+                            type="hidden"
+                            name="dispatchId"
+                            value={dispatch.id}
+                          />
+                          <input
+                            type="hidden"
+                            name="fieldReportId"
+                            value={fieldReport.id}
+                          />
+                          <input
+                            type="hidden"
+                            name="reviewId"
+                            value={deviceReview.id}
+                          />
+                          <input
+                            type="hidden"
+                            name="previousClosureId"
+                            value={fieldClosure?.id ?? ""}
+                          />
+                          <label>
+                            Source closure decision
+                            <select
+                              name="closureDecision"
+                              required
+                              defaultValue="recheck_required"
+                            >
+                              <option value="recheck_required">
+                                Reopen for field recheck
+                              </option>
+                              <option
+                                value="closure_reviewed"
+                                disabled={
+                                  deviceReview.decision !==
+                                  "reviewed_unverified"
+                                }
+                              >
+                                Record closure review (not independent
+                                acceptance)
+                              </option>
+                            </select>
+                          </label>
+                          <label>
+                            Existing non-secret field evidence reference
+                            <input
+                              name="closureEvidenceReference"
+                              required
+                              minLength={5}
+                              maxLength={96}
+                              pattern="[A-Za-z0-9][A-Za-z0-9._:/-]{4,95}"
+                              placeholder="FIELD-REPORT-12345"
+                            />
+                          </label>
+                          <label>
+                            Closure or recheck explanation (8–300 characters)
+                            <input
+                              name="closureNote"
+                              required
+                              minLength={8}
+                              maxLength={300}
+                              placeholder="Current worker report reviewed on device"
+                            />
+                          </label>
+                          <button className="secondary-button" type="submit">
+                            Record immutable closure evidence
+                          </button>
+                        </form>
+                      ) : (
+                        <p>
+                          Review the latest worker report independently before
+                          recording field closure evidence.
+                        </p>
+                      )}
                     </div>
                     {followup ? (
                       <p className={styles.reviewNote}>

@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 
 import { requireCampgroundPermission } from "@/lib/authz/current-user";
 import { recordSupervisorContinuityReview } from "@/lib/booking-charges/fulfillment-continuity-postgres.mjs";
+import { recordFieldClosureEvidence } from "@/lib/booking-charges/fulfillment-performance-postgres.mjs";
 import {
   requestShiftHandoff,
   decideShiftHandoff,
@@ -150,6 +151,29 @@ export async function decideShiftHandoffAction(form: FormData) {
     result = outcome === "accept" ? "handoff-accepted" : "handoff-declined";
   } catch {
     // The receiving supervisor must refresh before acting on stale handoffs.
+  }
+  finish(campgroundId, result);
+}
+
+export async function recordFieldClosureAction(form: FormData) {
+  const { campgroundId, session } = await supervisor(form);
+  let result = "field-closure-error";
+  try {
+    await recordFieldClosureEvidence({
+      actorUserId: session.user.id,
+      actorSessionId: session.sessionId,
+      campgroundId,
+      dispatchId: field(form, "dispatchId"),
+      fieldReportId: field(form, "fieldReportId"),
+      reviewId: field(form, "reviewId"),
+      previousEventId: field(form, "previousClosureId"),
+      decision: field(form, "closureDecision"),
+      evidenceReference: field(form, "closureEvidenceReference"),
+      note: field(form, "closureNote"),
+    });
+    result = "field-closure-recorded";
+  } catch {
+    // The row-level source guard rejects stale or cross-campground evidence.
   }
   finish(campgroundId, result);
 }
