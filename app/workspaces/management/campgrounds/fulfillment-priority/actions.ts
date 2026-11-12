@@ -4,6 +4,20 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 import { requireCampgroundPermission } from "@/lib/authz/current-user";
+import { getCampgroundAuthorization } from "@/lib/authz/postgres.mjs";
+import {
+  listCampgroundDispatchEvidence,
+  listCampgroundSlaFollowups,
+} from "@/lib/booking-charges/fulfillment-dispatch-postgres.mjs";
+import { classifyFulfillmentPriority } from "@/lib/booking-charges/fulfillment-priority-core.mjs";
+import { buildRecoveryTrendAnalytics } from "@/lib/booking-charges/fulfillment-shift-core.mjs";
+import { listShiftRecoveryEvidence } from "@/lib/booking-charges/fulfillment-shift-postgres.mjs";
+import { buildSupervisorWorkloadForecast } from "@/lib/booking-charges/fulfillment-performance-core.mjs";
+import {
+  recordIndependentFieldWitness,
+  recordForecastCheckpoint,
+  recordOwnerShiftAudit,
+} from "@/lib/booking-charges/fulfillment-witness-postgres.mjs";
 import { recordSupervisorContinuityReview } from "@/lib/booking-charges/fulfillment-continuity-postgres.mjs";
 import { recordFieldClosureEvidence } from "@/lib/booking-charges/fulfillment-performance-postgres.mjs";
 import {
@@ -174,6 +188,109 @@ export async function recordFieldClosureAction(form: FormData) {
     result = "field-closure-recorded";
   } catch {
     // The row-level source guard rejects stale or cross-campground evidence.
+  }
+  finish(campgroundId, result);
+}
+
+export async function recordFieldWitnessAction(form: FormData) {
+  const { campgroundId, session } = await supervisor(form);
+  let result = "witness-error";
+  try {
+    await recordIndependentFieldWitness({
+      actorUserId: session.user.id,
+      actorSessionId: session.sessionId,
+      campgroundId,
+      dispatchId: field(form, "dispatchId"),
+      closureId: field(form, "closureId"),
+      previousWitnessId: field(form, "previousWitnessId"),
+      decision: field(form, "witnessDecision"),
+      evidenceReference: field(form, "witnessEvidenceReference"),
+      explanation: field(form, "witnessExplanation"),
+    });
+    result = "witness-recorded";
+  } catch {
+    // Source history, actor diversity and RLS guards are authoritative.
+  }
+  finish(campgroundId, result);
+}
+
+export async function saveForecastCheckpointAction(form: FormData) {
+  const { campgroundId, session } = await supervisor(form);
+  let result = "forecast-error";
+  try {
+    const [dispatch, followup, shift] = await Promise.all([
+      listCampgroundDispatchEvidence({ userId: session.user.id, campgroundId }),
+      listCampgroundSlaFollowups({ userId: session.user.id, campgroundId }),
+      listShiftRecoveryEvidence({ userId: session.user.id, campgroundId }),
+    ]);
+    const asOf = new Date().toISOString();
+    const latest = new Map<string, (typeof followup.followups)[number]>();
+    for (const item of followup.followups)
+      if (!latest.has(item.dispatchId)) latest.set(item.dispatchId, item);
+    const openCases = dispatch.entries.filter(
+      (entry) =>
+        classifyFulfillmentPriority({
+          dispatch: entry.dispatch,
+          classification: entry.classification,
+          followup: latest.get(entry.dispatch.id) ?? null,
+          now: asOf,
+        }).isOpen,
+    ).length;
+    const decisions = new Set(
+      shift.handoffs
+        .filter((item) => item.eventKind !== "request")
+        .map((item) => item.requestId),
+    );
+    const pendingHandoffs = shift.handoffs.filter(
+      (item) => item.eventKind === "request" && !decisions.has(item.id),
+    ).length;
+    const trend = buildRecoveryTrendAnalytics({
+      reviews: shift.reviews,
+      handoffs: shift.handoffs,
+      asOf,
+      days: 7,
+      truncated: shift.truncated,
+    });
+    const forecast = buildSupervisorWorkloadForecast({
+      trend,
+      openCases,
+      pendingHandoffs,
+      asOf,
+      truncated:
+        dispatch.truncated || followup.truncated || shift.truncated,
+    });
+    await recordForecastCheckpoint({
+      actorUserId: session.user.id,
+      actorSessionId: session.sessionId,
+      campgroundId,
+      forecast,
+    });
+    result = "forecast-recorded";
+  } catch {
+    // Never store client-supplied workload numbers as verified evidence.
+  }
+  finish(campgroundId, result);
+}
+
+export async function recordOwnerShiftAuditAction(form: FormData) {
+  const { campgroundId, session } = await supervisor(form);
+  let result = "shift-audit-error";
+  try {
+    const grant = await getCampgroundAuthorization(session.user.id, campgroundId);
+    if (!grant?.roleCodes.includes("owner_admin"))
+      throw new Error("Owner approval required.");
+    await recordOwnerShiftAudit({
+      actorUserId: session.user.id,
+      actorSessionId: session.sessionId,
+      campgroundId,
+      subjectKind: field(form, "subjectKind"),
+      subjectId: field(form, "subjectId"),
+      decision: field(form, "auditDecision"),
+      explanation: field(form, "auditExplanation"),
+    });
+    result = "shift-audit-recorded";
+  } catch {
+    // Active owner role, latest source and completed horizon are mandatory.
   }
   finish(campgroundId, result);
 }
