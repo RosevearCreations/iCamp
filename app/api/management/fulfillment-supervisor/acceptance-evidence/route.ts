@@ -31,7 +31,10 @@ export async function GET(request: NextRequest) {
     params.getAll("campground").length !== 1 ||
     [...params.keys()].some((key) => key !== "campground")
   ) {
-    return new Response("Invalid campground export scope.", { status: 400, headers });
+    return new Response("Invalid campground export scope.", {
+      status: 400,
+      headers,
+    });
   }
   const grant = await getCampgroundAuthorization(session.user.id, campgroundId);
   if (
@@ -47,9 +50,12 @@ export async function GET(request: NextRequest) {
   }
   try {
     const [source, witness, shift] = await Promise.all([
-      listAttestationCalibrationEvidence({userId:session.user.id,campgroundId}),
-      listWitnessAuditEvidence({userId:session.user.id,campgroundId}),
-      listShiftRecoveryEvidence({userId:session.user.id,campgroundId}),
+      listAttestationCalibrationEvidence({
+        userId: session.user.id,
+        campgroundId,
+      }),
+      listWitnessAuditEvidence({ userId: session.user.id, campgroundId }),
+      listShiftRecoveryEvidence({ userId: session.user.id, campgroundId }),
     ]);
     const now = new Date().toISOString();
     const truncated = source.truncated || witness.truncated || shift.truncated;
@@ -75,7 +81,7 @@ export async function GET(request: NextRequest) {
       ownerAudits: witness.ownerAudits,
       truncated,
     });
-    return Response.json(evidence,{
+    return Response.json(evidence, {
       headers: {
         ...headers,
         "Content-Disposition":
@@ -84,8 +90,9 @@ export async function GET(request: NextRequest) {
       },
     });
   } catch {
-    return new Response("Private source evidence unavailable.",{
-      status:503,headers,
+    return new Response("Private source evidence unavailable.", {
+      status: 503,
+      headers,
     });
   }
 }
