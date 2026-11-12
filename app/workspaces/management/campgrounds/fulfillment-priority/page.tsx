@@ -261,7 +261,8 @@ export default async function FulfillmentPriorityPage({
         deviceReview: deviceReviewsByDispatch.get(entry.dispatch.id) ?? null,
         fieldClosure: latestClosures.get(entry.dispatch.id) ?? null,
         fieldWitness: latestWitnesses.get(entry.dispatch.id) ?? null,
-        originalDeviceReview: latestOriginalDevice.get(entry.dispatch.id) ?? null,
+        originalDeviceReview:
+          latestOriginalDevice.get(entry.dispatch.id) ?? null,
         priority: classifyFulfillmentPriority({
           dispatch: entry.dispatch,
           classification: entry.classification,
@@ -846,7 +847,10 @@ export default async function FulfillmentPriorityPage({
           </section>
         ) : null}
 
-        <section className="content-panel" aria-labelledby="build246-calibration">
+        <section
+          className="content-panel"
+          aria-labelledby="build246-calibration"
+        >
           <SectionHeading
             eyebrow="Build 246 · source-only accuracy evidence"
             title="Eight-hour forecast calibration exceptions"
@@ -866,8 +870,12 @@ export default async function FulfillmentPriorityPage({
           ) : null}
           {params.result?.startsWith("device-attestation-") ||
           params.result?.startsWith("calibration-") ? (
-            <p role={params.result.endsWith("-error") ? "alert" : "status"}
-              className={params.result.endsWith("-error") ? styles.warning : undefined}>
+            <p
+              role={params.result.endsWith("-error") ? "alert" : "status"}
+              className={
+                params.result.endsWith("-error") ? styles.warning : undefined
+              }
+            >
               {params.result.endsWith("-error")
                 ? "No source evidence was recorded. Check current actor permissions, original report and witness, complete window and refresh history."
                 : "Campground-only source review recorded. Independent device attestation and Master connection remain HOLD."}
@@ -881,7 +889,8 @@ export default async function FulfillmentPriorityPage({
                   handoffs: shiftEvidence.handoffs,
                   asOf: now,
                   truncated: Boolean(
-                    truncated || witnessEvidence.truncated ||
+                    truncated ||
+                    witnessEvidence.truncated ||
                     attestationEvidence?.truncated,
                   ),
                 })
@@ -890,30 +899,65 @@ export default async function FulfillmentPriorityPage({
             const latest = latestCalibration.get(checkpoint.id);
             return (
               <article className={styles.ownership} key={checkpoint.id}>
-                <h4>Checkpoint {checkpoint.id.slice(0, 8)} · {utc(checkpoint.capturedAt)}</h4>
+                <h4>
+                  Checkpoint {checkpoint.id.slice(0, 8)} ·{" "}
+                  {utc(checkpoint.capturedAt)}
+                </h4>
                 <p>
                   Expected events: {checkpoint.expectedNewReviewEvents};
                   observed: {accuracy?.observedNewReviewEvents ?? "Pending"};
                   status: {diagnostic.status}.
-                  {latest ? " Latest follow-up: " + latest.decision.replaceAll("_", " ") : ""}
+                  {latest
+                    ? " Latest follow-up: " +
+                      latest.decision.replaceAll("_", " ")
+                    : ""}
                 </p>
                 {accuracy?.evidenceState === "OBSERVED_SOURCE_ONLY" &&
                 attestationEvidence ? (
-                  <form action={recordCalibrationFollowupAction} className={styles.ownerForm}>
-                    <input type="hidden" name="campgroundId" value={selected.campgroundId} />
-                    <input type="hidden" name="checkpointId" value={checkpoint.id} />
-                    <input type="hidden" name="previousCalibrationId" value={latest?.id ?? ""} />
+                  <form
+                    action={recordCalibrationFollowupAction}
+                    className={styles.ownerForm}
+                  >
+                    <input
+                      type="hidden"
+                      name="campgroundId"
+                      value={selected.campgroundId}
+                    />
+                    <input
+                      type="hidden"
+                      name="checkpointId"
+                      value={checkpoint.id}
+                    />
+                    <input
+                      type="hidden"
+                      name="previousCalibrationId"
+                      value={latest?.id ?? ""}
+                    />
                     <label>
                       Calibration exception follow-up
-                      <select name="calibrationDecision" defaultValue="investigate">
-                        <option value="investigate">Investigate source variance</option>
-                        <option value="mitigation_recorded">Mitigation recorded (not accepted)</option>
-                        <option value="recheck_required">Request fresh recheck</option>
+                      <select
+                        name="calibrationDecision"
+                        defaultValue="investigate"
+                      >
+                        <option value="investigate">
+                          Investigate source variance
+                        </option>
+                        <option value="mitigation_recorded">
+                          Mitigation recorded (not accepted)
+                        </option>
+                        <option value="recheck_required">
+                          Request fresh recheck
+                        </option>
                       </select>
                     </label>
                     <label>
                       Evidence-based explanation (8–300 characters)
-                      <input name="calibrationExplanation" required minLength={8} maxLength={300} />
+                      <input
+                        name="calibrationExplanation"
+                        required
+                        minLength={8}
+                        maxLength={300}
+                      />
                     </label>
                     <button type="submit" className="secondary-button">
                       Record calibration follow-up
@@ -1640,59 +1684,109 @@ export default async function FulfillmentPriorityPage({
                       )}
                     </div>
 
-                      <h4>Original-device evidence inspection · Build 246</h4>
+                    <h4>Original-device evidence inspection · Build 246</h4>
+                    <p>
+                      {originalDeviceReview
+                        ? originalDeviceReview.decision.replaceAll("_", " ") +
+                          " · " +
+                          utc(originalDeviceReview.reviewedAt)
+                        : "No original-device evidence inspection recorded"}
+                      . This source record is not a cryptographic attestation.
+                    </p>
+                    {fieldReport &&
+                    fieldClosure &&
+                    fieldWitness &&
+                    fieldWitness.closureId === fieldClosure.id &&
+                    fieldWitness.decision === "observed_unverified" &&
+                    ![
+                      fieldReport.reportedByUserId,
+                      fieldClosure.recordedByUserId,
+                      fieldWitness.witnessedByUserId,
+                    ].includes(session.user.id) &&
+                    attestationEvidence ? (
+                      <form
+                        action={recordOriginalDeviceReviewAction}
+                        className={styles.ownerForm}
+                      >
+                        <input
+                          type="hidden"
+                          name="campgroundId"
+                          value={selected.campgroundId}
+                        />
+                        <input
+                          type="hidden"
+                          name="dispatchId"
+                          value={dispatch.id}
+                        />
+                        <input
+                          type="hidden"
+                          name="fieldReportId"
+                          value={fieldReport.id}
+                        />
+                        <input
+                          type="hidden"
+                          name="witnessId"
+                          value={fieldWitness.id}
+                        />
+                        <input
+                          type="hidden"
+                          name="previousDeviceReviewId"
+                          value={originalDeviceReview?.id ?? ""}
+                        />
+                        <label>
+                          Inspection outcome
+                          <select
+                            name="deviceAttestationDecision"
+                            defaultValue="recheck_required"
+                          >
+                            <option value="recheck_required">
+                              Original evidence needs recheck
+                            </option>
+                            <option value="inspected_unverified">
+                              Original source inspected; signature unverified
+                            </option>
+                          </select>
+                        </label>
+                        <label>
+                          Non-secret source evidence reference
+                          <input
+                            name="deviceEvidenceReference"
+                            minLength={5}
+                            maxLength={96}
+                            pattern="[A-Za-z0-9][A-Za-z0-9._:/-]{4,95}"
+                            required
+                          />
+                        </label>
+                        <label>
+                          SHA-256 digest of inspected source bytes (64 lowercase
+                          hex)
+                          <input
+                            name="deviceEvidenceSha256"
+                            minLength={64}
+                            maxLength={64}
+                            pattern="[0-9a-f]{64}"
+                            required
+                          />
+                        </label>
+                        <label>
+                          Inspection explanation (8–300 characters)
+                          <input
+                            name="deviceAttestationExplanation"
+                            minLength={8}
+                            maxLength={300}
+                            required
+                          />
+                        </label>
+                        <button type="submit" className="secondary-button">
+                          Record original-device source review
+                        </button>
+                      </form>
+                    ) : (
                       <p>
-                        {originalDeviceReview
-                          ? originalDeviceReview.decision.replaceAll("_", " ") +
-                            " · " + utc(originalDeviceReview.reviewedAt)
-                          : "No original-device evidence inspection recorded"}.
-                        This source record is not a cryptographic attestation.
+                        A current report and witnessed closure plus a distinct
+                        authorized reviewer are required.
                       </p>
-                      {fieldReport &&
-                      fieldClosure &&
-                      fieldWitness &&
-                      fieldWitness.closureId === fieldClosure.id &&
-                      fieldWitness.decision === "observed_unverified" &&
-                      ![
-                        fieldReport.reportedByUserId,
-                        fieldClosure.recordedByUserId,
-                        fieldWitness.witnessedByUserId,
-                      ].includes(session.user.id) &&
-                      attestationEvidence ? (
-                        <form action={recordOriginalDeviceReviewAction} className={styles.ownerForm}>
-                          <input type="hidden" name="campgroundId" value={selected.campgroundId} />
-                          <input type="hidden" name="dispatchId" value={dispatch.id} />
-                          <input type="hidden" name="fieldReportId" value={fieldReport.id} />
-                          <input type="hidden" name="witnessId" value={fieldWitness.id} />
-                          <input type="hidden" name="previousDeviceReviewId" value={originalDeviceReview?.id ?? ""} />
-                          <label>
-                            Inspection outcome
-                            <select name="deviceAttestationDecision" defaultValue="recheck_required">
-                              <option value="recheck_required">Original evidence needs recheck</option>
-                              <option value="inspected_unverified">Original source inspected; signature unverified</option>
-                            </select>
-                          </label>
-                          <label>
-                            Non-secret source evidence reference
-                            <input name="deviceEvidenceReference" minLength={5} maxLength={96}
-                              pattern="[A-Za-z0-9][A-Za-z0-9._:/-]{4,95}" required />
-                          </label>
-                          <label>
-                            SHA-256 digest of inspected source bytes (64 lowercase hex)
-                            <input name="deviceEvidenceSha256" minLength={64} maxLength={64}
-                              pattern="[0-9a-f]{64}" required />
-                          </label>
-                          <label>
-                            Inspection explanation (8–300 characters)
-                            <input name="deviceAttestationExplanation" minLength={8} maxLength={300} required />
-                          </label>
-                          <button type="submit" className="secondary-button">
-                            Record original-device source review
-                          </button>
-                        </form>
-                      ) : (
-                        <p>A current report and witnessed closure plus a distinct authorized reviewer are required.</p>
-                      )}
+                    )}
                     {followup ? (
                       <p className={styles.reviewNote}>
                         <strong>Recorded supervisor note:</strong>{" "}
