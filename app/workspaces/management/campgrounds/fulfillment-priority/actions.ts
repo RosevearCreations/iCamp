@@ -332,7 +332,10 @@ export async function recordCalibrationFollowupAction(form: FormData) {
   let result = "calibration-error";
   try {
     const [source, witness, shift] = await Promise.all([
-      listAttestationCalibrationEvidence({ userId: session.user.id, campgroundId }),
+      listAttestationCalibrationEvidence({
+        userId: session.user.id,
+        campgroundId,
+      }),
       listWitnessAuditEvidence({ userId: session.user.id, campgroundId }),
       listShiftRecoveryEvidence({ userId: session.user.id, campgroundId }),
     ]);
