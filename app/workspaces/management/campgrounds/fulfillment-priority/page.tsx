@@ -38,6 +38,8 @@ import { buildRecoveryTrendAnalytics } from "@/lib/booking-charges/fulfillment-s
 import { listShiftRecoveryEvidence } from "@/lib/booking-charges/fulfillment-shift-postgres.mjs";
 import { buildSupervisorWorkloadForecast } from "@/lib/booking-charges/fulfillment-performance-core.mjs";
 import { listFieldClosureEvidence } from "@/lib/booking-charges/fulfillment-performance-postgres.mjs";
+import { listWitnessAuditEvidence } from "@/lib/booking-charges/fulfillment-witness-postgres.mjs";
+import { evaluateForecastCheckpoint } from "@/lib/booking-charges/fulfillment-witness-core.mjs";
 
 import {
   requestShiftHandoffAction,
@@ -45,6 +47,9 @@ import {
   recordCaseOwnershipAction,
   recordSupervisorContinuityAction,
   recordFieldClosureAction,
+  recordFieldWitnessAction,
+  saveForecastCheckpointAction,
+  recordOwnerShiftAuditAction,
   removePriorityViewAction,
   savePriorityViewAction,
 } from "./actions";
@@ -124,6 +129,7 @@ export default async function FulfillmentPriorityPage({
     continuityEvidence,
     shiftEvidence,
     closureEvidence,
+    witnessEvidence,
   ] = await Promise.all([
     listCampgroundDispatchEvidence({
       userId: session.user.id,
@@ -146,6 +152,10 @@ export default async function FulfillmentPriorityPage({
       campgroundId: selected.campgroundId,
     }).catch(() => null),
     listFieldClosureEvidence({
+      userId: session.user.id,
+      campgroundId: selected.campgroundId,
+    }).catch(() => null),
+    listWitnessAuditEvidence({
       userId: session.user.id,
       campgroundId: selected.campgroundId,
     }).catch(() => null),
@@ -187,6 +197,19 @@ export default async function FulfillmentPriorityPage({
     if (!latestClosures.has(item.dispatchId))
       latestClosures.set(item.dispatchId, item);
   }
+  const latestWitnesses = new Map<
+    string,
+    NonNullable<typeof witnessEvidence>["witnesses"][number]
+  >();
+  for (const item of witnessEvidence?.witnesses ?? []) {
+    if (!latestWitnesses.has(item.dispatchId))
+      latestWitnesses.set(item.dispatchId, item);
+  }
+  const auditedSubjects = new Set(
+    witnessEvidence?.ownerAudits.map(
+      (event) => event.subjectKind + ":" + event.subjectId,
+    ) ?? [],
+  );
   const now = new Date().toISOString();
   const trend = shiftEvidence
     ? buildRecoveryTrendAnalytics({
@@ -214,6 +237,7 @@ export default async function FulfillmentPriorityPage({
         caseReview: caseReviewsByDispatch.get(entry.dispatch.id) ?? null,
         deviceReview: deviceReviewsByDispatch.get(entry.dispatch.id) ?? null,
         fieldClosure: latestClosures.get(entry.dispatch.id) ?? null,
+        fieldWitness: latestWitnesses.get(entry.dispatch.id) ?? null,
         priority: classifyFulfillmentPriority({
           dispatch: entry.dispatch,
           classification: entry.classification,
@@ -257,7 +281,8 @@ export default async function FulfillmentPriorityPage({
     Boolean(fieldEvidence?.truncated) ||
     Boolean(continuityEvidence?.truncated) ||
     Boolean(shiftEvidence?.truncated) ||
-    Boolean(closureEvidence?.truncated);
+    Boolean(closureEvidence?.truncated) ||
+    Boolean(witnessEvidence?.truncated);
 
   return (
     <AppShell>
@@ -274,7 +299,7 @@ export default async function FulfillmentPriorityPage({
           <span>Supervisor priority</span>
         </nav>
         <section className="hero-panel meadow-hero">
-          <p className="eyebrow">Build 243 · Campground supervisors only</p>
+          <p className="eyebrow">Build 245 · Campground supervisors only</p>
           <h1>Fulfillment exception priority and aging</h1>
           <p className="hero-panel__lead">
             Identify missed assignment targets, requests for help and follow-up
@@ -439,6 +464,27 @@ export default async function FulfillmentPriorityPage({
               campground database. Closure recording remains on HOLD.
             </p>
           ) : null}
+          {!witnessEvidence ? (
+            <p role="alert" className={styles.warning}>
+              Build 245 witness, forecast checkpoint and owner audit tables are
+              not available in this campground database. Recording remains on
+              HOLD until independently installed and verified.
+            </p>
+          ) : null}
+          {params.result?.startsWith("witness-") ||
+          params.result?.startsWith("forecast-") ||
+          params.result?.startsWith("shift-audit-") ? (
+            <p
+              role={params.result?.endsWith("-error") ? "alert" : "status"}
+              className={
+                params.result?.endsWith("-error") ? styles.warning : undefined
+              }
+            >
+              {params.result?.endsWith("-error")
+                ? "Nothing was saved. Refresh source evidence, current role and independent actor requirements."
+                : "An immutable campground source event was recorded; external device verification and Master acceptance remain HOLD."}
+            </p>
+          ) : null}
           {params.result?.startsWith("field-closure-") ? (
             <p
               role={
@@ -546,6 +592,20 @@ export default async function FulfillmentPriorityPage({
           />
           {forecast ? (
             <>
+              <form action={saveForecastCheckpointAction}>
+                <input
+                  type="hidden"
+                  name="campgroundId"
+                  value={selected.campgroundId}
+                />
+                <button
+                  className="secondary-button"
+                  type="submit"
+                  disabled={!witnessEvidence}
+                >
+                  Save source-derived eight-hour forecast checkpoint
+                </button>
+              </form>
               <div
                 className={styles.metrics}
                 aria-label="Forecast planning evidence"
@@ -583,6 +643,172 @@ export default async function FulfillmentPriorityPage({
             </p>
           )}
         </section>
+        {ownerAdmin ? (
+          <section
+            className="content-panel"
+            aria-labelledby="field-witness-audit"
+          >
+            <SectionHeading
+              eyebrow="Build 245 · Owner / Administrator only"
+              title="Field witness and forecast accuracy audit"
+              id="field-witness-audit"
+              helpTopic="campground.structure"
+            />
+            <p className={styles.explain}>
+              A second staff member&apos;s witness statement is human source
+              evidence, not a signed device attestation. Owner review is an
+              audited decision, not payment release, guest notification or
+              Master acceptance.
+            </p>
+            {witnessEvidence?.checkpoints.slice(0, 10).map((point) => {
+              const accuracy = shiftEvidence
+                ? evaluateForecastCheckpoint({
+                    checkpoint: point,
+                    reviews: shiftEvidence.reviews,
+                    handoffs: shiftEvidence.handoffs,
+                    asOf: now,
+                    truncated:
+                      shiftEvidence.truncated || witnessEvidence.truncated,
+                  })
+                : null;
+              const reviewed = auditedSubjects.has(
+                "forecast_checkpoint:" + point.id,
+              );
+              return (
+                <article className={styles.ownership} key={point.id}>
+                  <h4>Forecast checkpoint · {utc(point.capturedAt)}</h4>
+                  <p>
+                    Estimated new reviews: {point.expectedNewReviewEvents}.
+                    Observed new reviews:{" "}
+                    {accuracy?.observedNewReviewEvents ?? "Pending"}. Accuracy
+                    status: {accuracy?.evidenceState ?? "SOURCE_UNAVAILABLE"}.
+                  </p>
+                  {!reviewed &&
+                  accuracy &&
+                  accuracy.observedNewReviewEvents !== null ? (
+                    <form
+                      action={recordOwnerShiftAuditAction}
+                      className={styles.ownerForm}
+                    >
+                      <input
+                        type="hidden"
+                        name="campgroundId"
+                        value={selected.campgroundId}
+                      />
+                      <input
+                        type="hidden"
+                        name="subjectKind"
+                        value="forecast_checkpoint"
+                      />
+                      <input type="hidden" name="subjectId" value={point.id} />
+                      <label>
+                        Owner audit outcome
+                        <select
+                          name="auditDecision"
+                          defaultValue="recheck_required"
+                        >
+                          <option value="recheck_required">
+                            Request recheck
+                          </option>
+                          <option value="reviewed_unverified">
+                            Reviewed (source only)
+                          </option>
+                        </select>
+                      </label>
+                      <label>
+                        Audit reason (8–300 characters)
+                        <input
+                          name="auditExplanation"
+                          minLength={8}
+                          maxLength={300}
+                          required
+                        />
+                      </label>
+                      <button type="submit" className="secondary-button">
+                        Record owner forecast audit
+                      </button>
+                    </form>
+                  ) : (
+                    <p>
+                      {reviewed
+                        ? "Owner audit already recorded."
+                        : "Await complete historical source evidence."}
+                    </p>
+                  )}
+                </article>
+              );
+            })}
+            {witnessEvidence?.witnesses
+              .filter(
+                (item) => latestWitnesses.get(item.dispatchId)?.id === item.id,
+              )
+              .slice(0, 10)
+              .map((item) => (
+                <article className={styles.ownership} key={item.id}>
+                  <h4>
+                    Field witness · dispatch {item.dispatchId.slice(0, 8)}
+                  </h4>
+                  <p>
+                    {item.decision.replaceAll("_", " ")} ·{" "}
+                    {utc(item.witnessedAt)} · non-secret source{" "}
+                    {item.evidenceReference}
+                  </p>
+                  {!auditedSubjects.has("field_witness:" + item.id) &&
+                  item.witnessedByUserId !== session.user.id ? (
+                    <form
+                      action={recordOwnerShiftAuditAction}
+                      className={styles.ownerForm}
+                    >
+                      <input
+                        type="hidden"
+                        name="campgroundId"
+                        value={selected.campgroundId}
+                      />
+                      <input
+                        type="hidden"
+                        name="subjectKind"
+                        value="field_witness"
+                      />
+                      <input type="hidden" name="subjectId" value={item.id} />
+                      <label>
+                        Owner audit outcome
+                        <select
+                          name="auditDecision"
+                          defaultValue="recheck_required"
+                        >
+                          <option value="recheck_required">
+                            Request recheck
+                          </option>
+                          <option value="reviewed_unverified">
+                            Reviewed (source only)
+                          </option>
+                        </select>
+                      </label>
+                      <label>
+                        Audit reason (8–300 characters)
+                        <input
+                          name="auditExplanation"
+                          minLength={8}
+                          maxLength={300}
+                          required
+                        />
+                      </label>
+                      <button type="submit" className="secondary-button">
+                        Record owner field audit
+                      </button>
+                    </form>
+                  ) : (
+                    <p>
+                      Owner audit recorded or separate owner reviewer required.
+                    </p>
+                  )}
+                </article>
+              ))}
+            {!witnessEvidence ? (
+              <p role="alert">Build 245 private audit source is unavailable.</p>
+            ) : null}
+          </section>
+        ) : null}
         <section className="content-panel" aria-labelledby="recovery-trends">
           <SectionHeading
             eyebrow="Source review history · trailing seven UTC dates"
@@ -737,6 +963,7 @@ export default async function FulfillmentPriorityPage({
                   caseReview,
                   deviceReview,
                   fieldClosure,
+                  fieldWitness,
                   priority,
                 }) => (
                   <article key={dispatch.id} className={styles.case}>
@@ -1204,6 +1431,93 @@ export default async function FulfillmentPriorityPage({
                         <p>
                           Review the latest worker report independently before
                           recording field closure evidence.
+                        </p>
+                      )}
+                      <h4>Independent human field witness · Build 245</h4>
+                      <p>
+                        {fieldWitness
+                          ? fieldWitness.decision.replaceAll("_", " ") +
+                            " · " +
+                            utc(fieldWitness.witnessedAt)
+                          : "No independent human witness statement recorded"}
+                        . External device attestation remains HOLD.
+                      </p>
+                      {fieldClosure &&
+                      fieldClosure.decision === "closure_reviewed" &&
+                      fieldReport &&
+                      deviceReview &&
+                      witnessEvidence &&
+                      ![
+                        fieldReport.reportedByUserId,
+                        deviceReview.reviewedByUserId,
+                        fieldClosure.recordedByUserId,
+                      ].includes(session.user.id) ? (
+                        <form
+                          action={recordFieldWitnessAction}
+                          className={styles.ownerForm}
+                        >
+                          <input
+                            type="hidden"
+                            name="campgroundId"
+                            value={selected.campgroundId}
+                          />
+                          <input
+                            type="hidden"
+                            name="dispatchId"
+                            value={dispatch.id}
+                          />
+                          <input
+                            type="hidden"
+                            name="closureId"
+                            value={fieldClosure.id}
+                          />
+                          <input
+                            type="hidden"
+                            name="previousWitnessId"
+                            value={fieldWitness?.id ?? ""}
+                          />
+                          <label>
+                            Independent source witness decision
+                            <select
+                              name="witnessDecision"
+                              defaultValue="recheck_required"
+                            >
+                              <option value="recheck_required">
+                                Recheck required
+                              </option>
+                              <option value="observed_unverified">
+                                Observed personally (not device-certified)
+                              </option>
+                            </select>
+                          </label>
+                          <label>
+                            Non-secret field evidence reference
+                            <input
+                              name="witnessEvidenceReference"
+                              minLength={5}
+                              maxLength={96}
+                              pattern="[A-Za-z0-9][A-Za-z0-9._:/-]{4,95}"
+                              placeholder="FIELD-DEVICE-OBSERVATION-123"
+                              required
+                            />
+                          </label>
+                          <label>
+                            What did we witness? (8–300 characters)
+                            <input
+                              name="witnessExplanation"
+                              minLength={8}
+                              maxLength={300}
+                              required
+                            />
+                          </label>
+                          <button type="submit" className="secondary-button">
+                            Record independent witness statement
+                          </button>
+                        </form>
+                      ) : (
+                        <p>
+                          A current supervisor closure and a different
+                          authorized staff witness are required.
                         </p>
                       )}
                     </div>
