@@ -256,8 +256,7 @@ export async function saveForecastCheckpointAction(form: FormData) {
       openCases,
       pendingHandoffs,
       asOf,
-      truncated:
-        dispatch.truncated || followup.truncated || shift.truncated,
+      truncated: dispatch.truncated || followup.truncated || shift.truncated,
     });
     await recordForecastCheckpoint({
       actorUserId: session.user.id,
@@ -276,7 +275,10 @@ export async function recordOwnerShiftAuditAction(form: FormData) {
   const { campgroundId, session } = await supervisor(form);
   let result = "shift-audit-error";
   try {
-    const grant = await getCampgroundAuthorization(session.user.id, campgroundId);
+    const grant = await getCampgroundAuthorization(
+      session.user.id,
+      campgroundId,
+    );
     if (!grant?.roleCodes.includes("owner_admin"))
       throw new Error("Owner approval required.");
     await recordOwnerShiftAudit({
