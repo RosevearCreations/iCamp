@@ -67,7 +67,9 @@ export async function GET(request: NextRequest) {
       listCampgroundSlaFollowups({ userId: session.user.id, campgroundId }),
       listShiftRecoveryEvidence({ userId: session.user.id, campgroundId }),
       listFieldClosureEvidence({ userId: session.user.id, campgroundId }),
-      listWitnessAuditEvidence({ userId: session.user.id, campgroundId }).catch(() => null),
+      listWitnessAuditEvidence({ userId: session.user.id, campgroundId }).catch(
+        () => null,
+      ),
     ]);
     const asOf = new Date().toISOString();
     const latest = new Map<string, (typeof followup.followups)[number]>();
@@ -135,14 +137,17 @@ export async function GET(request: NextRequest) {
           independentDeviceAcceptance: "HOLD",
           masterConnection: "HOLD",
         };
-    return Response.json({ ...report, fieldWitnessAudit: witnessAudit }, {
-      headers: {
-        ...headers,
-        "Content-Disposition":
-          'attachment; filename="icamp-private-owner-shift-performance.json"',
-        "X-iCamp-Report-Trust": "UNSIGNED_PRIVATE_OWNER_SNAPSHOT",
+    return Response.json(
+      { ...report, fieldWitnessAudit: witnessAudit },
+      {
+        headers: {
+          ...headers,
+          "Content-Disposition":
+            'attachment; filename="icamp-private-owner-shift-performance.json"',
+          "X-iCamp-Report-Trust": "UNSIGNED_PRIVATE_OWNER_SNAPSHOT",
+        },
       },
-    });
+    );
   } catch {
     return new Response("Owner report source evidence is unavailable.", {
       status: 503,
