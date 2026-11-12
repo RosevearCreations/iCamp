@@ -10,6 +10,8 @@ import { classifyFulfillmentPriority } from "@/lib/booking-charges/fulfillment-p
 import { listShiftRecoveryEvidence } from "@/lib/booking-charges/fulfillment-shift-postgres.mjs";
 import { buildRecoveryTrendAnalytics } from "@/lib/booking-charges/fulfillment-shift-core.mjs";
 import { listFieldClosureEvidence } from "@/lib/booking-charges/fulfillment-performance-postgres.mjs";
+import { listWitnessAuditEvidence } from "@/lib/booking-charges/fulfillment-witness-postgres.mjs";
+import { buildWitnessAuditSummary } from "@/lib/booking-charges/fulfillment-witness-core.mjs";
 import {
   buildOwnerShiftPerformanceReport,
   buildSupervisorWorkloadForecast,
@@ -60,11 +62,14 @@ export async function GET(request: NextRequest) {
     );
   }
   try {
-    const [dispatch, followup, shift, field] = await Promise.all([
+    const [dispatch, followup, shift, field, witness] = await Promise.all([
       listCampgroundDispatchEvidence({ userId: session.user.id, campgroundId }),
       listCampgroundSlaFollowups({ userId: session.user.id, campgroundId }),
       listShiftRecoveryEvidence({ userId: session.user.id, campgroundId }),
       listFieldClosureEvidence({ userId: session.user.id, campgroundId }),
+      listWitnessAuditEvidence({ userId: session.user.id, campgroundId }).catch(
+        () => null,
+      ),
     ]);
     const asOf = new Date().toISOString();
     const latest = new Map<string, (typeof followup.followups)[number]>();
@@ -91,7 +96,8 @@ export async function GET(request: NextRequest) {
       dispatch.truncated ||
       followup.truncated ||
       shift.truncated ||
-      field.truncated;
+      field.truncated ||
+      Boolean(witness?.truncated);
     const trend = buildRecoveryTrendAnalytics({
       reviews: shift.reviews,
       handoffs: shift.handoffs,
@@ -116,14 +122,32 @@ export async function GET(request: NextRequest) {
       closures: field.events,
       truncated,
     });
-    return Response.json(report, {
-      headers: {
-        ...headers,
-        "Content-Disposition":
-          'attachment; filename="icamp-private-owner-shift-performance.json"',
-        "X-iCamp-Report-Trust": "UNSIGNED_PRIVATE_OWNER_SNAPSHOT",
+    const witnessAudit = witness
+      ? buildWitnessAuditSummary({
+          witnesses: witness.witnesses,
+          checkpoints: witness.checkpoints,
+          reviews: shift.reviews,
+          handoffs: shift.handoffs,
+          ownerAudits: witness.ownerAudits,
+          asOf,
+          truncated,
+        })
+      : {
+          sourceAvailability: "HOLD_BUILD245_MIGRATION_UNVERIFIED",
+          independentDeviceAcceptance: "HOLD",
+          masterConnection: "HOLD",
+        };
+    return Response.json(
+      { ...report, fieldWitnessAudit: witnessAudit },
+      {
+        headers: {
+          ...headers,
+          "Content-Disposition":
+            'attachment; filename="icamp-private-owner-shift-performance.json"',
+          "X-iCamp-Report-Trust": "UNSIGNED_PRIVATE_OWNER_SNAPSHOT",
+        },
       },
-    });
+    );
   } catch {
     return new Response("Owner report source evidence is unavailable.", {
       status: 503,
