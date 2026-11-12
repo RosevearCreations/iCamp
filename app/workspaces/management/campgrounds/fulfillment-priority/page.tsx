@@ -644,7 +644,10 @@ export default async function FulfillmentPriorityPage({
           )}
         </section>
         {ownerAdmin ? (
-          <section className="content-panel" aria-labelledby="field-witness-audit">
+          <section
+            className="content-panel"
+            aria-labelledby="field-witness-audit"
+          >
             <SectionHeading
               eyebrow="Build 245 · Owner / Administrator only"
               title="Field witness and forecast accuracy audit"
@@ -652,9 +655,10 @@ export default async function FulfillmentPriorityPage({
               helpTopic="campground.structure"
             />
             <p className={styles.explain}>
-              A second staff member's witness statement is human source evidence,
-              not a signed device attestation. Owner review is an audited
-              decision, not payment release, guest notification or Master acceptance.
+              A second staff member's witness statement is human source
+              evidence, not a signed device attestation. Owner review is an
+              audited decision, not payment release, guest notification or
+              Master acceptance.
             </p>
             {witnessEvidence?.checkpoints.slice(0, 10).map((point) => {
               const accuracy = shiftEvidence
@@ -676,72 +680,127 @@ export default async function FulfillmentPriorityPage({
                   <p>
                     Estimated new reviews: {point.expectedNewReviewEvents}.
                     Observed new reviews:{" "}
-                    {accuracy?.observedNewReviewEvents ?? "Pending"}.
-                    Accuracy status:{" "}
-                    {accuracy?.evidenceState ?? "SOURCE_UNAVAILABLE"}.
+                    {accuracy?.observedNewReviewEvents ?? "Pending"}. Accuracy
+                    status: {accuracy?.evidenceState ?? "SOURCE_UNAVAILABLE"}.
                   </p>
-                  {!reviewed && accuracy && accuracy.observedNewReviewEvents !== null ? (
+                  {!reviewed &&
+                  accuracy &&
+                  accuracy.observedNewReviewEvents !== null ? (
                     <form
                       action={recordOwnerShiftAuditAction}
                       className={styles.ownerForm}
                     >
-                      <input type="hidden" name="campgroundId" value={selected.campgroundId} />
-                      <input type="hidden" name="subjectKind" value="forecast_checkpoint" />
+                      <input
+                        type="hidden"
+                        name="campgroundId"
+                        value={selected.campgroundId}
+                      />
+                      <input
+                        type="hidden"
+                        name="subjectKind"
+                        value="forecast_checkpoint"
+                      />
                       <input type="hidden" name="subjectId" value={point.id} />
                       <label>
                         Owner audit outcome
-                        <select name="auditDecision" defaultValue="recheck_required">
-                          <option value="recheck_required">Request recheck</option>
-                          <option value="reviewed_unverified">Reviewed (source only)</option>
+                        <select
+                          name="auditDecision"
+                          defaultValue="recheck_required"
+                        >
+                          <option value="recheck_required">
+                            Request recheck
+                          </option>
+                          <option value="reviewed_unverified">
+                            Reviewed (source only)
+                          </option>
                         </select>
                       </label>
                       <label>
                         Audit reason (8–300 characters)
-                        <input name="auditExplanation" minLength={8} maxLength={300} required />
+                        <input
+                          name="auditExplanation"
+                          minLength={8}
+                          maxLength={300}
+                          required
+                        />
                       </label>
                       <button type="submit" className="secondary-button">
                         Record owner forecast audit
                       </button>
                     </form>
                   ) : (
-                    <p>{reviewed ? "Owner audit already recorded." : "Await complete historical source evidence."}</p>
+                    <p>
+                      {reviewed
+                        ? "Owner audit already recorded."
+                        : "Await complete historical source evidence."}
+                    </p>
                   )}
                 </article>
               );
             })}
             {witnessEvidence?.witnesses
-              .filter((item) => latestWitnesses.get(item.dispatchId)?.id === item.id)
+              .filter(
+                (item) => latestWitnesses.get(item.dispatchId)?.id === item.id,
+              )
               .slice(0, 10)
               .map((item) => (
                 <article className={styles.ownership} key={item.id}>
-                  <h4>Field witness · dispatch {item.dispatchId.slice(0, 8)}</h4>
+                  <h4>
+                    Field witness · dispatch {item.dispatchId.slice(0, 8)}
+                  </h4>
                   <p>
-                    {item.decision.replaceAll("_", " ")} · {utc(item.witnessedAt)} ·
-                    non-secret source {item.evidenceReference}
+                    {item.decision.replaceAll("_", " ")} ·{" "}
+                    {utc(item.witnessedAt)} · non-secret source{" "}
+                    {item.evidenceReference}
                   </p>
                   {!auditedSubjects.has("field_witness:" + item.id) &&
                   item.witnessedByUserId !== session.user.id ? (
-                    <form action={recordOwnerShiftAuditAction} className={styles.ownerForm}>
-                      <input type="hidden" name="campgroundId" value={selected.campgroundId} />
-                      <input type="hidden" name="subjectKind" value="field_witness" />
+                    <form
+                      action={recordOwnerShiftAuditAction}
+                      className={styles.ownerForm}
+                    >
+                      <input
+                        type="hidden"
+                        name="campgroundId"
+                        value={selected.campgroundId}
+                      />
+                      <input
+                        type="hidden"
+                        name="subjectKind"
+                        value="field_witness"
+                      />
                       <input type="hidden" name="subjectId" value={item.id} />
                       <label>
                         Owner audit outcome
-                        <select name="auditDecision" defaultValue="recheck_required">
-                          <option value="recheck_required">Request recheck</option>
-                          <option value="reviewed_unverified">Reviewed (source only)</option>
+                        <select
+                          name="auditDecision"
+                          defaultValue="recheck_required"
+                        >
+                          <option value="recheck_required">
+                            Request recheck
+                          </option>
+                          <option value="reviewed_unverified">
+                            Reviewed (source only)
+                          </option>
                         </select>
                       </label>
                       <label>
                         Audit reason (8–300 characters)
-                        <input name="auditExplanation" minLength={8} maxLength={300} required />
+                        <input
+                          name="auditExplanation"
+                          minLength={8}
+                          maxLength={300}
+                          required
+                        />
                       </label>
                       <button type="submit" className="secondary-button">
                         Record owner field audit
                       </button>
                     </form>
                   ) : (
-                    <p>Owner audit recorded or separate owner reviewer required.</p>
+                    <p>
+                      Owner audit recorded or separate owner reviewer required.
+                    </p>
                   )}
                 </article>
               ))}
@@ -1378,7 +1437,8 @@ export default async function FulfillmentPriorityPage({
                       <p>
                         {fieldWitness
                           ? fieldWitness.decision.replaceAll("_", " ") +
-                            " · " + utc(fieldWitness.witnessedAt)
+                            " · " +
+                            utc(fieldWitness.witnessedAt)
                           : "No independent human witness statement recorded"}
                         . External device attestation remains HOLD.
                       </p>
@@ -1392,34 +1452,73 @@ export default async function FulfillmentPriorityPage({
                         deviceReview.reviewedByUserId,
                         fieldClosure.recordedByUserId,
                       ].includes(session.user.id) ? (
-                        <form action={recordFieldWitnessAction} className={styles.ownerForm}>
-                          <input type="hidden" name="campgroundId" value={selected.campgroundId} />
-                          <input type="hidden" name="dispatchId" value={dispatch.id} />
-                          <input type="hidden" name="closureId" value={fieldClosure.id} />
-                          <input type="hidden" name="previousWitnessId" value={fieldWitness?.id ?? ""} />
+                        <form
+                          action={recordFieldWitnessAction}
+                          className={styles.ownerForm}
+                        >
+                          <input
+                            type="hidden"
+                            name="campgroundId"
+                            value={selected.campgroundId}
+                          />
+                          <input
+                            type="hidden"
+                            name="dispatchId"
+                            value={dispatch.id}
+                          />
+                          <input
+                            type="hidden"
+                            name="closureId"
+                            value={fieldClosure.id}
+                          />
+                          <input
+                            type="hidden"
+                            name="previousWitnessId"
+                            value={fieldWitness?.id ?? ""}
+                          />
                           <label>
                             Independent source witness decision
-                            <select name="witnessDecision" defaultValue="recheck_required">
-                              <option value="recheck_required">Recheck required</option>
-                              <option value="observed_unverified">Observed personally (not device-certified)</option>
+                            <select
+                              name="witnessDecision"
+                              defaultValue="recheck_required"
+                            >
+                              <option value="recheck_required">
+                                Recheck required
+                              </option>
+                              <option value="observed_unverified">
+                                Observed personally (not device-certified)
+                              </option>
                             </select>
                           </label>
                           <label>
                             Non-secret field evidence reference
-                            <input name="witnessEvidenceReference" minLength={5} maxLength={96}
+                            <input
+                              name="witnessEvidenceReference"
+                              minLength={5}
+                              maxLength={96}
                               pattern="[A-Za-z0-9][A-Za-z0-9._:/-]{4,95}"
-                              placeholder="FIELD-DEVICE-OBSERVATION-123" required />
+                              placeholder="FIELD-DEVICE-OBSERVATION-123"
+                              required
+                            />
                           </label>
                           <label>
                             What did we witness? (8–300 characters)
-                            <input name="witnessExplanation" minLength={8} maxLength={300} required />
+                            <input
+                              name="witnessExplanation"
+                              minLength={8}
+                              maxLength={300}
+                              required
+                            />
                           </label>
                           <button type="submit" className="secondary-button">
                             Record independent witness statement
                           </button>
                         </form>
                       ) : (
-                        <p>A current supervisor closure and a different authorized staff witness are required.</p>
+                        <p>
+                          A current supervisor closure and a different
+                          authorized staff witness are required.
+                        </p>
                       )}
                     </div>
                     {followup ? (
