@@ -39,6 +39,8 @@ import { listShiftRecoveryEvidence } from "@/lib/booking-charges/fulfillment-shi
 import { buildSupervisorWorkloadForecast } from "@/lib/booking-charges/fulfillment-performance-core.mjs";
 import { listFieldClosureEvidence } from "@/lib/booking-charges/fulfillment-performance-postgres.mjs";
 import { listWitnessAuditEvidence } from "@/lib/booking-charges/fulfillment-witness-postgres.mjs";
+import { listAttestationCalibrationEvidence } from "@/lib/booking-charges/fulfillment-attestation-postgres.mjs";
+import { classifyCalibrationException } from "@/lib/booking-charges/fulfillment-attestation-core.mjs";
 import { evaluateForecastCheckpoint } from "@/lib/booking-charges/fulfillment-witness-core.mjs";
 
 import {
@@ -50,6 +52,8 @@ import {
   recordFieldWitnessAction,
   saveForecastCheckpointAction,
   recordOwnerShiftAuditAction,
+  recordOriginalDeviceReviewAction,
+  recordCalibrationFollowupAction,
   removePriorityViewAction,
   savePriorityViewAction,
 } from "./actions";
@@ -130,6 +134,7 @@ export default async function FulfillmentPriorityPage({
     shiftEvidence,
     closureEvidence,
     witnessEvidence,
+    attestationEvidence,
   ] = await Promise.all([
     listCampgroundDispatchEvidence({
       userId: session.user.id,
@@ -156,6 +161,10 @@ export default async function FulfillmentPriorityPage({
       campgroundId: selected.campgroundId,
     }).catch(() => null),
     listWitnessAuditEvidence({
+      userId: session.user.id,
+      campgroundId: selected.campgroundId,
+    }).catch(() => null),
+    listAttestationCalibrationEvidence({
       userId: session.user.id,
       campgroundId: selected.campgroundId,
     }).catch(() => null),
@@ -210,6 +219,20 @@ export default async function FulfillmentPriorityPage({
       (event) => event.subjectKind + ":" + event.subjectId,
     ) ?? [],
   );
+  const latestOriginalDevice = new Map<
+    string,
+    NonNullable<typeof attestationEvidence>["originalDeviceReviews"][number]
+  >();
+  for (const row of attestationEvidence?.originalDeviceReviews ?? [])
+    if (!latestOriginalDevice.has(row.dispatchId))
+      latestOriginalDevice.set(row.dispatchId, row);
+  const latestCalibration = new Map<
+    string,
+    NonNullable<typeof attestationEvidence>["calibrations"][number]
+  >();
+  for (const row of attestationEvidence?.calibrations ?? [])
+    if (!latestCalibration.has(row.checkpointId))
+      latestCalibration.set(row.checkpointId, row);
   const now = new Date().toISOString();
   const trend = shiftEvidence
     ? buildRecoveryTrendAnalytics({
@@ -238,6 +261,8 @@ export default async function FulfillmentPriorityPage({
         deviceReview: deviceReviewsByDispatch.get(entry.dispatch.id) ?? null,
         fieldClosure: latestClosures.get(entry.dispatch.id) ?? null,
         fieldWitness: latestWitnesses.get(entry.dispatch.id) ?? null,
+        originalDeviceReview:
+          latestOriginalDevice.get(entry.dispatch.id) ?? null,
         priority: classifyFulfillmentPriority({
           dispatch: entry.dispatch,
           classification: entry.classification,
@@ -282,7 +307,8 @@ export default async function FulfillmentPriorityPage({
     Boolean(continuityEvidence?.truncated) ||
     Boolean(shiftEvidence?.truncated) ||
     Boolean(closureEvidence?.truncated) ||
-    Boolean(witnessEvidence?.truncated);
+    Boolean(witnessEvidence?.truncated) ||
+    Boolean(attestationEvidence?.truncated);
 
   return (
     <AppShell>
@@ -299,7 +325,7 @@ export default async function FulfillmentPriorityPage({
           <span>Supervisor priority</span>
         </nav>
         <section className="hero-panel meadow-hero">
-          <p className="eyebrow">Build 245 · Campground supervisors only</p>
+          <p className="eyebrow">Build 246 · Campground supervisors only</p>
           <h1>Fulfillment exception priority and aging</h1>
           <p className="hero-panel__lead">
             Identify missed assignment targets, requests for help and follow-up
@@ -534,15 +560,26 @@ export default async function FulfillmentPriorityPage({
               Download review history (JSON)
             </a>
             {ownerAdmin ? (
-              <a
-                className="secondary-button"
-                href={
-                  "/api/management/fulfillment-supervisor/shift-performance?campground=" +
-                  encodeURIComponent(selected.campgroundId)
-                }
-              >
-                Owner-only shift performance report (JSON)
-              </a>
+              <>
+                <a
+                  className="secondary-button"
+                  href={
+                    "/api/management/fulfillment-supervisor/shift-performance?campground=" +
+                    encodeURIComponent(selected.campgroundId)
+                  }
+                >
+                  Owner-only shift performance report (JSON)
+                </a>
+                <a
+                  className="secondary-button"
+                  href={
+                    "/api/management/fulfillment-supervisor/acceptance-evidence?campground=" +
+                    encodeURIComponent(selected.campgroundId)
+                  }
+                >
+                  Download owner acceptance evidence dossier (JSON)
+                </a>
+              </>
             ) : null}
           </div>
           <div
@@ -809,6 +846,130 @@ export default async function FulfillmentPriorityPage({
             ) : null}
           </section>
         ) : null}
+
+        <section
+          className="content-panel"
+          aria-labelledby="build246-calibration"
+        >
+          <SectionHeading
+            eyebrow="Build 246 · source-only accuracy evidence"
+            title="Eight-hour forecast calibration exceptions"
+            id="build246-calibration"
+            helpTopic="campground.structure"
+          />
+          <p className={styles.explain}>
+            Compare source events only after a forecast checkpoint completes its
+            eight-hour window. Partial snapshots cannot be accepted. The review
+            band is a diagnostic threshold, not an SLA or staffing order.
+          </p>
+          {!attestationEvidence ? (
+            <p role="alert" className={styles.warning}>
+              Build 246 migration 0230 is unavailable; original-device review
+              and calibration follow-up are on HOLD.
+            </p>
+          ) : null}
+          {params.result?.startsWith("device-attestation-") ||
+          params.result?.startsWith("calibration-") ? (
+            <p
+              role={params.result.endsWith("-error") ? "alert" : "status"}
+              className={
+                params.result.endsWith("-error") ? styles.warning : undefined
+              }
+            >
+              {params.result.endsWith("-error")
+                ? "No source evidence was recorded. Check current actor permissions, original report and witness, complete window and refresh history."
+                : "Campground-only source review recorded. Independent device attestation and Master connection remain HOLD."}
+            </p>
+          ) : null}
+          {witnessEvidence?.checkpoints.slice(0, 12).map((checkpoint) => {
+            const accuracy = shiftEvidence
+              ? evaluateForecastCheckpoint({
+                  checkpoint,
+                  reviews: shiftEvidence.reviews,
+                  handoffs: shiftEvidence.handoffs,
+                  asOf: now,
+                  truncated: Boolean(
+                    truncated ||
+                    witnessEvidence.truncated ||
+                    attestationEvidence?.truncated,
+                  ),
+                })
+              : null;
+            const diagnostic = classifyCalibrationException(accuracy);
+            const latest = latestCalibration.get(checkpoint.id);
+            return (
+              <article className={styles.ownership} key={checkpoint.id}>
+                <h4>
+                  Checkpoint {checkpoint.id.slice(0, 8)} ·{" "}
+                  {utc(checkpoint.capturedAt)}
+                </h4>
+                <p>
+                  Expected events: {checkpoint.expectedNewReviewEvents};
+                  observed: {accuracy?.observedNewReviewEvents ?? "Pending"};
+                  status: {diagnostic.status}.
+                  {latest
+                    ? " Latest follow-up: " +
+                      latest.decision.replaceAll("_", " ")
+                    : ""}
+                </p>
+                {accuracy?.evidenceState === "OBSERVED_SOURCE_ONLY" &&
+                attestationEvidence ? (
+                  <form
+                    action={recordCalibrationFollowupAction}
+                    className={styles.ownerForm}
+                  >
+                    <input
+                      type="hidden"
+                      name="campgroundId"
+                      value={selected.campgroundId}
+                    />
+                    <input
+                      type="hidden"
+                      name="checkpointId"
+                      value={checkpoint.id}
+                    />
+                    <input
+                      type="hidden"
+                      name="previousCalibrationId"
+                      value={latest?.id ?? ""}
+                    />
+                    <label>
+                      Calibration exception follow-up
+                      <select
+                        name="calibrationDecision"
+                        defaultValue="investigate"
+                      >
+                        <option value="investigate">
+                          Investigate source variance
+                        </option>
+                        <option value="mitigation_recorded">
+                          Mitigation recorded (not accepted)
+                        </option>
+                        <option value="recheck_required">
+                          Request fresh recheck
+                        </option>
+                      </select>
+                    </label>
+                    <label>
+                      Evidence-based explanation (8–300 characters)
+                      <input
+                        name="calibrationExplanation"
+                        required
+                        minLength={8}
+                        maxLength={300}
+                      />
+                    </label>
+                    <button type="submit" className="secondary-button">
+                      Record calibration follow-up
+                    </button>
+                  </form>
+                ) : (
+                  <p>Wait for a complete uncapped eight-hour source window.</p>
+                )}
+              </article>
+            );
+          })}
+        </section>
         <section className="content-panel" aria-labelledby="recovery-trends">
           <SectionHeading
             eyebrow="Source review history · trailing seven UTC dates"
@@ -964,6 +1125,7 @@ export default async function FulfillmentPriorityPage({
                   deviceReview,
                   fieldClosure,
                   fieldWitness,
+                  originalDeviceReview,
                   priority,
                 }) => (
                   <article key={dispatch.id} className={styles.case}>
@@ -1521,6 +1683,110 @@ export default async function FulfillmentPriorityPage({
                         </p>
                       )}
                     </div>
+
+                    <h4>Original-device evidence inspection · Build 246</h4>
+                    <p>
+                      {originalDeviceReview
+                        ? originalDeviceReview.decision.replaceAll("_", " ") +
+                          " · " +
+                          utc(originalDeviceReview.reviewedAt)
+                        : "No original-device evidence inspection recorded"}
+                      . This source record is not a cryptographic attestation.
+                    </p>
+                    {fieldReport &&
+                    fieldClosure &&
+                    fieldWitness &&
+                    fieldWitness.closureId === fieldClosure.id &&
+                    fieldWitness.decision === "observed_unverified" &&
+                    ![
+                      fieldReport.reportedByUserId,
+                      fieldClosure.recordedByUserId,
+                      fieldWitness.witnessedByUserId,
+                    ].includes(session.user.id) &&
+                    attestationEvidence ? (
+                      <form
+                        action={recordOriginalDeviceReviewAction}
+                        className={styles.ownerForm}
+                      >
+                        <input
+                          type="hidden"
+                          name="campgroundId"
+                          value={selected.campgroundId}
+                        />
+                        <input
+                          type="hidden"
+                          name="dispatchId"
+                          value={dispatch.id}
+                        />
+                        <input
+                          type="hidden"
+                          name="fieldReportId"
+                          value={fieldReport.id}
+                        />
+                        <input
+                          type="hidden"
+                          name="witnessId"
+                          value={fieldWitness.id}
+                        />
+                        <input
+                          type="hidden"
+                          name="previousDeviceReviewId"
+                          value={originalDeviceReview?.id ?? ""}
+                        />
+                        <label>
+                          Inspection outcome
+                          <select
+                            name="deviceAttestationDecision"
+                            defaultValue="recheck_required"
+                          >
+                            <option value="recheck_required">
+                              Original evidence needs recheck
+                            </option>
+                            <option value="inspected_unverified">
+                              Original source inspected; signature unverified
+                            </option>
+                          </select>
+                        </label>
+                        <label>
+                          Non-secret source evidence reference
+                          <input
+                            name="deviceEvidenceReference"
+                            minLength={5}
+                            maxLength={96}
+                            pattern="[A-Za-z0-9][A-Za-z0-9._:/-]{4,95}"
+                            required
+                          />
+                        </label>
+                        <label>
+                          SHA-256 digest of inspected source bytes (64 lowercase
+                          hex)
+                          <input
+                            name="deviceEvidenceSha256"
+                            minLength={64}
+                            maxLength={64}
+                            pattern="[0-9a-f]{64}"
+                            required
+                          />
+                        </label>
+                        <label>
+                          Inspection explanation (8–300 characters)
+                          <input
+                            name="deviceAttestationExplanation"
+                            minLength={8}
+                            maxLength={300}
+                            required
+                          />
+                        </label>
+                        <button type="submit" className="secondary-button">
+                          Record original-device source review
+                        </button>
+                      </form>
+                    ) : (
+                      <p>
+                        A current report and witnessed closure plus a distinct
+                        authorized reviewer are required.
+                      </p>
+                    )}
                     {followup ? (
                       <p className={styles.reviewNote}>
                         <strong>Recorded supervisor note:</strong>{" "}
