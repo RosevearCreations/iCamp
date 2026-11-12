@@ -21,10 +21,7 @@ test("independent witness accepts only current source identifiers and non-secret
     evidenceReference: "FIELD-OBSERVATION-123",
     explanation: "Observed current source evidence on site.",
   };
-  assert.equal(
-    validateIndependentFieldWitness(valid).previousWitnessId,
-    null,
-  );
+  assert.equal(validateIndependentFieldWitness(valid).previousWitnessId, null);
   assert.equal(
     validateIndependentFieldWitness({
       ...valid,
@@ -73,12 +70,28 @@ test("forecast checkpoint accuracy is retrospective, duplicate-safe by event cat
     evidenceCoverage: "SOURCE_SNAPSHOT_ONLY",
   };
   const reviews = [
-    { id, decision: "blocker_escalated", reviewedAt: "2026-11-11T11:00:00.000Z" },
-    { id: another, decision: "followup_resolved", reviewedAt: "2026-11-11T12:00:00.000Z" },
-    { id: "a", decision: "escalation_requested", reviewedAt: "2026-11-11T18:00:00.000Z" },
+    {
+      id,
+      decision: "blocker_escalated",
+      reviewedAt: "2026-11-11T11:00:00.000Z",
+    },
+    {
+      id: another,
+      decision: "followup_resolved",
+      reviewedAt: "2026-11-11T12:00:00.000Z",
+    },
+    {
+      id: "a",
+      decision: "escalation_requested",
+      reviewedAt: "2026-11-11T18:00:00.000Z",
+    },
   ];
   const handoffs = [
-    { id: another, eventKind: "request", recordedAt: "2026-11-11T17:59:00.000Z" },
+    {
+      id: another,
+      eventKind: "request",
+      recordedAt: "2026-11-11T17:59:00.000Z",
+    },
     { id: id, eventKind: "accept", recordedAt: "2026-11-11T13:00:00.000Z" },
   ];
   const pending = evaluateForecastCheckpoint({
@@ -160,7 +173,10 @@ test("Build 245 SQL and protected pathways preserve source custody, RLS and owne
   assert.match(sql, /icamp_private\.has_current_campground_owner_admin/u);
   assert.match(sql, /current_closure\.reported_by_user_id/u);
   assert.match(sql, /current_closure\.reviewed_by_user_id/u);
-  assert.match(sql, /current_report is distinct from current_closure\.field_report_id/u);
+  assert.match(
+    sql,
+    /current_report is distinct from current_closure\.field_report_id/u,
+  );
   assert.match(sql, /forecast\.captured_at\+interval '8 hours'/u);
   assert.doesNotMatch(sql, /grant\s+(update|delete)/iu);
   assert.match(db, /set local role icamp_app/u);
