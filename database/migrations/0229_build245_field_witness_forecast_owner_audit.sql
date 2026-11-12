@@ -148,6 +148,9 @@ returns trigger language plpgsql security definer set search_path='' as $$
 declare
   witness record;
   forecast record;
+  current_closure uuid;
+  closure_report uuid;
+  current_report uuid;
 begin
   if new.reviewed_by_user_id is distinct from icamp_private.request_user_id()
     or not icamp_private.has_current_campground_owner_admin(new.campground_id)
@@ -156,11 +159,23 @@ begin
     raise exception 'Active campground Owner / Administrator required';
   end if;
   if new.subject_kind='field_witness' then
-    select id,dispatch_id,witnessed_by_user_id into witness
+    select id,dispatch_id,closure_id,decision,witnessed_by_user_id into witness
       from public.service_fulfillment_field_witness_events
       where organization_id=new.organization_id and campground_id=new.campground_id
         and id=new.subject_id;
+    select id,field_report_id into current_closure,closure_report
+      from public.service_fulfillment_field_closure_events
+      where organization_id=new.organization_id and campground_id=new.campground_id
+        and dispatch_id=witness.dispatch_id
+      order by recorded_at desc,id desc limit 1;
+    select id into current_report from public.service_fulfillment_mobile_field_reports
+      where organization_id=new.organization_id and campground_id=new.campground_id
+        and dispatch_id=witness.dispatch_id
+      order by reported_at desc,id desc limit 1;
     if witness.id is null or witness.witnessed_by_user_id=new.reviewed_by_user_id
+      or witness.closure_id is distinct from current_closure
+      or closure_report is distinct from current_report
+      or (new.decision='reviewed_unverified' and witness.decision<>'observed_unverified')
       or exists (
         select 1 from public.service_fulfillment_field_witness_events w
         where w.organization_id=new.organization_id and w.campground_id=new.campground_id
@@ -173,10 +188,11 @@ begin
       raise exception 'An independent, latest witness event is required';
     end if;
   else
-    select id,captured_at into forecast from public.service_fulfillment_forecast_checkpoints
+    select id,captured_at,evidence_coverage into forecast from public.service_fulfillment_forecast_checkpoints
       where organization_id=new.organization_id and campground_id=new.campground_id
         and id=new.subject_id;
-    if forecast.id is null or forecast.captured_at+interval '8 hours'>statement_timestamp() then
+    if forecast.id is null or forecast.captured_at+interval '8 hours'>statement_timestamp()
+      or (new.decision='reviewed_unverified' and forecast.evidence_coverage='PARTIAL_HOLD') then
       raise exception 'Forecast horizon must complete before owner review';
     end if;
   end if;
