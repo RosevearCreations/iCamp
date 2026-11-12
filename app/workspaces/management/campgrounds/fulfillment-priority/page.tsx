@@ -680,7 +680,7 @@ export default async function FulfillmentPriorityPage({
                     Accuracy status:{" "}
                     {accuracy?.evidenceState ?? "SOURCE_UNAVAILABLE"}.
                   </p>
-                  {!reviewed && accuracy?.observedNewReviewEvents !== null ? (
+                  {!reviewed && accuracy && accuracy.observedNewReviewEvents !== null ? (
                     <form
                       action={recordOwnerShiftAuditAction}
                       className={styles.ownerForm}
