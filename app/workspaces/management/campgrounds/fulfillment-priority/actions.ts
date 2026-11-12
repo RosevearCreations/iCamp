@@ -18,6 +18,12 @@ import {
   recordForecastCheckpoint,
   recordOwnerShiftAudit,
 } from "@/lib/booking-charges/fulfillment-witness-postgres.mjs";
+import {
+  recordOriginalDeviceReview,
+  recordCalibrationFollowup,
+  listAttestationCalibrationEvidence,
+} from "@/lib/booking-charges/fulfillment-attestation-postgres.mjs";
+import { listWitnessAuditEvidence } from "@/lib/booking-charges/fulfillment-witness-postgres.mjs";
 import { recordSupervisorContinuityReview } from "@/lib/booking-charges/fulfillment-continuity-postgres.mjs";
 import { recordFieldClosureEvidence } from "@/lib/booking-charges/fulfillment-performance-postgres.mjs";
 import {
@@ -293,6 +299,63 @@ export async function recordOwnerShiftAuditAction(form: FormData) {
     result = "shift-audit-recorded";
   } catch {
     // Active owner role, latest source and completed horizon are mandatory.
+  }
+  finish(campgroundId, result);
+}
+
+export async function recordOriginalDeviceReviewAction(form: FormData) {
+  const { campgroundId, session } = await supervisor(form);
+  let result = "device-attestation-error";
+  try {
+    await recordOriginalDeviceReview({
+      actorUserId: session.user.id,
+      actorSessionId: session.sessionId,
+      campgroundId,
+      dispatchId: field(form, "dispatchId"),
+      fieldReportId: field(form, "fieldReportId"),
+      witnessId: field(form, "witnessId"),
+      previousReviewId: field(form, "previousDeviceReviewId"),
+      evidenceReference: field(form, "deviceEvidenceReference"),
+      digestSha256: field(form, "deviceEvidenceSha256"),
+      decision: field(form, "deviceAttestationDecision"),
+      explanation: field(form, "deviceAttestationExplanation"),
+    });
+    result = "device-attestation-recorded";
+  } catch {
+    // No device attestation can be claimed without independent original proof.
+  }
+  finish(campgroundId, result);
+}
+
+export async function recordCalibrationFollowupAction(form: FormData) {
+  const { campgroundId, session } = await supervisor(form);
+  let result = "calibration-error";
+  try {
+    const [source, witness, shift] = await Promise.all([
+      listAttestationCalibrationEvidence({
+        userId: session.user.id,
+        campgroundId,
+      }),
+      listWitnessAuditEvidence({ userId: session.user.id, campgroundId }),
+      listShiftRecoveryEvidence({ userId: session.user.id, campgroundId }),
+    ]);
+    await recordCalibrationFollowup({
+      actorUserId: session.user.id,
+      actorSessionId: session.sessionId,
+      campgroundId,
+      checkpointId: field(form, "checkpointId"),
+      previousEventId: field(form, "previousCalibrationId"),
+      decision: field(form, "calibrationDecision"),
+      explanation: field(form, "calibrationExplanation"),
+      checkpoints: witness.checkpoints,
+      reviews: shift.reviews,
+      handoffs: shift.handoffs,
+      truncated: source.truncated || witness.truncated || shift.truncated,
+      asOf: new Date().toISOString(),
+    });
+    result = "calibration-recorded";
+  } catch {
+    // Fail closed on incomplete source history, stale sequence or partial replay.
   }
   finish(campgroundId, result);
 }
