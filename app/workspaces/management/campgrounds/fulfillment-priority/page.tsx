@@ -655,7 +655,7 @@ export default async function FulfillmentPriorityPage({
               helpTopic="campground.structure"
             />
             <p className={styles.explain}>
-              A second staff member's witness statement is human source
+              A second staff member&apos;s witness statement is human source
               evidence, not a signed device attestation. Owner review is an
               audited decision, not payment release, guest notification or
               Master acceptance.
