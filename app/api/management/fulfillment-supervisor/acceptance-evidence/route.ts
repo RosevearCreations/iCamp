@@ -8,6 +8,7 @@ import { listWitnessAuditEvidence } from "@/lib/booking-charges/fulfillment-witn
 import { evaluateForecastCheckpoint } from "@/lib/booking-charges/fulfillment-witness-core.mjs";
 import { listShiftRecoveryEvidence } from "@/lib/booking-charges/fulfillment-shift-postgres.mjs";
 import { listVerificationContinuityEvidence } from "@/lib/booking-charges/fulfillment-verification-postgres.mjs";
+import { auditOwnerDossierLineage } from "@/lib/booking-charges/fulfillment-dossier-readback-core.mjs";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -105,6 +106,12 @@ export async function GET(request: NextRequest) {
           }),
         ),
         dossierSnapshots: continuity.dossierSnapshots,
+        dossierReadback: auditOwnerDossierLineage({
+          campgroundId,
+          snapshots: continuity.dossierSnapshots,
+          windowTruncated: continuity.dossierWindowTruncated,
+        }),
+        independentDevicePinStatus: continuity.pinStatus,
         independentDeviceAcceptance: "HOLD",
         masterConnection: "HOLD",
         ownerProductionAcceptance: "HOLD",
