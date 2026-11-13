@@ -58,22 +58,22 @@ export async function GET(request: NextRequest) {
   try {
     const [source, witness, shift, continuity, originalWitness] =
       await Promise.all([
-      listAttestationCalibrationEvidence({
-        userId: session.user.id,
-        campgroundId,
-      }),
-      listWitnessAuditEvidence({ userId: session.user.id, campgroundId }),
-      listShiftRecoveryEvidence({ userId: session.user.id, campgroundId }),
-      listVerificationContinuityEvidence({
-        userId: session.user.id,
-        campgroundId,
-        owner: true,
-      }),
-      listOriginalDeviceWitnessAdmissions({
-        userId: session.user.id,
-        campgroundId,
-      }),
-    ]);
+        listAttestationCalibrationEvidence({
+          userId: session.user.id,
+          campgroundId,
+        }),
+        listWitnessAuditEvidence({ userId: session.user.id, campgroundId }),
+        listShiftRecoveryEvidence({ userId: session.user.id, campgroundId }),
+        listVerificationContinuityEvidence({
+          userId: session.user.id,
+          campgroundId,
+          owner: true,
+        }),
+        listOriginalDeviceWitnessAdmissions({
+          userId: session.user.id,
+          campgroundId,
+        }),
+      ]);
     const now = new Date().toISOString();
     const truncated =
       source.truncated ||

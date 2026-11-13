@@ -1,9 +1,5 @@
 import assert from "node:assert/strict";
-import {
-  createHash,
-  generateKeyPairSync,
-  sign,
-} from "node:crypto";
+import { createHash, generateKeyPairSync, sign } from "node:crypto";
 import { readFileSync } from "node:fs";
 import test from "node:test";
 import { buildDossierContinuity } from "../lib/booking-charges/fulfillment-verification-core.mjs";
@@ -98,10 +94,7 @@ test("dossier digest recomputation detects real source changes and holds accepta
   assert.equal(
     revalidateOwnerDossierSource({
       ...input,
-      snapshots: [
-        { ...snapshots[0], witnessCount: 99 },
-        snapshots[1],
-      ],
+      snapshots: [{ ...snapshots[0], witnessCount: 99 }, snapshots[1]],
     }).status,
     "HOLD_DOSSIER_SOURCE_DIGEST_MISMATCH",
   );
@@ -154,7 +147,8 @@ function signedMasters() {
       sourceId: "icamp",
       sourceRevision,
       issuedAt: now,
-      nonce: "TEST-ORIGINAL-MASTER-NONCE-" + index + "-ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+      nonce:
+        "TEST-ORIGINAL-MASTER-NONCE-" + index + "-ABCDEFGHIJKLMNOPQRSTUVWXYZ",
       keyId: pin.keyId,
       decision: "SOURCE_HEALTHY_OBSERVED",
     };
@@ -212,7 +206,10 @@ test("three independent Ed25519 Master receipts remain observation-only", () => 
     reconcileCrossMasterAcceptance({
       ...input,
       pins: [
-        { ...input.pins[0], independentlyAuthenticatedSpkiFingerprint: sha("wrong") },
+        {
+          ...input.pins[0],
+          independentlyAuthenticatedSpkiFingerprint: sha("wrong"),
+        },
         ...input.pins.slice(1),
       ],
     }).evidence[0].status,
@@ -234,9 +231,7 @@ test("Build 249 SQL and owner export enforce immutable source and HOLD", () => {
   const verify = read(
     "database/verify/0232_build249_original_device_witness.sql",
   );
-  const service = read(
-    "lib/booking-charges/fulfillment-build249-postgres.mjs",
-  );
+  const service = read("lib/booking-charges/fulfillment-build249-postgres.mjs");
   const exportRoute = read(
     "app/api/management/fulfillment-supervisor/acceptance-evidence/route.ts",
   );

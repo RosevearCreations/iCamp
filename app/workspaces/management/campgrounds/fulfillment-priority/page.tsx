@@ -962,9 +962,9 @@ export default async function FulfillmentPriorityPage({
           <p className={styles.explain}>
             Only an independent supervisor may witness a freshly verified
             original-device signature. The same reporter, prior field witness,
-            original reviewer or signature verifier cannot self-approve.
-            This records a source observation, not device owner acceptance,
-            a signed Master HEALTHY receipt or CONNECTED status.
+            original reviewer or signature verifier cannot self-approve. This
+            records a source observation, not device owner acceptance, a signed
+            Master HEALTHY receipt or CONNECTED status.
           </p>
           {verificationEvidence?.verifiedSourcePackets.length ? (
             <form
