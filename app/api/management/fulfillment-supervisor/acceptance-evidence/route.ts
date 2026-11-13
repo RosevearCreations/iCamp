@@ -13,6 +13,10 @@ import {
   readCrossMasterProtectedEvidence,
 } from "@/lib/booking-charges/fulfillment-build249-postgres.mjs";
 import { revalidateOwnerDossierSource } from "@/lib/booking-charges/fulfillment-build249-core.mjs";
+import {
+  assessOwnerSupervisedCeremony,
+  listOwnerSupervisedDecisions,
+} from "@/lib/booking-charges/fulfillment-build250-postgres.mjs";
 import { auditOwnerDossierLineage } from "@/lib/booking-charges/fulfillment-dossier-readback-core.mjs";
 
 export const runtime = "nodejs";
@@ -110,6 +114,14 @@ export async function GET(request: NextRequest) {
       currentRevision: SHA.test(revision) ? revision : null,
       currentEvidence: evidence,
     });
+    const ownerCeremony = await assessOwnerSupervisedCeremony({
+      userId: session.user.id,
+      campgroundId,
+    });
+    const ownerCeremonyHistory = await listOwnerSupervisedDecisions({
+      userId: session.user.id,
+      campgroundId,
+    });
     const crossMasterEvidence = readCrossMasterProtectedEvidence({
       sourceRevision: SHA.test(revision) ? revision : null,
       asOf: now,
@@ -139,6 +151,10 @@ export async function GET(request: NextRequest) {
           }),
         ),
         dossierSourceIntegrity: dossierIntegrity,
+        originalSourceHealthy: ownerCeremony.sourceHealthy,
+        ownerSupervisedCeremony: ownerCeremony.gate,
+        ownerSourceDecisions: ownerCeremonyHistory.decisions,
+        ownerOperationalAcceptance: "HOLD",
         crossMasterAcceptanceEvidence: crossMasterEvidence,
         dossierReadback: auditOwnerDossierLineage({
           campgroundId,

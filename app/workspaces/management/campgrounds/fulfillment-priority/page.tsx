@@ -46,6 +46,10 @@ import {
   listVerificationContinuityEvidence,
 } from "@/lib/booking-charges/fulfillment-verification-postgres.mjs";
 import { evaluateForecastCheckpoint } from "@/lib/booking-charges/fulfillment-witness-core.mjs";
+import {
+  assessOwnerSupervisedCeremony,
+  listOwnerSupervisedDecisions,
+} from "@/lib/booking-charges/fulfillment-build250-postgres.mjs";
 
 import {
   requestShiftHandoffAction,
@@ -60,6 +64,7 @@ import {
   recordCalibrationFollowupAction,
   recordIndependentDeviceSignatureAction,
   admitOriginalDeviceWitnessAction,
+  recordOwnerSupervisedCeremonyAction,
   recordOwnerCalibrationClosureAction,
   captureOwnerDossierSnapshotAction,
   removePriorityViewAction,
@@ -261,6 +266,18 @@ export default async function FulfillmentPriorityPage({
   for (const item of verificationEvidence?.calibrationClosures ?? [])
     if (!latestSourceClosure.has(item.checkpointId))
       latestSourceClosure.set(item.checkpointId, item);
+  const [ownerCeremony, ownerCeremonyHistory] = ownerAdmin
+    ? await Promise.all([
+        assessOwnerSupervisedCeremony({
+          userId: session.user.id,
+          campgroundId: selected.campgroundId,
+        }).catch(() => null),
+        listOwnerSupervisedDecisions({
+          userId: session.user.id,
+          campgroundId: selected.campgroundId,
+        }).catch(() => null),
+      ])
+    : [null, null];
   const pinState = devicePinStatus();
   const now = new Date().toISOString();
   const trend = shiftEvidence
@@ -1045,6 +1062,95 @@ export default async function FulfillmentPriorityPage({
             </p>
           ) : null}
         </section>
+        {ownerAdmin ? (
+          <section
+            className="content-panel"
+            aria-labelledby="build250-ceremony"
+          >
+            <SectionHeading
+              eyebrow="Build 250 · source-only guarded owner decision"
+              title="Supervised original-device and three-Master ceremony"
+              id="build250-ceremony"
+              helpTopic="campground.structure"
+            />
+            <p className={styles.explain}>
+              A real independent source signer, freshly witnessed original
+              device, revalidated owner dossier and three separate signed Master
+              receipts are required to request supervised review. Review does
+              not activate CONNECTED or approve production access.
+            </p>
+            <div className={styles.metrics}>
+              <div>
+                <strong>{ownerCeremony?.sourceHealthy.status ?? "HOLD"}</strong>
+                <span>Original signed source HEALTHY</span>
+              </div>
+              <div>
+                <strong>{ownerCeremony?.dossier.status ?? "HOLD"}</strong>
+                <span>Current dossier digest</span>
+              </div>
+              <div>
+                <strong>{ownerCeremony?.masters.decision ?? "HOLD"}</strong>
+                <span>Three independent Master receipts</span>
+              </div>
+              <div>
+                <strong>{ownerCeremony?.gate.status ?? "HOLD"}</strong>
+                <span>Owner supervised review gate</span>
+              </div>
+            </div>
+            <p className={styles.explain}>
+              Previous owner source decisions recorded:{" "}
+              {ownerCeremonyHistory?.decisions.length ?? 0}. Operational owner
+              acceptance and Master CONNECTED remain HOLD.
+            </p>
+            <form
+              action={recordOwnerSupervisedCeremonyAction}
+              className={styles.ownerForm}
+            >
+              <input
+                type="hidden"
+                name="campgroundId"
+                value={selected.campgroundId}
+              />
+              <label>
+                Explicit owner source decision
+                <select name="ceremonyDecision" defaultValue="hold" required>
+                  <option value="hold">HOLD — further evidence required</option>
+                  <option value="reject">Reject this evidence review</option>
+                  {ownerCeremony?.gate.supervisedReviewEligible ? (
+                    <option value="request_supervised_review">
+                      Request external supervised review (not acceptance)
+                    </option>
+                  ) : null}
+                </select>
+              </label>
+              <label>
+                Owner reason (12–300 characters)
+                <textarea
+                  name="ceremonyExplanation"
+                  minLength={12}
+                  maxLength={300}
+                  rows={3}
+                  required
+                />
+              </label>
+              <button className="secondary-button" type="submit">
+                Record owner evidence decision
+              </button>
+            </form>
+            {params.result?.startsWith("ceremony-") ? (
+              <p
+                role={params.result.endsWith("-error") ? "alert" : "status"}
+                className={
+                  params.result.endsWith("-error") ? styles.warning : undefined
+                }
+              >
+                {params.result.endsWith("-error")
+                  ? "Owner decision unavailable: check source custody, migration and current owner authority."
+                  : "Append-only owner source decision saved; runtime activation remains HOLD."}
+              </p>
+            ) : null}
+          </section>
+        ) : null}
         <section
           className="content-panel"
           aria-labelledby="build246-calibration"

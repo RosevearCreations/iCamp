@@ -65,8 +65,8 @@ export default async function ThemeManagementPage() {
             </div>
             <div>
               <span>More themes</span>
-              <strong>Future release</strong>
-              <small>No unavailable selector or unsaved preference</small>
+              <strong>Orbit Command</strong>
+              <small>Switch using the header; saved on this browser</small>
             </div>
           </article>
         </div>
@@ -85,6 +85,12 @@ export default async function ThemeManagementPage() {
               </div>
             ))}
           </div>
+          <p className="ops-inline-note">
+            Both visual themes are platform-level and do not belong to Camp
+            Rosevear. Standard / Meadow and its photo asset remain the default;
+            the Orbit Command look can be selected without affecting tenant
+            data.
+          </p>
           <p className="ops-inline-note">
             Status colours are semantic: operational{" "}
             {SEMANTIC_STATUS.operational}, pending {SEMANTIC_STATUS.pending},

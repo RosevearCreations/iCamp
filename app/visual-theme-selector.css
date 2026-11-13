@@ -1,0 +1,42 @@
+/* Build 250: independent browser-only visual choice; no tenant authorization. */
+.visual-theme-selector {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: var(--ink);
+  font-size: 0.74rem;
+  font-weight: 750;
+  white-space: nowrap;
+}
+.visual-theme-selector select {
+  max-width: 11.8rem;
+  min-height: 2.6rem;
+  padding: 0.45rem 0.65rem;
+  border: 1px solid var(--line);
+  border-radius: 0.7rem;
+  background: var(--surface);
+  color: var(--ink);
+  font: inherit;
+  cursor: pointer;
+}
+.visual-theme-selector select:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+.app-shell[data-visual="orbit"] .visual-theme-selector {
+  color: #e0dcfa;
+}
+.app-shell[data-visual="orbit"] .visual-theme-selector select {
+  border-color: #574779;
+  background: #121c35;
+  color: #f3f0ff;
+}
+@media (max-width: 860px) {
+  .visual-theme-selector {
+    width: 100%;
+    justify-content: flex-start;
+  }
+  .visual-theme-selector select {
+    max-width: min(100%, 13rem);
+  }
+}
