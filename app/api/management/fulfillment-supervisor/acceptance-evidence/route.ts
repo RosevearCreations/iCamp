@@ -7,6 +7,7 @@ import { buildOwnerAcceptanceEvidenceExport } from "@/lib/booking-charges/fulfil
 import { listWitnessAuditEvidence } from "@/lib/booking-charges/fulfillment-witness-postgres.mjs";
 import { evaluateForecastCheckpoint } from "@/lib/booking-charges/fulfillment-witness-core.mjs";
 import { listShiftRecoveryEvidence } from "@/lib/booking-charges/fulfillment-shift-postgres.mjs";
+import { listVerificationContinuityEvidence } from "@/lib/booking-charges/fulfillment-verification-postgres.mjs";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -49,16 +50,25 @@ export async function GET(request: NextRequest) {
     });
   }
   try {
-    const [source, witness, shift] = await Promise.all([
+    const [source, witness, shift, continuity] = await Promise.all([
       listAttestationCalibrationEvidence({
         userId: session.user.id,
         campgroundId,
       }),
       listWitnessAuditEvidence({ userId: session.user.id, campgroundId }),
       listShiftRecoveryEvidence({ userId: session.user.id, campgroundId }),
+      listVerificationContinuityEvidence({
+        userId: session.user.id,
+        campgroundId,
+        owner: true,
+      }),
     ]);
     const now = new Date().toISOString();
-    const truncated = source.truncated || witness.truncated || shift.truncated;
+    const truncated =
+      source.truncated ||
+      witness.truncated ||
+      shift.truncated ||
+      continuity.truncated;
     const evaluations = witness.checkpoints.map((checkpoint) =>
       evaluateForecastCheckpoint({
         checkpoint,
@@ -81,14 +91,33 @@ export async function GET(request: NextRequest) {
       ownerAudits: witness.ownerAudits,
       truncated,
     });
-    return Response.json(evidence, {
-      headers: {
-        ...headers,
-        "Content-Disposition":
-          'attachment; filename="icamp-private-owner-acceptance-evidence.json"',
-        "X-iCamp-Report-Trust": "UNSIGNED_PRIVATE_OWNER_SOURCE",
+    return Response.json(
+      {
+        ...evidence,
+        continuitySchema: "icamp.owner.dossier-continuity.v1",
+        verifiedDeviceSourceCount: continuity.verifiedSourcePackets.length,
+        sourceCalibrationClosures: continuity.calibrationClosures.map(
+          (item) => ({
+            id: item.id,
+            checkpointId: item.checkpointId,
+            decision: item.decision,
+            reviewedAt: item.reviewedAt,
+          }),
+        ),
+        dossierSnapshots: continuity.dossierSnapshots,
+        independentDeviceAcceptance: "HOLD",
+        masterConnection: "HOLD",
+        ownerProductionAcceptance: "HOLD",
       },
-    });
+      {
+        headers: {
+          ...headers,
+          "Content-Disposition":
+            'attachment; filename="icamp-private-owner-acceptance-evidence.json"',
+          "X-iCamp-Report-Trust": "UNSIGNED_PRIVATE_OWNER_SOURCE",
+        },
+      },
+    );
   } catch {
     return new Response("Private source evidence unavailable.", {
       status: 503,

@@ -16,8 +16,10 @@ export default async function SysopPage() {
     <SysopShell>
       <div className="page-stack standard-ops-page">
         <section className="hero-panel meadow-hero">
-          <p className="eyebrow">Master Sysop · Build 232</p>
-          <h1>iCamp platform observation</h1>
+          <p className="eyebrow">
+            Platform operations / Orbit Command · Build 247
+          </p>
+          <h1>Platform operations command</h1>
           <p className="hero-panel__lead">
             Ree and Jack&apos;s independently verified operator area. Only
             platform-level counts, health and support are available here.
@@ -47,7 +49,7 @@ export default async function SysopPage() {
           </article>
         </div>
         <section className="content-panel">
-          <h2>System health and elevated help</h2>
+          <h2>System telemetry and elevated help</h2>
           <p>
             <Link href="/status">View published system status</Link>
           </p>
