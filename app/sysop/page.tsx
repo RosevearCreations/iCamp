@@ -16,7 +16,9 @@ export default async function SysopPage() {
     <SysopShell>
       <div className="page-stack standard-ops-page">
         <section className="hero-panel meadow-hero">
-          <p className="eyebrow">Platform operations / Orbit Command · Build 247</p>
+          <p className="eyebrow">
+            Platform operations / Orbit Command · Build 247
+          </p>
           <h1>Platform operations command</h1>
           <p className="hero-panel__lead">
             Ree and Jack&apos;s independently verified operator area. Only
