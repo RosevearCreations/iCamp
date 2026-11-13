@@ -400,7 +400,10 @@ export async function recordOwnerCalibrationClosureAction(form: FormData) {
   const { campgroundId, session } = await supervisor(form);
   let result = "closure-error";
   try {
-    const grant = await getCampgroundAuthorization(session.user.id, campgroundId);
+    const grant = await getCampgroundAuthorization(
+      session.user.id,
+      campgroundId,
+    );
     if (!grant?.roleCodes.includes("owner_admin"))
       throw new Error("Active campground owner required.");
     await recordOwnerCalibrationClosure({
@@ -424,39 +427,61 @@ export async function captureOwnerDossierSnapshotAction(form: FormData) {
   const { campgroundId, session } = await supervisor(form);
   let result = "dossier-error";
   try {
-    const grant = await getCampgroundAuthorization(session.user.id, campgroundId);
+    const grant = await getCampgroundAuthorization(
+      session.user.id,
+      campgroundId,
+    );
     if (!grant?.roleCodes.includes("owner_admin"))
       throw new Error("Active campground owner required.");
     const [source, witness, shift, continuity] = await Promise.all([
-      listAttestationCalibrationEvidence({userId:session.user.id,campgroundId}),
-      listWitnessAuditEvidence({userId:session.user.id,campgroundId}),
-      listShiftRecoveryEvidence({userId:session.user.id,campgroundId}),
-      listVerificationContinuityEvidence({userId:session.user.id,campgroundId,owner:true}),
+      listAttestationCalibrationEvidence({
+        userId: session.user.id,
+        campgroundId,
+      }),
+      listWitnessAuditEvidence({ userId: session.user.id, campgroundId }),
+      listShiftRecoveryEvidence({ userId: session.user.id, campgroundId }),
+      listVerificationContinuityEvidence({
+        userId: session.user.id,
+        campgroundId,
+        owner: true,
+      }),
     ]);
-    const now=new Date().toISOString();
-    const truncated=source.truncated||witness.truncated||shift.truncated||continuity.truncated;
-    const evaluations=witness.checkpoints.map((checkpoint)=>
+    const now = new Date().toISOString();
+    const truncated =
+      source.truncated ||
+      witness.truncated ||
+      shift.truncated ||
+      continuity.truncated;
+    const evaluations = witness.checkpoints.map((checkpoint) =>
       evaluateForecastCheckpoint({
-        checkpoint,reviews:shift.reviews,handoffs:shift.handoffs,
-        asOf:now,truncated,
+        checkpoint,
+        reviews: shift.reviews,
+        handoffs: shift.handoffs,
+        asOf: now,
+        truncated,
       }),
     );
-    const summary=buildOwnerAcceptanceEvidenceExport({
-      campgroundId,sourceRevision:process.env.VERCEL_GIT_COMMIT_SHA ?? null,
-      generatedAt:now,witnessEvents:witness.witnesses,
-      originalDeviceReviews:source.originalDeviceReviews,
-      checkpoints:witness.checkpoints,evaluations,
-      calibrations:source.calibrations,ownerAudits:witness.ownerAudits,
+    const summary = buildOwnerAcceptanceEvidenceExport({
+      campgroundId,
+      sourceRevision: process.env.VERCEL_GIT_COMMIT_SHA ?? null,
+      generatedAt: now,
+      witnessEvents: witness.witnesses,
+      originalDeviceReviews: source.originalDeviceReviews,
+      checkpoints: witness.checkpoints,
+      evaluations,
+      calibrations: source.calibrations,
+      ownerAudits: witness.ownerAudits,
       truncated,
     });
     await captureOwnerDossierContinuity({
-      actorUserId:session.user.id,
-      actorSessionId:session.sessionId,
-      campgroundId,evidenceSummary:summary,
+      actorUserId: session.user.id,
+      actorSessionId: session.sessionId,
+      campgroundId,
+      evidenceSummary: summary,
     });
-    result="dossier-source-recorded";
+    result = "dossier-source-recorded";
   } catch {
     // No synthetic owner signature, no cross-tenant evidence and no partial success.
   }
-  finish(campgroundId,result);
+  finish(campgroundId, result);
 }
