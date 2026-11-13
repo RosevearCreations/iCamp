@@ -54,6 +54,11 @@ export default async function SysopPage() {
             <Link href="/status">View published system status</Link>
           </p>
           <p>
+            <Link href="/sysop/readiness">
+              Verify actual production database adoption and original-source signer custody
+            </Link>
+          </p>
+          <p>
             <Link href="/integration/comms-hub">
               Review Comms Hub connection guidance
             </Link>
