@@ -8,6 +8,11 @@ import { listWitnessAuditEvidence } from "@/lib/booking-charges/fulfillment-witn
 import { evaluateForecastCheckpoint } from "@/lib/booking-charges/fulfillment-witness-core.mjs";
 import { listShiftRecoveryEvidence } from "@/lib/booking-charges/fulfillment-shift-postgres.mjs";
 import { listVerificationContinuityEvidence } from "@/lib/booking-charges/fulfillment-verification-postgres.mjs";
+import {
+  listOriginalDeviceWitnessAdmissions,
+  readCrossMasterProtectedEvidence,
+} from "@/lib/booking-charges/fulfillment-build249-postgres.mjs";
+import { revalidateOwnerDossierSource } from "@/lib/booking-charges/fulfillment-build249-core.mjs";
 import { auditOwnerDossierLineage } from "@/lib/booking-charges/fulfillment-dossier-readback-core.mjs";
 
 export const runtime = "nodejs";
@@ -51,25 +56,31 @@ export async function GET(request: NextRequest) {
     });
   }
   try {
-    const [source, witness, shift, continuity] = await Promise.all([
-      listAttestationCalibrationEvidence({
-        userId: session.user.id,
-        campgroundId,
-      }),
-      listWitnessAuditEvidence({ userId: session.user.id, campgroundId }),
-      listShiftRecoveryEvidence({ userId: session.user.id, campgroundId }),
-      listVerificationContinuityEvidence({
-        userId: session.user.id,
-        campgroundId,
-        owner: true,
-      }),
-    ]);
+    const [source, witness, shift, continuity, originalWitness] =
+      await Promise.all([
+        listAttestationCalibrationEvidence({
+          userId: session.user.id,
+          campgroundId,
+        }),
+        listWitnessAuditEvidence({ userId: session.user.id, campgroundId }),
+        listShiftRecoveryEvidence({ userId: session.user.id, campgroundId }),
+        listVerificationContinuityEvidence({
+          userId: session.user.id,
+          campgroundId,
+          owner: true,
+        }),
+        listOriginalDeviceWitnessAdmissions({
+          userId: session.user.id,
+          campgroundId,
+        }),
+      ]);
     const now = new Date().toISOString();
     const truncated =
       source.truncated ||
       witness.truncated ||
       shift.truncated ||
-      continuity.truncated;
+      continuity.truncated ||
+      originalWitness.truncated;
     const evaluations = witness.checkpoints.map((checkpoint) =>
       evaluateForecastCheckpoint({
         checkpoint,
@@ -92,6 +103,17 @@ export async function GET(request: NextRequest) {
       ownerAudits: witness.ownerAudits,
       truncated,
     });
+    const dossierIntegrity = revalidateOwnerDossierSource({
+      campgroundId,
+      snapshots: continuity.dossierSnapshots,
+      windowTruncated: continuity.dossierWindowTruncated,
+      currentRevision: SHA.test(revision) ? revision : null,
+      currentEvidence: evidence,
+    });
+    const crossMasterEvidence = readCrossMasterProtectedEvidence({
+      sourceRevision: SHA.test(revision) ? revision : null,
+      asOf: now,
+    });
     return Response.json(
       {
         ...evidence,
@@ -106,6 +128,18 @@ export async function GET(request: NextRequest) {
           }),
         ),
         dossierSnapshots: continuity.dossierSnapshots,
+        originalDeviceIndependentWitnesses: originalWitness.witnesses.map(
+          (item) => ({
+            id: item.id,
+            signatureVerificationId: item.signatureVerificationId,
+            decision: item.decision,
+            sourceRevision: item.sourceRevision,
+            admittedAt: item.admittedAt,
+            deviceAcceptance: "HOLD",
+          }),
+        ),
+        dossierSourceIntegrity: dossierIntegrity,
+        crossMasterAcceptanceEvidence: crossMasterEvidence,
         dossierReadback: auditOwnerDossierLineage({
           campgroundId,
           snapshots: continuity.dossierSnapshots,
