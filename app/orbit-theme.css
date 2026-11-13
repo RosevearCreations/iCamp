@@ -1,0 +1,377 @@
+/* iCamp Build 247 · Orbit Command theme
+ * Source: supplied workshop UI reference (shared-shell page 25).
+ * Visual adaptation only: campground role enforcement and state machines
+ * remain in their original server components. */
+.app-shell[data-visual="orbit"] {
+  color-scheme: dark;
+  --bg: #050c19;
+  --surface: #0c1930;
+  --surface-soft: #13243e;
+  --ink: #eef5ff;
+  --muted: #acbfd8;
+  --line: #29405e;
+  --brand: #be8cff;
+  --brand-strong: #4d208d;
+  --accent: #9c73ff;
+  --focus: #57e5ff;
+  --shadow: 0 16px 55px rgb(0 0 0 / 32%);
+  --status-operational: #44dfb5;
+  --status-pending: #ffd078;
+  --status-critical: #ff879c;
+  --status-information: #62cfff;
+  --status-disabled: #c0cadc;
+  isolation: isolate;
+  min-height: 100vh;
+  background:
+    radial-gradient(ellipse at 88% 0%, rgb(114 63 200 / 13%), transparent 35rem),
+    radial-gradient(ellipse at 4% 38%, rgb(15 120 177 / 9%), transparent 44rem),
+    #050c19;
+  color: var(--ink);
+  accent-color: #b18bff;
+}
+.app-shell[data-visual="orbit"] .topbar {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  min-height: 4.7rem;
+  gap: 1rem;
+  padding: 0.75rem clamp(1rem, 2vw, 2rem);
+  border-bottom: 1px solid #31446b;
+  background: rgb(5 12 27 / 95%);
+  box-shadow: 0 8px 32px rgb(0 0 0 / 22%);
+  backdrop-filter: blur(16px);
+}
+.app-shell[data-visual="orbit"] .brand { color: #f7f7ff; }
+.app-shell[data-visual="orbit"] .brand__mark {
+  width: 2.8rem;
+  height: 2.8rem;
+  border: 1px solid #a985f8;
+  border-radius: 0.82rem;
+  background: linear-gradient(140deg, #412379 8%, #152a5c 72%, #075b77);
+  color: #ffffff;
+  box-shadow: 0 0 0 4px rgb(155 115 255 / 9%), 0 0 20px rgb(141 95 250 / 22%);
+  font-size: 0.92rem;
+}
+.app-shell[data-visual="orbit"] .brand strong {
+  color: #f5f4ff;
+  font-size: 1.12rem;
+  letter-spacing: -0.04em;
+}
+.app-shell[data-visual="orbit"] .brand small {
+  color: #adc4e9;
+  font-size: 0.7rem;
+  letter-spacing: 0.02em;
+}
+.app-shell[data-visual="orbit"] .topbar__quicklinks {
+  flex: 1;
+  justify-content: flex-start;
+  gap: 0.15rem;
+}
+.app-shell[data-visual="orbit"] .topbar__quicklinks a {
+  min-height: 2.6rem;
+  padding: 0.52rem 0.68rem;
+  border: 1px solid transparent;
+  border-radius: 0.54rem;
+  color: #cbd5ec;
+  font-size: 0.78rem;
+  font-weight: 620;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+.app-shell[data-visual="orbit"] .topbar__quicklinks a:is(:hover,:focus-visible) {
+  border-color: #644a99;
+  background: #241c48;
+  color: #ffffff;
+}
+.app-shell[data-visual="orbit"] .topbar__status {
+  min-width: 0;
+  color: #c2d6ed;
+  font-size: 0.72rem;
+  font-weight: 650;
+  white-space: normal;
+}
+.app-shell[data-visual="orbit"] .theme-marker {
+  border: 1px solid #7654b0;
+  border-radius: 0.5rem;
+  background: #22153e;
+  color: #e0bcff;
+}
+.app-shell[data-visual="orbit"] .shell-grid {
+  grid-template-columns: minmax(13.2rem, 14.8rem) minmax(0, 1fr);
+  min-height: calc(100vh - 8.5rem);
+}
+.app-shell[data-visual="orbit"] .sidebar {
+  top: 4.7rem;
+  height: calc(100vh - 4.7rem);
+  padding: 1.15rem 0.72rem;
+  border-right: 1px solid #243858;
+  background: linear-gradient(180deg, #091629, #071120 80%);
+}
+.app-shell[data-visual="orbit"] .sidebar__label {
+  color: #f2e9ff;
+  font-size: 0.7rem;
+  letter-spacing: 0.16em;
+}
+.app-shell[data-visual="orbit"] .sidebar__group-label {
+  color: #9badd4;
+  font-size: 0.66rem;
+  letter-spacing: 0.12em;
+}
+.app-shell[data-visual="orbit"] .workspace-nav a {
+  position: relative;
+  min-height: 2.5rem;
+  padding: 0.65rem 0.74rem;
+  border: 1px solid transparent;
+  border-radius: 0.55rem;
+  color: #c7d5eb;
+  font-size: 0.78rem;
+  font-weight: 650;
+}
+.app-shell[data-visual="orbit"] .workspace-nav a:hover,
+.app-shell[data-visual="orbit"] .workspace-nav a:focus-visible,
+.app-shell[data-visual="orbit"] .workspace-nav a[aria-current="page"] {
+  border-color: #563c83;
+  background: #251a48;
+  color: #ffffff;
+  box-shadow: inset 3px 0 #bb8cff;
+}
+.app-shell[data-visual="orbit"] .sidebar__advanced {
+  border-top: 1px solid #263c5c;
+  padding-top: 0.7rem;
+}
+.app-shell[data-visual="orbit"] .sidebar__advanced summary {
+  color: #e2ccff;
+}
+.app-shell[data-visual="orbit"] .sidebar__principle {
+  border: 1px solid #3a3767;
+  border-radius: 0.85rem;
+  background: linear-gradient(145deg, #19193a, #101e3a);
+  color: #f5ecff;
+  box-shadow: inset 0 1px rgb(255 255 255 / 5%);
+}
+.app-shell[data-visual="orbit"] .sidebar__principle span {
+  color: #b5c8e0;
+}
+.app-shell[data-visual="orbit"] .main-content {
+  width: min(100%, 110rem);
+  min-width: 0;
+  padding: clamp(1.15rem, 2.4vw, 2.25rem);
+}
+.app-shell[data-visual="orbit"] .page-stack { gap: 1.05rem; }
+.app-shell[data-visual="orbit"] :is(.hero-panel,.content-panel,.ops-kpi,.workspace-card,.health-card,.camp-command__kpi) {
+  border: 1px solid #2b4266;
+  border-radius: 0.86rem;
+  background: #0c1b32;
+  color: #eaf1ff;
+  box-shadow: 0 13px 38px rgb(0 0 0 / 14%), inset 0 1px rgb(255 255 255 / 4%);
+}
+.app-shell[data-visual="orbit"] .hero-panel,
+.app-shell[data-visual="orbit"] .hero-panel.meadow-hero {
+  position: relative;
+  overflow: hidden;
+  padding: clamp(1.35rem, 3vw, 2.55rem);
+  border-color: #493e84;
+  background:
+    linear-gradient(105deg, rgb(17 27 57 / 96%) 24%, rgb(29 21 70 / 87%) 68%, rgb(9 53 81 / 82%)),
+    #0e1b35;
+}
+.app-shell[data-visual="orbit"] .hero-panel::after {
+  content: "";
+  position: absolute;
+  right: -8%;
+  bottom: -85%;
+  width: min(28rem, 70vw);
+  aspect-ratio: 1;
+  border: 1px solid rgb(159 111 255 / 15%);
+  border-radius: 50%;
+  box-shadow: 0 0 0 4.5rem rgb(121 89 231 / 4%), 0 0 0 9rem rgb(65 189 248 / 2%);
+  pointer-events: none;
+}
+.app-shell[data-visual="orbit"] .hero-panel h1 {
+  max-width: 25ch;
+  font-size: clamp(1.65rem, 3.4vw, 3rem);
+  line-height: 1.08;
+  letter-spacing: -0.05em;
+}
+.app-shell[data-visual="orbit"] .hero-panel__lead {
+  color: #cbd6ee;
+  font-size: clamp(0.94rem, 1.5vw, 1.06rem);
+  line-height: 1.6;
+}
+.app-shell[data-visual="orbit"] .eyebrow,
+.app-shell[data-visual="orbit"] .hero-panel .eyebrow {
+  color: #cca5ff;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.13em;
+}
+.app-shell[data-visual="orbit"] .content-panel {
+  padding: clamp(1.05rem, 2.1vw, 1.8rem);
+  background: #0b1a30;
+}
+.app-shell[data-visual="orbit"] .content-panel h2 {
+  color: #f4f2ff;
+  font-size: clamp(1.15rem, 2.1vw, 1.75rem);
+}
+.app-shell[data-visual="orbit"] :is(.content-panel p,.workspace-card p,.health-card span,.ops-kpi small) {
+  color: #becde3;
+}
+.app-shell[data-visual="orbit"] :is(.ops-kpi,.camp-command__kpi,.health-card) {
+  background: linear-gradient(145deg, #102443, #0b192f);
+  border-color: #31486b;
+}
+.app-shell[data-visual="orbit"] :is(.ops-kpi,.camp-command__kpi) strong {
+  color: #f6f6ff;
+  font-variant-numeric: tabular-nums;
+}
+.app-shell[data-visual="orbit"] .workspace-card {
+  background: #11213a;
+}
+.app-shell[data-visual="orbit"] .workspace-card strong { color: #e4ceff; }
+.app-shell[data-visual="orbit"] .workspace-card:hover {
+  border-color: #8e68e0;
+  box-shadow: 0 12px 30px rgb(73 34 154 / 20%);
+}
+.app-shell[data-visual="orbit"] :is(.primary-button,.primary-link,.refresh-button) {
+  border: 1px solid #b18eff;
+  border-radius: 0.56rem;
+  background: linear-gradient(115deg, #744ac9, #5549aa);
+  color: #ffffff;
+  box-shadow: 0 6px 18px rgb(89 58 194 / 17%);
+}
+.app-shell[data-visual="orbit"] :is(.secondary-button,.secondary-link) {
+  border: 1px solid #5e6eaf;
+  border-radius: 0.56rem;
+  background: #172548;
+  color: #f2edff;
+}
+.app-shell[data-visual="orbit"] :is(input,select,textarea) {
+  border-color: #456088;
+  border-radius: 0.57rem;
+  background: #101f38;
+  color: #f1f6ff;
+}
+.app-shell[data-visual="orbit"] :is(input,select,textarea)::placeholder { color: #9faec9; }
+.app-shell[data-visual="orbit"] :is(a,button,input,select,textarea,summary):focus-visible {
+  outline: 3px solid #6fe5ff;
+  outline-offset: 3px;
+}
+.app-shell[data-visual="orbit"] .site-footer {
+  border-color: #243854;
+  background: #081426;
+  color: #afc0d9;
+}
+.app-shell[data-visual="orbit"] .site-footer a { color: #d8c1ff; }
+.app-shell[data-visual="orbit"] .breadcrumbs { color: #b2c7df; }
+.app-shell[data-visual="orbit"] .breadcrumbs a { color: #d7baff; }
+.app-shell[data-visual="orbit"] .build-chip {
+  border: 1px solid #57447e;
+  border-radius: 0.45rem;
+  background: #251b47;
+  color: #efddff;
+}
+.app-shell[data-visual="orbit"] .orbit-command-mark {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.34rem 0.6rem;
+  border: 1px solid #694b9f;
+  border-radius: 0.45rem;
+  color: #dacaff;
+  background: rgb(77 40 123 / 32%);
+  font-size: 0.68rem;
+  font-weight: 780;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+.app-shell[data-visual="orbit"] .orbit-command-mark::before {
+  content: "";
+  display: block;
+  width: 0.42rem;
+  height: 0.42rem;
+  border-radius: 50%;
+  background: #5ae2c6;
+  box-shadow: 0 0 9px rgb(70 230 199 / 40%);
+}
+.app-shell[data-visual="orbit"] .orbit-release {
+  color: #b5c5df;
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 0.7rem;
+  overflow-wrap: anywhere;
+}
+.app-shell[data-visual="orbit"][data-shell="sysop"] .sidebar {
+  background: linear-gradient(180deg, #130f30, #07142c);
+}
+.app-shell[data-visual="orbit"][data-shell="sysop"] .sidebar__principle {
+  border-color: #735398;
+}
+.app-shell[data-visual="orbit"][data-shell="sysop"] .ops-kpi:nth-child(3n+1) {
+  border-top: 2px solid #ae85ff;
+}
+.app-shell[data-visual="orbit"][data-shell="sysop"] .ops-kpi:nth-child(3n+2) {
+  border-top: 2px solid #5fcaf3;
+}
+.app-shell[data-visual="orbit"][data-shell="sysop"] .ops-kpi:nth-child(3n+3) {
+  border-top: 2px solid #4ce5af;
+}
+/* Status colors never rely solely on hue; existing text labels remain present. */
+.app-shell[data-visual="orbit"] .status-dot { background: var(--status-operational); }
+@media (max-width: 80rem) {
+  .app-shell[data-visual="orbit"] .topbar { flex-wrap: wrap; }
+  .app-shell[data-visual="orbit"] .topbar__quicklinks {
+    order: 4;
+    flex-basis: 100%;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    padding-bottom: 0.25rem;
+  }
+}
+@media (max-width: 60rem) {
+  .app-shell[data-visual="orbit"] .shell-grid { grid-template-columns: 1fr; }
+  .app-shell[data-visual="orbit"] .sidebar {
+    position: static;
+    height: auto;
+    border-right: 0;
+    border-bottom: 1px solid #294264;
+  }
+  .app-shell[data-visual="orbit"] .workspace-nav {
+    display: flex;
+    overflow-x: auto;
+    gap: 0.3rem;
+    padding-bottom: 0.4rem;
+  }
+  .app-shell[data-visual="orbit"] .workspace-nav li { flex: 0 0 auto; }
+  .app-shell[data-visual="orbit"] .workspace-nav a { min-width: 8rem; }
+  .app-shell[data-visual="orbit"] .sidebar__principle { display: none; }
+}
+@media (max-width: 38rem) {
+  .app-shell[data-visual="orbit"] .topbar { gap: 0.5rem; }
+  .app-shell[data-visual="orbit"] .main-content { padding: 0.85rem; }
+  .app-shell[data-visual="orbit"] .brand strong { font-size: 1.02rem; }
+  .app-shell[data-visual="orbit"] .topbar__status { font-size: 0.68rem; }
+  .app-shell[data-visual="orbit"] .hero-panel::after { display: none; }
+}
+html[data-icamp-contrast="high"] .app-shell[data-visual="orbit"] {
+  --bg: #000;
+  --surface: #081426;
+  --surface-soft: #0b1933;
+  --ink: #fff;
+  --muted: #fff;
+  --line: #fff;
+  --focus: #fff27b;
+  --brand: #e2b9ff;
+}
+html[data-icamp-contrast="high"] .app-shell[data-visual="orbit"]
+  :is(.topbar,.sidebar,.hero-panel,.content-panel,.ops-kpi) {
+    border-color: #fff;
+    background: #050d20;
+    color: #fff;
+  }
+@media (prefers-reduced-motion: reduce) {
+  .app-shell[data-visual="orbit"] *,
+  .app-shell[data-visual="orbit"] *::before,
+  .app-shell[data-visual="orbit"] *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}
