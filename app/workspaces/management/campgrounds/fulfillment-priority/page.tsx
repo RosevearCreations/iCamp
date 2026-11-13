@@ -59,6 +59,7 @@ import {
   recordOriginalDeviceReviewAction,
   recordCalibrationFollowupAction,
   recordIndependentDeviceSignatureAction,
+  admitOriginalDeviceWitnessAction,
   recordOwnerCalibrationClosureAction,
   captureOwnerDossierSnapshotAction,
   removePriorityViewAction,
@@ -882,7 +883,7 @@ export default async function FulfillmentPriorityPage({
         {ownerAdmin ? (
           <section className="content-panel" aria-labelledby="owner-dossier247">
             <SectionHeading
-              eyebrow="Build 247 · owner evidence custody"
+              eyebrow="Build 249 · owner evidence custody"
               title="Owner acceptance dossier continuity"
               id="owner-dossier247"
               helpTopic="campground.structure"
@@ -951,6 +952,99 @@ export default async function FulfillmentPriorityPage({
             ) : null}
           </section>
         ) : null}
+        <section className="content-panel" aria-labelledby="build249-witness">
+          <SectionHeading
+            eyebrow="Build 249 · independently witnessed source"
+            title="Original-device witness admission"
+            id="build249-witness"
+            helpTopic="campground.structure"
+          />
+          <p className={styles.explain}>
+            Only an independent supervisor may witness a freshly verified
+            original-device signature. The same reporter, prior field witness,
+            original reviewer or signature verifier cannot self-approve.
+            This records a source observation, not device owner acceptance,
+            a signed Master HEALTHY receipt or CONNECTED status.
+          </p>
+          {verificationEvidence?.verifiedSourcePackets.length ? (
+            <form
+              action={admitOriginalDeviceWitnessAction}
+              className={styles.ownerForm}
+            >
+              <input
+                type="hidden"
+                name="campgroundId"
+                value={selected.campgroundId}
+              />
+              <label>
+                Source-bound signature verification
+                <select name="signatureVerificationId" required>
+                  {verificationEvidence.verifiedSourcePackets
+                    .slice(0, 25)
+                    .map((item) => (
+                      <option key={item.id} value={item.id}>
+                        {item.dispatchId.slice(0, 8)} · {item.id.slice(0, 8)} ·{" "}
+                        {utc(item.verifiedAt)}
+                      </option>
+                    ))}
+                </select>
+              </label>
+              <label>
+                Independent witness outcome
+                <select
+                  name="originalWitnessDecision"
+                  defaultValue="discrepancy_hold"
+                  required
+                >
+                  <option value="discrepancy_hold">
+                    Discrepancy requires original-source review
+                  </option>
+                  <option value="source_observed_pending_external_authority">
+                    Source observed; external authority still HOLD
+                  </option>
+                </select>
+              </label>
+              <label>
+                Source-only witness explanation (12–300 characters)
+                <textarea
+                  name="originalWitnessExplanation"
+                  minLength={12}
+                  maxLength={300}
+                  rows={3}
+                  required
+                />
+              </label>
+              <button className="secondary-button" type="submit">
+                Record independent original-device witness
+              </button>
+            </form>
+          ) : (
+            <p role="status">
+              No independently verified original-device signature is in the
+              campground source ledger. Admission remains HOLD.
+            </p>
+          )}
+          {params.result?.startsWith("original-witness-") ? (
+            <p
+              role={params.result.endsWith("-error") ? "alert" : "status"}
+              className={
+                params.result.endsWith("-error") ? styles.warning : undefined
+              }
+            >
+              {params.result.endsWith("-error")
+                ? "Witness not admitted. Verify signer, actor separation, fresh source and permissions."
+                : "Source-only independent witness recorded; owner and Master acceptance remain HOLD."}
+            </p>
+          ) : null}
+          {ownerAdmin ? (
+            <p className={styles.explain}>
+              The private owner acceptance evidence export now recomputes
+              historical dossier digests, compares fresh source counts and
+              reports independent signed evidence status for all three Masters.
+              Missing or untrusted proofs remain HOLD.
+            </p>
+          ) : null}
+        </section>
         <section
           className="content-panel"
           aria-labelledby="build246-calibration"
