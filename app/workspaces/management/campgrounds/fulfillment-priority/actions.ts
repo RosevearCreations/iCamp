@@ -31,6 +31,7 @@ import {
   listVerificationContinuityEvidence,
 } from "@/lib/booking-charges/fulfillment-verification-postgres.mjs";
 import { buildOwnerAcceptanceEvidenceExport } from "@/lib/booking-charges/fulfillment-attestation-core.mjs";
+import { admitOriginalDeviceWitness } from "@/lib/booking-charges/fulfillment-build249-postgres.mjs";
 import { evaluateForecastCheckpoint } from "@/lib/booking-charges/fulfillment-witness-core.mjs";
 import { recordSupervisorContinuityReview } from "@/lib/booking-charges/fulfillment-continuity-postgres.mjs";
 import { recordFieldClosureEvidence } from "@/lib/booking-charges/fulfillment-performance-postgres.mjs";
@@ -392,6 +393,25 @@ export async function recordIndependentDeviceSignatureAction(form: FormData) {
     result = "signature-source-recorded";
   } catch {
     // No unpinned key, stale source or reused challenge may pass.
+  }
+  finish(campgroundId, result);
+}
+
+export async function admitOriginalDeviceWitnessAction(form: FormData) {
+  const { campgroundId, session } = await supervisor(form);
+  let result = "original-witness-error";
+  try {
+    await admitOriginalDeviceWitness({
+      actorUserId: session.user.id,
+      actorSessionId: session.sessionId,
+      campgroundId,
+      verificationId: field(form, "signatureVerificationId"),
+      decision: field(form, "originalWitnessDecision"),
+      explanation: field(form, "originalWitnessExplanation"),
+    });
+    result = "original-witness-recorded";
+  } catch {
+    // Separate original-source witness, latest signature and SQL custody gate.
   }
   finish(campgroundId, result);
 }
