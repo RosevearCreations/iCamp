@@ -86,9 +86,10 @@ export default async function ThemeManagementPage() {
             ))}
           </div>
           <p className="ops-inline-note">
-            Both visual themes are platform-level and do not belong to Camp Rosevear.
-            Standard / Meadow and its photo asset remain the default; the Orbit
-            Command look can be selected without affecting tenant data.
+            Both visual themes are platform-level and do not belong to Camp
+            Rosevear. Standard / Meadow and its photo asset remain the default;
+            the Orbit Command look can be selected without affecting tenant
+            data.
           </p>
           <p className="ops-inline-note">
             Status colours are semantic: operational{" "}

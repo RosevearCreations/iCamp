@@ -15,11 +15,13 @@ export interface SourceHealthyTrust {
   independentlyAuthenticatedSpkiFingerprint: string;
 }
 export function sha256(value: string): string;
-export function sourceHealthyMessage(receipt: OriginalSourceHealthyReceipt): string;
+export function sourceHealthyMessage(
+  receipt: OriginalSourceHealthyReceipt,
+): string;
 export function verifySourceHealthyCeremony(input: {
   campgroundId: string;
-  sourceRevision: string;
-  dossierDigestSha256: string;
+  sourceRevision: string | null;
+  dossierDigestSha256: string | undefined;
   receipt: OriginalSourceHealthyReceipt | null;
   trust: SourceHealthyTrust | null;
   custodianEnrolled: boolean;
@@ -35,8 +37,11 @@ export function verifySourceHealthyCeremony(input: {
 };
 export function evaluateBuild250OwnerGate(input: {
   campgroundId: string;
-  sourceRevision: string;
-  dossierIntegrity: { status: string; currentSourceCountsMatch?: boolean } | null;
+  sourceRevision: string | null;
+  dossierIntegrity: {
+    status: string;
+    currentSourceCountsMatch?: boolean;
+  } | null;
   dossierSnapshots: Array<{
     id: string;
     campgroundId: string;

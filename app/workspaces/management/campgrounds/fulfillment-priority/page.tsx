@@ -1063,7 +1063,10 @@ export default async function FulfillmentPriorityPage({
           ) : null}
         </section>
         {ownerAdmin ? (
-          <section className="content-panel" aria-labelledby="build250-ceremony">
+          <section
+            className="content-panel"
+            aria-labelledby="build250-ceremony"
+          >
             <SectionHeading
               eyebrow="Build 250 · source-only guarded owner decision"
               title="Supervised original-device and three-Master ceremony"
@@ -1072,9 +1075,9 @@ export default async function FulfillmentPriorityPage({
             />
             <p className={styles.explain}>
               A real independent source signer, freshly witnessed original
-              device, revalidated owner dossier and three separate signed
-              Master receipts are required to request supervised review.
-              Review does not activate CONNECTED or approve production access.
+              device, revalidated owner dossier and three separate signed Master
+              receipts are required to request supervised review. Review does
+              not activate CONNECTED or approve production access.
             </p>
             <div className={styles.metrics}>
               <div>
@@ -1096,10 +1099,13 @@ export default async function FulfillmentPriorityPage({
             </div>
             <p className={styles.explain}>
               Previous owner source decisions recorded:{" "}
-              {ownerCeremonyHistory?.decisions.length ?? 0}.
-              Operational owner acceptance and Master CONNECTED remain HOLD.
+              {ownerCeremonyHistory?.decisions.length ?? 0}. Operational owner
+              acceptance and Master CONNECTED remain HOLD.
             </p>
-            <form action={recordOwnerSupervisedCeremonyAction} className={styles.ownerForm}>
+            <form
+              action={recordOwnerSupervisedCeremonyAction}
+              className={styles.ownerForm}
+            >
               <input
                 type="hidden"
                 name="campgroundId"
@@ -1134,7 +1140,9 @@ export default async function FulfillmentPriorityPage({
             {params.result?.startsWith("ceremony-") ? (
               <p
                 role={params.result.endsWith("-error") ? "alert" : "status"}
-                className={params.result.endsWith("-error") ? styles.warning : undefined}
+                className={
+                  params.result.endsWith("-error") ? styles.warning : undefined
+                }
               >
                 {params.result.endsWith("-error")
                   ? "Owner decision unavailable: check source custody, migration and current owner authority."

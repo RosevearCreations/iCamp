@@ -6,10 +6,9 @@ type VisualTheme = "standard" | "orbit";
 const preferenceKey = "icamp.visualTheme.v1";
 
 function applyVisualTheme(value: VisualTheme) {
-  document.querySelector<HTMLElement>(".app-shell")?.setAttribute(
-    "data-visual",
-    value,
-  );
+  document
+    .querySelector<HTMLElement>(".app-shell")
+    ?.setAttribute("data-visual", value);
   try {
     window.localStorage.setItem(preferenceKey, value);
   } catch {

@@ -115,9 +115,18 @@ test("three Master signatures alone never authorize owner review", () => {
       sourceRevision,
       connected: false,
       evidence: [
-        { plane: "ai-data-platform", status: "SIGNED_RECEIPT_OBSERVED_NOT_OWNER_ACCEPTED" },
-        { plane: "rosevear-comms-hub", status: "SIGNED_RECEIPT_OBSERVED_NOT_OWNER_ACCEPTED" },
-        { plane: "rosevear-ai-hub", status: "SIGNED_RECEIPT_OBSERVED_NOT_OWNER_ACCEPTED" },
+        {
+          plane: "ai-data-platform",
+          status: "SIGNED_RECEIPT_OBSERVED_NOT_OWNER_ACCEPTED",
+        },
+        {
+          plane: "rosevear-comms-hub",
+          status: "SIGNED_RECEIPT_OBSERVED_NOT_OWNER_ACCEPTED",
+        },
+        {
+          plane: "rosevear-ai-hub",
+          status: "SIGNED_RECEIPT_OBSERVED_NOT_OWNER_ACCEPTED",
+        },
       ],
     },
     originalDeviceWitnesses: [
