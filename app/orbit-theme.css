@@ -23,7 +23,11 @@
   isolation: isolate;
   min-height: 100vh;
   background:
-    radial-gradient(ellipse at 88% 0%, rgb(114 63 200 / 13%), transparent 35rem),
+    radial-gradient(
+      ellipse at 88% 0%,
+      rgb(114 63 200 / 13%),
+      transparent 35rem
+    ),
     radial-gradient(ellipse at 4% 38%, rgb(15 120 177 / 9%), transparent 44rem),
     #050c19;
   color: var(--ink);
@@ -41,7 +45,9 @@
   box-shadow: 0 8px 32px rgb(0 0 0 / 22%);
   backdrop-filter: blur(16px);
 }
-.app-shell[data-visual="orbit"] .brand { color: #f7f7ff; }
+.app-shell[data-visual="orbit"] .brand {
+  color: #f7f7ff;
+}
 .app-shell[data-visual="orbit"] .brand__mark {
   width: 2.8rem;
   height: 2.8rem;
@@ -49,7 +55,9 @@
   border-radius: 0.82rem;
   background: linear-gradient(140deg, #412379 8%, #152a5c 72%, #075b77);
   color: #ffffff;
-  box-shadow: 0 0 0 4px rgb(155 115 255 / 9%), 0 0 20px rgb(141 95 250 / 22%);
+  box-shadow:
+    0 0 0 4px rgb(155 115 255 / 9%),
+    0 0 20px rgb(141 95 250 / 22%);
   font-size: 0.92rem;
 }
 .app-shell[data-visual="orbit"] .brand strong {
@@ -78,7 +86,9 @@
   letter-spacing: 0.01em;
   white-space: nowrap;
 }
-.app-shell[data-visual="orbit"] .topbar__quicklinks a:is(:hover,:focus-visible) {
+.app-shell[data-visual="orbit"]
+  .topbar__quicklinks
+  a:is(:hover, :focus-visible) {
   border-color: #644a99;
   background: #241c48;
   color: #ffffff;
@@ -157,13 +167,25 @@
   min-width: 0;
   padding: clamp(1.15rem, 2.4vw, 2.25rem);
 }
-.app-shell[data-visual="orbit"] .page-stack { gap: 1.05rem; }
-.app-shell[data-visual="orbit"] :is(.hero-panel,.content-panel,.ops-kpi,.workspace-card,.health-card,.camp-command__kpi) {
+.app-shell[data-visual="orbit"] .page-stack {
+  gap: 1.05rem;
+}
+.app-shell[data-visual="orbit"]
+  :is(
+    .hero-panel,
+    .content-panel,
+    .ops-kpi,
+    .workspace-card,
+    .health-card,
+    .camp-command__kpi
+  ) {
   border: 1px solid #2b4266;
   border-radius: 0.86rem;
   background: #0c1b32;
   color: #eaf1ff;
-  box-shadow: 0 13px 38px rgb(0 0 0 / 14%), inset 0 1px rgb(255 255 255 / 4%);
+  box-shadow:
+    0 13px 38px rgb(0 0 0 / 14%),
+    inset 0 1px rgb(255 255 255 / 4%);
 }
 .app-shell[data-visual="orbit"] .hero-panel,
 .app-shell[data-visual="orbit"] .hero-panel.meadow-hero {
@@ -172,7 +194,12 @@
   padding: clamp(1.35rem, 3vw, 2.55rem);
   border-color: #493e84;
   background:
-    linear-gradient(105deg, rgb(17 27 57 / 96%) 24%, rgb(29 21 70 / 87%) 68%, rgb(9 53 81 / 82%)),
+    linear-gradient(
+      105deg,
+      rgb(17 27 57 / 96%) 24%,
+      rgb(29 21 70 / 87%) 68%,
+      rgb(9 53 81 / 82%)
+    ),
     #0e1b35;
 }
 .app-shell[data-visual="orbit"] .hero-panel::after {
@@ -184,7 +211,9 @@
   aspect-ratio: 1;
   border: 1px solid rgb(159 111 255 / 15%);
   border-radius: 50%;
-  box-shadow: 0 0 0 4.5rem rgb(121 89 231 / 4%), 0 0 0 9rem rgb(65 189 248 / 2%);
+  box-shadow:
+    0 0 0 4.5rem rgb(121 89 231 / 4%),
+    0 0 0 9rem rgb(65 189 248 / 2%);
   pointer-events: none;
 }
 .app-shell[data-visual="orbit"] .hero-panel h1 {
@@ -213,46 +242,54 @@
   color: #f4f2ff;
   font-size: clamp(1.15rem, 2.1vw, 1.75rem);
 }
-.app-shell[data-visual="orbit"] :is(.content-panel p,.workspace-card p,.health-card span,.ops-kpi small) {
+.app-shell[data-visual="orbit"]
+  :is(.content-panel p, .workspace-card p, .health-card span, .ops-kpi small) {
   color: #becde3;
 }
-.app-shell[data-visual="orbit"] :is(.ops-kpi,.camp-command__kpi,.health-card) {
+.app-shell[data-visual="orbit"]
+  :is(.ops-kpi, .camp-command__kpi, .health-card) {
   background: linear-gradient(145deg, #102443, #0b192f);
   border-color: #31486b;
 }
-.app-shell[data-visual="orbit"] :is(.ops-kpi,.camp-command__kpi) strong {
+.app-shell[data-visual="orbit"] :is(.ops-kpi, .camp-command__kpi) strong {
   color: #f6f6ff;
   font-variant-numeric: tabular-nums;
 }
 .app-shell[data-visual="orbit"] .workspace-card {
   background: #11213a;
 }
-.app-shell[data-visual="orbit"] .workspace-card strong { color: #e4ceff; }
+.app-shell[data-visual="orbit"] .workspace-card strong {
+  color: #e4ceff;
+}
 .app-shell[data-visual="orbit"] .workspace-card:hover {
   border-color: #8e68e0;
   box-shadow: 0 12px 30px rgb(73 34 154 / 20%);
 }
-.app-shell[data-visual="orbit"] :is(.primary-button,.primary-link,.refresh-button) {
+.app-shell[data-visual="orbit"]
+  :is(.primary-button, .primary-link, .refresh-button) {
   border: 1px solid #b18eff;
   border-radius: 0.56rem;
   background: linear-gradient(115deg, #744ac9, #5549aa);
   color: #ffffff;
   box-shadow: 0 6px 18px rgb(89 58 194 / 17%);
 }
-.app-shell[data-visual="orbit"] :is(.secondary-button,.secondary-link) {
+.app-shell[data-visual="orbit"] :is(.secondary-button, .secondary-link) {
   border: 1px solid #5e6eaf;
   border-radius: 0.56rem;
   background: #172548;
   color: #f2edff;
 }
-.app-shell[data-visual="orbit"] :is(input,select,textarea) {
+.app-shell[data-visual="orbit"] :is(input, select, textarea) {
   border-color: #456088;
   border-radius: 0.57rem;
   background: #101f38;
   color: #f1f6ff;
 }
-.app-shell[data-visual="orbit"] :is(input,select,textarea)::placeholder { color: #9faec9; }
-.app-shell[data-visual="orbit"] :is(a,button,input,select,textarea,summary):focus-visible {
+.app-shell[data-visual="orbit"] :is(input, select, textarea)::placeholder {
+  color: #9faec9;
+}
+.app-shell[data-visual="orbit"]
+  :is(a, button, input, select, textarea, summary):focus-visible {
   outline: 3px solid #6fe5ff;
   outline-offset: 3px;
 }
@@ -261,9 +298,15 @@
   background: #081426;
   color: #afc0d9;
 }
-.app-shell[data-visual="orbit"] .site-footer a { color: #d8c1ff; }
-.app-shell[data-visual="orbit"] .breadcrumbs { color: #b2c7df; }
-.app-shell[data-visual="orbit"] .breadcrumbs a { color: #d7baff; }
+.app-shell[data-visual="orbit"] .site-footer a {
+  color: #d8c1ff;
+}
+.app-shell[data-visual="orbit"] .breadcrumbs {
+  color: #b2c7df;
+}
+.app-shell[data-visual="orbit"] .breadcrumbs a {
+  color: #d7baff;
+}
 .app-shell[data-visual="orbit"] .build-chip {
   border: 1px solid #57447e;
   border-radius: 0.45rem;
@@ -305,19 +348,23 @@
 .app-shell[data-visual="orbit"][data-shell="sysop"] .sidebar__principle {
   border-color: #735398;
 }
-.app-shell[data-visual="orbit"][data-shell="sysop"] .ops-kpi:nth-child(3n+1) {
+.app-shell[data-visual="orbit"][data-shell="sysop"] .ops-kpi:nth-child(3n + 1) {
   border-top: 2px solid #ae85ff;
 }
-.app-shell[data-visual="orbit"][data-shell="sysop"] .ops-kpi:nth-child(3n+2) {
+.app-shell[data-visual="orbit"][data-shell="sysop"] .ops-kpi:nth-child(3n + 2) {
   border-top: 2px solid #5fcaf3;
 }
-.app-shell[data-visual="orbit"][data-shell="sysop"] .ops-kpi:nth-child(3n+3) {
+.app-shell[data-visual="orbit"][data-shell="sysop"] .ops-kpi:nth-child(3n + 3) {
   border-top: 2px solid #4ce5af;
 }
 /* Status colors never rely solely on hue; existing text labels remain present. */
-.app-shell[data-visual="orbit"] .status-dot { background: var(--status-operational); }
+.app-shell[data-visual="orbit"] .status-dot {
+  background: var(--status-operational);
+}
 @media (max-width: 80rem) {
-  .app-shell[data-visual="orbit"] .topbar { flex-wrap: wrap; }
+  .app-shell[data-visual="orbit"] .topbar {
+    flex-wrap: wrap;
+  }
   .app-shell[data-visual="orbit"] .topbar__quicklinks {
     order: 4;
     flex-basis: 100%;
@@ -327,7 +374,9 @@
   }
 }
 @media (max-width: 60rem) {
-  .app-shell[data-visual="orbit"] .shell-grid { grid-template-columns: 1fr; }
+  .app-shell[data-visual="orbit"] .shell-grid {
+    grid-template-columns: 1fr;
+  }
   .app-shell[data-visual="orbit"] .sidebar {
     position: static;
     height: auto;
@@ -340,16 +389,32 @@
     gap: 0.3rem;
     padding-bottom: 0.4rem;
   }
-  .app-shell[data-visual="orbit"] .workspace-nav li { flex: 0 0 auto; }
-  .app-shell[data-visual="orbit"] .workspace-nav a { min-width: 8rem; }
-  .app-shell[data-visual="orbit"] .sidebar__principle { display: none; }
+  .app-shell[data-visual="orbit"] .workspace-nav li {
+    flex: 0 0 auto;
+  }
+  .app-shell[data-visual="orbit"] .workspace-nav a {
+    min-width: 8rem;
+  }
+  .app-shell[data-visual="orbit"] .sidebar__principle {
+    display: none;
+  }
 }
 @media (max-width: 38rem) {
-  .app-shell[data-visual="orbit"] .topbar { gap: 0.5rem; }
-  .app-shell[data-visual="orbit"] .main-content { padding: 0.85rem; }
-  .app-shell[data-visual="orbit"] .brand strong { font-size: 1.02rem; }
-  .app-shell[data-visual="orbit"] .topbar__status { font-size: 0.68rem; }
-  .app-shell[data-visual="orbit"] .hero-panel::after { display: none; }
+  .app-shell[data-visual="orbit"] .topbar {
+    gap: 0.5rem;
+  }
+  .app-shell[data-visual="orbit"] .main-content {
+    padding: 0.85rem;
+  }
+  .app-shell[data-visual="orbit"] .brand strong {
+    font-size: 1.02rem;
+  }
+  .app-shell[data-visual="orbit"] .topbar__status {
+    font-size: 0.68rem;
+  }
+  .app-shell[data-visual="orbit"] .hero-panel::after {
+    display: none;
+  }
 }
 html[data-icamp-contrast="high"] .app-shell[data-visual="orbit"] {
   --bg: #000;
@@ -361,12 +426,13 @@ html[data-icamp-contrast="high"] .app-shell[data-visual="orbit"] {
   --focus: #fff27b;
   --brand: #e2b9ff;
 }
-html[data-icamp-contrast="high"] .app-shell[data-visual="orbit"]
-  :is(.topbar,.sidebar,.hero-panel,.content-panel,.ops-kpi) {
-    border-color: #fff;
-    background: #050d20;
-    color: #fff;
-  }
+html[data-icamp-contrast="high"]
+  .app-shell[data-visual="orbit"]
+  :is(.topbar, .sidebar, .hero-panel, .content-panel, .ops-kpi) {
+  border-color: #fff;
+  background: #050d20;
+  color: #fff;
+}
 @media (prefers-reduced-motion: reduce) {
   .app-shell[data-visual="orbit"] *,
   .app-shell[data-visual="orbit"] *::before,
