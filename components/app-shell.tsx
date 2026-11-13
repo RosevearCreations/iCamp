@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import { EnvironmentBanner } from "@/components/environment-banner";
 import { StandardAccessibilityControls } from "@/components/standard-accessibility-controls";
+import { VisualThemeSelector } from "@/components/visual-theme-selector";
 import { workspaces } from "@/lib/workspaces";
 
 const navGroups = [
@@ -29,7 +30,7 @@ export function AppShell({
   children: React.ReactNode;
 }>) {
   return (
-    <div className="app-shell" data-theme="standard" data-visual="orbit">
+    <div className="app-shell" data-theme="standard" data-visual="standard">
       <a className="skip-link" href="#main-content">
         Skip to main content
       </a>
@@ -43,7 +44,7 @@ export function AppShell({
           </span>
           <span>
             <strong>iCamp</strong>
-            <small>Campground operations · Orbit Command</small>
+            <small>Campground operations · Standard / Meadow</small>
           </span>
         </Link>
 
@@ -58,12 +59,7 @@ export function AppShell({
         </nav>
 
         <StandardAccessibilityControls />
-        <div className="topbar__status" aria-label="Theme status">
-          <span className="theme-marker" aria-hidden="true">
-            ✦
-          </span>
-          Orbit Command
-        </div>
+        <VisualThemeSelector />
       </header>
 
       <div className="shell-grid">
@@ -135,8 +131,8 @@ export function AppShell({
           </nav>
 
           <div className="sidebar__principle">
-            <strong>✦ Orbit Command</strong>
-            <span>Midnight / violet / cyan · Build 247</span>
+            <strong>✦ iCamp visual themes</strong>
+            <span>Standard / Meadow and Orbit Command · Build 250</span>
             <span className="sidebar__principle-subtle">
               Future themes will use the same status meanings and accessible
               layouts.

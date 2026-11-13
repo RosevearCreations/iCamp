@@ -32,6 +32,7 @@ import {
 } from "@/lib/booking-charges/fulfillment-verification-postgres.mjs";
 import { buildOwnerAcceptanceEvidenceExport } from "@/lib/booking-charges/fulfillment-attestation-core.mjs";
 import { admitOriginalDeviceWitness } from "@/lib/booking-charges/fulfillment-build249-postgres.mjs";
+import { recordOwnerSupervisedDecision } from "@/lib/booking-charges/fulfillment-build250-postgres.mjs";
 import { evaluateForecastCheckpoint } from "@/lib/booking-charges/fulfillment-witness-core.mjs";
 import { recordSupervisorContinuityReview } from "@/lib/booking-charges/fulfillment-continuity-postgres.mjs";
 import { recordFieldClosureEvidence } from "@/lib/booking-charges/fulfillment-performance-postgres.mjs";
@@ -412,6 +413,24 @@ export async function admitOriginalDeviceWitnessAction(form: FormData) {
     result = "original-witness-recorded";
   } catch {
     // Separate original-source witness, latest signature and SQL custody gate.
+  }
+  finish(campgroundId, result);
+}
+
+export async function recordOwnerSupervisedCeremonyAction(form: FormData) {
+  const { campgroundId, session } = await supervisor(form);
+  let result = "ceremony-error";
+  try {
+    await recordOwnerSupervisedDecision({
+      actorUserId: session.user.id,
+      actorSessionId: session.sessionId,
+      campgroundId,
+      decision: field(form, "ceremonyDecision"),
+      explanation: field(form, "ceremonyExplanation"),
+    });
+    result = "ceremony-recorded";
+  } catch {
+    // Signed source, separate three-Master proofs and owner RLS fail closed.
   }
   finish(campgroundId, result);
 }
