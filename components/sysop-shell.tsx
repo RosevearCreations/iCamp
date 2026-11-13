@@ -8,7 +8,12 @@ export function SysopShell({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <div className="app-shell" data-theme="standard" data-shell="sysop">
+    <div
+      className="app-shell"
+      data-theme="standard"
+      data-visual="orbit"
+      data-shell="sysop"
+    >
       <a className="skip-link" href="#main-content">
         Skip to main content
       </a>
@@ -20,7 +25,7 @@ export function SysopShell({
           </span>
           <span>
             <strong>iCamp Sysop</strong>
-            <small>Rosevear Creations · Master operations</small>
+            <small>Platform oversight · Orbit Command</small>
           </span>
         </Link>
         <nav
@@ -33,10 +38,13 @@ export function SysopShell({
           <Link href="/integration/comms-hub">Elevated Comms guidance</Link>
         </nav>
         <StandardAccessibilityControls />
+        <div className="topbar__status" aria-label="Shell mode">
+          <span className="orbit-command-mark">Read-only sysop</span>
+        </div>
       </header>
       <div className="shell-grid">
         <aside className="sidebar" aria-label="Platform Sysop navigation">
-          <p className="sidebar__label">Master operator</p>
+          <p className="sidebar__label">Platform control plane</p>
           <nav>
             <div className="sidebar__group">
               <p className="sidebar__group-label">
@@ -61,8 +69,8 @@ export function SysopShell({
             </div>
           </nav>
           <div className="sidebar__principle">
-            <strong>Separate access boundaries</strong>
-            <span>No tenant guest records, reservations or payments here.</span>
+            <strong>✦ Orbit Command · Build 247</strong>
+            <span>Platform intelligence only · no tenant records.</span>
             <span>Campground work requires a separate active assignment.</span>
           </div>
         </aside>

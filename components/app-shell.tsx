@@ -29,7 +29,7 @@ export function AppShell({
   children: React.ReactNode;
 }>) {
   return (
-    <div className="app-shell" data-theme="standard">
+    <div className="app-shell" data-theme="standard" data-visual="orbit">
       <a className="skip-link" href="#main-content">
         Skip to main content
       </a>
@@ -43,7 +43,7 @@ export function AppShell({
           </span>
           <span>
             <strong>iCamp</strong>
-            <small>Campgrounds, connected · Standard</small>
+            <small>Campground operations · Orbit Command</small>
           </span>
         </Link>
 
@@ -62,7 +62,7 @@ export function AppShell({
           <span className="theme-marker" aria-hidden="true">
             ✦
           </span>
-          Standard / Meadow
+          Orbit Command
         </div>
       </header>
 
@@ -135,8 +135,8 @@ export function AppShell({
           </nav>
 
           <div className="sidebar__principle">
-            <strong>🌱 Standard theme</strong>
-            <span>Meadow & evergreen · Build 164</span>
+            <strong>✦ Orbit Command</strong>
+            <span>Midnight / violet / cyan · Build 247</span>
             <span className="sidebar__principle-subtle">
               Future themes will use the same status meanings and accessible
               layouts.

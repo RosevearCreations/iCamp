@@ -6,6 +6,7 @@ import "./globals.css";
 import "./standard-theme.css";
 import "./command194.css";
 import "./forecast195.css";
+import "./orbit-theme.css";
 
 export const metadata: Metadata = {
   applicationName: "iCamp",
@@ -18,8 +19,8 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  colorScheme: "light",
-  themeColor: "#0b2420",
+  colorScheme: "dark",
+  themeColor: "#071225",
   width: "device-width",
   initialScale: 1,
 };
