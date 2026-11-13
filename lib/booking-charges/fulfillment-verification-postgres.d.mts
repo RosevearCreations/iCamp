@@ -26,11 +26,5 @@ export function recordOwnerCalibrationClosure(input:{
 }):Promise<{id:string}>;
 export function captureOwnerDossierContinuity(input:{
   actorUserId:string;actorSessionId?:string|null;campgroundId:string;
-  evidenceSummary:{
-    campgroundId:string;ownerProductionAcceptance:string;
-    masterConnection:string;schema:string;trust:string;
-    witnessStatementCount:number;originalDeviceReviews:unknown[];
-    forecastCalibration:unknown[];ownerAuditDecisions:unknown[];
-    completeness:string;
-  };
+  evidenceSummary: Record<string, unknown>;
 }):Promise<{id:string;digestSha256:string}>;
