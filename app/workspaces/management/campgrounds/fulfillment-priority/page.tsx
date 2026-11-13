@@ -41,6 +41,10 @@ import { listFieldClosureEvidence } from "@/lib/booking-charges/fulfillment-perf
 import { listWitnessAuditEvidence } from "@/lib/booking-charges/fulfillment-witness-postgres.mjs";
 import { listAttestationCalibrationEvidence } from "@/lib/booking-charges/fulfillment-attestation-postgres.mjs";
 import { classifyCalibrationException } from "@/lib/booking-charges/fulfillment-attestation-core.mjs";
+import {
+  devicePinStatus,
+  listVerificationContinuityEvidence,
+} from "@/lib/booking-charges/fulfillment-verification-postgres.mjs";
 import { evaluateForecastCheckpoint } from "@/lib/booking-charges/fulfillment-witness-core.mjs";
 
 import {
@@ -54,6 +58,9 @@ import {
   recordOwnerShiftAuditAction,
   recordOriginalDeviceReviewAction,
   recordCalibrationFollowupAction,
+  recordIndependentDeviceSignatureAction,
+  recordOwnerCalibrationClosureAction,
+  captureOwnerDossierSnapshotAction,
   removePriorityViewAction,
   savePriorityViewAction,
 } from "./actions";
@@ -135,6 +142,7 @@ export default async function FulfillmentPriorityPage({
     closureEvidence,
     witnessEvidence,
     attestationEvidence,
+    verificationEvidence,
   ] = await Promise.all([
     listCampgroundDispatchEvidence({
       userId: session.user.id,
@@ -167,6 +175,11 @@ export default async function FulfillmentPriorityPage({
     listAttestationCalibrationEvidence({
       userId: session.user.id,
       campgroundId: selected.campgroundId,
+    }).catch(() => null),
+    listVerificationContinuityEvidence({
+      userId: session.user.id,
+      campgroundId: selected.campgroundId,
+      owner: ownerAdmin,
     }).catch(() => null),
   ]);
   const resolvedHandoffs = new Set(
@@ -233,6 +246,21 @@ export default async function FulfillmentPriorityPage({
   for (const row of attestationEvidence?.calibrations ?? [])
     if (!latestCalibration.has(row.checkpointId))
       latestCalibration.set(row.checkpointId, row);
+  const latestVerifiedDevice = new Map<
+    string,
+    NonNullable<typeof verificationEvidence>["verifiedSourcePackets"][number]
+  >();
+  for (const item of verificationEvidence?.verifiedSourcePackets ?? [])
+    if (!latestVerifiedDevice.has(item.dispatchId))
+      latestVerifiedDevice.set(item.dispatchId, item);
+  const latestSourceClosure = new Map<
+    string,
+    NonNullable<typeof verificationEvidence>["calibrationClosures"][number]
+  >();
+  for (const item of verificationEvidence?.calibrationClosures ?? [])
+    if (!latestSourceClosure.has(item.checkpointId))
+      latestSourceClosure.set(item.checkpointId, item);
+  const pinState = devicePinStatus();
   const now = new Date().toISOString();
   const trend = shiftEvidence
     ? buildRecoveryTrendAnalytics({
@@ -263,6 +291,7 @@ export default async function FulfillmentPriorityPage({
         fieldWitness: latestWitnesses.get(entry.dispatch.id) ?? null,
         originalDeviceReview:
           latestOriginalDevice.get(entry.dispatch.id) ?? null,
+        signedPacket: latestVerifiedDevice.get(entry.dispatch.id) ?? null,
         priority: classifyFulfillmentPriority({
           dispatch: entry.dispatch,
           classification: entry.classification,
@@ -308,7 +337,8 @@ export default async function FulfillmentPriorityPage({
     Boolean(shiftEvidence?.truncated) ||
     Boolean(closureEvidence?.truncated) ||
     Boolean(witnessEvidence?.truncated) ||
-    Boolean(attestationEvidence?.truncated);
+    Boolean(attestationEvidence?.truncated) ||
+    Boolean(verificationEvidence?.truncated);
 
   return (
     <AppShell>
@@ -325,7 +355,7 @@ export default async function FulfillmentPriorityPage({
           <span>Supervisor priority</span>
         </nav>
         <section className="hero-panel meadow-hero">
-          <p className="eyebrow">Build 246 · Campground supervisors only</p>
+          <p className="eyebrow">Build 247 · Campground supervisors · Orbit Command</p>
           <h1>Fulfillment exception priority and aging</h1>
           <p className="hero-panel__lead">
             Identify missed assignment targets, requests for help and follow-up
@@ -847,6 +877,63 @@ export default async function FulfillmentPriorityPage({
           </section>
         ) : null}
 
+        {ownerAdmin ? (
+          <section className="content-panel" aria-labelledby="owner-dossier247">
+            <SectionHeading
+              eyebrow="Build 247 · owner evidence custody"
+              title="Owner acceptance dossier continuity"
+              id="owner-dossier247"
+              helpTopic="campground.structure"
+            />
+            <p className={styles.explain}>
+              Preserve a timestamped, hash-linked summary of the private source
+              dossier. No guest record, worker identity, device secret, or raw
+              signed payload is placed in the chain. A snapshot is not an owner
+              acceptance signature or a Master receipt.
+            </p>
+            <div className={styles.metrics} aria-label="Dossier continuity evidence">
+              <div>
+                <strong>{verificationEvidence?.dossierSnapshots.length ?? 0}</strong>
+                <span>Recorded source snapshots (capped at 100)</span>
+              </div>
+              <div>
+                <strong>{verificationEvidence?.calibrationClosures.length ?? 0}</strong>
+                <span>Owner source closure decisions</span>
+              </div>
+              <div>
+                <strong>HOLD</strong>
+                <span>Independent owner acceptance</span>
+              </div>
+            </div>
+            {verificationEvidence?.dossierSnapshots.slice(0, 4).map((item) => (
+              <p key={item.id} className={styles.explain}>
+                {utc(item.recordedAt)} · {item.digestSha256.slice(0, 16)}…
+                · {item.completeness} · {item.sourceRevision.slice(0, 12)}
+              </p>
+            ))}
+            <form action={captureOwnerDossierSnapshotAction}>
+              <input type="hidden" name="campgroundId" value={selected.campgroundId} />
+              <button type="submit" className="secondary-button"
+                disabled={!verificationEvidence || truncated}>
+                Capture new owner source dossier snapshot
+              </button>
+            </form>
+            {!verificationEvidence || truncated ? (
+              <p role="alert" className={styles.warning}>
+                Snapshot is unavailable until Build 247 source ledger and complete
+                uncapped evidence are present in the campground database.
+              </p>
+            ) : null}
+            {params.result?.startsWith("dossier-") ||
+            params.result?.startsWith("closure-") ? (
+              <p role={params.result.endsWith("-error") ? "alert" : "status"}>
+                {params.result.endsWith("-error")
+                  ? "No owner source event was saved. Review permissions and fresh evidence."
+                  : "Append-only owner source event recorded. Operational acceptance remains HOLD."}
+              </p>
+            ) : null}
+          </section>
+        ) : null}
         <section
           className="content-panel"
           aria-labelledby="build246-calibration"
@@ -897,6 +984,7 @@ export default async function FulfillmentPriorityPage({
               : null;
             const diagnostic = classifyCalibrationException(accuracy);
             const latest = latestCalibration.get(checkpoint.id);
+            const lastClosure = latestSourceClosure.get(checkpoint.id);
             return (
               <article className={styles.ownership} key={checkpoint.id}>
                 <h4>
@@ -912,6 +1000,39 @@ export default async function FulfillmentPriorityPage({
                       latest.decision.replaceAll("_", " ")
                     : ""}
                 </p>
+                {lastClosure ? (
+                  <p className={styles.explain}>
+                    Owner source decision: {lastClosure.decision.replaceAll("_", " ")}
+                    · {utc(lastClosure.reviewedAt)}
+                  </p>
+                ) : null}
+                {ownerAdmin && latest && accuracy?.evidenceState === "OBSERVED_SOURCE_ONLY" &&
+                verificationEvidence && !truncated ? (
+                  <form action={recordOwnerCalibrationClosureAction}
+                    className={styles.ownerForm}>
+                    <input type="hidden" name="campgroundId" value={selected.campgroundId} />
+                    <input type="hidden" name="checkpointId" value={checkpoint.id} />
+                    <input type="hidden" name="followupId" value={latest.id} />
+                    <input type="hidden" name="previousClosureId" value={lastClosure?.id ?? ""} />
+                    <label>
+                      Owner calibration source decision
+                      <select name="calibrationClosureDecision" defaultValue="recheck_required">
+                        <option value="recheck_required">Recheck source variance</option>
+                        <option value="source_reconciled_unverified">
+                          Source variance reviewed (not model-certified)
+                        </option>
+                      </select>
+                    </label>
+                    <label>
+                      Reason and evidence (12–300 characters)
+                      <input name="calibrationClosureExplanation" minLength={12}
+                        maxLength={300} required />
+                    </label>
+                    <button type="submit" className="secondary-button">
+                      Record owner source closure
+                    </button>
+                  </form>
+                ) : null}
                 {accuracy?.evidenceState === "OBSERVED_SOURCE_ONLY" &&
                 attestationEvidence ? (
                   <form
@@ -1126,6 +1247,7 @@ export default async function FulfillmentPriorityPage({
                   fieldClosure,
                   fieldWitness,
                   originalDeviceReview,
+                  signedPacket,
                   priority,
                 }) => (
                   <article key={dispatch.id} className={styles.case}>
@@ -1787,6 +1909,62 @@ export default async function FulfillmentPriorityPage({
                         authorized reviewer are required.
                       </p>
                     )}
+                    <h4>Independent device signature challenge · Build 247</h4>
+                    <p>
+                      {signedPacket
+                        ? "Source-bound Ed25519 signature recorded · " + utc(signedPacket.verifiedAt)
+                        : "No independently pinned signature accepted"}.
+                      This does not automatically certify the device, approve
+                      ownership, or connect the Master.
+                    </p>
+                    {verificationEvidence && originalDeviceReview &&
+                    pinState !== "HOLD_INDEPENDENT_DEVICE_PIN_NOT_ENROLLED" &&
+                    signedPacket?.originalReviewId !== originalDeviceReview.id ? (
+                      <form action={recordIndependentDeviceSignatureAction}
+                        className={styles.ownerForm}>
+                        <input type="hidden" name="campgroundId" value={selected.campgroundId} />
+                        <input type="hidden" name="dispatchId" value={dispatch.id} />
+                        <input type="hidden" name="fieldReportId" value={originalDeviceReview.fieldReportId} />
+                        <input type="hidden" name="originalReviewId" value={originalDeviceReview.id} />
+                        <input type="hidden" name="deviceEvidenceSha256" value={originalDeviceReview.digestSha256} />
+                        <label>
+                          Independently enrolled device key ID
+                          <input name="deviceSignerKeyId" required minLength={8} maxLength={96} />
+                        </label>
+                        <label>
+                          Unique signed challenge nonce (base64url)
+                          <input name="deviceNonce" required minLength={22} maxLength={96}
+                            pattern="[A-Za-z0-9_-]{22,96}" />
+                        </label>
+                        <label>
+                          Signed challenge time (ISO UTC)
+                          <input name="deviceIssuedAt" required
+                            placeholder="2026-11-12T19:00:00.000Z" />
+                        </label>
+                        <label>
+                          Original-device Ed25519 signature (base64)
+                          <textarea name="deviceSignatureBase64" required
+                            rows={3} maxLength={1024} />
+                        </label>
+                        <button type="submit" className="secondary-button">
+                          Verify source-bound device signature
+                        </button>
+                      </form>
+                    ) : (
+                      <p role="status">
+                        {pinState === "HOLD_INDEPENDENT_DEVICE_PIN_NOT_ENROLLED"
+                          ? "Independent device public-key custody has not been enrolled. Cryptographic verification is HOLD."
+                          : "A fresh original review, independent verifier and source ledger are required."}
+                      </p>
+                    )}
+                    {params.result?.startsWith("signature-") ? (
+                      <p role={params.result.endsWith("-error") ? "alert" : "status"}
+                        className={params.result.endsWith("-error") ? styles.warning : undefined}>
+                        {params.result.endsWith("-error")
+                          ? "Signature not admitted. Verify the independent pin, source binding, reviewer and one-use challenge."
+                          : "Ed25519 signature accepted into source ledger; operational device acceptance remains HOLD."}
+                      </p>
+                    ) : null}
                     {followup ? (
                       <p className={styles.reviewNote}>
                         <strong>Recorded supervisor note:</strong>{" "}
