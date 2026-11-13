@@ -25,6 +25,7 @@ export function listVerificationContinuityEvidence(input: {
   }>;
   dossierSnapshots: Array<{
     id: string;
+    campgroundId: string;
     previousSnapshotId: string | null;
     sourceRevision: string;
     digestSha256: string;
@@ -37,6 +38,7 @@ export function listVerificationContinuityEvidence(input: {
     auditedCount: number;
     recordedAt: string;
   }>;
+  dossierWindowTruncated: boolean;
   truncated: boolean;
   originalDeviceIndependentAcceptance: string;
   masterConnected: string;
