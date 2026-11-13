@@ -24,6 +24,14 @@ import {
   listAttestationCalibrationEvidence,
 } from "@/lib/booking-charges/fulfillment-attestation-postgres.mjs";
 import { listWitnessAuditEvidence } from "@/lib/booking-charges/fulfillment-witness-postgres.mjs";
+import {
+  recordDeviceSignatureVerification,
+  recordOwnerCalibrationClosure,
+  captureOwnerDossierContinuity,
+  listVerificationContinuityEvidence,
+} from "@/lib/booking-charges/fulfillment-verification-postgres.mjs";
+import { buildOwnerAcceptanceEvidenceExport } from "@/lib/booking-charges/fulfillment-attestation-core.mjs";
+import { evaluateForecastCheckpoint } from "@/lib/booking-charges/fulfillment-witness-core.mjs";
 import { recordSupervisorContinuityReview } from "@/lib/booking-charges/fulfillment-continuity-postgres.mjs";
 import { recordFieldClosureEvidence } from "@/lib/booking-charges/fulfillment-performance-postgres.mjs";
 import {
@@ -358,4 +366,97 @@ export async function recordCalibrationFollowupAction(form: FormData) {
     // Fail closed on incomplete source history, stale sequence or partial replay.
   }
   finish(campgroundId, result);
+}
+
+export async function recordIndependentDeviceSignatureAction(form: FormData) {
+  const { campgroundId, session } = await supervisor(form);
+  let result = "signature-error";
+  try {
+    await recordDeviceSignatureVerification({
+      actorUserId: session.user.id,
+      actorSessionId: session.sessionId,
+      campgroundId,
+      packet: {
+        campgroundId,
+        dispatchId: field(form, "dispatchId"),
+        fieldReportId: field(form, "fieldReportId"),
+        originalReviewId: field(form, "originalReviewId"),
+        sourceRevision: process.env.VERCEL_GIT_COMMIT_SHA ?? "",
+        evidenceDigestSha256: field(form, "deviceEvidenceSha256"),
+        keyId: field(form, "deviceSignerKeyId"),
+        nonce: field(form, "deviceNonce"),
+        issuedAt: field(form, "deviceIssuedAt"),
+        signatureBase64: field(form, "deviceSignatureBase64"),
+      },
+    });
+    result = "signature-source-recorded";
+  } catch {
+    // No unpinned key, stale source or reused challenge may pass.
+  }
+  finish(campgroundId, result);
+}
+
+export async function recordOwnerCalibrationClosureAction(form: FormData) {
+  const { campgroundId, session } = await supervisor(form);
+  let result = "closure-error";
+  try {
+    const grant = await getCampgroundAuthorization(session.user.id, campgroundId);
+    if (!grant?.roleCodes.includes("owner_admin"))
+      throw new Error("Active campground owner required.");
+    await recordOwnerCalibrationClosure({
+      actorUserId: session.user.id,
+      actorSessionId: session.sessionId,
+      campgroundId,
+      checkpointId: field(form, "checkpointId"),
+      followupId: field(form, "followupId"),
+      previousClosureId: field(form, "previousClosureId"),
+      decision: field(form, "calibrationClosureDecision"),
+      explanation: field(form, "calibrationClosureExplanation"),
+    });
+    result = "closure-source-recorded";
+  } catch {
+    // Never convert supervisor mitigation into automatic owner acceptance.
+  }
+  finish(campgroundId, result);
+}
+
+export async function captureOwnerDossierSnapshotAction(form: FormData) {
+  const { campgroundId, session } = await supervisor(form);
+  let result = "dossier-error";
+  try {
+    const grant = await getCampgroundAuthorization(session.user.id, campgroundId);
+    if (!grant?.roleCodes.includes("owner_admin"))
+      throw new Error("Active campground owner required.");
+    const [source, witness, shift, continuity] = await Promise.all([
+      listAttestationCalibrationEvidence({userId:session.user.id,campgroundId}),
+      listWitnessAuditEvidence({userId:session.user.id,campgroundId}),
+      listShiftRecoveryEvidence({userId:session.user.id,campgroundId}),
+      listVerificationContinuityEvidence({userId:session.user.id,campgroundId,owner:true}),
+    ]);
+    const now=new Date().toISOString();
+    const truncated=source.truncated||witness.truncated||shift.truncated||continuity.truncated;
+    const evaluations=witness.checkpoints.map((checkpoint)=>
+      evaluateForecastCheckpoint({
+        checkpoint,reviews:shift.reviews,handoffs:shift.handoffs,
+        asOf:now,truncated,
+      }),
+    );
+    const summary=buildOwnerAcceptanceEvidenceExport({
+      campgroundId,sourceRevision:process.env.VERCEL_GIT_COMMIT_SHA ?? null,
+      generatedAt:now,witnessEvents:witness.witnesses,
+      originalDeviceReviews:source.originalDeviceReviews,
+      checkpoints:witness.checkpoints,evaluations,
+      calibrations:source.calibrations,ownerAudits:witness.ownerAudits,
+      truncated,
+    });
+    await captureOwnerDossierContinuity({
+      actorUserId:session.user.id,
+      actorSessionId:session.sessionId,
+      campgroundId,evidenceSummary:summary,
+    });
+    result="dossier-source-recorded";
+  } catch {
+    // No synthetic owner signature, no cross-tenant evidence and no partial success.
+  }
+  finish(campgroundId,result);
 }
