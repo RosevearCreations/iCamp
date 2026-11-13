@@ -57,7 +57,10 @@ test("pin readback requires independent enrollment, valid Ed25519 and exact dige
   );
   assert.equal(
     assessDeviceVerifierPin({
-      trust: { ...trust, independentlyAuthenticatedSpkiFingerprint: sha("wrong") },
+      trust: {
+        ...trust,
+        independentlyAuthenticatedSpkiFingerprint: sha("wrong"),
+      },
       custodianEnrolled: true,
     }).status,
     "HOLD_PIN_FINGERPRINT_MISMATCH",
@@ -74,7 +77,9 @@ test("pin readback requires independent enrollment, valid Ed25519 and exact dige
     assessDeviceVerifierPin({
       trust: {
         ...trust,
-        publicKeySpkiBase64: rsa.publicKey.export({ format: "der", type: "spki" }).toString("base64"),
+        publicKeySpkiBase64: rsa.publicKey
+          .export({ format: "der", type: "spki" })
+          .toString("base64"),
         independentlyAuthenticatedSpkiFingerprint: sha(
           rsa.publicKey.export({ format: "der", type: "spki" }),
         ),
@@ -102,7 +107,8 @@ test("owner dossier pointer chain is inspected but never labeled signed or accep
 });
 test("owner dossier readback fails closed on cross-tenant, broken, incomplete and malformed history", () => {
   const check = (snapshots, windowTruncated = false) =>
-    auditOwnerDossierLineage({ campgroundId: id, snapshots, windowTruncated }).status;
+    auditOwnerDossierLineage({ campgroundId: id, snapshots, windowTruncated })
+      .status;
   assert.equal(check([]), "HOLD_NO_DOSSIER_SNAPSHOTS");
   assert.equal(check([head, root], true), "HOLD_INCOMPLETE_DOSSIER_WINDOW");
   assert.equal(check([head]), "HOLD_INCOMPLETE_DOSSIER_WINDOW");
@@ -118,10 +124,7 @@ test("owner dossier readback fails closed on cross-tenant, broken, incomplete an
     check([{ ...head, witnessCount: -1 }, root]),
     "HOLD_MALFORMED_DOSSIER_RECORD",
   );
-  assert.equal(
-    check([root, head]),
-    "HOLD_BROKEN_DOSSIER_POINTER",
-  );
+  assert.equal(check([root, head]), "HOLD_BROKEN_DOSSIER_POINTER");
   assert.equal(
     check([{ ...root, previousDigestSha256: sha("bad") }]),
     "HOLD_BROKEN_DOSSIER_ROOT",
@@ -129,7 +132,9 @@ test("owner dossier readback fails closed on cross-tenant, broken, incomplete an
 });
 test("Build 248 readback remains tenant private with no acceptance shortcut", () => {
   const pg = read("lib/booking-charges/fulfillment-verification-postgres.mjs");
-  const api = read("app/api/management/fulfillment-supervisor/acceptance-evidence/route.ts");
+  const api = read(
+    "app/api/management/fulfillment-supervisor/acceptance-evidence/route.ts",
+  );
   assert.match(pg, /assessDeviceVerifierPin/u);
   assert.match(pg, /dossierWindowTruncated/u);
   assert.match(pg, /where campground_id=\$1/u);
