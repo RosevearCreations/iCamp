@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import { EnvironmentBanner } from "@/components/environment-banner";
 import { StandardAccessibilityControls } from "@/components/standard-accessibility-controls";
+import { VisualThemeSelector } from "@/components/visual-theme-selector";
 
 /** The Sysop chrome intentionally has no campground booking or guest links. */
 export function SysopShell({
@@ -34,10 +35,12 @@ export function SysopShell({
         >
           <Link href="/sysop">Platform overview</Link>
           <Link href="/platform">Platform statistics</Link>
+          <Link href="/sysop/readiness">Database and source verification</Link>
           <Link href="/status">Service health</Link>
           <Link href="/integration/comms-hub">Elevated Comms guidance</Link>
         </nav>
         <StandardAccessibilityControls />
+        <VisualThemeSelector defaultTheme="orbit" />
         <div className="topbar__status" aria-label="Shell mode">
           <span className="orbit-command-mark">Read-only sysop</span>
         </div>

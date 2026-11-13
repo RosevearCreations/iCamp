@@ -1,0 +1,22 @@
+# iCamp Build 251 — Production DB Adoption, Original-Source Signer Custody, Cross-Device Visual Reviews
+
+## What is verifiable
+
+- `/sysop/readiness` is restricted to a real MFA-qualified platform Sysop via the existing `requireSysop` guard. It queries **only** the database specified by the deployed application's protected `DATABASE_URL` using a read-only transaction. It checks presence of the Build 247/249/250 evidence tables, FORCE RLS, at least two policies, no public/role UPDATE/DELETE grant and append-only source guard trigger. It never reads guest, worker, or customer rows. No remote Supabase project name alone proves that this is the active Vercel database.
+- An independently authenticated production hostname must be set by the authorized operator as `ICAMP_EXPECTED_PRODUCTION_DATABASE_HOST` and must match the hostname extracted from the actual protected runtime URL. Without this pin the result is `HOLD_INDEPENDENT_DATABASE_TARGET_NOT_PINNED`. A successful schema check means only "runtime schema verified against configured pin", not source-signed owner acceptance.
+- The connected Supabase project named iCamp was observed on 2026-11-13 with Build 247, 249 and 250 ceremony tables absent. Its relationship to the live Vercel `DATABASE_URL` is not yet independently established. **Do not run migrations on this or another database solely by project name.** First authenticate the hostname and evaluate the actual migration history. Run missing migrations using the application's reviewed migration runner only after matching the target and backing it up.
+- Separate original-source custody readback checks `ICAMP_SOURCE_HEALTH_PIN_JSON`, `ICAMP_SOURCE_HEALTH_CUSTODIAN_ENROLLED`, `ICAMP_SOURCE_CUSTODY_REVIEWER_PIN_JSON`, and `ICAMP_SOURCE_CUSTODY_ATTESTATION_JSON` **from protected server config only**. The reviewer signs `icamp.original-source-signer-custody.v1` binding current commit SHA, original public SPKI fingerprint, reviewer key ID, timestamp, one-use nonce and explicit custody-observed claim. The independently pinned reviewer must differ from original signer; invalid, unconfigured or stale proof remains HOLD. No self-generated fixtures, auto-issued keys or owner browser enrollment.
+- Even verified signer custody is not an original live SOURCE_HEALTHY receipt, signed owner production consent, Master CONNECTED, or receiver ON. No new public mutation endpoint can grant these states.
+
+## Meadow is preserved at platform level
+
+- The existing iCamp **Standard / Meadow** green theme is canonical and retains its original `lib/theme/standard.mjs` palette, `app/standard-theme.css`, and `public/themes/standard/meadow-hero.webp` asset, independent of Camp Rosevear.
+- **Orbit Command** remains a separate futuristic alternative from `app/orbit-theme.css`. The tenant shell defaults to Meadow; the Sysop outer shell defaults to Orbit; both honour the same browser-saved visual preference with an explicit selector.
+- `/settings/themes/cross-device` is a guarded reporting page for desktop/tablet/phone visual acceptance of both themes (6 distinct combinations). Each real browser saves manual checks locally and exports a small JSON report for copying to another device. Import validates same exact source SHA, distinct self-reported device IDs, form factors, themes, timestamps and usability checks. No cloud sync or independent device identity is claimed; completed manually reported checks **never** authorize operational acceptance.
+- Clear protected links: outer Sysop `/sysop`, platform stats `/platform`, Camp Rosevear (when assigned) `/campground`, campground management `/workspaces/management/campgrounds`.
+
+## Release and cleanup
+
+- Promote only the reviewed Build 251 file set from the protected GREEN `dev` head into current `main`. Branches are divergent; do not wholesale merge unrelated commits.
+- Require seven protected checks, Vercel exact-SHA READY and production aliases for deployment GREEN. Report independent DB target verification, actual production schema migration adoption and original signer enrollment separately. Keep three-Master CONNECTED and formal owner acceptance HOLD until original source proof is independently verified.
+- Old feature/release branches must be checked against their exact merged PR and current `dev`/`main` ancestry; preserve unmerged history. When the GitHub connector cannot delete/rename branch refs, mark verified deletion candidates in a dedicated GitHub cleanup issue for the other application, not by deleting an unverified branch.
