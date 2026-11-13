@@ -8,7 +8,12 @@ export function SysopShell({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <div className="app-shell" data-theme="standard" data-visual="orbit" data-shell="sysop">
+    <div
+      className="app-shell"
+      data-theme="standard"
+      data-visual="orbit"
+      data-shell="sysop"
+    >
       <a className="skip-link" href="#main-content">
         Skip to main content
       </a>
