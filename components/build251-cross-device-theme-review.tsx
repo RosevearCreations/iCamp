@@ -8,10 +8,7 @@ import {
 } from "@/lib/release/build251-readiness-core.mjs";
 
 type CheckName =
-  | "heroVisible"
-  | "navigationUsable"
-  | "textReadable"
-  | "noHorizontalOverflow";
+  "heroVisible" | "navigationUsable" | "textReadable" | "noHorizontalOverflow";
 type Visual = "standard" | "orbit";
 type Factor = "desktop" | "tablet" | "mobile";
 
@@ -24,9 +21,18 @@ const initialChecks = {
   noHorizontalOverflow: false,
 };
 const checklist: Array<{ key: CheckName; title: string }> = [
-  { key: "heroVisible", title: "Meadow hero or Orbit header renders correctly" },
-  { key: "navigationUsable", title: "Navigation, links and controls are usable" },
-  { key: "textReadable", title: "Text remains readable at normal and zoomed sizes" },
+  {
+    key: "heroVisible",
+    title: "Meadow hero or Orbit header renders correctly",
+  },
+  {
+    key: "navigationUsable",
+    title: "Navigation, links and controls are usable",
+  },
+  {
+    key: "textReadable",
+    title: "Text remains readable at normal and zoomed sizes",
+  },
   { key: "noHorizontalOverflow", title: "No horizontal clipping or overflow" },
 ];
 function save(records: ManualThemeReport[]) {
@@ -63,9 +69,15 @@ export function CrossDeviceThemeReview({
           window.localStorage.getItem(storageKey) ?? "[]",
         );
         if (Array.isArray(saved))
-          setRecords(saved.filter((entry) => entry?.sourceRevision === sourceRevision).slice(0, 12));
+          setRecords(
+            saved
+              .filter((entry) => entry?.sourceRevision === sourceRevision)
+              .slice(0, 12),
+          );
       } catch {
-        setFeedback("Browser storage unavailable. Reviews can still be copied.");
+        setFeedback(
+          "Browser storage unavailable. Reviews can still be copied.",
+        );
       }
     });
     return () => {
@@ -82,7 +94,8 @@ export function CrossDeviceThemeReview({
     {
       schema: "icamp.theme.manual-device-export.v1",
       records: records.filter(
-        (entry) => entry.deviceId === deviceId &&
+        (entry) =>
+          entry.deviceId === deviceId &&
           entry.sourceRevision === sourceRevision,
       ),
     },
@@ -95,7 +108,9 @@ export function CrossDeviceThemeReview({
       return;
     }
     if (!/^[a-f0-9]{40}$/u.test(sourceRevision)) {
-      setFeedback("Exact deployed source revision unavailable. Review is HOLD.");
+      setFeedback(
+        "Exact deployed source revision unavailable. Review is HOLD.",
+      );
       return;
     }
     const newRecord: ManualThemeReport = {
@@ -109,15 +124,19 @@ export function CrossDeviceThemeReview({
     };
     const next = records.filter(
       (entry) =>
-        !(entry.deviceId === deviceId &&
+        !(
+          entry.deviceId === deviceId &&
           entry.formFactor === factor &&
-          entry.visual === visual),
+          entry.visual === visual
+        ),
     );
     const joined = [...next, newRecord].slice(-12);
     setRecords(joined);
     save(joined);
     setChecks(initialChecks);
-    setFeedback("Manual visual report saved here. No external approval implied.");
+    setFeedback(
+      "Manual visual report saved here. No external approval implied.",
+    );
   }
   function mergeOtherDevice() {
     if (importText.length > 20000) {
@@ -154,7 +173,8 @@ export function CrossDeviceThemeReview({
         asOf: new Date().toISOString(),
       });
       if (
-        assessment.status !== "MANUAL_CROSS_DEVICE_CHECKLIST_COMPLETE_UNVERIFIED" &&
+        assessment.status !==
+          "MANUAL_CROSS_DEVICE_CHECKLIST_COMPLETE_UNVERIFIED" &&
         !assessment.status.startsWith("HOLD_MISSING_CROSS_DEVICE")
       )
         throw new Error("Device evidence failed consistency checks.");
@@ -163,7 +183,9 @@ export function CrossDeviceThemeReview({
       setImportText("");
       setFeedback("Other device report imported; identity is self-reported.");
     } catch {
-      setFeedback("Device export invalid, stale or inconsistent. Nothing imported.");
+      setFeedback(
+        "Device export invalid, stale or inconsistent. Nothing imported.",
+      );
     }
   }
 
@@ -173,9 +195,9 @@ export function CrossDeviceThemeReview({
         <strong>Source:</strong> <code>{sourceRevision}</code>
       </p>
       <p>
-        This is a manual, self-reported presentation checklist. It never
-        enrolls a signer, authenticates a device or approves a campground or
-        Comms Hub connection. Repeat both visual choices on each physical device.
+        This is a manual, self-reported presentation checklist. It never enrolls
+        a signer, authenticates a device or approves a campground or Comms Hub
+        connection. Repeat both visual choices on each physical device.
       </p>
       <label>
         Actual device class
@@ -199,7 +221,9 @@ export function CrossDeviceThemeReview({
         </select>
       </label>
       <fieldset>
-        <legend>Confirm by actually looking at this theme on this device</legend>
+        <legend>
+          Confirm by actually looking at this theme on this device
+        </legend>
         {checklist.map(({ key, title }) => (
           <label key={key}>
             <input

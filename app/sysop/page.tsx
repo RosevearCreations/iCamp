@@ -55,7 +55,8 @@ export default async function SysopPage() {
           </p>
           <p>
             <Link href="/sysop/readiness">
-              Verify actual production database adoption and original-source signer custody
+              Verify actual production database adoption and original-source
+              signer custody
             </Link>
           </p>
           <p>

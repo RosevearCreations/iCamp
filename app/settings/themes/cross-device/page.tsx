@@ -25,9 +25,9 @@ export default async function CrossDeviceThemePage() {
           <p className="eyebrow">Build 251 · independent visual acceptance</p>
           <h1>Meadow and Orbit across our devices</h1>
           <p className="hero-panel__lead">
-            Verify the evergreen Meadow theme and futuristic Orbit Command on
-            a desktop, tablet and phone. These manual reports are saved only
-            on each browser until explicitly copied and combined.
+            Verify the evergreen Meadow theme and futuristic Orbit Command on a
+            desktop, tablet and phone. These manual reports are saved only on
+            each browser until explicitly copied and combined.
           </p>
         </section>
         <section className="content-panel">

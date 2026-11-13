@@ -35,7 +35,8 @@ export default async function SourceReadinessPage() {
             {readiness.database.runtimeTargetPinMatches ? "Yes" : "No / HOLD"}.
           </p>
           <p>
-            Exact deployed SHA: <code>{readiness.sourceRevision ?? "UNAVAILABLE"}</code>
+            Exact deployed SHA:{" "}
+            <code>{readiness.sourceRevision ?? "UNAVAILABLE"}</code>
           </p>
           <p>
             No database hostname, password, guest record, signature or
@@ -54,16 +55,20 @@ export default async function SourceReadinessPage() {
               {readiness.database.checklist.map((entry, index) => (
                 <tr key={entry.name}>
                   <td>Build {index === 0 ? 247 : index === 1 ? 249 : 250}</td>
-                  <td><code>{entry.name}</code></td>
+                  <td>
+                    <code>{entry.name}</code>
+                  </td>
                   <td>
                     {entry.rowLevelSecurity &&
                     entry.forceRowLevelSecurity &&
-                    entry.ownerOnlyPolicies ? "Checked" : "HOLD"}
+                    entry.ownerOnlyPolicies
+                      ? "Checked"
+                      : "HOLD"}
                   </td>
                   <td>
-                    {entry.present &&
-                    entry.appendOnly &&
-                    entry.hasGuardTrigger ? "Checked" : "HOLD"}
+                    {entry.present && entry.appendOnly && entry.hasGuardTrigger
+                      ? "Checked"
+                      : "HOLD"}
                   </td>
                 </tr>
               ))}
@@ -78,14 +83,19 @@ export default async function SourceReadinessPage() {
         </section>
         <section className="content-panel">
           <h2>Independent original-source signer custody</h2>
-          <p><strong>{readiness.signer.status}</strong></p>
+          <p>
+            <strong>{readiness.signer.status}</strong>
+          </p>
           <p>
             Protected original key pin configured:{" "}
             {readiness.signer.originalPinConfigured ? "Yes" : "No / HOLD"}.
           </p>
           <p>
             Distinct Ed25519 reviewer attestation:{" "}
-            {readiness.signer.independentReviewerAttested ? "Verified source-only" : "HOLD"}.
+            {readiness.signer.independentReviewerAttested
+              ? "Verified source-only"
+              : "HOLD"}
+            .
           </p>
           <p>
             Even a valid signer-custody witness is not a live source-HEALTHY
@@ -101,7 +111,9 @@ export default async function SourceReadinessPage() {
         </section>
         <section className="content-panel">
           <h2>Current operator decision</h2>
-          <p><strong>Operational acceptance: HOLD</strong></p>
+          <p>
+            <strong>Operational acceptance: HOLD</strong>
+          </p>
           <p>
             <Link href="/sysop">Return to outer shell</Link> ·{" "}
             <Link href="/settings/themes/cross-device">

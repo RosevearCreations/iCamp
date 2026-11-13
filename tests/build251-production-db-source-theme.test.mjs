@@ -15,7 +15,8 @@ import { STANDARD_THEME } from "../lib/theme/standard.mjs";
 const sha = (input) => createHash("sha256").update(input).digest("hex");
 const sourceRevision = "a".repeat(40);
 const date = "2026-11-13T18:00:00.000Z";
-const read = (path) => readFileSync(new URL("../" + path, import.meta.url), "utf8");
+const read = (path) =>
+  readFileSync(new URL("../" + path, import.meta.url), "utf8");
 const secureTable = (name) => ({
   name,
   present: true,
@@ -57,9 +58,7 @@ test("runtime migration readback requires actual DATABASE_URL target pin and thr
   assert.equal(
     classifyProductionDatabase({
       ...healthy,
-      tables: healthy.tables.filter(
-        (row) => row.name !== BUILD251_TABLES[2],
-      ),
+      tables: healthy.tables.filter((row) => row.name !== BUILD251_TABLES[2]),
     }).status,
     "HOLD_REQUIRED_MIGRATIONS_NOT_VERIFIED",
   );
@@ -259,6 +258,8 @@ test("Build 251 runtime audit is Sysop-private and does not expose database or s
   assert.match(shell, /data-visual="orbit"/u);
   assert.equal(STANDARD_THEME.style, "Meadow & evergreen");
   assert.ok(
-    existsSync(new URL("../public/themes/standard/meadow-hero.webp", import.meta.url)),
+    existsSync(
+      new URL("../public/themes/standard/meadow-hero.webp", import.meta.url),
+    ),
   );
 });
