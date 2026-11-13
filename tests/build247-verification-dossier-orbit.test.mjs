@@ -223,7 +223,13 @@ test("Orbit Command CSS and technical Sysop shell preserve tenant boundaries", (
   assert.match(css, /@media \(prefers-reduced-motion: reduce\)/u);
   assert.match(css, /data-icamp-contrast="high"/u);
   assert.match(layout, /orbit-theme\.css/u);
-  assert.match(app, /data-visual="orbit"/u);
+  // Build 250 retains Orbit as a selectable visual option without replacing
+  // the canonical green Standard / Meadow platform theme.
+  assert.match(app, /data-visual="standard"/u);
+  assert.match(app, /VisualThemeSelector/u);
+  const selector = read("components/visual-theme-selector.tsx");
+  assert.match(selector, /Standard \/ Meadow/u);
+  assert.match(selector, /Orbit Command/u);
   assert.match(sysop, /data-shell="sysop"/u);
   assert.doesNotMatch(
     sysop,
