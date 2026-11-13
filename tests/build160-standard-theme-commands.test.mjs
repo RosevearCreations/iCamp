@@ -34,7 +34,8 @@ test("Build 160 Management/I.T. commands preserve permission gates, real-only st
   assert.match(platform, /getPlatformOverview/);
   assert.match(platform, /summary\.active_users/);
   assert.match(theme, /requireAnyCampgroundPermission/);
-  assert.match(theme, /Future release/);
+  assert.match(theme, /Orbit Command/);
+  assert.match(theme, /saved on this browser/);
   assert.match(itPage, /<StandardOpsCommand area="it-analysis"/);
   assert.match(itPage, /queueHealth\.jobs\.queued/);
   assert.match(itPage, /communicationsHealth\.providers\.events24h/);
