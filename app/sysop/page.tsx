@@ -60,6 +60,11 @@ export default async function SysopPage() {
             </Link>
           </p>
           <p>
+            <Link href="/sysop/migration-audit">
+              Review migration history and source-custody remediation actions
+            </Link>
+          </p>
+          <p>
             <Link href="/integration/comms-hub">
               Review Comms Hub connection guidance
             </Link>
