@@ -16,8 +16,10 @@ function applyVisualTheme(value: VisualTheme) {
   }
 }
 
-export function VisualThemeSelector() {
-  const [visual, setVisual] = useState<VisualTheme>("standard");
+export function VisualThemeSelector({
+  defaultTheme = "standard",
+}: Readonly<{ defaultTheme?: VisualTheme }>) {
+  const [visual, setVisual] = useState<VisualTheme>(defaultTheme);
   useEffect(() => {
     let active = true;
     queueMicrotask(() => {
@@ -28,14 +30,15 @@ export function VisualThemeSelector() {
       } catch {
         // The platform's Meadow default remains available without storage.
       }
-      const next: VisualTheme = saved === "orbit" ? "orbit" : "standard";
+      const next: VisualTheme =
+        saved === "orbit" || saved === "standard" ? saved : defaultTheme;
       setVisual(next);
       applyVisualTheme(next);
     });
     return () => {
       active = false;
     };
-  }, []);
+  }, [defaultTheme]);
   return (
     <label className="visual-theme-selector">
       <span>Theme</span>

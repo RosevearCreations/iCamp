@@ -30,6 +30,12 @@ export default async function ThemeManagementPage() {
             <Link className="secondary-link" href="/settings/themes/acceptance">
               Owner visual review
             </Link>
+            <Link
+              className="secondary-link"
+              href="/settings/themes/cross-device"
+            >
+              Meadow / Orbit device review
+            </Link>
           </div>
         </section>
         <div className="ops-kpi-grid">
