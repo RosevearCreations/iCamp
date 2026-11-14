@@ -46,18 +46,14 @@
       "repository": "RosevearCreations/rosevear-comms-hub",
       "connectionModel": "MASTER_APPLICATION",
       "externalShell": false,
-      "governedBy": [
-        "ai-data-platform"
-      ]
+      "governedBy": ["ai-data-platform"]
     },
     {
       "appId": "rosevear-ai-hub",
       "repository": "RosevearCreations/rosevear-ai-hub",
       "connectionModel": "MASTER_APPLICATION",
       "externalShell": false,
-      "governedBy": [
-        "ai-data-platform"
-      ]
+      "governedBy": ["ai-data-platform"]
     },
     {
       "appId": "yw",
