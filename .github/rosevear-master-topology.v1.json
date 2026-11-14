@@ -1,0 +1,115 @@
+{
+  "schema": "rosevear.master-repository-topology.v1",
+  "topologyId": "rosevear-master-shell-seven-apps.v1",
+  "self": {
+    "appId": "icamp",
+    "repository": "RosevearCreations/iCamp"
+  },
+  "validationAuthority": {
+    "appId": "ai-data-platform",
+    "repository": "RosevearCreations/ai-data-platform",
+    "role": "MASTER_TOP_TIER"
+  },
+  "masterHierarchy": [
+    {
+      "appId": "ai-data-platform",
+      "repository": "RosevearCreations/ai-data-platform",
+      "role": "MASTER_TOP_TIER",
+      "tier": 0,
+      "parent": null
+    },
+    {
+      "appId": "rosevear-comms-hub",
+      "repository": "RosevearCreations/rosevear-comms-hub",
+      "role": "MASTER_APPLICATION",
+      "tier": 1,
+      "parent": "ai-data-platform"
+    },
+    {
+      "appId": "rosevear-ai-hub",
+      "repository": "RosevearCreations/rosevear-ai-hub",
+      "role": "MASTER_APPLICATION",
+      "tier": 1,
+      "parent": "ai-data-platform"
+    }
+  ],
+  "applications": [
+    {
+      "appId": "ai-data-platform",
+      "repository": "RosevearCreations/ai-data-platform",
+      "connectionModel": "MASTER_TOP_TIER",
+      "externalShell": false,
+      "governedBy": []
+    },
+    {
+      "appId": "rosevear-comms-hub",
+      "repository": "RosevearCreations/rosevear-comms-hub",
+      "connectionModel": "MASTER_APPLICATION",
+      "externalShell": false,
+      "governedBy": [
+        "ai-data-platform"
+      ]
+    },
+    {
+      "appId": "rosevear-ai-hub",
+      "repository": "RosevearCreations/rosevear-ai-hub",
+      "connectionModel": "MASTER_APPLICATION",
+      "externalShell": false,
+      "governedBy": [
+        "ai-data-platform"
+      ]
+    },
+    {
+      "appId": "yw",
+      "repository": "RosevearCreations/yw",
+      "connectionModel": "GOVERNED_EXTERNAL_SHELL",
+      "externalShell": true,
+      "governedBy": [
+        "ai-data-platform",
+        "rosevear-comms-hub",
+        "rosevear-ai-hub"
+      ]
+    },
+    {
+      "appId": "icamp",
+      "repository": "RosevearCreations/iCamp",
+      "connectionModel": "GOVERNED_EXTERNAL_SHELL",
+      "externalShell": true,
+      "governedBy": [
+        "ai-data-platform",
+        "rosevear-comms-hub",
+        "rosevear-ai-hub"
+      ]
+    },
+    {
+      "appId": "devilndove",
+      "repository": "RosevearCreations/devilndove-site",
+      "connectionModel": "DIRECT_MASTER_APPLICATION",
+      "externalShell": false,
+      "governedBy": [
+        "ai-data-platform",
+        "rosevear-comms-hub",
+        "rosevear-ai-hub"
+      ]
+    },
+    {
+      "appId": "rosiedazzlers",
+      "repository": "RosevearCreations/rosiedazzlers",
+      "connectionModel": "DIRECT_MASTER_APPLICATION",
+      "externalShell": false,
+      "governedBy": [
+        "ai-data-platform",
+        "rosevear-comms-hub",
+        "rosevear-ai-hub"
+      ]
+    }
+  ],
+  "rules": {
+    "masterApplications": 3,
+    "governedExternalShellApplications": 2,
+    "directMasterApplications": 2,
+    "githubManifestIsValidationSourceOfTruth": true,
+    "runtimeCommunicationUsesExistingIntegrationContracts": true,
+    "authorityTransfer": false
+  }
+}
