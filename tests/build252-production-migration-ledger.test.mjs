@@ -51,9 +51,14 @@ test("Build 252 never upgrades migration-history rows to verified canonical sour
   assert.equal(result.productionMigrationApproved, false);
   assert.equal(result.ownerProductionAcceptance, "HOLD");
   assert.equal(result.details.length, 3);
-  assert.equal(result.details.every((row) => row.recordPresent), true);
   assert.equal(
-    result.details.every((row) => row.sourceChecksumIndependentlyVerified === false),
+    result.details.every((row) => row.recordPresent),
+    true,
+  );
+  assert.equal(
+    result.details.every(
+      (row) => row.sourceChecksumIndependentlyVerified === false,
+    ),
     true,
   );
   assert.equal(JSON.stringify(result).includes("b".repeat(64)), false);
@@ -131,7 +136,9 @@ test("Build 252 owner action plan is scoped, no auto-migrations or signer enrolm
   );
   assert.ok(complete.items.some((x) => x.id === "ORIGINAL_SOURCE_CUSTODY"));
   assert.ok(complete.items.some((x) => x.id === "MEADOW_ORBIT_MANUAL_REVIEW"));
-  assert.ok(complete.items.some((x) => x.id === "OWNER_CONTROL_PLANE_APPROVAL"));
+  assert.ok(
+    complete.items.some((x) => x.id === "OWNER_CONTROL_PLANE_APPROVAL"),
+  );
 
   const incomplete = planBuild252Remediation({
     database: {
@@ -144,7 +151,9 @@ test("Build 252 owner action plan is scoped, no auto-migrations or signer enrolm
   });
   assert.ok(incomplete.items.some((x) => x.id.startsWith("SCHEMA_")));
   assert.ok(
-    incomplete.items.some((x) => x.id === "TARGET_IDENTITY" && x.status === "HOLD"),
+    incomplete.items.some(
+      (x) => x.id === "TARGET_IDENTITY" && x.status === "HOLD",
+    ),
   );
   assert.equal(incomplete.masterConnected, false);
 });
@@ -157,10 +166,16 @@ test("Build 252 private source-only query retains Sysop gate, safe output, Meado
   assert.match(sql, /targetIndependentlyPinned/u);
   assert.match(sql, /icamp_meta\.schema_migrations/u);
   assert.match(sql, /where version=any\(\$1::text\[\]\)/u);
-  assert.doesNotMatch(sql, /client\.query\("(?:insert|update|delete|alter|create)/iu);
+  assert.doesNotMatch(
+    sql,
+    /client\.query\("(?:insert|update|delete|alter|create)/iu,
+  );
   assert.match(page, /requireSysop\("\/sysop"\)/u);
   assert.match(page, /Production acceptance: HOLD/u);
-  assert.match(page, /sourceChecksumIndependentlyVerified|Not independently verified/u);
+  assert.match(
+    page,
+    /sourceChecksumIndependentlyVerified|Not independently verified/u,
+  );
   assert.match(shell, /\/sysop\/migration-audit/u);
   assert.equal(STANDARD_THEME.style, "Meadow & evergreen");
   assert.ok(

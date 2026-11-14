@@ -80,8 +80,7 @@ export default async function MigrationAuditPage() {
           <ol>
             {state.remediation.items.map((item) => (
               <li key={item.id}>
-                <strong>{item.id.replaceAll("_", " ")}</strong> —{" "}
-                {item.status}
+                <strong>{item.id.replaceAll("_", " ")}</strong> — {item.status}
                 <p>
                   Responsible: {item.owner}. {item.action}
                 </p>
