@@ -4,7 +4,10 @@ export const SECURITY_TIERS: readonly string[];
 export function sha256(value: string): string;
 export function evaluateThreeMasterFreshness(input: {
   sourceRevision: string | null;
-  evidence: { sourceRevision?: string | null; evidence?: Array<{ plane: string; status: string }> } | null;
+  evidence: {
+    sourceRevision?: string | null;
+    evidence?: Array<{ plane: string; status: string }>;
+  } | null;
   receipts: Array<{ plane: string; sourceRevision: string; issuedAt: string }>;
   asOf: string;
 }): {

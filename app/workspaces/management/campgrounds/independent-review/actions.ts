@@ -28,7 +28,11 @@ async function ownerSession(form: FormData) {
 function done(campgroundId: string, result: string): never {
   revalidatePath(route);
   redirect(
-    route + "?campground=" + encodeURIComponent(campgroundId) + "&result=" + result,
+    route +
+      "?campground=" +
+      encodeURIComponent(campgroundId) +
+      "&result=" +
+      result,
   );
 }
 

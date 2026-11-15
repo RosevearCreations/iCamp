@@ -43,9 +43,10 @@ begin
   if current_setting('icamp.source_revision',true) is distinct from new.source_revision
     then raise exception 'Exact original deployed source required'; end if;
   if new.receipt_issued_at > statement_timestamp()+interval '60 seconds'
-    or new.receipt_issued_at <
-      statement_timestamp()-case when new.receipt_type='master_source'
-        then interval '15 minutes' else interval '24 hours' end
+    or (new.receipt_type='master_source'
+      and new.receipt_issued_at < statement_timestamp()-interval '15 minutes')
+    or (new.receipt_type='database_provenance'
+      and new.receipt_issued_at < statement_timestamp()-interval '24 hours')
     then raise exception 'Fresh signed original source required'; end if;
   new.decision:='signed_source_observed_hold';
   new.claimed_at:=statement_timestamp();

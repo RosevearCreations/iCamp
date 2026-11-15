@@ -12,7 +12,10 @@ import {
   listSourceRemediationEvidence,
   protectedThreeMasterFreshness,
 } from "@/lib/release/build254-security-postgres.mjs";
-import { DECISIONS, MASTER_PLANES } from "@/lib/release/build254-security-core.mjs";
+import {
+  DECISIONS,
+  MASTER_PLANES,
+} from "@/lib/release/build254-security-core.mjs";
 import {
   claimProtectedReceiptAction,
   independentRemediationDecisionAction,
@@ -57,7 +60,8 @@ export default async function IndependentReviewPage({
   )
     redirect("/auth/not-authorized");
   const selected =
-    allowed.find((item) => item.campgroundId === params.campground) ?? allowed[0];
+    allowed.find((item) => item.campgroundId === params.campground) ??
+    allowed[0];
   const [evidence, masters] = await Promise.all([
     listSourceRemediationEvidence({
       actorUserId: session.user.id,
@@ -76,11 +80,13 @@ export default async function IndependentReviewPage({
       <div className="page-stack standard-ops-page">
         <section className="hero-panel">
           <p className="eyebrow">Build 254 · independent restricted review</p>
-          <h1>Original receipt replay protection &amp; remediation decisions</h1>
+          <h1>
+            Original receipt replay protection &amp; remediation decisions
+          </h1>
           <p className="hero-panel__lead">
-            Meadow and Orbit remain unchanged. Only an MFA-qualified
-            campground owner can record verified original source claims.
-            A different authorized reviewer must record any HOLD disposition.
+            Meadow and Orbit remain unchanged. Only an MFA-qualified campground
+            owner can record verified original source claims. A different
+            authorized reviewer must record any HOLD disposition.
           </p>
         </section>
         <section className="content-panel">
@@ -111,7 +117,9 @@ export default async function IndependentReviewPage({
                 <option value="database_provenance">
                   Independent database provenance
                 </option>
-                <option value="master_source">Three-Master original source</option>
+                <option value="master_source">
+                  Three-Master original source
+                </option>
               </select>
             </label>
             <label>
@@ -124,9 +132,7 @@ export default async function IndependentReviewPage({
                 ))}
               </select>
             </label>
-            <button type="submit">
-              Record genuine signed receipt as HOLD
-            </button>
+            <button type="submit">Record genuine signed receipt as HOLD</button>
           </form>
         </section>
         <section className="content-panel">
@@ -143,8 +149,8 @@ export default async function IndependentReviewPage({
             ))}
           </ul>
           <p>
-            Fresh signatures do not grant receiver ON, Master CONNECTED or
-            owner approval.
+            Fresh signatures do not grant receiver ON, Master CONNECTED or owner
+            approval.
           </p>
         </section>
         <section className="content-panel">
@@ -153,7 +159,8 @@ export default async function IndependentReviewPage({
             {evidence.claims.map((claim) => (
               <li key={claim.id}>
                 <strong>{claim.receiptType}</strong> {claim.masterPlane ?? ""}
-                {" · "}{claim.decision} · {claim.at} · <code>{claim.id}</code>
+                {" · "}
+                {claim.decision} · {claim.at} · <code>{claim.id}</code>
                 {resolved.has(claim.id) ? " · reviewed" : ""}
               </li>
             ))}
@@ -163,8 +170,8 @@ export default async function IndependentReviewPage({
         <section className="content-panel">
           <h2>Second-person independent remediation</h2>
           <p>
-            A different owner must review the original claim. Only HOLD,
-            reject, or requests for new evidence are allowed.
+            A different owner must review the original claim. Only HOLD, reject,
+            or requests for new evidence are allowed.
           </p>
           <form action={independentRemediationDecisionAction}>
             <input

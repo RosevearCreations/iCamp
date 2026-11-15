@@ -50,11 +50,17 @@ test("Three independently verified signed Masters are source-only, never CONNECT
     receipts,
     asOf: now,
   });
-  assert.deepEqual(r.results.map((x) => x.plane), MASTER_PLANES);
+  assert.deepEqual(
+    r.results.map((x) => x.plane),
+    MASTER_PLANES,
+  );
   assert.equal(r.allCurrent, true);
   assert.equal(r.allThreeReceiversConnected, false);
   assert.equal(r.ownerProductionAcceptance, "HOLD");
-  assert.equal(r.results.every((x) => x.status === "SIGNED_SOURCE_FRESH_OBSERVED"), true);
+  assert.equal(
+    r.results.every((x) => x.status === "SIGNED_SOURCE_FRESH_OBSERVED"),
+    true,
+  );
 });
 
 test("Forged, unsigned, stale, missing, duplicate or wrong revision Masters fail closed", () => {
@@ -131,8 +137,12 @@ test("Signed original admission creates source-only digest, never owner authorit
   assert.equal(claim.decision, "signed_source_observed_hold");
   assert.equal(claim.masterConnected, false);
   assert.equal(claim.ownerAcceptance, "HOLD");
-  assert.throws(() => prepareSignedReceiptClaim({ ...valid, cryptographicallyVerified: false }));
-  assert.throws(() => prepareSignedReceiptClaim({ ...valid, masterPlane: "ai-data-platform" }));
+  assert.throws(() =>
+    prepareSignedReceiptClaim({ ...valid, cryptographicallyVerified: false }),
+  );
+  assert.throws(() =>
+    prepareSignedReceiptClaim({ ...valid, masterPlane: "ai-data-platform" }),
+  );
   assert.throws(() =>
     prepareSignedReceiptClaim({
       ...valid,
@@ -180,15 +190,22 @@ test("Cross-app six-tier governance never makes runtime CONNECTED", () => {
     independentDisposition: true,
     runtimeConnected: true,
   });
-  assert.deepEqual(summary.tiers.map((x) => x.tier), SECURITY_TIERS);
+  assert.deepEqual(
+    summary.tiers.map((x) => x.tier),
+    SECURITY_TIERS,
+  );
   assert.equal(summary.threeMasterEvidenceCurrent, true);
   assert.equal(summary.externalRuntimeConnected, false);
   assert.equal(summary.ownerProductionAcceptance, "HOLD");
 });
 
 test("Migration 0234 guarantees unique original nonce, private RLS and independent reviewer", () => {
-  const sql = source("database/migrations/0234_build254_receipt_replay_remediation.sql");
-  const verify = source("database/verify/0234_build254_receipt_replay_remediation.sql");
+  const sql = source(
+    "database/migrations/0234_build254_receipt_replay_remediation.sql",
+  );
+  const verify = source(
+    "database/verify/0234_build254_receipt_replay_remediation.sql",
+  );
   assert.match(sql, /unique \(nonce_digest_sha256\)/u);
   assert.match(sql, /unique \(receipt_digest_sha256\)/u);
   assert.match(sql, /unique \(source_receipt_claim_id\)/u);
@@ -202,8 +219,12 @@ test("Migration 0234 guarantees unique original nonce, private RLS and independe
 
 test("Private actions verify original signatures and enforce MFA + scoped tenant", () => {
   const server = source("lib/release/build254-security-postgres.mjs");
-  const actions = source("app/workspaces/management/campgrounds/independent-review/actions.ts");
-  const page = source("app/workspaces/management/campgrounds/independent-review/page.tsx");
+  const actions = source(
+    "app/workspaces/management/campgrounds/independent-review/actions.ts",
+  );
+  const page = source(
+    "app/workspaces/management/campgrounds/independent-review/page.tsx",
+  );
   const sysop = source("app/sysop/security-governance/page.tsx");
   assert.match(server, /readCrossMasterProtectedEvidence/u);
   assert.match(server, /inspectBuild253SupervisedReview/u);
