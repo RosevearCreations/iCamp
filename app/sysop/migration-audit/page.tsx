@@ -100,6 +100,10 @@ export default async function MigrationAuditPage() {
               Review Build 251 source and database readbacks
             </Link>
             {" · "}
+            <Link href="/sysop/provenance-review">
+              Compare canonical migration checksums and signed provenance
+            </Link>
+            {" · "}
             <Link href="/sysop">Return to outer shell</Link>
             {" · "}
             <Link href="/settings/themes/cross-device">
