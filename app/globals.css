@@ -1007,7 +1007,6 @@ a {
   }
 }
 
-
 /* Build 407 cross-application architecture marker. iCamp keeps its own Meadow/Orbit themes. */
 .slave-shell-banner {
   display: flex;
@@ -1041,4 +1040,3 @@ a {
     gap: 0.25rem;
   }
 }
-
