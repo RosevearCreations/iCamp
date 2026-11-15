@@ -40,10 +40,6 @@ export function AppShell({
         <strong>SLAVE APPLICATION SHELL</strong>
         <span>iCamp · governed by the three Rosevear Master applications · iCamp themes remain independent</span>
       </div>
-      <div className="slave-shell-banner" role="status" aria-label="Application shell classification">
-        <strong>SLAVE APPLICATION SHELL</strong>
-        <span>iCamp · governed by the three Rosevear Master applications · iCamp themes remain independent</span>
-      </div>
 
       <header className="topbar">
         <Link className="brand" href="/" aria-label="iCamp home">
