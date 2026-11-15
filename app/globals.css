@@ -1030,7 +1030,9 @@ a {
   font-size: 0.7rem;
   letter-spacing: 0.08em;
 }
-.slave-shell-banner span {\n  color: var(--muted);\n}
+.slave-shell-banner span {
+  color: var(--muted);
+}
 @media (max-width: 680px) {
   .slave-shell-banner {
     align-items: flex-start;
