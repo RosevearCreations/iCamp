@@ -65,6 +65,11 @@ export default async function SysopPage() {
             </Link>
           </p>
           <p>
+            <Link href="/sysop/security-governance">
+              Three-Master signed freshness and tiered security governance
+            </Link>
+          </p>
+          <p>
             <Link href="/integration/comms-hub">
               Review Comms Hub connection guidance
             </Link>

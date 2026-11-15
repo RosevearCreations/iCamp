@@ -372,6 +372,11 @@ export default async function FulfillmentPriorityPage({
           <span aria-hidden="true">/</span>
           <span>Supervisor priority</span>
         </nav>
+        <p>
+          <Link href="/workspaces/management/campgrounds/independent-review">
+            Independent signed-source receipt review (MFA owner access)
+          </Link>
+        </p>
         <section className="hero-panel meadow-hero">
           <p className="eyebrow">
             Build 247 · Campground supervisors · Orbit Command
