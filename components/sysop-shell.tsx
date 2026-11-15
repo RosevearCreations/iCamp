@@ -30,10 +30,6 @@ export function SysopShell({
           themes remain independent
         </span>
       </div>
-      <div className="slave-shell-banner" role="status" aria-label="Application shell classification">
-        <strong>SLAVE APPLICATION SHELL</strong>
-        <span>iCamp · governed by the three Rosevear Master applications · iCamp themes remain independent</span>
-      </div>
       <header className="topbar">
         <Link className="brand" href="/sysop" aria-label="Rosevear Sysop home">
           <span className="brand__mark" aria-hidden="true">
