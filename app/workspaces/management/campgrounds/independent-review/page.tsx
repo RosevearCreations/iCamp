@@ -91,6 +91,10 @@ export default async function IndependentReviewPage({
         </section>
         <section className="content-panel">
           <p>
+            <Link href="/workspaces/management/campgrounds/signed-event-custody">
+              Build 256 · Signed-event renewal and revocation custody
+            </Link>
+            {" · "}
             <Link href="/workspaces/management/campgrounds/fulfillment-priority">
               Return to campground fulfillment
             </Link>
