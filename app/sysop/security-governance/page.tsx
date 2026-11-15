@@ -27,7 +27,7 @@ export default async function SecurityGovernancePage() {
     <SysopShell>
       <div className="page-stack standard-ops-page">
         <section className="hero-panel">
-          <p className="eyebrow">Build 255 · seven-app identity registry</p>
+          <p className="eyebrow">Build 256 · signed-event revocation & seven-app registry</p>
           <h1>
             Multi-tier security, identity contracts &amp; Master freshness
           </h1>
@@ -101,6 +101,10 @@ export default async function SecurityGovernancePage() {
             {" · "}
             <Link href="/workspaces/management/campgrounds/independent-review">
               Campground source receipt review
+            </Link>
+            {" · "}
+            <Link href="/workspaces/management/campgrounds/signed-event-custody">
+              Signed-event renewal &amp; revocation custody
             </Link>
             {" · "}
             <Link href="/sysop">Return to outer shell</Link>
