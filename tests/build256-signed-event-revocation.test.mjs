@@ -1,13 +1,12 @@
 import assert from "node:assert/strict";
-import {
-  createHash,
-  generateKeyPairSync,
-  sign,
-} from "node:crypto";
+import { createHash, generateKeyPairSync, sign } from "node:crypto";
 import { readFileSync } from "node:fs";
 import test from "node:test";
 
-import { ENVELOPE_SCHEMA, REGISTRY_SCHEMA } from "../lib/release/build255-contract-registry.mjs";
+import {
+  ENVELOPE_SCHEMA,
+  REGISTRY_SCHEMA,
+} from "../lib/release/build255-contract-registry.mjs";
 import {
   OUTBOX_SCHEMA,
   SIGNED_PACKET_SCHEMA,
@@ -93,10 +92,7 @@ test("Replay of exact nonce deterministically yields same digest for SQL unique"
 
 test("Missing custodian, unknown original pin and invalid Ed25519 signatures HOLD", () => {
   const packet = packetFor();
-  assert.equal(
-    verify(packet, { custodianEnrolled: false }).verified,
-    false,
-  );
+  assert.equal(verify(packet, { custodianEnrolled: false }).verified, false);
   assert.equal(verify(packet, { pin: null }).verified, false);
   assert.equal(
     verify(packet, { pin: { ...pin, fingerprintSha256: "f".repeat(64) } })
@@ -133,7 +129,10 @@ test("Expired, stale, future, unknown identity and extra PII HOLD", () => {
 
 test("Revoked, expired or reused issuer pins fail closed", () => {
   const packet = packetFor();
-  assert.equal(verify(packet, { pin: { ...pin, revoked: true } }).verified, false);
+  assert.equal(
+    verify(packet, { pin: { ...pin, revoked: true } }).verified,
+    false,
+  );
   assert.equal(
     verify(packet, { pin: { ...pin, notAfter: "2026-11-15T17:59:59.000Z" } })
       .verified,
@@ -142,7 +141,11 @@ test("Revoked, expired or reused issuer pins fail closed", () => {
   assert.equal(
     verify(packet, {
       revocations: [
-        { appId: "icamp", keyId: pin.keyId, revokedAt: "2026-11-15T17:59:00.000Z" },
+        {
+          appId: "icamp",
+          keyId: pin.keyId,
+          revokedAt: "2026-11-15T17:59:00.000Z",
+        },
       ],
     }).verified,
     false,
@@ -224,7 +227,10 @@ test("Protected server intake checks three Master originals and MFA owner action
     "app/workspaces/management/campgrounds/signed-event-custody/page.tsx",
   );
   assert.match(server, /protectedThreeMasterFreshness/u);
-  assert.match(server, /process\.env\.ICAMP_BUILD256_SOURCE_CUSTODIAN_ENROLLED/u);
+  assert.match(
+    server,
+    /process\.env\.ICAMP_BUILD256_SOURCE_CUSTODIAN_ENROLLED/u,
+  );
   assert.match(server, /verifyOriginalSignedEvent/u);
   assert.match(server, /set local role icamp_app/u);
   assert.match(server, /appendAuditEvent/u);
@@ -236,6 +242,9 @@ test("Protected server intake checks three Master originals and MFA owner action
 test("Build 407 Slave Shell and iCamp Meadow theme preserved", () => {
   assert.equal(STANDARD_THEME.style, "Meadow & evergreen");
   assert.match(source("components/app-shell.tsx"), /SLAVE APPLICATION SHELL/u);
-  assert.match(source("components/sysop-shell.tsx"), /SLAVE APPLICATION SHELL/u);
+  assert.match(
+    source("components/sysop-shell.tsx"),
+    /SLAVE APPLICATION SHELL/u,
+  );
   assert.match(source("app/settings/themes/page.tsx"), /Orbit/u);
 });
