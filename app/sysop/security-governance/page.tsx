@@ -11,7 +11,7 @@ import {
   getRegistrySummary,
   validateRegistryAgainstTopology,
 } from "@/lib/release/build255-contract-registry.mjs";
-import topology from "../../../.github/rosevear-master-topology.v1.json";
+import topology from "@/lib/release/build255-topology-mirror.json";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
