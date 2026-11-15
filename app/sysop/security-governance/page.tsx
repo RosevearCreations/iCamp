@@ -28,7 +28,9 @@ export default async function SecurityGovernancePage() {
       <div className="page-stack standard-ops-page">
         <section className="hero-panel">
           <p className="eyebrow">Build 255 · seven-app identity registry</p>
-          <h1>Multi-tier security, identity contracts &amp; Master freshness</h1>
+          <h1>
+            Multi-tier security, identity contracts &amp; Master freshness
+          </h1>
           <p className="hero-panel__lead">
             Source evidence comes from iCamp protected pins and this deployed
             revision. No other app becomes CONNECTED from a status label.
@@ -59,11 +61,11 @@ export default async function SecurityGovernancePage() {
           <ul>
             {APPLICATIONS.map((app) => (
               <li key={app.id}>
-                <strong>{app.id}</strong> · {app.model} · {app.repository} ·
-                {" "}
+                <strong>{app.id}</strong> · {app.model} · {app.repository} ·{" "}
                 {Object.entries(ROLE_PERMISSION_MATRIX[app.id] ?? {})
-                  .map(([role, permissions]) =>
-                    role + " (" + permissions.join(", ") + ")",
+                  .map(
+                    ([role, permissions]) =>
+                      role + " (" + permissions.join(", ") + ")",
                   )
                   .join("; ")}
               </li>
