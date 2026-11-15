@@ -63,19 +63,23 @@ const pin = {
 
 test("Canonical topology matches seven unique app identities and exact repository names", () => {
   assert.equal(validateRegistryAgainstTopology(topology).valid, true);
-  assert.deepEqual(APPLICATIONS.map((app) => app.id), [
-    "ai-data-platform",
-    "rosevear-ai-hub",
-    "rosevear-comms-hub",
-    "icamp",
-    "yw",
-    "devilndove",
-    "rosiedazzlers",
-  ]);
+  assert.deepEqual(
+    APPLICATIONS.map((app) => app.id),
+    [
+      "ai-data-platform",
+      "rosevear-ai-hub",
+      "rosevear-comms-hub",
+      "icamp",
+      "yw",
+      "devilndove",
+      "rosiedazzlers",
+    ],
+  );
   assert.equal(new Set(APPLICATIONS.map((app) => app.id)).size, 7);
   assert.deepEqual(
-    APPLICATIONS.filter((app) => app.model === "GOVERNED_EXTERNAL_SHELL")
-      .map((app) => app.id),
+    APPLICATIONS.filter((app) => app.model === "GOVERNED_EXTERNAL_SHELL").map(
+      (app) => app.id,
+    ),
     ["icamp", "yw"],
   );
   assert.equal(getRegistrySummary().externalConnected, false);
@@ -113,7 +117,9 @@ test("Six ordered tier gates and least privilege role matrix are source-only", (
   assert.equal(Object.keys(ROLE_PERMISSION_MATRIX).length, 7);
   assert.equal(
     Object.values(ROLE_PERMISSION_MATRIX).some((roles) =>
-      Object.values(roles).some((permissions) => permissions.includes("receiver.on")),
+      Object.values(roles).some((permissions) =>
+        permissions.includes("receiver.on"),
+      ),
     ),
     false,
   );
@@ -142,7 +148,8 @@ test("Unknown origins, stale/future receipts, wrong hash, extra PII and bad nonc
     { payload: { cardNumber: "secret" } },
   ]) {
     assert.equal(
-      validateSourceEnvelope({ ...envelope, ...candidate }, { asOf: now }).valid,
+      validateSourceEnvelope({ ...envelope, ...candidate }, { asOf: now })
+        .valid,
       false,
     );
   }
@@ -158,7 +165,8 @@ test("Cross-company tenant data, missing scope and unexpected scope fail closed"
     false,
   );
   assert.equal(
-    validateSourceEnvelope({ ...envelope, tenantId: null }, { asOf: now }).valid,
+    validateSourceEnvelope({ ...envelope, tenantId: null }, { asOf: now })
+      .valid,
     false,
   );
   assert.equal(
@@ -195,7 +203,10 @@ test("Role, MFA, tenant, app, T5 and principal mismatch are denied", () => {
   const cases = [
     [{ ...principal, role: "campground_viewer" }, request],
     [{ ...principal, mfaAssurance: "aal1" }, request],
-    [{ ...principal, tenantId: "22222222-2222-4333-8444-555555555555" }, request],
+    [
+      { ...principal, tenantId: "22222222-2222-4333-8444-555555555555" },
+      request,
+    ],
     [principal, { ...request, targetAppId: "yw" }],
     [principal, { ...request, tier: "T5_LIVE_TRANSPORT" }],
     [{ ...principal, principalId: "not-uuid" }, request],
@@ -263,7 +274,10 @@ test("Protected Sysop integration and original Meadow/Orbit remain unchanged", (
   assert.match(page, /Master CONNECTED: HOLD/u);
   assert.equal(STANDARD_THEME.style, "Meadow & evergreen");
   assert.match(
-    readFileSync(new URL("../app/settings/themes/page.tsx", import.meta.url), "utf8"),
+    readFileSync(
+      new URL("../app/settings/themes/page.tsx", import.meta.url),
+      "utf8",
+    ),
     /Orbit/u,
   );
 });
