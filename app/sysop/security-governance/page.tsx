@@ -27,7 +27,9 @@ export default async function SecurityGovernancePage() {
     <SysopShell>
       <div className="page-stack standard-ops-page">
         <section className="hero-panel">
-          <p className="eyebrow">Build 256 · signed-event revocation & seven-app registry</p>
+          <p className="eyebrow">
+            Build 256 · signed-event revocation & seven-app registry
+          </p>
           <h1>
             Multi-tier security, identity contracts &amp; Master freshness
           </h1>
