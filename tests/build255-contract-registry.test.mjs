@@ -62,6 +62,13 @@ const pin = {
 };
 
 test("Canonical topology matches seven unique app identities and exact repository names", () => {
+  const runtimeMirror = JSON.parse(
+    readFileSync(
+      new URL("../lib/release/build255-topology-mirror.json", import.meta.url),
+      "utf8",
+    ),
+  );
+  assert.deepEqual(runtimeMirror, topology);
   assert.equal(validateRegistryAgainstTopology(topology).valid, true);
   assert.deepEqual(
     APPLICATIONS.map((app) => app.id),
