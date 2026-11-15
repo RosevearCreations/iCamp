@@ -8,9 +8,7 @@ import {
   getCampgroundAuthorization,
   listAssignedCampgrounds,
 } from "@/lib/authz/postgres.mjs";
-import {
-  listSignedEventCustody,
-} from "@/lib/release/build256-signed-events-postgres.mjs";
+import { listSignedEventCustody } from "@/lib/release/build256-signed-events-postgres.mjs";
 import {
   claimSignedEventAction,
   reviewSignedRevocationAction,
@@ -96,9 +94,9 @@ export default async function SignedEventCustodyPage({
           {params.result ? <p role="status">Result: {params.result}</p> : null}
           <p>Current campground: {selected.campgroundId}</p>
           <p>
-            Original packet and issuer pin are read solely from protected
-            server configuration. If any independent Master source, signed
-            issuer, or database migration is unavailable, intake fails closed.
+            Original packet and issuer pin are read solely from protected server
+            configuration. If any independent Master source, signed issuer, or
+            database migration is unavailable, intake fails closed.
           </p>
           <form action={claimSignedEventAction}>
             <input
@@ -161,11 +159,7 @@ export default async function SignedEventCustodyPage({
             </label>
             <label>
               Independently signed revocation receipt
-              <select
-                name="signedRevocationReceiptId"
-                required
-                defaultValue=""
-              >
+              <select name="signedRevocationReceiptId" required defaultValue="">
                 <option value="" disabled>
                   Select genuine signed exception
                 </option>
