@@ -4,6 +4,14 @@ import Link from "next/link";
 import { SysopShell } from "@/components/sysop-shell";
 import { requireSysop } from "@/lib/platform/access";
 import { inspectBuild254Governance } from "@/lib/release/build254-security-postgres.mjs";
+import {
+  APPLICATIONS,
+  ROLE_PERMISSION_MATRIX,
+  SECURITY_TIERS,
+  getRegistrySummary,
+  validateRegistryAgainstTopology,
+} from "@/lib/release/build255-contract-registry.mjs";
+import topology from "@/lib/release/build255-topology-mirror.json";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
@@ -13,12 +21,16 @@ export const metadata: Metadata = {
 export default async function SecurityGovernancePage() {
   await requireSysop("/sysop");
   const report = await inspectBuild254Governance();
+  const identityRegistry = getRegistrySummary();
+  const canonicalTopology = validateRegistryAgainstTopology(topology);
   return (
     <SysopShell>
       <div className="page-stack standard-ops-page">
         <section className="hero-panel">
-          <p className="eyebrow">Build 254 · seven-app governance</p>
-          <h1>Multi-tier security &amp; signed Master freshness</h1>
+          <p className="eyebrow">Build 255 · seven-app identity registry</p>
+          <h1>
+            Multi-tier security, identity contracts &amp; Master freshness
+          </h1>
           <p className="hero-panel__lead">
             Source evidence comes from iCamp protected pins and this deployed
             revision. No other app becomes CONNECTED from a status label.
@@ -31,6 +43,38 @@ export default async function SecurityGovernancePage() {
           </p>
           <p>Canonical migration: {report.previous.checksum.status}</p>
           <p>Database provenance: {report.previous.provenance.status}</p>
+          <h2>Build 255 · Seven-app registry and permission matrix</h2>
+          <p>
+            <strong>Registry:</strong> {identityRegistry.schema}
+            {" · "}
+            <strong>Topology:</strong> {canonicalTopology.status}
+            {" · "}
+            <strong>Identities:</strong> {identityRegistry.identityCount}
+            {" · "}
+            <strong>Security tiers:</strong> {identityRegistry.tierCount}
+          </p>
+          <p>
+            Original source pins and rotations: <strong>HOLD</strong> until
+            independent custodian enrollment, freshness review and explicit
+            owner approval. This registry grants no T5 connection.
+          </p>
+          <ul>
+            {APPLICATIONS.map((app) => (
+              <li key={app.id}>
+                <strong>{app.id}</strong> · {app.model} · {app.repository} ·{" "}
+                {Object.entries(ROLE_PERMISSION_MATRIX[app.id] ?? {})
+                  .map(
+                    ([role, permissions]) =>
+                      role + " (" + permissions.join(", ") + ")",
+                  )
+                  .join("; ")}
+              </li>
+            ))}
+          </ul>
+          <p>
+            Six-tier contract: {SECURITY_TIERS.join(" → ")}. T5 is never
+            inferred from a source-only match, pin expiry or a role label.
+          </p>
           <h2>Security tiers</h2>
           <ul>
             {report.security.tiers.map((tier) => (
