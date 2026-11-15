@@ -36,9 +36,16 @@ export function AppShell({
       </a>
 
       <EnvironmentBanner />
-      <div className="slave-shell-banner" role="status" aria-label="Application shell classification">
+      <div
+        className="slave-shell-banner"
+        role="status"
+        aria-label="Application shell classification"
+      >
         <strong>SLAVE APPLICATION SHELL</strong>
-        <span>iCamp · governed by the three Rosevear Master applications · iCamp themes remain independent</span>
+        <span>
+          iCamp · governed by the three Rosevear Master applications · iCamp
+          themes remain independent
+        </span>
       </div>
 
       <header className="topbar">
