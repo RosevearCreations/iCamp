@@ -1007,7 +1007,6 @@ a {
   }
 }
 
-
 /* Build 407: persistent architecture marker; Meadow/Orbit visual themes remain iCamp-owned. */
 .slave-shell-banner {
   display: flex;
@@ -1032,6 +1031,10 @@ a {
   letter-spacing: 0.08em;
 }
 .slave-shell-banner span {\n  color: var(--muted);\n}
-@media (max-width:680px) {
-  .slave-shell-banner { align-items:flex-start; flex-direction:column; gap:.25rem; }
+@media (max-width: 680px) {
+  .slave-shell-banner {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
 }
