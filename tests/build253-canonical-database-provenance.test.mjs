@@ -1,9 +1,5 @@
 import assert from "node:assert/strict";
-import {
-  createHash,
-  generateKeyPairSync,
-  sign,
-} from "node:crypto";
+import { createHash, generateKeyPairSync, sign } from "node:crypto";
 import { existsSync, readFileSync } from "node:fs";
 import test from "node:test";
 
@@ -61,7 +57,10 @@ test("Live ledger compares exact source hashes without implying approval", () =>
   assert.equal(result.realSchemaMigrationAdoptionApproved, false);
   assert.equal(result.masterConnected, false);
   assert.equal(result.ownerProductionAcceptance, "HOLD");
-  assert.equal(result.rows.every((row) => row.checksumMatches), true);
+  assert.equal(
+    result.rows.every((row) => row.checksumMatches),
+    true,
+  );
   assert.equal(
     JSON.stringify(result).includes(BUILD253_CANONICAL_MIGRATIONS[0].sha256),
     false,
@@ -239,7 +238,10 @@ test("Supervised remediation stays read-only; original Meadow remains intact", (
   assert.match(service, /begin read only/u);
   assert.match(service, /ICAMP_EXPECTED_PRODUCTION_DATABASE_HOST/u);
   assert.match(service, /ICAMP_DB_PROVENANCE_REVIEWER_ENROLLED/u);
-  assert.doesNotMatch(service, /client\.query\("(?:insert|update|delete|alter|create)/iu);
+  assert.doesNotMatch(
+    service,
+    /client\.query\("(?:insert|update|delete|alter|create)/iu,
+  );
   assert.match(page, /requireSysop\("\/sysop"\)/u);
   assert.match(page, /Owner acceptance: HOLD/u);
   assert.equal(STANDARD_THEME.style, "Meadow & evergreen");

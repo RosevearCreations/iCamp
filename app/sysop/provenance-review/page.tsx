@@ -57,8 +57,8 @@ export default async function ProvenanceReviewPage() {
             </tbody>
           </table>
           <p>
-            A matching source checksum proves consistency with the release
-            files only. It does not prove independent database identity,
+            A matching source checksum proves consistency with the release files
+            only. It does not prove independent database identity,
             physical-device enrollment, backups or completed acceptance.
           </p>
         </section>
@@ -71,14 +71,11 @@ export default async function ProvenanceReviewPage() {
             Signed receipt verified:{" "}
             {report.provenance.signatureVerified ? "Source-only" : "HOLD"}.
           </p>
+          <p>Original iCamp custody: {report.previousSourceCustodyStatus}.</p>
           <p>
-            Original iCamp custody:{" "}
-            {report.previousSourceCustodyStatus}.
-          </p>
-          <p>
-            Signed database provenance is bound to the deployed commit,
-            host fingerprint and reviewed SQL manifest. It does not authorize
-            a migration, consume a one-time nonce or activate any Master.
+            Signed database provenance is bound to the deployed commit, host
+            fingerprint and reviewed SQL manifest. It does not authorize a
+            migration, consume a one-time nonce or activate any Master.
           </p>
         </section>
         <section className="content-panel">

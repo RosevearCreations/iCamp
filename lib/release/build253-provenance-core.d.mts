@@ -43,7 +43,9 @@ export interface Build253Receipt {
   nonce: string;
   signatureBase64: string;
 }
-export function databaseProvenanceReceiptMessage(receipt: Build253Receipt): string;
+export function databaseProvenanceReceiptMessage(
+  receipt: Build253Receipt,
+): string;
 export function verifyIndependentDatabaseProvenance(input: {
   sourceRevision: string | null;
   databaseHostname: string | null;
