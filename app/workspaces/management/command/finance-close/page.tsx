@@ -115,6 +115,12 @@ export default async function FinanceClosePage({
             >
               Refund safeguards
             </Link>
+            <Link
+              href="/workspaces/management/command/finance-reconciliation"
+              className="secondary-link"
+            >
+              Build 259 reconciliation
+            </Link>
           </div>
         </section>
         {query.saved ? (
