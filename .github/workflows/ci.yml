@@ -367,6 +367,12 @@ jobs:
       - name: Verify synthetic demo campground
         run: npm run demo:verify
 
+      - name: Build 258 real two-session booking hold collision (isolated PostgreSQL)
+        run: node scripts/build258-hold-concurrency.mjs
+        env:
+          ICAMP_APP_ENV: test
+          ICAMP_BUILD258_CONCURRENCY_ACK: ISOLATED_DB_ONLY
+
       - name: Build 198 isolated backup and restore with tenant-isolation proof
         run: npm run build198:restore-drill
         env:
