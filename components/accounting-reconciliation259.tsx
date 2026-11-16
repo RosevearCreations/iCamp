@@ -26,7 +26,8 @@ export function AccountingReconciliation259({
     } catch (error) {
       return {
         comparisons: [],
-        error: error instanceof Error ? error.message : "Invalid accounting CSV.",
+        error:
+          error instanceof Error ? error.message : "Invalid accounting CSV."
       };
     }
   }, [csv, expected]);
@@ -38,7 +39,8 @@ export function AccountingReconciliation259({
         settle, or post financial data.
       </p>
       <label htmlFor="accounting-reconciliation259">
-        CSV columns: currency,net_recorded_cents,invoices_issued_cents,succeeded_refunds_cents
+        CSV columns:
+        currency,net_recorded_cents,invoices_issued_cents,succeeded_refunds_cents
       </label>
       <textarea
         id="accounting-reconciliation259"
@@ -47,15 +49,20 @@ export function AccountingReconciliation259({
         spellCheck={false}
         value={csv}
         onChange={(event) => setCsv(event.target.value)}
-        placeholder={"currency,net_recorded_cents,invoices_issued_cents,succeeded_refunds_cents\nCAD,0,0,0"}
+        placeholder={
+          "currency,net_recorded_cents,invoices_issued_cents,succeeded_refunds_cents\nCAD,0,0,0"
+        }
       />
       {incomplete ? (
         <p className={styles.warning} role="alert">
-          Source evidence is incomplete. Do not use this comparison to close the books.
+          Source evidence is incomplete. Do not use this comparison to close the
+          books.
         </p>
       ) : null}
       {result.error ? (
-        <p className={styles.warning} role="alert">{result.error}</p>
+        <p className={styles.warning} role="alert">
+          {result.error}
+        </p>
       ) : null}
       {result.comparisons.length ? (
         <div className={styles.tableScroll}>
@@ -77,7 +84,9 @@ export function AccountingReconciliation259({
                   <td>{row.netRecordedCents}</td>
                   <td>{row.invoicesIssuedCents}</td>
                   <td>{row.succeededRefundsCents}</td>
-                  <td><strong>{row.status}</strong></td>
+                  <td>
+                    <strong>{row.status}</strong>
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -85,12 +94,13 @@ export function AccountingReconciliation259({
         </div>
       ) : null}
       {result.comparisons.length > 0 &&
-        result.comparisons.every((row) => row.status === "matched") ? (
-          <p className={styles.note}>
-            Local numbers agree with the pasted rows. Independent settlement,
-            source provenance, HST treatment and owner close approval remain unverified.
-          </p>
-        ) : null}
+      result.comparisons.every((row) => row.status === "matched") ? (
+        <p className={styles.note}>
+          Local numbers agree with the pasted rows. Independent settlement,
+          source provenance, HST treatment and owner close approval remain
+          unverified.
+        </p>
+      ) : null}
     </div>
   );
 }
