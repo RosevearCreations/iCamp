@@ -10,6 +10,10 @@ import {
   listPublishedBookingCampgrounds,
 } from "@/lib/public-booking-map/postgres.mjs";
 import { parsePublicBookingSearch } from "@/lib/public-booking-map/search.mjs";
+import {
+  reviewBookingWindow,
+  summarizePublicInventory,
+} from "@/lib/release/build258-booking-core.mjs";
 
 import { DiscoveryResults } from "./discovery-results";
 
@@ -144,6 +148,23 @@ export default async function PublicBookingMapPage({
 
   const { mapFilters, discoveryFilters } = search;
   const { arrivalDate, departureDate, availability } = mapFilters;
+  const stay = reviewBookingWindow({ arrivalDate, departureDate });
+  if (!stay.valid) {
+    return (
+      <AppShell>
+        <div className="page-stack">
+          <section className="content-panel" role="alert">
+            <h1>Choose a valid booking date window</h1>
+            <p>
+              A stay must be 1–90 nights, with checkout after arrival. No
+              inventory lookup, booking hold or waitlist offer was made.
+            </p>
+            <Link href="/booking/map">Return to date search</Link>
+          </section>
+        </div>
+      </AppShell>
+    );
+  }
 
   const snapshot = await getPublicBookingMapSnapshot({
     campgroundSlug: selected.slug,
@@ -152,6 +173,8 @@ export default async function PublicBookingMapPage({
     kind: "all",
     availability: "all",
   });
+  const availabilitySummary = summarizePublicInventory(snapshot.items, stay);
+  const counts = availabilitySummary.counts;
   const discoveryMatches = filterPublicDiscoveryItems(
     snapshot.items,
     discoveryFilters,
@@ -186,6 +209,32 @@ export default async function PublicBookingMapPage({
             side, using the same live availability as campground staff. Browse
             reviewed amenity points and landmark notes without assuming a
             verified route or step-free path.
+          </p>
+        </section>
+
+        <section
+          className="content-panel"
+          aria-labelledby="build258-date-clarity"
+        >
+          <h2 id="build258-date-clarity">Your stay · {stay.nightsLabel}</h2>
+          <p>
+            Check in <strong>{arrivalDate}</strong> · Check out{" "}
+            <strong>{departureDate}</strong>. Checkout day is not an occupied
+            night; these are date-only campground stay dates, not a timezone or
+            check-in-time guarantee.
+          </p>
+          <p role="status">
+            {counts
+              ? `${counts.available} available · ${counts.reservedOrHeld} held or reserved · ${counts.maintenance} maintenance · ${counts.closed} closed`
+              : "Current inventory summary not verified"}
+            {" · checked "}
+            <time dateTime={snapshot.generatedAt}>{snapshot.generatedAt}</time>
+          </p>
+          <p>
+            Availability is a point-in-time view. A site is not reserved until
+            an authorized server-side hold or confirmed reservation succeeds.
+            For an unavailable site, ask campground staff about waitlist review;
+            joining a staff queue does not guarantee an offer.
           </p>
         </section>
 
