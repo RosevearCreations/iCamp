@@ -32,6 +32,21 @@ export default function CommsHubConnectionPage() {
           status.
         </p>
         <section className="content-panel">
+          <h2>Build 257 · Independent protocol 1.1 synchronization</h2>
+          <p>
+            Additive iCamp releases are compatible with protocol 1.0 source
+            health peers. Protocol 1.1 enables separately negotiated new
+            read-only capabilities; missing peers hold only the dependent
+            feature, not local campground operations. This is contract
+            compatibility, not evidence of live Master CONNECTED state.
+          </p>
+          <p>
+            <Link href="/workspaces/management/campgrounds/contact-inbox">
+              Consent-aware staff contact inbox
+            </Link>
+          </p>
+        </section>
+        <section className="content-panel">
           <h2>Current deployment and help</h2>
           <p>
             <Link href="/workspaces/it-analysis/release-status">
