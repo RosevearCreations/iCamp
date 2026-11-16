@@ -132,6 +132,11 @@ export function AppShell({
                   </Link>
                 </li>
                 <li>
+                  <Link href="/workspaces/management/campgrounds/booking-review">
+                    Booking and waitlist review
+                  </Link>
+                </li>
+                <li>
                   <Link href="/launch/subscriptions">
                     Subscriptions & evidence
                   </Link>

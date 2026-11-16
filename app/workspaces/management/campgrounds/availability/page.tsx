@@ -96,6 +96,13 @@ export default async function LiveAvailabilityPage({
         <section className="content-card">
           <p>
             <Link
+              href={`/workspaces/management/campgrounds/booking-review?campground=${encodeURIComponent(selected.campgroundId)}&arrivalDate=${encodeURIComponent(arrivalDate)}&departureDate=${encodeURIComponent(departureDate)}`}
+            >
+              Build 258 · Waitlist interest and booking window review →
+            </Link>
+          </p>
+          <p>
+            <Link
               href={`/workspaces/management/campgrounds/availability/holds?campground=${encodeURIComponent(selected.campgroundId)}&arrivalDate=${encodeURIComponent(arrivalDate)}&departureDate=${encodeURIComponent(departureDate)}`}
             >
               Manage atomic temporary holds →
