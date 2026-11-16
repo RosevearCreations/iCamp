@@ -122,9 +122,9 @@ export default async function ContactInboxPage({
             </Link>
           </p>
           <p>
-            SMS STOP/START/HELP continues through the existing canonical
-            consent gateway. Nothing here stores a customer phone number,
-            message body, raw DTMF digits or provider secret.
+            SMS STOP/START/HELP continues through the existing canonical consent
+            gateway. Nothing here stores a customer phone number, message body,
+            raw DTMF digits or provider secret.
           </p>
         </section>
         <section className="content-panel">
@@ -143,11 +143,7 @@ export default async function ContactInboxPage({
               />
               <label>
                 Original event
-                <select
-                  name="providerEventId"
-                  defaultValue=""
-                  required
-                >
+                <select name="providerEventId" defaultValue="" required>
                   <option value="" disabled>
                     Choose a real inbound event
                   </option>
@@ -227,11 +223,7 @@ export default async function ContactInboxPage({
                             name="campgroundId"
                             value={selected.campgroundId}
                           />
-                          <input
-                            type="hidden"
-                            name="inboxId"
-                            value={task.id}
-                          />
+                          <input type="hidden" name="inboxId" value={task.id} />
                           <button
                             type="submit"
                             name="action"
@@ -253,11 +245,7 @@ export default async function ContactInboxPage({
                             selected.grant.permissions.includes(
                               "campground.operations.manage",
                             )) ? (
-                            <button
-                              type="submit"
-                              name="action"
-                              value="resolve"
-                            >
+                            <button type="submit" name="action" value="resolve">
                               Resolve locally
                             </button>
                           ) : null}
@@ -268,11 +256,7 @@ export default async function ContactInboxPage({
                             name="campgroundId"
                             value={selected.campgroundId}
                           />
-                          <input
-                            type="hidden"
-                            name="inboxId"
-                            value={task.id}
-                          />
+                          <input type="hidden" name="inboxId" value={task.id} />
                           <button type="submit">
                             Check current SMS follow-up consent
                           </button>
@@ -288,24 +272,22 @@ export default async function ContactInboxPage({
         <section className="content-panel">
           <h2>Protocol 1.1 — independent release handoff</h2>
           <p>
-            The queue stores only non-sensitive event identity and local
-            review state. If a Master is unavailable, ordinary campground
-            operations continue. New capabilities remain HOLD on 1.0 peers;
-            no cross-app database access, raw-secret sync or implicit 7-app
-            release dependency is introduced.
+            The queue stores only non-sensitive event identity and local review
+            state. If a Master is unavailable, ordinary campground operations
+            continue. New capabilities remain HOLD on 1.0 peers; no cross-app
+            database access, raw-secret sync or implicit 7-app release
+            dependency is introduced.
           </p>
           {report.holds.map((item) => (
             <p key={item.id}>
               {item.target} · {item.protocol} · {item.state} · {item.at}
             </p>
           ))}
-          {!report.holds.length ? (
-            <p>No Master handoffs queued.</p>
-          ) : null}
+          {!report.holds.length ? <p>No Master handoffs queued.</p> : null}
           <p>
-            Consent eligibility is not delivery approval. Outbound SMS/MMS
-            must pass the existing provider gateway and independently
-            authenticated consent/suppression checks at actual send time.
+            Consent eligibility is not delivery approval. Outbound SMS/MMS must
+            pass the existing provider gateway and independently authenticated
+            consent/suppression checks at actual send time.
           </p>
         </section>
       </div>

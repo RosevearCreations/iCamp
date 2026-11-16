@@ -207,7 +207,8 @@ create policy icamp_contact_task_actions257_role_select
   on public.icamp_contact_task_actions257 as restrictive for select to icamp_app
   using (
     exists (select 1 from public.icamp_contact_inbox257 i
-      where i.id=icamp_contact_task_actions257.inbox_id\n        and i.campground_id=icamp_contact_task_actions257.campground_id)
+      where i.id=icamp_contact_task_actions257.inbox_id
+        and i.campground_id=icamp_contact_task_actions257.campground_id)
   );
 create policy icamp_contact_master_handoff257_role_select
   on public.icamp_contact_master_handoff257 as restrictive for select to icamp_app
