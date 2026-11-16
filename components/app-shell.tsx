@@ -127,6 +127,11 @@ export function AppShell({
                   </Link>
                 </li>
                 <li>
+                  <Link href="/workspaces/management/campgrounds/contact-inbox">
+                    Contact inbox &amp; staff handoff
+                  </Link>
+                </li>
+                <li>
                   <Link href="/launch/subscriptions">
                     Subscriptions & evidence
                   </Link>
