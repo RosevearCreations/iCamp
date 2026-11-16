@@ -27,7 +27,7 @@ export function AccountingReconciliation259({
       return {
         comparisons: [],
         error:
-          error instanceof Error ? error.message : "Invalid accounting CSV."
+          error instanceof Error ? error.message : "Invalid accounting CSV.",
       };
     }
   }, [csv, expected]);

@@ -19,7 +19,7 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: "Build 259 financial reconciliation · iCamp",
   description:
-    "Property-scoped payment, deposit, invoice, refund, settlement and accounting review."
+    "Property-scoped payment, deposit, invoice, refund, settlement and accounting review.",
 };
 
 const money = (cents: number | null) =>
