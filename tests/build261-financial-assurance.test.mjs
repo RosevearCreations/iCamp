@@ -12,8 +12,7 @@ import {
 
 const issuer = generateKeyPairSync("ed25519");
 const reviewer = generateKeyPairSync("ed25519");
-const publicPem = (key) =>
-  key.export({ type: "spki", format: "pem" });
+const publicPem = (key) => key.export({ type: "spki", format: "pem" });
 const fingerprint = (key) =>
   createHash("sha256")
     .update(key.export({ type: "spki", format: "der" }))
@@ -48,8 +47,12 @@ function envelope(overrides = {}) {
   const bytes = Buffer.from(JSON.stringify(payload));
   return JSON.stringify({
     payload,
-    issuerSignatureBase64: sign(null, bytes, issuer.privateKey).toString("base64"),
-    reviewerSignatureBase64: sign(null, bytes, reviewer.privateKey).toString("base64"),
+    issuerSignatureBase64: sign(null, bytes, issuer.privateKey).toString(
+      "base64",
+    ),
+    reviewerSignatureBase64: sign(null, bytes, reviewer.privateKey).toString(
+      "base64",
+    ),
   });
 }
 const trustedSchema = {
@@ -96,7 +99,13 @@ test("Build 261 production migration must match pin, ledger checksum and RLS", (
     { ledgerReadSucceeded: false },
     { schema: { ...trustedSchema, guardPresent: false } },
     { record: { ...BUILD261_MIGRATION, version: "0237" } },
-    { record: { version: "0238", name: BUILD261_MIGRATION.name, checksum_sha256: "a".repeat(64) } },
+    {
+      record: {
+        version: "0238",
+        name: BUILD261_MIGRATION.name,
+        checksum_sha256: "a".repeat(64),
+      },
+    },
   ]) {
     const result = migration(override);
     assert.equal(result.status, "HOLD_PRODUCTION_MIGRATION_PROVENANCE");
@@ -115,13 +124,22 @@ test("Build 261 requires distinct issuer/reviewer signatures, source, expiry", (
     { reviewerPublicKeyPem: base.providerPublicKeyPem },
     { envelopeJson: envelope({ sourceRevision: "a".repeat(40) }) },
     { envelopeJson: envelope({ expiresAt: "2026-11-17T14:00:00.000Z" }) },
-    { envelopeJson: envelope().replace("provider-legal-approval-2026", "provider-legal-approval-2025") },
+    {
+      envelopeJson: envelope().replace(
+        "provider-legal-approval-2026",
+        "provider-legal-approval-2025",
+      ),
+    },
   ]) {
-    assert.throws(() => verifyProviderEnrollment261({
-      ...base,
-      envelopeJson: envelope(),
-      ...input,
-    }), /HOLD|distinct|signature/iu);
+    assert.throws(
+      () =>
+        verifyProviderEnrollment261({
+          ...base,
+          envelopeJson: envelope(),
+          ...input,
+        }),
+      /HOLD|distinct|signature/iu,
+    );
   }
 });
 
@@ -147,11 +165,14 @@ test("Build 261 no signed enrollment or no migration cannot approve a close", ()
     revision,
   });
   assert.equal(held.approvalEligible, false);
-  assert.equal(evaluateAssurance261({
-    migration: migration(),
-    enrollment: null,
-    configuredProvider: "mock",
-    expectedProvider: "external_test",
-    revision,
-  }).status, "HOLD_EXTERNAL_FINANCIAL_ASSURANCE");
+  assert.equal(
+    evaluateAssurance261({
+      migration: migration(),
+      enrollment: null,
+      configuredProvider: "mock",
+      expectedProvider: "external_test",
+      revision,
+    }).status,
+    "HOLD_EXTERNAL_FINANCIAL_ASSURANCE",
+  );
 });

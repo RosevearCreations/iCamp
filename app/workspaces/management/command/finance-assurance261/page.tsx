@@ -115,10 +115,10 @@ export default async function FinancialAssurance261Page() {
           <p className={styles.note}>
             The server reads the configured runtime DATABASE_URL only if its
             hostname matches the separately configured production pin. It checks
-            the original migration ledger, checksum, RLS, approval guard,
-            policy count and immutable privileges. A matching host pin alone
-            does not prove that a human independently authenticated the target.
-            No migration is applied from this page.
+            the original migration ledger, checksum, RLS, approval guard, policy
+            count and immutable privileges. A matching host pin alone does not
+            prove that a human independently authenticated the target. No
+            migration is applied from this page.
           </p>
         </section>
 
@@ -149,8 +149,8 @@ export default async function FinancialAssurance261Page() {
             Distinct issuer and reviewer signatures must match the current
             deployed revision and the exact migration digest. Independent
             provider identity verification, credentials, account settlement,
-            bank statements and accounting approval are separately required.
-            The current external payment adapter has not been installed.
+            bank statements and accounting approval are separately required. The
+            current external payment adapter has not been installed.
           </p>
         </section>
 
@@ -175,9 +175,9 @@ export default async function FinancialAssurance261Page() {
             </p>
           )}
           <p>
-            The system does not create settlement evidence, generate issuer keys,
-            approve financial close, post accounting journals, remit HST or
-            perform live captures or refunds automatically.
+            The system does not create settlement evidence, generate issuer
+            keys, approve financial close, post accounting journals, remit HST
+            or perform live captures or refunds automatically.
           </p>
         </section>
       </div>

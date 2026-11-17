@@ -1,7 +1,4 @@
-import type {
-  Assurance261,
-  MigrationReadback261,
-} from "./core.mjs";
+import type { Assurance261, MigrationReadback261 } from "./core.mjs";
 
 export interface FinanceAssuranceSnapshot261 {
   revision: string | null;
