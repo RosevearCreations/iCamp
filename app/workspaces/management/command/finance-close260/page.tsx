@@ -79,6 +79,14 @@ export default async function FinanceClose260Page({
             reconcile accounting movements, then independently record an
             owner-approved non-posting evidence packet only.
           </p>
+          <div className="hero-actions">
+            <Link
+              className="secondary-link"
+              href="/workspaces/management/command/finance-assurance261"
+            >
+              Build 261 production financial assurance
+            </Link>
+          </div>
           <p>
             <strong>Activation status:</strong> HOLD until the external
             settlement signer is genuinely enrolled and migration 0238 is
