@@ -95,6 +95,12 @@ export default async function FinanceReconciliation259Page({
             </Link>
             <Link
               className="secondary-link"
+              href="/workspaces/management/command/finance-close260"
+            >
+              Build 260 owner close review
+            </Link>
+            <Link
+              className="secondary-link"
               href="/workspaces/management/campgrounds/payments"
             >
               Deposit policy
