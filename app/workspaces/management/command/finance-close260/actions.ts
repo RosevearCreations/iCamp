@@ -4,6 +4,7 @@ import { requireStaff } from "@/lib/auth/current-session";
 import { getCampgroundAuthorization } from "@/lib/authz/postgres.mjs";
 import { getCampgroundReconciliation259 } from "@/lib/finance-reconciliation259/postgres.mjs";
 import { evaluateClose260 } from "@/lib/finance-close260/core.mjs";
+import { inspectFinancialAssurance261 } from "@/lib/finance-assurance261/postgres.mjs";
 import { recordOwnerFinanceApproval260 } from "@/lib/finance-close260/postgres.mjs";
 import { getPaymentProviderConfig } from "@/lib/payments/provider.mjs";
 
@@ -110,6 +111,16 @@ export async function reviewFinanceClose260Action(
           ...state.blockers,
           "Owner approval was refused while evidence is on HOLD.",
         ],
+      };
+    // Build 261 closes the gap between simulated CI migration tests and
+    // an original, independently enrolled production provider/source readback.
+    // Never let a Build 260 local CSV/statement match bypass these controls.
+    const externalAssurance = await inspectFinancialAssurance261();
+    if (!externalAssurance.assurance.approvalEligible)
+      return {
+        ...state,
+        status: "HOLD_261_EXTERNAL_FINANCIAL_ASSURANCE",
+        blockers: externalAssurance.assurance.blockers,
       };
     const receipt = await recordOwnerFinanceApproval260({
       actorUserId: session.user.id,
