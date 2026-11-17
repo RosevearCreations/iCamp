@@ -18,7 +18,9 @@ export type FinanceReviewState260 = {
 
 export const initialFinanceReviewState260: FinanceReviewState260 = {
   status: "HOLD_NOT_REVIEWED",
-  blockers: ["Provide independent provider, accounting and invoice/HST evidence."],
+  blockers: [
+    "Provide independent provider, accounting and invoice/HST evidence.",
+  ],
   invoiceCount: 0,
   statementId: null,
   packageDigest: null,
@@ -46,21 +48,40 @@ export async function reviewFinanceClose260Action(
     const accountingCsv = field(form, "accountingCsv", 12_000);
     const decision = field(form, "decision", 12);
     const reason = field(form, "reason", 700);
-    const auth = await getCampgroundAuthorization(session.user.id, campgroundId);
+    const auth = await getCampgroundAuthorization(
+      session.user.id,
+      campgroundId,
+    );
     if (
       !auth ||
-      !auth.permissions.some((key) => ["finance.read", "finance.manage"].includes(key)) ||
-      !auth.permissions.some((key) => ["reservation.read", "reservation.modify"].includes(key))
-    ) throw new Error("Current campground finance and reservation-read access is required.");
+      !auth.permissions.some((key) =>
+        ["finance.read", "finance.manage"].includes(key),
+      ) ||
+      !auth.permissions.some((key) =>
+        ["reservation.read", "reservation.modify"].includes(key),
+      )
+    )
+      throw new Error(
+        "Current campground finance and reservation-read access is required.",
+      );
 
     const paymentProvider = getPaymentProviderConfig();
     const signer = {
       provider: process.env.ICAMP_SETTLEMENT260_PROVIDER?.trim() || "",
       keyId: process.env.ICAMP_SETTLEMENT260_KEY_ID?.trim() || "",
-      publicKeyPem: process.env.ICAMP_SETTLEMENT260_PUBLIC_KEY_PEM?.replaceAll("\\n", "\n") || "",
+      publicKeyPem:
+        process.env.ICAMP_SETTLEMENT260_PUBLIC_KEY_PEM?.replaceAll(
+          "\\n",
+          "\n",
+        ) || "",
     };
-    if (paymentProvider.provider !== signer.provider || paymentProvider.mode !== "external")
-      throw new Error("HOLD: live independent external payment provider is not enabled.");
+    if (
+      paymentProvider.provider !== signer.provider ||
+      paymentProvider.mode !== "external"
+    )
+      throw new Error(
+        "HOLD: live independent external payment provider is not enabled.",
+      );
     const snapshot = await getCampgroundReconciliation259({
       userId: session.user.id,
       campgroundId,
@@ -83,7 +104,13 @@ export async function reviewFinanceClose260Action(
     };
     if (decision !== "approve") return state;
     if (report.status !== "READY_FOR_OWNER_NONPOSTING_DECISION")
-      return { ...state, blockers: [...state.blockers, "Owner approval was refused while evidence is on HOLD."] };
+      return {
+        ...state,
+        blockers: [
+          ...state.blockers,
+          "Owner approval was refused while evidence is on HOLD.",
+        ],
+      };
     const receipt = await recordOwnerFinanceApproval260({
       actorUserId: session.user.id,
       campgroundId,
@@ -104,7 +131,9 @@ export async function reviewFinanceClose260Action(
     return {
       ...initialFinanceReviewState260,
       blockers: [
-        error instanceof Error ? error.message : "Financial close review unavailable.",
+        error instanceof Error
+          ? error.message
+          : "Financial close review unavailable.",
       ],
     };
   }

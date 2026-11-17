@@ -49,8 +49,9 @@ export default async function FinanceClose260Page({
   ).filter((value): value is NonNullable<typeof value> => value !== null);
   if (!permitted.length) redirect("/auth/not-authorized");
   const selected =
-    permitted.find(({ campground }) => campground.campgroundId === query.campground) ??
-    permitted[0];
+    permitted.find(
+      ({ campground }) => campground.campgroundId === query.campground,
+    ) ?? permitted[0];
   const ownerCandidate =
     selected.auth.permissions.includes("finance.manage") &&
     selected.auth.permissions.includes("staff.manage");
@@ -81,8 +82,8 @@ export default async function FinanceClose260Page({
           <p>
             <strong>Activation status:</strong> HOLD until the external
             settlement signer is genuinely enrolled and migration 0238 is
-            independently applied and verified. The current mock payment
-            adapter cannot verify external settlement.
+            independently applied and verified. The current mock payment adapter
+            cannot verify external settlement.
           </p>
         </section>
         <section className="content-panel">
@@ -118,8 +119,8 @@ export default async function FinanceClose260Page({
             </button>
           </form>
           <p className={styles.note}>
-            Historic source rows are capped. Selection does not certify
-            uncapped balances. Review cannot promote incomplete evidence.
+            Historic source rows are capped. Selection does not certify uncapped
+            balances. Review cannot promote incomplete evidence.
           </p>
         </section>
         <FinanceClose260Review

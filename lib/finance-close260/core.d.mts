@@ -1,4 +1,8 @@
-import type { Reconciliation259, Invoice259, Schedule259 } from "../finance-reconciliation259/core.mjs";
+import type {
+  Reconciliation259,
+  Invoice259,
+  Schedule259,
+} from "../finance-reconciliation259/core.mjs";
 import type { FinanceSource, FinanceReview } from "../finance-close/core.mjs";
 export interface Snapshot260 {
   source: FinanceSource;
@@ -25,7 +29,10 @@ export interface TaxInvoice260 {
 }
 export function digest260(input: unknown): string;
 export function parseTaxInvoiceCsv260(csv: string): TaxInvoice260[];
-export function compareTaxInvoices260(imported: TaxInvoice260[], invoices: Invoice259[]): Array<{invoiceNumber:string;status:string}>;
+export function compareTaxInvoices260(
+  imported: TaxInvoice260[],
+  invoices: Invoice259[],
+): Array<{ invoiceNumber: string; status: string }>;
 export function verifyProviderPacket260(
   raw: string,
   options: {
@@ -48,9 +55,15 @@ export interface CloseReport260 {
   status: string;
   blockers: string[];
   invoiceCount: number;
-  taxComparison: Array<{invoiceNumber:string;status:string}>;
-  accountingComparison: Array<{currencyCode:string;status:string}>;
-  settlement: null | { signerKeyId:string;statementId:string;rowCount:number;payloadDigest:string;status:string };
+  taxComparison: Array<{ invoiceNumber: string; status: string }>;
+  accountingComparison: Array<{ currencyCode: string; status: string }>;
+  settlement: null | {
+    signerKeyId: string;
+    statementId: string;
+    rowCount: number;
+    payloadDigest: string;
+    status: string;
+  };
   sourceDigest: string;
   taxDigest: string;
   accountingDigest: string;
@@ -63,7 +76,11 @@ export function evaluateClose260(input: {
   signedProviderJson: string;
   taxInvoiceCsv: string;
   accountingCsv: string;
-  signer: {provider: string; keyId: string; publicKeyPem: string};
+  signer: { provider: string; keyId: string; publicKeyPem: string };
   now?: Date;
 }): CloseReport260;
-export function validatedApproval260(decision: string, reason: string, report: CloseReport260): {note:string;closePackageDigest:string};
+export function validatedApproval260(
+  decision: string,
+  reason: string,
+  report: CloseReport260,
+): { note: string; closePackageDigest: string };

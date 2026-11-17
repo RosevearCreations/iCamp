@@ -7,5 +7,5 @@ export function recordOwnerFinanceApproval260(input: {
   source: FinanceSource;
   reason: string;
   decision: string;
-}): Promise<{id:string;disposition:string}>;
+}): Promise<{ id: string; disposition: string }>;
 export function closeOwnerFinance260PoolForTests(): Promise<void>;

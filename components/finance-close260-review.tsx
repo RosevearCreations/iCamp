@@ -27,8 +27,8 @@ export function FinanceClose260Review({
       <h2>Independently verified evidence and owner review</h2>
       <p>
         This form sends evidence to the authenticated iCamp server only for
-        verification. The raw provider statement and tax/accounting CSVs are
-        not saved to the approval ledger. Only fixed hashes and source identifiers
+        verification. The raw provider statement and tax/accounting CSVs are not
+        saved to the approval ledger. Only fixed hashes and source identifiers
         are retained after an authorized decision.
       </p>
       <form action={submit} className={styles.preview}>
@@ -47,7 +47,8 @@ export function FinanceClose260Review({
           placeholder='{"payload":{"schema":"icamp.provider-settlement.v1", "...":"..."},"signatureBase64":"..."}'
         />
         <label htmlFor="finance260-tax">
-          Independent invoice/HST export (original invoice numbers, integer cents)
+          Independent invoice/HST export (original invoice numbers, integer
+          cents)
         </label>
         <textarea
           id="finance260-tax"
@@ -108,25 +109,41 @@ export function FinanceClose260Review({
         </div>
       </form>
       <div aria-live="polite" role="status" className={styles.meta}>
-        <p><strong>Decision status:</strong> {pending ? "Checking original sources..." : result.status}</p>
-        <p><strong>Dated invoices inspected:</strong> {result.invoiceCount}</p>
-        {result.statementId ? <p><strong>Signed statement:</strong> {result.statementId}</p> : null}
+        <p>
+          <strong>Decision status:</strong>{" "}
+          {pending ? "Checking original sources..." : result.status}
+        </p>
+        <p>
+          <strong>Dated invoices inspected:</strong> {result.invoiceCount}
+        </p>
+        {result.statementId ? (
+          <p>
+            <strong>Signed statement:</strong> {result.statementId}
+          </p>
+        ) : null}
         {result.packageDigest ? (
-          <p><strong>Evidence package SHA-256:</strong> <code>{result.packageDigest}</code></p>
+          <p>
+            <strong>Evidence package SHA-256:</strong>{" "}
+            <code>{result.packageDigest}</code>
+          </p>
         ) : null}
         {result.recordId ? (
-          <p><strong>Immutable approval receipt:</strong> {result.recordId}</p>
+          <p>
+            <strong>Immutable approval receipt:</strong> {result.recordId}
+          </p>
         ) : null}
         {result.blockers.map((item, index) => (
-          <p key={index} className={styles.warning}>{item}</p>
+          <p key={index} className={styles.warning}>
+            {item}
+          </p>
         ))}
       </div>
       <p className={styles.note}>
-        A matching signed statement verifies the enrolled signer and source references,
-        not arrival of funds at the bank. Taxable status, HST filings, bank
-        statements, ledger journals and statutory book close still require
-        independent accountant/owner controls. A different source snapshot
-        invalidates the reviewed evidence hash.
+        A matching signed statement verifies the enrolled signer and source
+        references, not arrival of funds at the bank. Taxable status, HST
+        filings, bank statements, ledger journals and statutory book close still
+        require independent accountant/owner controls. A different source
+        snapshot invalidates the reviewed evidence hash.
       </p>
     </section>
   );
