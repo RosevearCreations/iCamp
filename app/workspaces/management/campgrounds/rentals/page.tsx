@@ -12,6 +12,7 @@ import {
   listAssignedCampgrounds,
 } from "@/lib/authz/postgres.mjs";
 import type { RentalOffer } from "@/lib/rental-planner/core.mjs";
+import { inventoryReadiness263 } from "@/lib/rental-planner/sessions263.mjs";
 import {
   listManagedRentalOffers,
   listManagedRentalRequests,
@@ -159,6 +160,7 @@ export default async function ManageRentalPlannerPage({
     }),
   ]);
   const unlisted = candidates.filter((asset) => !asset.alreadyListed);
+  const inventory = inventoryReadiness263(candidates, offers);
   return (
     <AppShell>
       <div className="page-stack">
@@ -290,6 +292,44 @@ export default async function ManageRentalPlannerPage({
             Horseback riding is a staff-supervised activity, not unattended
             animal rental. Qualified staff, horse welfare, insurance, and local
             safety rules require separate human verification.
+          </p>
+        </section>
+        <section className="content-panel">
+          <SectionHeading
+            eyebrow="Build 263 · original source-backed inventory"
+            title="Rental inventory coverage and supervised sessions"
+            id="rental-inventory263"
+            helpTopic="campground.structure"
+          />
+          <p>
+            Eligible registered assets observed:{" "}
+            <strong>{inventory.registeredEligibleAssetsObserved}</strong>.
+            Operational candidates observed:{" "}
+            <strong>{inventory.operationalCandidatesObserved}</strong>.
+            Published offers:{" "}
+            <strong>{inventory.publishedOffersObserved}</strong>.
+            Unpublished offers:{" "}
+            <strong>{inventory.unpublishedOffersObserved}</strong>.
+            Unlisted candidates observed:{" "}
+            <strong>{inventory.notYetListedCandidatesObserved}</strong>.
+          </p>
+          <p>
+            {inventory.evidenceMayBeTruncated
+              ? "The source query reached its limit; inventory coverage is incomplete."
+              : "Source-backed observations only. They do not certify all physical stock."}
+          </p>
+          <div className="hero-actions">
+            <Link
+              href={`/workspaces/management/campgrounds/rental-sessions263?campground=${encodeURIComponent(selected.campgroundId)}`}
+              className="secondary-link"
+            >
+              Open guided activity calendar
+            </Link>
+          </div>
+          <p>
+            Campground managers can plan instructor-led horseback, paddling,
+            kite and nature sessions without selling tickets, allocating stock
+            or confirming attendance.
           </p>
         </section>
         <section className="content-panel">

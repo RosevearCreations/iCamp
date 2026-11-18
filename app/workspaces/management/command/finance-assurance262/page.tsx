@@ -77,6 +77,14 @@ export default async function FinancialAssurance262Page() {
               : "HOLD — independent source evidence missing"}
           </p>
         </section>
+        <div className="hero-actions">
+          <Link
+            className="secondary-link"
+            href="/workspaces/management/command/finance-assurance263"
+          >
+            Build 263 independent financial evidence
+          </Link>
+        </div>
         <section className="content-panel">
           <SectionHeading
             eyebrow="Original source"
