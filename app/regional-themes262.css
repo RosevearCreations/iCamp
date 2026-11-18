@@ -424,3 +424,64 @@
     padding: 1.5rem;
   }
 }
+
+/* Build 263: legible focus, wide theme names and mobile controls.
+   No business state, tenant grants or accessible status meaning changes. */
+.app-shell:is(
+    [data-visual="niagara"],
+    [data-visual="nova-scotia"],
+    [data-visual="bc-mountains"],
+    [data-visual="saskatchewan"]
+  )
+  .visual-theme-selector
+  select {
+  max-width: min(100%, 17rem);
+  min-width: 10rem;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--ink);
+}
+.app-shell:is(
+    [data-visual="niagara"],
+    [data-visual="nova-scotia"],
+    [data-visual="bc-mountains"],
+    [data-visual="saskatchewan"]
+  )
+  :is(a, button, input, select, textarea, summary):focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
+}
+.app-shell:is(
+    [data-visual="niagara"],
+    [data-visual="nova-scotia"],
+    [data-visual="bc-mountains"],
+    [data-visual="saskatchewan"]
+  )
+  .hero-panel {
+  background-blend-mode: normal;
+  text-shadow: 0 1px 3px rgb(0 0 0 / 24%);
+}
+@media (max-width: 46rem) {
+  .app-shell:is(
+      [data-visual="niagara"],
+      [data-visual="nova-scotia"],
+      [data-visual="bc-mountains"],
+      [data-visual="saskatchewan"]
+    )
+    .visual-theme-selector
+    select {
+    max-width: min(100%, 19rem);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .app-shell:is(
+      [data-visual="niagara"],
+      [data-visual="nova-scotia"],
+      [data-visual="bc-mountains"],
+      [data-visual="saskatchewan"]
+    )
+    :is(.workspace-card, .primary-button, .primary-link) {
+    transition: none;
+    animation: none;
+  }
+}
