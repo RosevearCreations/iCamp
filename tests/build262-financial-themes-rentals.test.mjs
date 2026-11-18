@@ -86,7 +86,8 @@ test("Build 262 rejects fake, expired, replayed or cross-host database custody",
     },
   ]) {
     assert.throws(
-      () => verifyDbCustody262({ ...opts, envelopeJson: signed(), ...override }),
+      () =>
+        verifyDbCustody262({ ...opts, envelopeJson: signed(), ...override }),
       /HOLD/iu,
     );
   }
@@ -123,8 +124,16 @@ test("Build 262 rental templates include paddle boats, horses, kites and other c
   assert.equal(findRentalTemplate262("pedal-boats")?.assetType, "watercraft");
   assert.equal(findRentalTemplate262("kites-games")?.assetType, "other");
   assert.equal(findRentalTemplate262("equestrian")?.kind, "facility");
-  assert.match(findRentalTemplate262("equestrian")?.guidance ?? "", /supervised|staff/iu);
-  assert.equal(rentalTemplates262("equipment", "watercraft").some((item) => item.id === "pedal-boats"), true);
+  assert.match(
+    findRentalTemplate262("equestrian")?.guidance ?? "",
+    /supervised|staff/iu,
+  );
+  assert.equal(
+    rentalTemplates262("equipment", "watercraft").some(
+      (item) => item.id === "pedal-boats",
+    ),
+    true,
+  );
   const managed = readFileSync(
     new URL(
       "../app/workspaces/management/campgrounds/rentals/page.tsx",

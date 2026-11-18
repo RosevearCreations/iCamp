@@ -158,9 +158,9 @@ export default async function PublicRentalsPage({
           />
           <p>
             The categories below are examples, not an assertion of availability.
-            Only actual campground-published operational assets appear in
-            the rental results after the date filters. Contact campground
-            staff for supervised activities, including horseback riding.
+            Only actual campground-published operational assets appear in the
+            rental results after the date filters. Contact campground staff for
+            supervised activities, including horseback riding.
           </p>
           <details>
             <summary>Explore campground equipment and activity types</summary>

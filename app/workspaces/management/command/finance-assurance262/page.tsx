@@ -32,10 +32,10 @@ export default async function FinancialAssurance262Page() {
       );
       return Boolean(
         permission?.permissions.includes("finance.manage") &&
-          permission.permissions.includes("staff.manage") &&
-          permission.permissions.some((item) =>
-            ["reservation.read", "reservation.modify"].includes(item),
-          ),
+        permission.permissions.includes("staff.manage") &&
+        permission.permissions.some((item) =>
+          ["reservation.read", "reservation.modify"].includes(item),
+        ),
       );
     }),
   );
@@ -57,7 +57,9 @@ export default async function FinancialAssurance262Page() {
           <span>Build 262</span>
         </nav>
         <section className="hero-panel">
-          <p className="eyebrow">Build 262 · immutable financial safety gates</p>
+          <p className="eyebrow">
+            Build 262 · immutable financial safety gates
+          </p>
           <h1>Production database custody & settlement activation</h1>
           <p className="hero-panel__lead">
             Compare the actual production migration readback with two-party
@@ -66,8 +68,7 @@ export default async function FinancialAssurance262Page() {
             treats a signed statement as bank clearing.
           </p>
           <p>
-            <strong>Settlement activation:</strong>{" "}
-            {report.activation.status}
+            <strong>Settlement activation:</strong> {report.activation.status}
           </p>
           <p>
             <strong>Owner non-posting review:</strong>{" "}
@@ -89,8 +90,7 @@ export default async function FinancialAssurance262Page() {
               {report.sourceRevision ?? "HOLD"}
             </p>
             <p>
-              <strong>Original migration:</strong>{" "}
-              {report.migrationStatus}
+              <strong>Original migration:</strong> {report.migrationStatus}
             </p>
             <p>
               <strong>Dual-signed database custody:</strong>{" "}
@@ -102,11 +102,11 @@ export default async function FinancialAssurance262Page() {
             </p>
           </div>
           <p className={styles.note}>
-            Signatures are checked using separately enrolled public keys
-            against the production hostname fingerprint, exact deployed commit
-            and migration 0238 checksum. The original database hostname,
-            private credentials and source documents are not displayed. A
-            signature alone is not independent legal identity verification.
+            Signatures are checked using separately enrolled public keys against
+            the production hostname fingerprint, exact deployed commit and
+            migration 0238 checksum. The original database hostname, private
+            credentials and source documents are not displayed. A signature
+            alone is not independent legal identity verification.
           </p>
         </section>
         <section className="content-panel">
@@ -123,11 +123,15 @@ export default async function FinancialAssurance262Page() {
             </p>
             <p>
               <strong>External payment adapter:</strong>{" "}
-              {report.paymentAdapterReady ? "capability detected" : "NOT INSTALLED"}
+              {report.paymentAdapterReady
+                ? "capability detected"
+                : "NOT INSTALLED"}
             </p>
             <p>
               <strong>External refund adapter:</strong>{" "}
-              {report.refundAdapterReady ? "capability detected" : "NOT INSTALLED"}
+              {report.refundAdapterReady
+                ? "capability detected"
+                : "NOT INSTALLED"}
             </p>
             <p>
               <strong>Bank settlement verified:</strong>{" "}
@@ -139,8 +143,8 @@ export default async function FinancialAssurance262Page() {
           <p>
             A source-consistent invoice, HST calculation, or settlement
             statement is not proof that the provider deposited funds.
-            Independent bank evidence, approved provider credentials,
-            insurance, accounting and owner authorization remain separate.
+            Independent bank evidence, approved provider credentials, insurance,
+            accounting and owner authorization remain separate.
           </p>
         </section>
         <section className="content-panel">
@@ -163,9 +167,9 @@ export default async function FinancialAssurance262Page() {
             </p>
           )}
           <p>
-            This application remains non-posting and cannot automatically
-            enable external charges, refunds, settlements, tax filing or the
-            accounting close.
+            This application remains non-posting and cannot automatically enable
+            external charges, refunds, settlements, tax filing or the accounting
+            close.
           </p>
         </section>
       </div>

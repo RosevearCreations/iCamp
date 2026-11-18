@@ -155,8 +155,8 @@ export function AppShell({
             <strong>✦ iCamp visual themes</strong>
             <span>Meadow, Orbit + four Canadian regions · Build 262</span>
             <span className="sidebar__principle-subtle">
-              Six themes share status meanings, accessible layouts and campground
-              permissions.
+              Six themes share status meanings, accessible layouts and
+              campground permissions.
             </span>
           </div>
         </aside>

@@ -8,5 +8,8 @@ export interface RentalTemplate262 {
   readonly guidance: string;
 }
 export const RENTAL_CATEGORIES262: readonly RentalTemplate262[];
-export function rentalTemplates262(kind: string, assetType: string): RentalTemplate262[];
+export function rentalTemplates262(
+  kind: string,
+  assetType: string,
+): RentalTemplate262[];
 export function findRentalTemplate262(id: string): RentalTemplate262 | null;

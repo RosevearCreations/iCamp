@@ -288,8 +288,8 @@ export default async function ManageRentalPlannerPage({
           </div>
           <p>
             Horseback riding is a staff-supervised activity, not unattended
-            animal rental. Qualified staff, horse welfare, insurance, and
-            local safety rules require separate human verification.
+            animal rental. Qualified staff, horse welfare, insurance, and local
+            safety rules require separate human verification.
           </p>
         </section>
         <section className="content-panel">
