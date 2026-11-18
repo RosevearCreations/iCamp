@@ -64,6 +64,14 @@ export default async function FinancialAssurance261Page() {
             settlement-signer enrollment. A code deployment cannot certify
             operational activation, bank clearing, tax filing or book close.
           </p>
+          <div className="hero-actions">
+            <Link
+              className="secondary-link"
+              href="/workspaces/management/command/finance-assurance262"
+            >
+              Build 262 signed database custody
+            </Link>
+          </div>
           <p>
             <strong>Evidence-review approval gate:</strong>{" "}
             {evidence.ownerEvidenceDecisionStatus}

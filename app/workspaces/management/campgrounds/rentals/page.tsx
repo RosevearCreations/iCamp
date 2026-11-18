@@ -238,6 +238,8 @@ export default async function ManageRentalPlannerPage({
                   <OfferEditor
                     offer={null}
                     assetId={asset.id}
+                    assetClass={asset.kind}
+                    assetType={asset.type}
                     campgroundId={selected.campgroundId}
                   />
                 </details>
@@ -281,6 +283,8 @@ export default async function ManageRentalPlannerPage({
                 <OfferEditor
                   offer={offer}
                   assetId={offer.assetId}
+                  assetClass={offer.assetClass}
+                  assetType={offer.itemType}
                   campgroundId={selected.campgroundId}
                 />
               </details>
