@@ -4,6 +4,8 @@ import { redirect } from "next/navigation";
 
 import { AppShell } from "@/components/app-shell";
 import { SectionHeading } from "@/components/section-heading";
+import { RentalTemplatePicker262 } from "@/components/rental-template-picker262";
+import { RENTAL_CATEGORIES262 } from "@/lib/rental-planner/catalog262.mjs";
 import { requireAnyCampgroundPermission } from "@/lib/authz/current-user";
 import {
   getCampgroundAuthorization,
@@ -31,10 +33,14 @@ function OfferEditor({
   offer,
   campgroundId,
   assetId,
+  assetClass,
+  assetType,
 }: {
   offer: RentalOffer | null;
   campgroundId: string;
   assetId: string;
+  assetClass: string;
+  assetType: string;
 }) {
   return (
     <form action={saveRentalOfferAction} className={styles.form}>
@@ -42,6 +48,7 @@ function OfferEditor({
       <input type="hidden" name="assetId" value={assetId} />
       <input type="hidden" name="offerId" value={offer?.id ?? ""} />
       <input type="hidden" name="rowVersion" value={offer?.rowVersion ?? 0} />
+      <RentalTemplatePicker262 assetClass={assetClass} assetType={assetType} />
       <label>
         Staff-reviewed description
         <textarea
@@ -252,6 +259,37 @@ export default async function ManageRentalPlannerPage({
             >
               Review source assets and operational status →
             </Link>
+          </p>
+        </section>
+        <section className="content-panel">
+          <SectionHeading
+            eyebrow="Build 262 · campground rental catalogue"
+            title="Equipment and guided activity starter templates"
+            id="rental-templates262"
+            helpTopic="campground.structure"
+          />
+          <p>
+            Register each physical rental item in Asset Management before
+            listing it. One operational source asset supports one provisional
+            planning slot. These categories are examples, never invented stock,
+            guest bookings or automatic handovers.
+          </p>
+          <div className={styles.cards}>
+            {RENTAL_CATEGORIES262.map((item) => (
+              <article className={styles.card} key={item.id}>
+                <h3>{item.title}</h3>
+                <p>{item.examples}</p>
+                <p>
+                  Asset source: {item.kind} / {item.assetType}
+                </p>
+                <p>{item.guidance}</p>
+              </article>
+            ))}
+          </div>
+          <p>
+            Horseback riding is a staff-supervised activity, not unattended
+            animal rental. Qualified staff, horse welfare, insurance, and
+            local safety rules require separate human verification.
           </p>
         </section>
         <section className="content-panel">
