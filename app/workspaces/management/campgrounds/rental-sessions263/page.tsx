@@ -145,7 +145,10 @@ export default async function SupervisedRentalSessions263Page({
               this campground. Add or inspect a real rental asset first.
             </p>
           ) : (
-            <form action={planSupervisedSession263Action} className={styles.form}>
+            <form
+              action={planSupervisedSession263Action}
+              className={styles.form}
+            >
               <input
                 type="hidden"
                 name="campgroundId"
@@ -176,8 +179,12 @@ export default async function SupervisedRentalSessions263Page({
               <label>
                 Supervised activity
                 <select name="activityKind" required>
-                  <option value="guided_horse">Guided horseback / equestrian</option>
-                  <option value="paddling_instruction">Paddling instruction</option>
+                  <option value="guided_horse">
+                    Guided horseback / equestrian
+                  </option>
+                  <option value="paddling_instruction">
+                    Paddling instruction
+                  </option>
                   <option value="kite_clinic">Kite clinic</option>
                   <option value="guided_nature">Guided nature activity</option>
                   <option value="other_guided">Other staff-led session</option>
@@ -210,9 +217,9 @@ export default async function SupervisedRentalSessions263Page({
             </form>
           )}
           <p>
-            Horseback activities require a qualified on-site instructor,
-            animal welfare checks, insurance and appropriate permissions.
-            No session auto-assigns an animal, worker, attendee or device.
+            Horseback activities require a qualified on-site instructor, animal
+            welfare checks, insurance and appropriate permissions. No session
+            auto-assigns an animal, worker, attendee or device.
           </p>
         </section>
         <section className="content-panel">
@@ -223,7 +230,10 @@ export default async function SupervisedRentalSessions263Page({
             helpTopic="campground.structure"
           />
           {!plans.sessions.length ? (
-            <p>No original proposed sessions have been observed in the selected window.</p>
+            <p>
+              No original proposed sessions have been observed in the selected
+              window.
+            </p>
           ) : (
             <div className={styles.cards}>
               {plans.sessions.map((session) => (
@@ -262,8 +272,8 @@ export default async function SupervisedRentalSessions263Page({
           )}
           <p>
             Planning only. No attendee enrolment, animal handover, rental
-            capture, refund, ticket, worker dispatch or guest booking is
-            created or altered by these operations.
+            capture, refund, ticket, worker dispatch or guest booking is created
+            or altered by these operations.
           </p>
         </section>
       </div>

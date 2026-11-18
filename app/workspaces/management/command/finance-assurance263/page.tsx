@@ -32,10 +32,10 @@ export default async function FinancialEvidence263Page() {
       );
       return Boolean(
         grant?.permissions.includes("finance.manage") &&
-          grant.permissions.includes("staff.manage") &&
-          grant.permissions.some((value) =>
-            ["reservation.read", "reservation.modify"].includes(value),
-          ),
+        grant.permissions.includes("staff.manage") &&
+        grant.permissions.some((value) =>
+          ["reservation.read", "reservation.modify"].includes(value),
+        ),
       );
     }),
   );

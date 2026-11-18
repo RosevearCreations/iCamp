@@ -69,7 +69,8 @@ test("Build263 staff sessions require true date/time, safety and real offer IDs"
     end: "12:00",
     participantLimit: 8,
     activityKind: "guided_horse",
-    safetyBrief: "Qualified instructor, helmets, animal welfare and weather checks.",
+    safetyBrief:
+      "Qualified instructor, helmets, animal welfare and weather checks.",
   });
   assert.equal(record.startMinute, 600);
   assert.equal(record.endMinute, 720);
@@ -84,19 +85,18 @@ test("Build263 staff sessions require true date/time, safety and real offer IDs"
     { safetyBrief: "ok" },
     { offerId: "synthetic" },
   ]) {
-    assert.throws(
-      () =>
-        normalizeRentalSession263({
-          offerId: realOffer,
-          plannedDay: "2026-11-19",
-          start: "10:00",
-          end: "12:00",
-          participantLimit: 8,
-          activityKind: "guided_horse",
-          safetyBrief:
-            "Qualified instructor, helmets, animal welfare and weather checks.",
-          ...changed,
-        }),
+    assert.throws(() =>
+      normalizeRentalSession263({
+        offerId: realOffer,
+        plannedDay: "2026-11-19",
+        start: "10:00",
+        end: "12:00",
+        participantLimit: 8,
+        activityKind: "guided_horse",
+        safetyBrief:
+          "Qualified instructor, helmets, animal welfare and weather checks.",
+        ...changed,
+      }),
     );
   }
 });

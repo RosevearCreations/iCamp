@@ -307,9 +307,8 @@ export default async function ManageRentalPlannerPage({
             Operational candidates observed:{" "}
             <strong>{inventory.operationalCandidatesObserved}</strong>.
             Published offers:{" "}
-            <strong>{inventory.publishedOffersObserved}</strong>.
-            Unpublished offers:{" "}
-            <strong>{inventory.unpublishedOffersObserved}</strong>.
+            <strong>{inventory.publishedOffersObserved}</strong>. Unpublished
+            offers: <strong>{inventory.unpublishedOffersObserved}</strong>.
             Unlisted candidates observed:{" "}
             <strong>{inventory.notYetListedCandidatesObserved}</strong>.
           </p>
