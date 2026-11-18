@@ -3,6 +3,7 @@ import Link from "next/link";
 
 import { AppShell } from "@/components/app-shell";
 import { SectionHeading } from "@/components/section-heading";
+import { RENTAL_CATEGORIES262 } from "@/lib/rental-planner/catalog262.mjs";
 import {
   normalizeRentalWindow,
   rentalAvailabilityLabel,
@@ -147,6 +148,32 @@ export default async function PublicRentalsPage({
               days.
             </p>
           ) : null}
+        </section>
+        <section className="content-panel">
+          <SectionHeading
+            eyebrow="Build 262 · rental types"
+            title="Activities and equipment campgrounds can list"
+            id="rental-types262"
+            helpTopic="shell.overview"
+          />
+          <p>
+            The categories below are examples, not an assertion of availability.
+            Only actual campground-published operational assets appear in the
+            rental results after the date filters. Contact campground staff for
+            supervised activities, including horseback riding.
+          </p>
+          <details>
+            <summary>Explore campground equipment and activity types</summary>
+            <div className={styles.cards}>
+              {RENTAL_CATEGORIES262.map((item) => (
+                <article key={item.id} className={styles.card}>
+                  <h3>{item.title}</h3>
+                  <p>{item.examples}</p>
+                  <p>{item.guidance}</p>
+                </article>
+              ))}
+            </div>
+          </details>
         </section>
         <section className="content-panel" aria-live="polite">
           <SectionHeading

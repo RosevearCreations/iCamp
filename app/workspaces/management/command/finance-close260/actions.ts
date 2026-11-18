@@ -5,6 +5,7 @@ import { getCampgroundAuthorization } from "@/lib/authz/postgres.mjs";
 import { getCampgroundReconciliation259 } from "@/lib/finance-reconciliation259/postgres.mjs";
 import { evaluateClose260 } from "@/lib/finance-close260/core.mjs";
 import { inspectFinancialAssurance261 } from "@/lib/finance-assurance261/postgres.mjs";
+import { inspectFinancialAssurance262 } from "@/lib/finance-assurance262/postgres.mjs";
 import { recordOwnerFinanceApproval260 } from "@/lib/finance-close260/postgres.mjs";
 import { getPaymentProviderConfig } from "@/lib/payments/provider.mjs";
 
@@ -121,6 +122,19 @@ export async function reviewFinanceClose260Action(
         ...state,
         status: "HOLD_261_EXTERNAL_FINANCIAL_ASSURANCE",
         blockers: externalAssurance.assurance.blockers,
+      };
+    // An original signed production database custody receipt is separately
+    // required. Never let owner-only approval bypass Build 262 or imply a
+    // live provider has transferred money.
+    const custody = await inspectFinancialAssurance262(
+      process.env,
+      externalAssurance,
+    );
+    if (!custody.activation.ownerEvidenceEligible)
+      return {
+        ...state,
+        status: "HOLD_262_ORIGINAL_DATABASE_CUSTODY",
+        blockers: custody.activation.blockers,
       };
     const receipt = await recordOwnerFinanceApproval260({
       actorUserId: session.user.id,

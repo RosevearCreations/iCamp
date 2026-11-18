@@ -7,6 +7,7 @@ import "./standard-theme.css";
 import "./command194.css";
 import "./forecast195.css";
 import "./orbit-theme.css";
+import "./regional-themes262.css";
 import "./visual-theme-selector.css";
 
 export const metadata: Metadata = {

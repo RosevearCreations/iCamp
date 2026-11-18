@@ -2,8 +2,21 @@
 
 import { useEffect, useState } from "react";
 
-type VisualTheme = "standard" | "orbit";
+export const VISUAL_THEMES = [
+  { id: "standard", label: "Standard / Meadow" },
+  { id: "orbit", label: "Orbit Command" },
+  { id: "niagara", label: "Niagara Falls" },
+  { id: "nova-scotia", label: "Nova Scotia Coast" },
+  { id: "bc-mountains", label: "BC Snow Mountains" },
+  { id: "saskatchewan", label: "Saskatchewan Gold" },
+] as const;
+
+export type VisualTheme = (typeof VISUAL_THEMES)[number]["id"];
 const preferenceKey = "icamp.visualTheme.v1";
+
+export function isVisualTheme(value: string): value is VisualTheme {
+  return VISUAL_THEMES.some((entry) => entry.id === value);
+}
 
 function applyVisualTheme(value: VisualTheme) {
   document
@@ -12,7 +25,7 @@ function applyVisualTheme(value: VisualTheme) {
   try {
     window.localStorage.setItem(preferenceKey, value);
   } catch {
-    // Browsers that block persistence still have a functional theme control.
+    // Browsers without storage still support visual selection in this tab.
   }
 }
 
@@ -28,10 +41,9 @@ export function VisualThemeSelector({
       try {
         saved = window.localStorage.getItem(preferenceKey);
       } catch {
-        // The platform's Meadow default remains available without storage.
+        // Standard / Meadow remains the safe default.
       }
-      const next: VisualTheme =
-        saved === "orbit" || saved === "standard" ? saved : defaultTheme;
+      const next = saved && isVisualTheme(saved) ? saved : defaultTheme;
       setVisual(next);
       applyVisualTheme(next);
     });
@@ -46,14 +58,18 @@ export function VisualThemeSelector({
         aria-label="iCamp visual theme"
         value={visual}
         onChange={(event) => {
-          const next: VisualTheme =
-            event.target.value === "orbit" ? "orbit" : "standard";
+          const next = isVisualTheme(event.target.value)
+            ? event.target.value
+            : "standard";
           setVisual(next);
           applyVisualTheme(next);
         }}
       >
-        <option value="standard">Standard / Meadow</option>
-        <option value="orbit">Orbit Command</option>
+        {VISUAL_THEMES.map((item) => (
+          <option value={item.id} key={item.id}>
+            {item.label}
+          </option>
+        ))}
       </select>
     </label>
   );
