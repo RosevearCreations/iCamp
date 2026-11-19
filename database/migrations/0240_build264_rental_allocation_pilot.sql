@@ -177,20 +177,20 @@ create trigger rental_pilot264_guard
 -- Protect the original reviewed request and 263 session calendar after
 -- physical-source allocation: no unrelated state transitions may orphan it.
 create function icamp_private.guard_allocated_request264()
-returns trigger language plpgsql security invoker set search_path='' as $
+returns trigger language plpgsql security invoker set search_path='' as $$
 begin
   if old.status='reviewed' and new.status in ('withdrawn','declined') and exists(
     select 1 from icamp_private.rental_allocations264 a
     where a.request_id=old.id and a.status='reserved_for_staff_collection'
   ) then raise exception 'Cancel the staff-approved allocation before altering the guest request'; end if;
   return new;
-end $;
+end $$;
 create trigger rental_request_allocation264_guard before update
   on icamp_private.rental_planning_requests for each row
   execute function icamp_private.guard_allocated_request264();
 
 create function icamp_private.guard_session_reserved264()
-returns trigger language plpgsql security invoker set search_path='' as $
+returns trigger language plpgsql security invoker set search_path='' as $$
 begin
   if exists (
     select 1 from icamp_private.rental_allocations264 a
@@ -198,7 +198,7 @@ begin
       and new.planned_day between a.start_date and a.end_date
   ) then raise exception 'Source asset has a current guest reservation for the proposed activity day'; end if;
   return new;
-end $;
+end $$;
 create trigger rental_session264_reservation_guard before insert
   on icamp_private.rental_sessions263 for each row
   execute function icamp_private.guard_session_reserved264();
