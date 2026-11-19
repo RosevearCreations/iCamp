@@ -97,3 +97,16 @@ export function recordLocalWitness265(input: {
   input: Record<string, unknown>;
 }): Promise<string>;
 export function closeCampgroundSupportPool265ForTests(): Promise<void>;
+
+export function listPlatformResponseSla266(): Promise<{
+  status: string;
+  metrics: null | {
+    observed: number;
+    unresolved: number;
+    overdueResponse: number;
+    responseObserved: number;
+    responseUnknown: number;
+    missingTimestamp: number;
+    bySeverity: { critical: number; priority: number; routine: number };
+  };
+}>;
