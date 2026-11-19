@@ -23,7 +23,7 @@ begin
       and tgname=expected_guard and not tgisinternal)
     then raise exception 'Build264 original % trigger missing',table_name; end if;
     if not exists(select 1 from pg_policies where schemaname='icamp_private'
-      and tablename=table_name and policyname=table_name || '_no_direct_client')
+      and tablename=table_name and policyname=case when table_name='rental_allocations264' then 'rental_allocations264_no_direct_client' else 'rental_pilot264_no_direct_client' end)
     then raise exception 'Build264 deny-direct policy missing: %',table_name; end if;
   end loop;
 end $verify$;
