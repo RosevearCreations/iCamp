@@ -6,6 +6,8 @@ import { redirect } from "next/navigation";
 
 import { AppShell } from "@/components/app-shell";
 import { SectionHeading } from "@/components/section-heading";
+import { listOwnRentalAllocations264 } from "@/lib/rental-planner/allocations264-postgres.mjs";
+import { rentalReservationLabel264 } from "@/lib/rental-planner/allocations264.mjs";
 import { requireSignedIn } from "@/lib/auth/current-session";
 import { listGuestRecreationStays } from "@/lib/recreation-events/postgres.mjs";
 import {
@@ -69,7 +71,7 @@ export default async function GuestRentalPlansPage({
     window = null;
     invalidWindow = true;
   }
-  const [stays, requests, offers] = await Promise.all([
+  const [stays, requests, offers, allocations264] = await Promise.all([
     listGuestRecreationStays({ userId: session.user.id }),
     listOwnRentalRequests({ userId: session.user.id }),
     invalidWindow
@@ -78,6 +80,7 @@ export default async function GuestRentalPlansPage({
           startDate: window?.startDate,
           endDate: window?.endDate,
         }),
+    listOwnRentalAllocations264({ guestUserId: session.user.id }),
   ]);
   const selected = offers.find((item) => item.id === params.offer) ?? null;
   const eligible = selected
@@ -278,6 +281,30 @@ export default async function GuestRentalPlansPage({
                 </article>
               ))}
             </div>
+          )}
+        </section>
+        <section className="content-panel">
+          <SectionHeading eyebrow="Build 264 · verified physical asset"
+            title="Staff-reserved equipment for my stay"
+            id="rental-reservations264" helpTopic="shell.overview" />
+          <p>
+            Only staff can reserve one real registered item. This does not
+            confirm payment, collection, animal assignment or ticket purchase.
+          </p>
+          {allocations264.reservations.length > 0 ? (
+            <div className={styles.cards}>
+              {allocations264.reservations.map((item) => (
+                <article className={styles.card} key={item.id}>
+                  <h3>{item.assetName}</h3>
+                  <p>{item.campgroundName} · {item.startDate} through {item.endDate}</p>
+                  <p><strong>{rentalReservationLabel264(item.status)}</strong></p>
+                </article>
+              ))}
+            </div>
+          ) : (
+            <p>{allocations264.status.startsWith("HOLD")
+              ? "Original production allocation migration is not verified."
+              : "No staff-reserved physical equipment yet; planning is not a booking."}</p>
           )}
         </section>
         <section className="content-panel">

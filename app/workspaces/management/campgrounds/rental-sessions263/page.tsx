@@ -102,6 +102,7 @@ export default async function SupervisedRentalSessions263Page({
             scheduling window, migration readiness and overlapping sessions.
           </p>
         ) : null}
+        <div className="hero-actions"><Link className="secondary-link" href={"/workspaces/management/campgrounds/rental-allocations264?campground=" + encodeURIComponent(selected.campgroundId)}>Build 264 rental reservation and supervised pilot acceptance</Link></div>
         <section className="content-panel">
           <SectionHeading
             id="session263-origin"

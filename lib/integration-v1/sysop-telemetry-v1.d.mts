@@ -6,4 +6,5 @@ export function handleSysopTelemetry(input: {
   appId: string;
   sourceCommit?: string;
   nowMs?: number;
+  readAggregateMetrics?: (() => Promise<Record<string, number> | null>) | null;
 }): Promise<Response>;
