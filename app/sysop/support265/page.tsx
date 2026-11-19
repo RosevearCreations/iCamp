@@ -2,7 +2,10 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { SysopShell } from "@/components/sysop-shell";
 import { requireSysop } from "@/lib/platform/access";
-import { listPlatformSupportAggregates265 } from "@/lib/campground-support265/postgres.mjs";
+import {
+  listPlatformSupportAggregates265,
+  listPlatformResponseSla266,
+} from "@/lib/campground-support265/postgres.mjs";
 import { readReceiverMatrix265 } from "@/lib/integration-v1/receiver-ack265.mjs";
 import { getSafeItSnapshot } from "@/lib/observability/health";
 
@@ -13,9 +16,10 @@ export const metadata: Metadata = {
 };
 export default async function SysopSupport265Page() {
   await requireSysop("/sysop/support265");
-  const [support, receipts] = await Promise.all([
+  const [support, receipts, sla] = await Promise.all([
     listPlatformSupportAggregates265(),
     Promise.resolve(readReceiverMatrix265()),
+    listPlatformResponseSla266(),
   ]);
   const version = getSafeItSnapshot();
   return (
@@ -74,6 +78,44 @@ export default async function SysopSupport265Page() {
             leave the campground support system in this aggregate view.
             Submission is not proof of service uptime, severity resolution or
             operator acknowledgment.
+          </p>
+        </section>
+        <section className="content-panel">
+          <h2>Original-case response SLA monitor · Build 266</h2>
+          <p>
+            <strong>Evidence:</strong> {sla.status}
+          </p>
+          {sla.metrics ? (
+            <div className="ops-kpi-grid">
+              <article className="ops-kpi">
+                <span>Unresolved cases</span>
+                <strong>{sla.metrics.unresolved}</strong>
+              </article>
+              <article className="ops-kpi">
+                <span>First review overdue</span>
+                <strong>{sla.metrics.overdueResponse}</strong>
+              </article>
+              <article className="ops-kpi">
+                <span>Original review observed</span>
+                <strong>{sla.metrics.responseObserved}</strong>
+              </article>
+              <article className="ops-kpi">
+                <span>Review evidence unknown</span>
+                <strong>{sla.metrics.responseUnknown}</strong>
+              </article>
+            </div>
+          ) : (
+            <p>
+              Original production migration or data source is unavailable; SLA
+              data is unknown.
+            </p>
+          )}
+          <p>
+            Provisional first-review targets: critical 1 hour, priority 8 hours,
+            routine 48 hours. These indicators are calculated from actual
+            persisted support cases and are not a staffed response guarantee.
+            Missing time evidence remains unknown. These counts are not HTTP
+            traffic or performance measurements.
           </p>
         </section>
         <section className="content-panel">
