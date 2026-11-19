@@ -8,6 +8,9 @@ import { AppShell } from "@/components/app-shell";
 import { SectionHeading } from "@/components/section-heading";
 import { listOwnRentalAllocations264 } from "@/lib/rental-planner/allocations264-postgres.mjs";
 import { rentalReservationLabel264 } from "@/lib/rental-planner/allocations264.mjs";
+import { SAFETY_TEXT265 } from "@/lib/campground-support265/core.mjs";
+import { listOwnSafetyAcknowledgements265 } from "@/lib/campground-support265/postgres.mjs";
+import { acknowledgeRentalSafety265Action } from "./actions";
 import { requireSignedIn } from "@/lib/auth/current-session";
 import { listGuestRecreationStays } from "@/lib/recreation-events/postgres.mjs";
 import {
@@ -82,6 +85,10 @@ export default async function GuestRentalPlansPage({
         }),
     listOwnRentalAllocations264({ guestUserId: session.user.id }),
   ]);
+  const safety265 = await listOwnSafetyAcknowledgements265({
+    guestUserId: session.user.id,
+  });
+  const safetyIds = new Set(safety265.allocationIds);
   const selected = offers.find((item) => item.id === params.offer) ?? null;
   const eligible = selected
     ? stays.filter((stay) => guestStayEligibleForRental(stay, selected, window))
@@ -306,6 +313,50 @@ export default async function GuestRentalPlansPage({
                   <p>
                     <strong>{rentalReservationLabel264(item.status)}</strong>
                   </p>
+                  {item.status === "reserved_for_staff_collection" ? (
+                    safetyIds.has(item.id) ? (
+                      <p role="status">
+                        Safety information acknowledged for this original
+                        reservation. Equipment is not automatically issued or
+                        paid.
+                      </p>
+                    ) : (
+                      <form
+                        action={acknowledgeRentalSafety265Action}
+                        className={styles.form}
+                      >
+                        <input
+                          type="hidden"
+                          name="allocationId"
+                          value={item.id}
+                        />
+                        <p>
+                          <strong>Equipment rental safety and terms</strong>
+                        </p>
+                        <p>{SAFETY_TEXT265}</p>
+                        <label>
+                          <input
+                            type="checkbox"
+                            name="safetyConfirmed"
+                            required
+                          />{" "}
+                          I reviewed the equipment safety instructions.
+                        </label>
+                        <label>
+                          <input
+                            type="checkbox"
+                            name="termsConfirmed"
+                            required
+                          />{" "}
+                          I reviewed the campground rental terms and understand
+                          staff must authorize handover.
+                        </label>
+                        <button className="primary-button" type="submit">
+                          Record safety acknowledgment
+                        </button>
+                      </form>
+                    )
+                  ) : null}
                 </article>
               ))}
             </div>

@@ -97,6 +97,14 @@ export default async function CampgroundAdministrationPage({
         <section className="hero-panel">
           <p className="eyebrow">Build 017</p>
           <h1>Campground structure administration</h1>
+          <p>
+            <Link
+              className="secondary-link"
+              href="/workspaces/management/campgrounds/operations-centre265"
+            >
+              Open your campground operations, customizations and support
+            </Link>
+          </p>
           <p className="hero-panel__lead">
             Manage campground details, ordered sections and subsections without
             crossing property boundaries.
