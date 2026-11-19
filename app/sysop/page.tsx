@@ -54,6 +54,12 @@ export default async function SysopPage() {
             <Link href="/status">View published system status</Link>
           </p>
           <p>
+            <Link href="/sysop/support265">
+              Open support, complaint, performance and seven-app receipt
+              oversight
+            </Link>
+          </p>
+          <p>
             <Link href="/sysop/readiness">
               Verify actual production database adoption and original-source
               signer custody

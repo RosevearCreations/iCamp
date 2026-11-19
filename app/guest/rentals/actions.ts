@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 import { requireSignedIn } from "@/lib/auth/current-session";
+import { recordGuestSafetyAcknowledgement265 } from "@/lib/campground-support265/postgres.mjs";
 import {
   submitRentalPlanningRequest,
   withdrawRentalPlanningRequest,
@@ -54,4 +55,25 @@ export async function withdrawRentalPlanningAction(form: FormData) {
     redirect(`${path}?error=withdraw`);
   }
   redirect(`${path}?saved=withdraw`);
+}
+
+export async function acknowledgeRentalSafety265Action(form: FormData) {
+  const session = await requireSignedIn(path);
+  if (session.user.accountType !== "guest") redirect("/auth/not-authorized");
+  try {
+    await recordGuestSafetyAcknowledgement265({
+      guestUserId: session.user.id,
+      sessionId: session.sessionId,
+      input: {
+        allocationId: field(form, "allocationId"),
+        safetyConfirmed: form.get("safetyConfirmed") === "on",
+        termsConfirmed: form.get("termsConfirmed") === "on",
+      },
+    });
+    revalidatePath(path);
+  } catch (e) {
+    if (e && typeof e === "object" && "digest" in e) throw e;
+    redirect(path + "?error=safety");
+  }
+  redirect(path + "?saved=safety");
 }

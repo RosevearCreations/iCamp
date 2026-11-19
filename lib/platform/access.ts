@@ -4,7 +4,9 @@ import { requireStaff } from "@/lib/auth/current-session";
 import { getPlatformOverview } from "@/lib/platform/postgres.mjs";
 
 /** Owner access never confers a campground assignment or tenant read rights. */
-export async function requireSysop(returnPath: "/sysop" | "/platform") {
+export async function requireSysop(
+  returnPath: "/sysop" | "/platform" | "/sysop/support265",
+) {
   const session = await requireStaff(returnPath);
   if (session.assuranceLevel !== "aal2") {
     redirect(`/auth/mfa?next=${encodeURIComponent(returnPath)}`);

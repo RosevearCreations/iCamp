@@ -48,6 +48,7 @@ export function SysopShell({
           <Link href="/platform">Platform statistics</Link>
           <Link href="/sysop/readiness">Database and source verification</Link>
           <Link href="/status">Service health</Link>
+          <Link href="/sysop/support265">Support and topology</Link>
           <Link href="/integration/comms-hub">Elevated Comms guidance</Link>
         </nav>
         <StandardAccessibilityControls />
@@ -73,6 +74,9 @@ export function SysopShell({
                 </li>
                 <li>
                   <Link href="/status">Service availability</Link>
+                  <Link href="/sysop/support265">
+                    Complaint and performance oversight
+                  </Link>
                 </li>
                 <li>
                   <Link href="/integration/comms-hub">
