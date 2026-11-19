@@ -178,7 +178,15 @@ export default async function ManageRentalPlannerPage({
             requests without charging guests or issuing rental equipment.
           </p>
           <div className="hero-actions">
-            <Link className="secondary-link" href={"/workspaces/management/campgrounds/rental-allocations264?campground=" + encodeURIComponent(selected.campgroundId)}>Build 264 real rental allocation and pilot review</Link>
+            <Link
+              className="secondary-link"
+              href={
+                "/workspaces/management/campgrounds/rental-allocations264?campground=" +
+                encodeURIComponent(selected.campgroundId)
+              }
+            >
+              Build 264 real rental allocation and pilot review
+            </Link>
 
             <Link className="secondary-link" href="/rentals">
               View public catalog

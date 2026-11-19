@@ -12,14 +12,21 @@ import {
 import { inspectRentalMigration264 } from "@/lib/rental-planner/migration264-postgres.mjs";
 
 const path = "/workspaces/management/campgrounds/rental-allocations264";
-const field = (data: FormData, key: string) => String(data.get(key) ?? "").trim();
+const field = (data: FormData, key: string) =>
+  String(data.get(key) ?? "").trim();
 const dest = (campgroundId: string, outcome: string) =>
   path + "?campground=" + encodeURIComponent(campgroundId) + "&" + outcome;
 async function permit(campgroundId: string) {
-  const session = await requireCampgroundPermission(campgroundId, "rental.manage", path);
+  const session = await requireCampgroundPermission(
+    campgroundId,
+    "rental.manage",
+    path,
+  );
   const migration = await inspectRentalMigration264();
   if (!migration.sourceReadbackMatched)
-    throw new Error("HOLD: exact original production migration 0192/0239/0240 was not verified.");
+    throw new Error(
+      "HOLD: exact original production migration 0192/0239/0240 was not verified.",
+    );
   return session;
 }
 

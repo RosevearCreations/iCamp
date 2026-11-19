@@ -24,8 +24,11 @@ const fullMigrationTable = [
   ["rental_allocations264", "rental_allocation264_guard"],
   ["rental_pilot_reviews264", "rental_pilot264_guard"],
 ].map(([name, guardName]) => ({
-  name, guardName, forceRls: true,
-  guardPresent: true, appDirectGrants: false,
+  name,
+  guardName,
+  forceRls: true,
+  guardPresent: true,
+  appDirectGrants: false,
 }));
 const correctRows = RENTAL_MIGRATIONS264.map((expected) => ({
   version: expected.version,
@@ -44,17 +47,22 @@ const baseline = {
 test("Build264 requires human staff safety and denies auto-money/animal handover", () => {
   const normalized = normalizeRentalAllocation264({
     requestId: uuid,
-    staffSafetyReview: "Confirmed genuine asset, safety checks and office-only handover.",
+    staffSafetyReview:
+      "Confirmed genuine asset, safety checks and office-only handover.",
   });
   assert.equal(normalized.paymentCaptured, false);
   assert.equal(normalized.equipmentHandedOver, false);
   assert.equal(normalized.animalAssigned, false);
-  assert.match(rentalReservationLabel264("reserved_for_staff_collection"), /contact the campground/iu);
+  assert.match(
+    rentalReservationLabel264("reserved_for_staff_collection"),
+    /contact the campground/iu,
+  );
   for (const input of [
     { requestId: "not-uuid", staffSafetyReview: normalized.staffSafetyReview },
     { requestId: uuid, staffSafetyReview: "short" },
     { requestId: uuid, staffSafetyReview: "invalid\nprivate data" },
-  ]) assert.throws(() => normalizeRentalAllocation264(input));
+  ])
+    assert.throws(() => normalizeRentalAllocation264(input));
 });
 
 test("Build264 supervised pilot requires independently reviewable evidence, not tickets", () => {
@@ -73,14 +81,17 @@ test("Build264 supervised pilot requires independently reviewable evidence, not 
     { sessionId: "fake" },
     { originalEvidenceReference: "short" },
     { supervisionWelfareCheck: "unverified" },
-  ]) assert.throws(() => normalizeSupervisedPilot264({
-    sessionId: uuid,
-    outcome: "hold",
-    originalEvidenceReference: "evidence:original-0001",
-    supervisionWelfareCheck:
-      "Independent qualified staff checked welfare, insurance and supervision.",
-    ...change,
-  }));
+  ])
+    assert.throws(() =>
+      normalizeSupervisedPilot264({
+        sessionId: uuid,
+        outcome: "hold",
+        originalEvidenceReference: "evidence:original-0001",
+        supervisionWelfareCheck:
+          "Independent qualified staff checked welfare, insurance and supervision.",
+        ...change,
+      }),
+    );
 });
 
 test("Build264 requires exact live ledger source digests plus real RLS and trigger inspection", () => {
@@ -94,9 +105,14 @@ test("Build264 requires exact live ledger source digests plus real RLS and trigg
     { production: false },
     { readSucceeded: false },
     { rows: correctRows.slice(0, 2) },
-    { rows: correctRows.map((x) => ({ ...x, checksum_sha256: "0".repeat(64) })) },
-    { tables: fullMigrationTable.map((x) =>
-      x.name === "rental_allocations264" ? { ...x, forceRls: false } : x) },
+    {
+      rows: correctRows.map((x) => ({ ...x, checksum_sha256: "0".repeat(64) })),
+    },
+    {
+      tables: fullMigrationTable.map((x) =>
+        x.name === "rental_allocations264" ? { ...x, forceRls: false } : x,
+      ),
+    },
   ];
   for (const change of held) {
     const result = assessRentalMigrationReadback264({ ...baseline, ...change });
@@ -121,7 +137,10 @@ test("Build264 requires exact live ledger source digests plus real RLS and trigg
 
 test("Build264 original SQL enforces real equipment, overlapping source locks and distinct independent reviewer", () => {
   const sql = readFileSync(
-    new URL("../database/migrations/0240_build264_rental_allocation_pilot.sql", import.meta.url),
+    new URL(
+      "../database/migrations/0240_build264_rental_allocation_pilot.sql",
+      import.meta.url,
+    ),
     "utf8",
   );
   for (const fragment of [
@@ -136,9 +155,13 @@ test("Build264 original SQL enforces real equipment, overlapping source locks an
     "rental_session264_reservation_guard",
     "has_campground_permission",
     "rental_pilot264_guard",
-  ]) assert.ok(sql.includes(fragment), fragment);
+  ])
+    assert.ok(sql.includes(fragment), fragment);
   const action = readFileSync(
-    new URL("../app/workspaces/management/campgrounds/rental-allocations264/actions.ts", import.meta.url),
+    new URL(
+      "../app/workspaces/management/campgrounds/rental-allocations264/actions.ts",
+      import.meta.url,
+    ),
     "utf8",
   );
   assert.match(action, /requireCampgroundPermission/);
@@ -150,19 +173,25 @@ test("Build264 original SQL enforces real equipment, overlapping source locks an
   assert.match(guest, /listOwnRentalAllocations264/);
 });
 
-const canonical = (v) => Array.isArray(v)
-  ? "[" + v.map(canonical).join(",") + "]"
-  : v && typeof v === "object"
-    ? "{" + Object.keys(v).sort().map((k) =>
-      JSON.stringify(k) + ":" + canonical(v[k])).join(",") + "}"
-    : JSON.stringify(v);
+const canonical = (v) =>
+  Array.isArray(v)
+    ? "[" + v.map(canonical).join(",") + "]"
+    : v && typeof v === "object"
+      ? "{" +
+        Object.keys(v)
+          .sort()
+          .map((k) => JSON.stringify(k) + ":" + canonical(v[k]))
+          .join(",") +
+        "}"
+      : JSON.stringify(v);
 
 test("Build264 authentic signed Sysop aggregation preserves unknowns, non-action and token-first privacy", async () => {
   const { privateKey, publicKey } = generateKeyPairSync("ed25519");
   const env = {
     ROSEVEAR_SYSOP_TELEMETRY_READ_TOKEN: "synthetic-private-test-token",
     ROSEVEAR_SYSOP_TELEMETRY_PRIVATE_KEY_PEM: privateKey.export({
-      format: "pem", type: "pkcs8",
+      format: "pem",
+      type: "pkcs8",
     }),
     VERCEL_GIT_COMMIT_SHA: "f".repeat(40),
   };
@@ -178,15 +207,23 @@ test("Build264 authentic signed Sysop aggregation preserves unknowns, non-action
   };
   const denied = await handleSysopTelemetry({
     request: new Request("https://example.invalid" + SYSOP_TELEMETRY_PATH),
-    env, appId: "icamp", readAggregateMetrics: sample,
+    env,
+    appId: "icamp",
+    readAggregateMetrics: sample,
   });
   assert.equal(denied.status, 401);
   assert.equal(calls, 0, "Do not query original DB before token validation");
-  const request = new Request("https://example.invalid" + SYSOP_TELEMETRY_PATH, {
-    headers: { "x-rosevear-telemetry-token": "synthetic-private-test-token" },
-  });
+  const request = new Request(
+    "https://example.invalid" + SYSOP_TELEMETRY_PATH,
+    {
+      headers: { "x-rosevear-telemetry-token": "synthetic-private-test-token" },
+    },
+  );
   const response = await handleSysopTelemetry({
-    request, env, appId: "icamp", readAggregateMetrics: sample,
+    request,
+    env,
+    appId: "icamp",
+    readAggregateMetrics: sample,
     nowMs: 1800000000000,
   });
   const body = await response.json();
@@ -201,12 +238,18 @@ test("Build264 authentic signed Sysop aggregation preserves unknowns, non-action
   assert.equal(body.payload.sysop.bootTimeMs, null);
   assert.equal(body.payload.sysop.rebootIsIndependentlyWitnessed, false);
   assert.equal(body.payload.authorizesAction, false);
-  assert.ok(verify(
-    null, Buffer.from(canonical(body.payload)), publicKey,
-    Buffer.from(body.signature, "hex"),
-  ));
+  assert.ok(
+    verify(
+      null,
+      Buffer.from(canonical(body.payload)),
+      publicKey,
+      Buffer.from(body.signature, "hex"),
+    ),
+  );
   const unknown = await handleSysopTelemetry({
-    request, env, appId: "icamp",
+    request,
+    env,
+    appId: "icamp",
     readAggregateMetrics: async () => {
       throw new Error("original DB disconnected");
     },

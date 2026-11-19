@@ -9,13 +9,9 @@ import {
   getCampgroundAuthorization,
   listAssignedCampgrounds,
 } from "@/lib/authz/postgres.mjs";
-import {
-  listManagedAllocations264,
-} from "@/lib/rental-planner/allocations264-postgres.mjs";
+import { listManagedAllocations264 } from "@/lib/rental-planner/allocations264-postgres.mjs";
 import { inspectRentalMigration264 } from "@/lib/rental-planner/migration264-postgres.mjs";
-import {
-  listManagedRentalRequests,
-} from "@/lib/rental-planner/postgres.mjs";
+import { listManagedRentalRequests } from "@/lib/rental-planner/postgres.mjs";
 import { listSupervisedSessions263 } from "@/lib/rental-planner/sessions263-postgres.mjs";
 import {
   cancelRental264Action,
@@ -27,14 +23,19 @@ import styles from "../../../../events/recreation.module.css";
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: "Build 264 · Rental allocation and pilot · iCamp",
-  description: "Authenticated source-asset guest reservation, operational migration readback and independent supervised pilot review.",
+  description:
+    "Authenticated source-asset guest reservation, operational migration readback and independent supervised pilot review.",
   robots: { index: false, follow: false },
 };
 
 export default async function RentalAllocations264Page({
   searchParams,
 }: Readonly<{
-  searchParams: Promise<{ campground?: string; saved?: string; error?: string }>;
+  searchParams: Promise<{
+    campground?: string;
+    saved?: string;
+    error?: string;
+  }>;
 }>) {
   const path = "/workspaces/management/campgrounds/rental-allocations264";
   const user = await requireAnyCampgroundPermission("rental.manage", path);
@@ -48,7 +49,10 @@ export default async function RentalAllocations264Page({
           campground.campgroundId,
         );
         return grant?.permissions.includes("rental.manage")
-          ? { ...campground, pilotReviewer: grant.permissions.includes("staff.manage") }
+          ? {
+              ...campground,
+              pilotReviewer: grant.permissions.includes("staff.manage"),
+            }
           : null;
       }),
     )
@@ -99,7 +103,9 @@ export default async function RentalAllocations264Page({
           <span>Build 264</span>
         </nav>
         <section className="hero-panel">
-          <p className="eyebrow">Build 264 · source-backed physical asset control</p>
+          <p className="eyebrow">
+            Build 264 · source-backed physical asset control
+          </p>
           <h1>Rental reservation and supervised pilot acceptance</h1>
           <p className="hero-panel__lead">
             Staff may reserve one actual operational item for an eligible guest
@@ -108,12 +114,14 @@ export default async function RentalAllocations264Page({
             Neither action charges guests, issues equipment, assigns animals,
             sells tickets or authorizes unsupervised activities.
           </p>
-          <p><strong>Live database readback:</strong> {migration.status}</p>
+          <p>
+            <strong>Live database readback:</strong> {migration.status}
+          </p>
         </section>
         {query.saved ? (
           <p role="status" className={styles.notice}>
-            Internal staff decision saved and audited. No payment, handover
-            or outbound notification occurred.
+            Internal staff decision saved and audited. No payment, handover or
+            outbound notification occurred.
           </p>
         ) : null}
         {query.error ? (
@@ -144,7 +152,9 @@ export default async function RentalAllocations264Page({
               View original rental assets
             </button>
           </form>
-          <p>Migration versions verified: {migration.checkedVersions.join(", ")}</p>
+          <p>
+            Migration versions verified: {migration.checkedVersions.join(", ")}
+          </p>
           {!enabled ? (
             <div className={styles.warning} role="alert">
               <strong>Allocations locked until live migration proof.</strong>
@@ -173,22 +183,41 @@ export default async function RentalAllocations264Page({
             helpTopic="campground.structure"
           />
           {!enabled ? (
-            <p>Live reservation action is locked until exact migration readback succeeds.</p>
+            <p>
+              Live reservation action is locked until exact migration readback
+              succeeds.
+            </p>
           ) : !eligiblePlans.length ? (
-            <p>No eligible reviewed guest plans are awaiting source-asset reservation.</p>
+            <p>
+              No eligible reviewed guest plans are awaiting source-asset
+              reservation.
+            </p>
           ) : (
             <div className={styles.cards}>
               {eligiblePlans.map((request) => (
                 <article className={styles.card} key={request.id}>
                   <h3>{request.assetName}</h3>
-                  <p>{request.startDate} to {request.endDate} · Original stay {request.reservationId}</p>
+                  <p>
+                    {request.startDate} to {request.endDate} · Original stay{" "}
+                    {request.reservationId}
+                  </p>
                   <form action={reserveRental264Action} className={styles.form}>
-                    <input type="hidden" name="campgroundId" value={selected.campgroundId} />
+                    <input
+                      type="hidden"
+                      name="campgroundId"
+                      value={selected.campgroundId}
+                    />
                     <input type="hidden" name="requestId" value={request.id} />
                     <label>
-                      Equipment checks, weather, collection and guest safety review
-                      <textarea name="staffSafetyReview" required minLength={20} maxLength={500}
-                        placeholder="Confirm operational source asset, condition, safety measures and where staff will arrange handover." />
+                      Equipment checks, weather, collection and guest safety
+                      review
+                      <textarea
+                        name="staffSafetyReview"
+                        required
+                        minLength={20}
+                        maxLength={500}
+                        placeholder="Confirm operational source asset, condition, safety measures and where staff will arrange handover."
+                      />
                     </label>
                     <button type="submit" className="primary-button">
                       Reserve real equipment for staff collection
@@ -198,7 +227,10 @@ export default async function RentalAllocations264Page({
               ))}
             </div>
           )}
-          <p>Reserved status is a staff-administered allocation, not a paid rental or a completed checkout.</p>
+          <p>
+            Reserved status is a staff-administered allocation, not a paid
+            rental or a completed checkout.
+          </p>
         </section>
         <section className="content-panel">
           <SectionHeading
@@ -211,12 +243,25 @@ export default async function RentalAllocations264Page({
             {records.reservations.map((allocation) => (
               <article className={styles.card} key={allocation.id}>
                 <h3>{allocation.assetName}</h3>
-                <p>{allocation.startDate} to {allocation.endDate}</p>
-                <p><strong>{allocation.status.replaceAll("_", " ")}</strong></p>
-                {enabled && allocation.status === "reserved_for_staff_collection" ? (
+                <p>
+                  {allocation.startDate} to {allocation.endDate}
+                </p>
+                <p>
+                  <strong>{allocation.status.replaceAll("_", " ")}</strong>
+                </p>
+                {enabled &&
+                allocation.status === "reserved_for_staff_collection" ? (
                   <form action={cancelRental264Action}>
-                    <input type="hidden" name="campgroundId" value={selected.campgroundId} />
-                    <input type="hidden" name="allocationId" value={allocation.id} />
+                    <input
+                      type="hidden"
+                      name="campgroundId"
+                      value={selected.campgroundId}
+                    />
+                    <input
+                      type="hidden"
+                      name="allocationId"
+                      value={allocation.id}
+                    />
                     <button type="submit" className="secondary-button">
                       Cancel staff-only equipment reservation
                     </button>
@@ -225,7 +270,11 @@ export default async function RentalAllocations264Page({
               </article>
             ))}
           </div>
-          {records.coverageCapped ? <p>Source coverage limit reached; inventory counts are incomplete.</p> : null}
+          {records.coverageCapped ? (
+            <p>
+              Source coverage limit reached; inventory counts are incomplete.
+            </p>
+          ) : null}
         </section>
         <section className="content-panel">
           <SectionHeading
@@ -235,23 +284,44 @@ export default async function RentalAllocations264Page({
             helpTopic="campground.structure"
           />
           {!selected.pilotReviewer ? (
-            <p>Independent reviewer needs both rental.manage and staff.manage authority.</p>
+            <p>
+              Independent reviewer needs both rental.manage and staff.manage
+              authority.
+            </p>
           ) : !enabled ? (
-            <p>Proposed-session acceptance remains blocked by production migration readback.</p>
+            <p>
+              Proposed-session acceptance remains blocked by production
+              migration readback.
+            </p>
           ) : (
             <div className={styles.cards}>
               {unreviewedSessions.map((activity) => (
                 <article className={styles.card} key={activity.id}>
-                  <h3>{activity.assetName} · {activity.activityKind.replaceAll("_", " ")}</h3>
-                  <p>{activity.plannedDay} · planned limit {activity.participantLimit}</p>
+                  <h3>
+                    {activity.assetName} ·{" "}
+                    {activity.activityKind.replaceAll("_", " ")}
+                  </h3>
+                  <p>
+                    {activity.plannedDay} · planned limit{" "}
+                    {activity.participantLimit}
+                  </p>
                   <p>{activity.safetyBrief}</p>
-                  <form action={reviewSupervisedPilot264Action} className={styles.form}>
-                    <input type="hidden" name="campgroundId" value={selected.campgroundId} />
+                  <form
+                    action={reviewSupervisedPilot264Action}
+                    className={styles.form}
+                  >
+                    <input
+                      type="hidden"
+                      name="campgroundId"
+                      value={selected.campgroundId}
+                    />
                     <input type="hidden" name="sessionId" value={activity.id} />
                     <label>
                       Internal review decision
                       <select name="outcome" required defaultValue="hold">
-                        <option value="hold">HOLD — original evidence incomplete</option>
+                        <option value="hold">
+                          HOLD — original evidence incomplete
+                        </option>
                         <option value="accepted_for_internal_pilot">
                           Accept for supervised INTERNAL pilot only
                         </option>
@@ -259,13 +329,24 @@ export default async function RentalAllocations264Page({
                     </label>
                     <label>
                       Original staff/insurance/welfare evidence reference
-                      <input name="originalEvidenceReference" minLength={12} maxLength={150}
-                        placeholder="internal-evidence:reference" required />
+                      <input
+                        name="originalEvidenceReference"
+                        minLength={12}
+                        maxLength={150}
+                        placeholder="internal-evidence:reference"
+                        required
+                      />
                     </label>
                     <label>
-                      Independent safety, training, supervision and animal welfare assessment
-                      <textarea name="supervisionWelfareCheck" minLength={30} maxLength={650}
-                        required placeholder="Describe reviewed operator qualifications, insured activity, safety, weather and animal welfare requirements." />
+                      Independent safety, training, supervision and animal
+                      welfare assessment
+                      <textarea
+                        name="supervisionWelfareCheck"
+                        minLength={30}
+                        maxLength={650}
+                        required
+                        placeholder="Describe reviewed operator qualifications, insured activity, safety, weather and animal welfare requirements."
+                      />
                     </label>
                     <button type="submit" className="primary-button">
                       Record independent internal pilot review
@@ -276,9 +357,9 @@ export default async function RentalAllocations264Page({
             </div>
           )}
           <p>
-            Planner and reviewer must be different authorized staff.
-            Internal acceptance does not activate guest-facing horse rides,
-            qualified instructors, waivers, ticket sales or external insurance.
+            Planner and reviewer must be different authorized staff. Internal
+            acceptance does not activate guest-facing horse rides, qualified
+            instructors, waivers, ticket sales or external insurance.
           </p>
         </section>
         <section className="content-panel">
@@ -292,12 +373,16 @@ export default async function RentalAllocations264Page({
             {records.pilotReviews.map((item) => (
               <article className={styles.card} key={item.id}>
                 <h3>{item.activityKind.replaceAll("_", " ")}</h3>
-                <p>{item.outcome.replaceAll("_", " ")} · {item.reviewedAt}</p>
+                <p>
+                  {item.outcome.replaceAll("_", " ")} · {item.reviewedAt}
+                </p>
                 <p>Evidence reference: {item.originalEvidenceReference}</p>
               </article>
             ))}
           </div>
-          {!records.pilotReviews.length && <p>No independently reviewed internal supervised pilots.</p>}
+          {!records.pilotReviews.length && (
+            <p>No independently reviewed internal supervised pilots.</p>
+          )}
         </section>
       </div>
     </AppShell>
