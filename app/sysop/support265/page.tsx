@@ -7,6 +7,12 @@ import {
   listPlatformResponseSla266,
 } from "@/lib/campground-support265/postgres.mjs";
 import { readReceiverMatrix265 } from "@/lib/integration-v1/receiver-ack265.mjs";
+import {
+  listSupportOwnership267,
+  listTelemetryAggregate267,
+  originalSchema267,
+} from "@/lib/campground-support267/postgres.mjs";
+import { assignSupport267Action } from "./actions267";
 import { getSafeItSnapshot } from "@/lib/observability/health";
 
 export const dynamic = "force-dynamic";
@@ -16,11 +22,15 @@ export const metadata: Metadata = {
 };
 export default async function SysopSupport265Page() {
   await requireSysop("/sysop/support265");
-  const [support, receipts, sla] = await Promise.all([
-    listPlatformSupportAggregates265(),
-    Promise.resolve(readReceiverMatrix265()),
-    listPlatformResponseSla266(),
-  ]);
+  const [support, receipts, sla, ownership, telemetry, schemaReady] =
+    await Promise.all([
+      listPlatformSupportAggregates265(),
+      Promise.resolve(readReceiverMatrix265()),
+      listPlatformResponseSla266(),
+      listSupportOwnership267(),
+      listTelemetryAggregate267(),
+      originalSchema267(),
+    ]);
   const version = getSafeItSnapshot();
   return (
     <SysopShell>
@@ -116,6 +126,78 @@ export default async function SysopSupport265Page() {
             persisted support cases and are not a staffed response guarantee.
             Missing time evidence remains unknown. These counts are not HTTP
             traffic or performance measurements.
+          </p>
+        </section>
+        <section className="content-panel">
+          <h2>Build 267 · persistent case ownership and escalation</h2>
+          <p>
+            Original database schema:{" "}
+            {schemaReady ? "Verified presence" : "HOLD original migration 0242"}
+            . Queue: {ownership.status}. Only verified MFA Sysop operators can
+            assign active platform operators. Case narratives and campground
+            identities are excluded.
+          </p>
+          {ownership.coverageCapped ? (
+            <p>Showing first 100 original unresolved cases; coverage capped.</p>
+          ) : null}
+          {ownership.cases.map((ticket) => (
+            <article className="health-card" key={ticket.id}>
+              <p>
+                {ticket.category} · {ticket.severity} · {ticket.status}
+              </p>
+              <p>
+                Case {ticket.id} · owner {ticket.assignedUserId ?? "UNASSIGNED"}{" "}
+                · escalation {ticket.escalationLevel}/3
+              </p>
+              <form action={assignSupport267Action}>
+                <input type="hidden" name="caseId" value={ticket.id} />
+                <input type="hidden" name="version" value={ticket.version} />
+                <label>
+                  Verified platform operator UUID
+                  <input
+                    name="assigneeId"
+                    required
+                    minLength={36}
+                    maxLength={36}
+                    defaultValue={ticket.assignedUserId ?? ""}
+                  />
+                </label>
+                <button type="submit">Assign / reassign</button>
+                {ticket.assignedUserId && ticket.escalationLevel < 3 ? (
+                  <button type="submit" name="escalate" value="yes">
+                    Escalate one level
+                  </button>
+                ) : null}
+              </form>
+            </article>
+          ))}
+          <p>
+            Immutable assignment/escalation receipts are persisted. This does
+            not send automatic pages or imply a staffed 24-hour SLA.
+          </p>
+        </section>
+        <section className="content-panel">
+          <h2>Build 267 · opt-in signed tenant traffic</h2>
+          <p>
+            <strong>Original telemetry:</strong> {telemetry.status}
+          </p>
+          {telemetry.metrics ? (
+            <p>
+              {telemetry.metrics.samples} signed observations ·{" "}
+              {telemetry.metrics.requests} requests · {telemetry.metrics.errors}{" "}
+              errors · latest {telemetry.metrics.lastReceivedAt}
+            </p>
+          ) : (
+            <p>
+              UNKNOWN — no fresh original enrolled telemetry. No synthetic
+              traffic counts.
+            </p>
+          )}
+          <p>
+            Only explicitly enrolled campgrounds can submit timestamped
+            request/error/P95 samples through the HMAC-authenticated internal
+            ingestion route. Production credential enrollment and independent
+            provider corroboration remain separate acceptance requirements.
           </p>
         </section>
         <section className="content-panel">
