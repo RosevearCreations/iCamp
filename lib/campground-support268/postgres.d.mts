@@ -13,7 +13,7 @@ export function diagnoseCampgroundBooking268(input:{userId:string;campgroundId:s
 }>;
 export function getRecoveryShellSummary268():Promise<{
  status:string;opened:number|null;overdue:number|null;
- queuedAlerts:number|null;deliveredAlerts:number|null;
+ queuedAlerts:number|null;acknowledgedAlerts:number|null;
 }>;
 export function queueOverdueSupport268():Promise<{status:string;queued:number}>;
 
