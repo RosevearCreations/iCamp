@@ -16,3 +16,18 @@ export function getRecoveryShellSummary268():Promise<{
  queuedAlerts:number|null;deliveredAlerts:number|null;
 }>;
 export function queueOverdueSupport268():Promise<{status:string;queued:number}>;
+
+export function openBookingRecovery268(input:{
+ userId:string;campgroundId:string;reservationId:string;
+ supportCaseId:string;nextUpdateAt:string;
+}):Promise<{recoveryId:string;newlyOpened:boolean}>;
+export function recordBookingRecovery268(input:{
+ userId:string;campgroundId:string;recoveryId:string;version:number;
+ eventKind:string;evidenceReference:string;nextUpdateAt:string;outcome:string;
+}):Promise<{version:number;state:string;independentProviderCertification:boolean}>;
+export function listLocalBookingRecovery268(input:{
+ userId:string;campgroundId:string;
+}):Promise<{status:string;cases:Array<{
+ id:string;caseId:string;reservationId:string;state:string;outcome:string;
+ nextUpdateAt:string;version:number;
+}>}>;
