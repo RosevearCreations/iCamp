@@ -73,6 +73,11 @@ const modules = [
     "Manage campground items and stock observations",
   ],
   [
+    "Paid booking recovery",
+    "/workspaces/management/campgrounds/booking-recovery268",
+    "Investigate original payment, reservation and confirmation evidence without double charging",
+  ],
+  [
     "Local camper complaints",
     "/workspaces/management/campgrounds/assistance",
     "Handle guest service and incident escalations",
