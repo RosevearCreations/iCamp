@@ -54,8 +54,11 @@ export default async function SysopPage() {
             <Link href="/status">View published system status</Link>
           </p>
           <p>
-            <Link href="/sysop/recovery268">Review booking recovery, SLA outbox and original runtime database</Link><p />
-              <Link href="/sysop/support265">
+            <Link href="/sysop/recovery268">
+              Review booking recovery, SLA outbox and original runtime database
+            </Link>
+            <p />
+            <Link href="/sysop/support265">
               Open support, complaint, performance and seven-app receipt
               oversight
             </Link>
