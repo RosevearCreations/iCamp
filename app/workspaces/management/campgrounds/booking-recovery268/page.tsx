@@ -3,13 +3,14 @@ import Link from "next/link";
 import { AppShell } from "@/components/app-shell";
 import { requireAnyCampgroundPermission } from "@/lib/authz/current-user";
 import { listAssignedCampgrounds, hasCampgroundPermission } from "@/lib/authz/postgres.mjs";
-import { diagnoseCampgroundBooking268 } from "@/lib/campground-support268/postgres.mjs";
+import { diagnoseCampgroundBooking268, listLocalBookingRecovery268 } from "@/lib/campground-support268/postgres.mjs";
+import { openBookingRecovery268Action, recordBookingRecovery268Action } from "./actions";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = {title:"Booking confirmation recovery · iCamp",
   robots:{index:false,follow:false}};
 export default async function BookingRecovery268Page({searchParams}:{
-  searchParams:Promise<{campground?:string;reservation?:string}>;
+  searchParams:Promise<{campground?:string;reservation?:string; saved?:string;error?:string}>;
 }) {
  const path="/workspaces/management/campgrounds/booking-recovery268";
  const session=await requireAnyCampgroundPermission("campground.operations.manage",path);
@@ -22,6 +23,10 @@ export default async function BookingRecovery268Page({searchParams}:{
  const evidence=selected&&params.reservation
   ? await diagnoseCampgroundBooking268({userId:session.user.id,
       campgroundId:selected.campgroundId,reservationId:params.reservation})
+  : null;
+ const cases=selected
+  ? await listLocalBookingRecovery268({userId:session.user.id,
+     campgroundId:selected.campgroundId})
   : null;
  return <AppShell>
   <div className="page-stack">
@@ -48,6 +53,60 @@ export default async function BookingRecovery268Page({searchParams}:{
      </label>
      <button type="submit">Inspect original evidence</button>
     </form>
+   </section>
+
+   {params.saved ? <p role="status">Original case action was recorded.</p>:null}
+   {params.error ? <p role="alert">Case action was not saved. Check permissions,
+    original source readiness, version and references.</p>:null}
+   <section className="content-panel">
+    <h2>Open a local guest recovery case</h2>
+    <p>Create the guest complaint in the original local support centre first.
+      Link it to this campground&apos;s reservation. A recovery case does not
+      change the payment or site and cannot be opened for another campground.</p>
+    <form action={openBookingRecovery268Action}>
+     <input type="hidden" name="campgroundId" value={selected?.campgroundId??""}/>
+     <label>Original reservation UUID
+      <input name="reservationId" required maxLength={36}
+        defaultValue={params.reservation??""}/></label>
+     <label>Existing local support case UUID
+      <input name="caseId" required maxLength={36}/></label>
+     <button type="submit">Open tracked recovery (follow-up due in 1 hour)</button>
+    </form>
+   </section>
+   <section className="content-panel">
+    <h2>Local recovery timeline and guest follow-up</h2>
+    <p>Original records: {cases?.status??"NO_ASSIGNED_CAMPGROUND"}.
+      Staff records are private and the platform Shell only gets summary counts.</p>
+    {cases?.cases.map(c=><article className="health-card" key={c.id}>
+      <p><strong>{c.state}</strong> · {c.outcome} · next update {c.nextUpdateAt}</p>
+      <p>Support case: {c.caseId} · reservation: {c.reservationId}</p>
+      <form action={recordBookingRecovery268Action}>
+       <input type="hidden" name="campgroundId" value={selected?.campgroundId??""}/>
+       <input type="hidden" name="recoveryId" value={c.id}/>
+       <input type="hidden" name="version" value={c.version}/>
+       <label>Documented action
+        <select name="eventKind" defaultValue="provider_checked">
+         <option value="provider_checked">Provider evidence checked</option>
+         <option value="site_checked">Site allocation checked</option>
+         <option value="guest_contacted">Guest contacted</option>
+         <option value="closed">Close after evidence and guest follow-up</option>
+         <option value="reopened">Reopen previous case</option>
+        </select>
+       </label>
+       <label>Original, private evidence reference
+        <input name="evidenceReference" required minLength={12} maxLength={160}/>
+       </label>
+       <label>Resolution (only used when closing)
+        <select name="outcome" defaultValue="unresolved">
+         <option value="unresolved">Unresolved</option>
+         <option value="confirmed">Original confirmation documented</option>
+         <option value="authorized_refund">Approved refund record (not bank payout)</option>
+         <option value="no_payment">Independently confirmed no payment</option>
+        </select>
+       </label>
+       <button type="submit">Save case evidence</button>
+      </form>
+     </article>)}
    </section>
    {evidence ? <section className="content-panel">
     <h2>Original evidence: {evidence.status}</h2>
