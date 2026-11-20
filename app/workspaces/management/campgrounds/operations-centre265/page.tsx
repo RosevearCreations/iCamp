@@ -168,7 +168,7 @@ export default async function CampgroundOperations265Page({
           <p>
             Source enrollment: {enrollment.status}. Current:{" "}
             {enrollment.enrollment?.state ?? "NOT ENROLLED"}. Only this
-            campground's authorized management can opt in or revoke.
+            campground&apos;s authorized management can opt in or revoke.
           </p>
           <form action={setTelemetryConsent267Action} className={styles.form}>
             <input
