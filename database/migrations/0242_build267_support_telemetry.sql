@@ -73,7 +73,7 @@ create table icamp_private.telemetry_enrollment267 (
   version integer not null default 1 check(version>=1)
 );
 create function icamp_private.guard_telemetry_enrollment267()
-returns trigger language plpgsql security invoker set search_path='' as $
+returns trigger language plpgsql security invoker set search_path='' as $$
 declare actor uuid := nullif(current_setting('icamp.user_id',true),'')::uuid;
 begin
  if tg_op='DELETE' then raise exception 'Telemetry consent history cannot be deleted'; end if;
@@ -87,7 +87,7 @@ begin
   if new.version<>1 then raise exception 'Initial enrollment version must be one'; end if;
  end if;
  return new;
-end $;
+end $$;
 create trigger guard_telemetry_enrollment267 before insert or update or delete
  on icamp_private.telemetry_enrollment267 for each row
  execute function icamp_private.guard_telemetry_enrollment267();
