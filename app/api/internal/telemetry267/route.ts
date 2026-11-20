@@ -11,9 +11,15 @@ export async function POST(request: Request) {
   if (body.length > 2048)
     return NextResponse.json({ error: "Payload too large" }, { status: 413 });
   try {
-    await receiveTelemetry267(body, request.headers.get("x-icamp-telemetry-signature"));
+    await receiveTelemetry267(
+      body,
+      request.headers.get("x-icamp-telemetry-signature"),
+    );
     return NextResponse.json({ accepted: true }, { status: 202 });
   } catch {
-    return NextResponse.json({ error: "Telemetry rejected or not enrolled" }, { status: 403 });
+    return NextResponse.json(
+      { error: "Telemetry rejected or not enrolled" },
+      { status: 403 },
+    );
   }
 }

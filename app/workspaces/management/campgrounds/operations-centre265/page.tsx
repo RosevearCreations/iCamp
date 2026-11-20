@@ -127,7 +127,10 @@ export default async function CampgroundOperations265Page({
       campgroundId: current.campgroundId,
     }),
     Promise.resolve(getSafeItSnapshot()),
-    readTelemetryEnrollment267({ userId: session.user.id, campgroundId: current.campgroundId }),
+    readTelemetryEnrollment267({
+      userId: session.user.id,
+      campgroundId: current.campgroundId,
+    }),
   ]);
   const suffix = "?campground=" + encodeURIComponent(current.campgroundId);
   return (
@@ -162,23 +165,42 @@ export default async function CampgroundOperations265Page({
         ) : null}
         <section className="content-panel">
           <h2>Build 267 · explicitly authorize local request telemetry</h2>
-          <p>Source enrollment: {enrollment.status}.
-            Current: {enrollment.enrollment?.state ?? "NOT ENROLLED"}.
-            Only this campground's authorized management can opt in or revoke.
+          <p>
+            Source enrollment: {enrollment.status}. Current:{" "}
+            {enrollment.enrollment?.state ?? "NOT ENROLLED"}. Only this
+            campground's authorized management can opt in or revoke.
           </p>
           <form action={setTelemetryConsent267Action} className={styles.form}>
-            <input type="hidden" name="campgroundId" value={current.campgroundId} />
-            <label>Source identifier
-              <input name="sourceId" minLength={8} maxLength={64} required
-                pattern="[a-z0-9_-]+" defaultValue={enrollment.enrollment?.sourceId ?? ""}
-                placeholder="campground_web_01" />
+            <input
+              type="hidden"
+              name="campgroundId"
+              value={current.campgroundId}
+            />
+            <label>
+              Source identifier
+              <input
+                name="sourceId"
+                minLength={8}
+                maxLength={64}
+                required
+                pattern="[a-z0-9_-]+"
+                defaultValue={enrollment.enrollment?.sourceId ?? ""}
+                placeholder="campground_web_01"
+              />
             </label>
-            <button type="submit" name="enabled" value="yes">Authorize signed telemetry</button>
-            <button type="submit" name="enabled" value="no">Revoke source telemetry</button>
+            <button type="submit" name="enabled" value="yes">
+              Authorize signed telemetry
+            </button>
+            <button type="submit" name="enabled" value="no">
+              Revoke source telemetry
+            </button>
           </form>
-          <p>Enrollment does not create a credential or invent metrics. An independently
-            configured provider must sign fresh requests; consent can be revoked locally.
-            No private guest or booking records are accepted.</p>
+          <p>
+            Enrollment does not create a credential or invent metrics. An
+            independently configured provider must sign fresh requests; consent
+            can be revoked locally. No private guest or booking records are
+            accepted.
+          </p>
         </section>
         <section className="content-panel">
           <SectionHeading

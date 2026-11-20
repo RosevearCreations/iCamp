@@ -22,7 +22,17 @@ export async function setTelemetryConsent267Action(form: FormData) {
     });
     revalidatePath(path);
   } catch {
-    redirect(path + "?campground=" + encodeURIComponent(campgroundId) + "&error=telemetry");
+    redirect(
+      path +
+        "?campground=" +
+        encodeURIComponent(campgroundId) +
+        "&error=telemetry",
+    );
   }
-  redirect(path + "?campground=" + encodeURIComponent(campgroundId) + "&saved=telemetry");
+  redirect(
+    path +
+      "?campground=" +
+      encodeURIComponent(campgroundId) +
+      "&saved=telemetry",
+  );
 }

@@ -24,20 +24,33 @@ test("Build267 validates only original bounded, fresh scoped numeric telemetry",
   assert.throws(() => normalizeTelemetry267({ ...sample, errors: 126 }, now));
   assert.throws(() => normalizeTelemetry267({ ...sample, requests: -1 }, now));
   assert.throws(() => normalizeTelemetry267({ ...sample, requests: 1.5 }, now));
-  assert.throws(() => normalizeTelemetry267({ ...sample, sourceId: "bad" }, now));
-  assert.throws(() => normalizeTelemetry267({ ...sample, observedAt: "2026-11-19T22:09:00Z" }, now));
+  assert.throws(() =>
+    normalizeTelemetry267({ ...sample, sourceId: "bad" }, now),
+  );
+  assert.throws(() =>
+    normalizeTelemetry267(
+      { ...sample, observedAt: "2026-11-19T22:09:00Z" },
+      now,
+    ),
+  );
 });
 test("Build267 HMAC admission rejects absent, short, wrong and malformed signatures", () => {
   const secret = "this-is-a-test-only-credential-with-adequate-length";
   const body = JSON.stringify(sample);
   const signature = createHmac("sha256", secret).update(body).digest("hex");
   assert.equal(verifyTelemetrySignature267(body, signature, secret), true);
-  assert.equal(verifyTelemetrySignature267(body+" ", signature, secret), false);
+  assert.equal(
+    verifyTelemetrySignature267(body + " ", signature, secret),
+    false,
+  );
   assert.equal(verifyTelemetrySignature267(body, signature, "short"), false);
   assert.equal(verifyTelemetrySignature267(body, "bad", secret), false);
 });
 test("Build267 schema keeps tenant consent, guarded ownership and append-only receipts", () => {
-  const migration = readFileSync("database/migrations/0242_build267_support_telemetry.sql", "utf8");
+  const migration = readFileSync(
+    "database/migrations/0242_build267_support_telemetry.sql",
+    "utf8",
+  );
   assert.match(migration, /guard_support_ownership267/);
   assert.match(migration, /guard_telemetry_enrollment267/);
   assert.match(migration, /guard_telemetry_samples267/);
