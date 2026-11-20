@@ -72,6 +72,26 @@ create table icamp_private.telemetry_enrollment267 (
   source_id text not null check(source_id ~ '^[a-z0-9_-]{8,64}$'),
   version integer not null default 1 check(version>=1)
 );
+create function icamp_private.guard_telemetry_enrollment267()
+returns trigger language plpgsql security invoker set search_path='' as $
+declare actor uuid := nullif(current_setting('icamp.user_id',true),'')::uuid;
+begin
+ if tg_op='DELETE' then raise exception 'Telemetry consent history cannot be deleted'; end if;
+ if actor is null or actor<>new.approved_by_user_id
+  or not icamp_private.has_campground_permission(new.campground_id,'campground.operations.manage')
+ then raise exception 'Campground manager authorization required'; end if;
+ if tg_op='UPDATE' then
+  if new.campground_id<>old.campground_id or new.version<>old.version+1
+  then raise exception 'Telemetry enrollment version mismatch'; end if;
+ else
+  if new.version<>1 then raise exception 'Initial enrollment version must be one'; end if;
+ end if;
+ return new;
+end $;
+create trigger guard_telemetry_enrollment267 before insert or update or delete
+ on icamp_private.telemetry_enrollment267 for each row
+ execute function icamp_private.guard_telemetry_enrollment267();
+
 create table icamp_private.telemetry_samples267 (
   id uuid primary key default gen_random_uuid(),
   campground_id uuid not null references public.campgrounds(id),
