@@ -23,3 +23,22 @@ export function listTelemetryAggregate267(): Promise<{
     samples: number; requests: string; errors: string; lastReceivedAt: string;
   };
 }>;
+
+export function setTelemetryEnrollment267(input: {
+  userId: string;
+  campgroundId: string;
+  sourceId: string;
+  enabled: boolean;
+}): Promise<{ state: string; version: number }>;
+export function readTelemetryEnrollment267(input: {
+  userId: string;
+  campgroundId: string;
+}): Promise<{
+  status: string;
+  enrollment: null | {
+    sourceId: string;
+    state: string;
+    version: number;
+    approvedAt: string;
+  };
+}>;
