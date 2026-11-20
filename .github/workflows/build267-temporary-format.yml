@@ -1,0 +1,29 @@
+name: Build 267 temporary source formatter
+on:
+  push:
+    branches:
+      - release/build267-support-telemetry-dev-20261119
+permissions:
+  contents: write
+jobs:
+  format:
+    runs-on: ubuntu-latest
+    if: github.actor == 'RosevearCreations'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - run: npm ci --ignore-scripts
+      - name: Apply exact repository formatter
+        run: |
+          npx prettier --write app/api/internal/telemetry267/route.ts app/sysop/support265/page.tsx app/workspaces/management/campgrounds/operations-centre265/actions267.ts app/workspaces/management/campgrounds/operations-centre265/page.tsx lib/campground-support267/postgres.d.mts lib/campground-support267/postgres.mjs tests/build267-support-telemetry.test.mjs
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add app/api/internal/telemetry267/route.ts app/sysop/support265/page.tsx app/workspaces/management/campgrounds/operations-centre265/actions267.ts app/workspaces/management/campgrounds/operations-centre265/page.tsx lib/campground-support267/postgres.d.mts lib/campground-support267/postgres.mjs tests/build267-support-telemetry.test.mjs
+          if ! git diff --cached --quiet; then
+            git commit -m "Build 267: apply repository Prettier formatting"
+            git push origin HEAD:release/build267-support-telemetry-dev-20261119
+          fi
