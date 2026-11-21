@@ -22,6 +22,6 @@ begin
    select 1 from pg_constraint where conname='support_delivery_attempts270_outbox_id_key'
  ) then raise exception 'One outbound attempt per original notice must be enforced';end if;
  if not exists(
-   select 1 from pg_constraint where conname='provider_trace270_recovery_id_payment_id_provider_response_sha256_key'
+   select 1 from pg_constraint where conrelid='icamp_private.provider_trace270'::regclass and contype='u' and pg_get_constraintdef(oid) like '%(recovery_id, payment_id, provider_response_sha256)%'
  ) then raise exception 'Original provider evidence replay uniqueness missing';end if;
 end $$;
