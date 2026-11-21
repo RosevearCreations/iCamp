@@ -1,5 +1,6 @@
 export const SYSOP_TELEMETRY_PATH: string;
 export const SYSOP_TELEMETRY_SCHEMA: string;
+export const SYSOP_TELEMETRY_CHALLENGE_HEADER: string;
 export function handleSysopTelemetry(input: {
   request: Request;
   env?: Record<string, string | undefined>;
