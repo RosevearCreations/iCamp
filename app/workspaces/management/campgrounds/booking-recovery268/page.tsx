@@ -15,6 +15,7 @@ import {
   recordBookingRecovery268Action,
 } from "./actions";
 import { recordBookingWitness269Action } from "./actions269";
+import { compareOriginalPayment270Action } from "./actions270";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
@@ -29,6 +30,7 @@ export default async function BookingRecovery268Page({
     reservation?: string;
     saved?: string;
     error?: string;
+    provider270?: string;
   }>;
 }) {
   const path = "/workspaces/management/campgrounds/booking-recovery268";
@@ -256,6 +258,19 @@ export default async function BookingRecovery268Page({
                   />
                 </label>
                 <button type="submit">Record original witness assertion</button>
+              </form>
+              <h3>Build 270 · provider-side payment trace</h3>
+              <p>Read-only TEST processor check. We compare the original payment
+                reference, amount and currency with a separately enrolled provider.
+                This does not refund, capture, or alter a reservation.</p>
+              <form action={compareOriginalPayment270Action}>
+                <input type="hidden" name="campgroundId" value={selected?.campgroundId??""}/>
+                <input type="hidden" name="recoveryId" value={c.id}/>
+                <label>Original payment row UUID
+                  <input name="paymentId" required maxLength={36}
+                    pattern="[a-fA-F0-9-]{36}" />
+                </label>
+                <button type="submit">Verify payment with original test provider</button>
               </form>
             </article>
           ))}
