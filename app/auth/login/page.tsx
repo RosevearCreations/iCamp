@@ -90,6 +90,7 @@ export default async function LoginPage({
           <div className="auth-links">
             <Link href="/auth/recover">Forgot password?</Link>
             <Link href="/auth/register">Create a guest account</Link>
+            <Link href="/auth/owner-access">Platform owner access help</Link>
           </div>
         </section>
       </div>
