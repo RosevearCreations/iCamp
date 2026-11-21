@@ -14,6 +14,7 @@ import {
   openBookingRecovery268Action,
   recordBookingRecovery268Action,
 } from "./actions";
+import { recordBookingWitness269Action } from "./actions269";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
@@ -212,6 +213,27 @@ export default async function BookingRecovery268Page({
                   </select>
                 </label>
                 <button type="submit">Save case evidence</button>
+              </form>
+              <h3>Build 269 · supervised original guest recovery pilot</h3>
+              <p>Store only a SHA-256 digest of original payment, site, delivery or
+                guest acknowledgement evidence. The campground retains the private
+                source document; this receipt does not itself prove provider settlement.</p>
+              <form action={recordBookingWitness269Action}>
+                <input type="hidden" name="campgroundId" value={selected?.campgroundId ?? ""}/>
+                <input type="hidden" name="recoveryId" value={c.id}/>
+                <label>Original evidence stage
+                  <select name="stage" defaultValue="processor_settlement">
+                    <option value="processor_settlement">Independent processor settlement check</option>
+                    <option value="site_allocation">Original site-night availability</option>
+                    <option value="confirmation_delivery">Guest confirmation delivery</option>
+                    <option value="guest_ack">Guest acknowledges recovery outcome</option>
+                  </select>
+                </label>
+                <label>Original evidence SHA-256 (lowercase)
+                  <input name="evidenceDigestSha256" required
+                    pattern="[a-f0-9]{64}" minLength={64} maxLength={64}/>
+                </label>
+                <button type="submit">Record original witness assertion</button>
               </form>
             </article>
           ))}
