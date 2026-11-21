@@ -55,7 +55,8 @@ export default async function SysopPage() {
           </p>
           <p>
             <Link href="/sysop/pilot269">
-              Build 269: Camp Rosevear supervised pilot, live stage traffic and independent recovery
+              Build 269: Camp Rosevear supervised pilot, live stage traffic and
+              independent recovery
             </Link>
           </p>
           <p>
