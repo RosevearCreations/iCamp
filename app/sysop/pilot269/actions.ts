@@ -6,7 +6,7 @@ import { recordRestoreWitness269 } from "@/lib/campground-pilot269/postgres.mjs"
 
 const path = "/sysop/pilot269";
 export async function recordRestoreWitness269Action(form: FormData) {
-  const { session } = await requireSysop(path);
+  const { session } = await requireSysop("/sysop");
   try {
     await recordRestoreWitness269({
       actorUserId: session.user.id,
