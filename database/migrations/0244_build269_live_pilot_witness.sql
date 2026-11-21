@@ -52,7 +52,7 @@ returns trigger language plpgsql security invoker set search_path='' as $$
 begin
  if tg_op<>'INSERT' then raise exception 'Provider delivery evidence is immutable'; end if;
  if not exists(select 1 from icamp_private.support_sla_outbox268 o
-   where o.id=new.outbox_id and o.delivery_state in ('queued','attempted','acknowledged','blocked'))
+   where o.id=new.outbox_id and o.delivery_state='attempted' and o.attempted_at is not null)
   or new.observed_at<statement_timestamp()-interval '5 minutes'
   or new.observed_at>statement_timestamp()+interval '1 minute'
  then raise exception 'Invalid original notice or stale provider event'; end if;
