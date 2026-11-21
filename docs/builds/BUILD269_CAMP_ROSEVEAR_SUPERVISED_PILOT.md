@@ -24,11 +24,13 @@ Source of Value requirement owners: iCamp IC06–IC15 / IC21–IC25. The
    inherited from Build 267; strict event nonce, age and numeric bounds;
    FORCE RLS, immutable triggers and unique replay controls.
 2. HMAC-protected private inbound `/api/internal/traffic269`, with
-   `ICAMP_TELEMETRY269_HMAC_SECRET` installed server-side only after
+   `ICAMP_TELEMETRY269_HMAC_SECRET` plus explicitly pinned
+   `ICAMP_TELEMETRY269_PILOT_CAMPGROUND_ID` and
+   `ICAMP_TELEMETRY269_PILOT_SOURCE_ID` installed server-side only after
    original Camp Rosevear source and credential custody are accepted.
 3. Signed downstream receipt `/api/internal/sla-delivery269`, requiring
    `ICAMP_SLA269_ACK_HMAC_SECRET`, `ICAMP_SLA269_ACK_SOURCE_ID`, an existing
-   queued outbox item, matched source, unique provider event and nonce.
+   queued outbox item, matched source, verified previously attempted outbound notice, unique provider event and nonce.
    Updates a notice to **acknowledged** only after an authenticated
    *delivered* receipt. No sending occurs unless a real independently
    connected Comms sender is enrolled. Receipt is not proof of guest reading.
