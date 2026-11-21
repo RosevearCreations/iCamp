@@ -54,6 +54,11 @@ export default async function SysopPage() {
             <Link href="/status">View published system status</Link>
           </p>
           <p>
+            <Link href="/sysop/pilot269">
+              Build 269: Camp Rosevear supervised pilot, live stage traffic and independent recovery
+            </Link>
+          </p>
+          <p>
             <Link href="/sysop/recovery268">
               Review booking recovery, SLA outbox and original runtime database
             </Link>
