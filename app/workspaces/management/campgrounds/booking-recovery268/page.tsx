@@ -260,17 +260,30 @@ export default async function BookingRecovery268Page({
                 <button type="submit">Record original witness assertion</button>
               </form>
               <h3>Build 270 · provider-side payment trace</h3>
-              <p>Read-only TEST processor check. We compare the original payment
-                reference, amount and currency with a separately enrolled provider.
-                This does not refund, capture, or alter a reservation.</p>
+              <p>
+                Read-only TEST processor check. We compare the original payment
+                reference, amount and currency with a separately enrolled
+                provider. This does not refund, capture, or alter a reservation.
+              </p>
               <form action={compareOriginalPayment270Action}>
-                <input type="hidden" name="campgroundId" value={selected?.campgroundId??""}/>
-                <input type="hidden" name="recoveryId" value={c.id}/>
-                <label>Original payment row UUID
-                  <input name="paymentId" required maxLength={36}
-                    pattern="[a-fA-F0-9-]{36}" />
+                <input
+                  type="hidden"
+                  name="campgroundId"
+                  value={selected?.campgroundId ?? ""}
+                />
+                <input type="hidden" name="recoveryId" value={c.id} />
+                <label>
+                  Original payment row UUID
+                  <input
+                    name="paymentId"
+                    required
+                    maxLength={36}
+                    pattern="[a-fA-F0-9-]{36}"
+                  />
                 </label>
-                <button type="submit">Verify payment with original test provider</button>
+                <button type="submit">
+                  Verify payment with original test provider
+                </button>
               </form>
             </article>
           ))}
