@@ -26,7 +26,10 @@ export default async function Pilot269Page({
     originalPilotReady269(),
   ]);
   const configured = {
-    traffic: Boolean(process.env.ICAMP_TELEMETRY269_HMAC_SECRET),
+    traffic:
+      Boolean(process.env.ICAMP_TELEMETRY269_HMAC_SECRET) &&
+      Boolean(process.env.ICAMP_TELEMETRY269_PILOT_CAMPGROUND_ID) &&
+      Boolean(process.env.ICAMP_TELEMETRY269_PILOT_SOURCE_ID),
     sla:
       Boolean(process.env.ICAMP_SLA269_ACK_HMAC_SECRET) &&
       Boolean(process.env.ICAMP_SLA269_ACK_SOURCE_ID),
