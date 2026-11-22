@@ -53,8 +53,9 @@ export default async function LoginPage({
           {status === "owner-first-password" ? (
             <p className="form-message" role="status">
               Rosevear first password has been set. Sign in with username
-              Rosevear and the personal password we just chose. GOD MODE still
-              requires independently verified MFA and platform owner approval.
+              Rosevear and the personal password we just chose. After sign-in,
+              complete authenticator enrollment at Account MFA. GOD MODE still
+              requires independently verified platform owner approval.
             </p>
           ) : null}
 
@@ -100,6 +101,7 @@ export default async function LoginPage({
             <Link href="/auth/register">Create a guest account</Link>
             <Link href="/auth/owner-access">Platform owner access help</Link>
             <Link href="/auth/owner-setup">Rosevear first-password setup</Link>
+            <Link href="/auth/mfa">Authenticator setup after login</Link>
           </div>
         </section>
       </div>
