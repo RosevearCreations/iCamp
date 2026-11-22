@@ -93,6 +93,7 @@ begin
    ) or not exists(
     select 1 from icamp_private.source_pair_proofs271 sp
      where sp.campground_id=new.campground_id and sp.source_kind='payments'
+      and sp.received_at>statement_timestamp()-interval '24 hours'
    )
  then raise exception 'Original tenant, distinct reviewer, provider pair and all source witnesses required';end if;
  return new;
@@ -129,7 +130,10 @@ begin
    select 1 from icamp_private.support_delivery_attempts270 a
    join icamp_private.support_delivery_receipts269 d on d.outbox_id=a.outbox_id
    join icamp_private.support_sla_outbox268 o on o.id=a.outbox_id
+   join icamp_private.campground_support265 c on c.id=o.case_id
    join icamp_private.source_pair_proofs271 s on s.source_kind='comms'
+     and s.campground_id=c.campground_id and s.source_id=a.source_id
+     and s.received_at>statement_timestamp()-interval '24 hours'
    where a.id=new.attempt_id and a.outbox_id=new.outbox_id
     and a.attempt_status='accepted' and d.id=new.delivered_receipt_id
     and d.event_kind='delivered' and s.id=new.source_pair_id
