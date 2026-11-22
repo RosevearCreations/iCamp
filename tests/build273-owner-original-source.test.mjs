@@ -46,18 +46,34 @@ test("Rosevear first-password credential is one-time, expiring, production-only"
     false,
   );
 });
-test("Existing password cannot be overwritten and first password never grants Sysop", () => {
+test("Owner first password or one-time existing recovery cannot replay or grant Sysop", () => {
   const eligible = {
     originalAccount: true,
     accountType: "staff",
     archived: false,
     existingCredential: false,
+    issuedAt: "2026-11-22T21:30:00Z",
     mfaRequired: true,
   };
   assert.match(ownerSetupReadiness273(eligible), /^ELIGIBLE/);
   assert.equal(
-    ownerSetupReadiness273({ ...eligible, existingCredential: true }),
-    "OWNER_PASSWORD_ALREADY_CONFIGURED",
+    ownerSetupReadiness273({
+      ...eligible,
+      existingCredential: true,
+      existingCredentialChangedAt: "2026-11-21T18:00:00Z",
+    }),
+    "ELIGIBLE_SUPERVISED_ONE_TIME_EXISTING_PASSWORD_RECOVERY",
+  );
+  assert.equal(
+    ownerSetupReadiness273({
+      ...eligible,existingCredential:true,
+      existingCredentialChangedAt:"2026-11-22T21:31:00Z",
+    }),
+    "OWNER_CREDENTIAL_ALREADY_CLAIMED",
+  );
+  assert.match(
+    ownerSetupReadiness273({...eligible,issuedAt:"unconfigured"}),
+    /^HOLD/,
   );
   assert.match(
     ownerSetupReadiness273({ ...eligible, accountType: "guest" }),
