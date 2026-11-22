@@ -55,7 +55,8 @@ export default async function SysopPage() {
           </p>
           <p>
             <Link href="/sysop/acceptance273">
-              Build 273: original signed consumer ACK, incident closure and restore attestation
+              Build 273: original signed consumer ACK, incident closure and
+              restore attestation
             </Link>
           </p>
           <p>

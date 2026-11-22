@@ -75,8 +75,10 @@ export default async function BookingRecovery268Page({
       })
     : null;
   const consumer273 = selected
-    ? await tenantConsumerStatus273({userId:session.user.id,
-       campgroundId:selected.campgroundId})
+    ? await tenantConsumerStatus273({
+        userId: session.user.id,
+        campgroundId: selected.campgroundId,
+      })
     : null;
   return (
     <AppShell>
@@ -418,14 +420,24 @@ export default async function BookingRecovery268Page({
         ) : null}
         <section className="content-panel">
           <h2>Build 273 · signed original booking and Comms consumer ACK</h2>
-          <p>Receipt custody: <strong>{consumer273?.status??"HOLD_NO_ASSIGNED_CAMPGROUND"}</strong>.</p>
-          <p>Original signed booking consumer ACKs: {consumer273?.bookingAcks??0}.
-             Original signed Comms consumer ACKs: {consumer273?.commsAcks??0}.</p>
-          <p>Counts are scoped to the assigned campground only. The actual
-             consumer must sign its fresh original provider receipt; staff
-             cannot manufacture an acknowledgment by entering an arbitrary
-             reference. No new charges, bookings or messages are sent by
-             this review.</p>
+          <p>
+            Receipt custody:{" "}
+            <strong>
+              {consumer273?.status ?? "HOLD_NO_ASSIGNED_CAMPGROUND"}
+            </strong>
+            .
+          </p>
+          <p>
+            Original signed booking consumer ACKs:{" "}
+            {consumer273?.bookingAcks ?? 0}. Original signed Comms consumer
+            ACKs: {consumer273?.commsAcks ?? 0}.
+          </p>
+          <p>
+            Counts are scoped to the assigned campground only. The actual
+            consumer must sign its fresh original provider receipt; staff cannot
+            manufacture an acknowledgment by entering an arbitrary reference. No
+            new charges, bookings or messages are sent by this review.
+          </p>
         </section>
         {evidence ? (
           <section className="content-panel">
