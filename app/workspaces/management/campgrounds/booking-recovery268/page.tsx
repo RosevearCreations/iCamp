@@ -289,29 +289,43 @@ export default async function BookingRecovery268Page({
               </form>
               <h3>Build 271 · independently certified guest recovery</h3>
               <p>
-                A separate campground manager must confirm the original processor
-                payment match, site allocation, delivered confirmation and guest
-                acknowledgment. This creates an immutable closure certificate
-                and does not itself close a reservation or refund a payment.
-                Unverified refunds and no-payment assertions remain on HOLD.
+                A separate campground manager must confirm the original
+                processor payment match, site allocation, delivered confirmation
+                and guest acknowledgment. This creates an immutable closure
+                certificate and does not itself close a reservation or refund a
+                payment. Unverified refunds and no-payment assertions remain on
+                HOLD.
               </p>
               <form action={certifyBooking271Action}>
-                <input type="hidden" name="campgroundId"
-                  value={selected?.campgroundId??""}/>
-                <input type="hidden" name="recoveryId" value={c.id}/>
-                <label>Independent review evidence SHA-256
-                  <input name="evidenceDigest" required
-                    pattern="[a-f0-9]{64}" minLength={64} maxLength={64}/>
+                <input
+                  type="hidden"
+                  name="campgroundId"
+                  value={selected?.campgroundId ?? ""}
+                />
+                <input type="hidden" name="recoveryId" value={c.id} />
+                <label>
+                  Independent review evidence SHA-256
+                  <input
+                    name="evidenceDigest"
+                    required
+                    pattern="[a-f0-9]{64}"
+                    minLength={64}
+                    maxLength={64}
+                  />
                 </label>
-                <button type="submit">Certify original paid-guest recovery</button>
+                <button type="submit">
+                  Certify original paid-guest recovery
+                </button>
               </form>
             </article>
           ))}
         </section>
         {params.closure271 ? (
-          <p role="status">{params.closure271==="certified" ?
-            "Independent recovery certificate recorded. An authorized manager may close the case." :
-            "HOLD — independent reviewer or original payment, site, delivery or guest outcome evidence missing."}</p>
+          <p role="status">
+            {params.closure271 === "certified"
+              ? "Independent recovery certificate recorded. An authorized manager may close the case."
+              : "HOLD — independent reviewer or original payment, site, delivery or guest outcome evidence missing."}
+          </p>
         ) : null}
         {evidence ? (
           <section className="content-panel">
