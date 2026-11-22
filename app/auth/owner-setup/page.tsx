@@ -39,7 +39,7 @@ export default async function OwnerFirstPassword273({
               }
             >
               {status === "already"
-                ? "This identity already has a password. Use the standard verified owner recovery process; the one-time credential cannot overwrite it."
+                ? "This owner recovery credential has already been claimed or cannot safely replace the current password. Use verified owner recovery."
                 : "The first-password request could not be completed. The one-time credential may be invalid or expired, or original source enrollment may be unavailable."}
             </p>
           ) : null}
