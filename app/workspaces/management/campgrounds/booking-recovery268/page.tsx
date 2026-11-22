@@ -18,6 +18,7 @@ import { recordBookingWitness269Action } from "./actions269";
 import { compareOriginalPayment270Action } from "./actions270";
 import { certifyBooking271Action } from "./actions271";
 import { recordProviderBooking272Action } from "./actions272";
+import { tenantConsumerStatus273 } from "@/lib/build273/postgres.mjs";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
@@ -69,6 +70,12 @@ export default async function BookingRecovery268Page({
       : null;
   const cases = selected
     ? await listLocalBookingRecovery268({
+        userId: session.user.id,
+        campgroundId: selected.campgroundId,
+      })
+    : null;
+  const consumer273 = selected
+    ? await tenantConsumerStatus273({
         userId: session.user.id,
         campgroundId: selected.campgroundId,
       })
@@ -411,6 +418,27 @@ export default async function BookingRecovery268Page({
               : "HOLD — independent reviewer or original payment, site, delivery or guest outcome evidence missing."}
           </p>
         ) : null}
+        <section className="content-panel">
+          <h2>Build 273 · signed original booking and Comms consumer ACK</h2>
+          <p>
+            Receipt custody:{" "}
+            <strong>
+              {consumer273?.status ?? "HOLD_NO_ASSIGNED_CAMPGROUND"}
+            </strong>
+            .
+          </p>
+          <p>
+            Original signed booking consumer ACKs:{" "}
+            {consumer273?.bookingAcks ?? 0}. Original signed Comms consumer
+            ACKs: {consumer273?.commsAcks ?? 0}.
+          </p>
+          <p>
+            Counts are scoped to the assigned campground only. The actual
+            consumer must sign its fresh original provider receipt; staff cannot
+            manufacture an acknowledgment by entering an arbitrary reference. No
+            new charges, bookings or messages are sent by this review.
+          </p>
+        </section>
         {evidence ? (
           <section className="content-panel">
             <h2>Original evidence: {evidence.status}</h2>
