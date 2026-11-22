@@ -54,6 +54,12 @@ export default async function SysopPage() {
             <Link href="/status">View published system status</Link>
           </p>
           <p>
+            <Link href="/sysop/acceptance272">
+              Build 272: original owner login, provider, Comms and restoration
+              acceptance
+            </Link>
+          </p>
+          <p>
             <Link href="/sysop/enrollment271">
               Build 271: source pairing, owner ceremony and restore replay
             </Link>
