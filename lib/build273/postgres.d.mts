@@ -4,3 +4,5 @@ export function recordSourceEnrollment273(input:{reviewerId:string;sourcePairId:
 export function acceptOriginalConsumer273(body:string,signature:string|null):Promise<{accepted:boolean;status:string}>;
 export function recordSignedIncidentClosure273(input:{reviewerId:string;outboxId:string;consumerAckId:string;evidenceDigest:string}):Promise<{recorded:boolean;tenantCaseStateChanged:boolean}>;
 export function acceptRestoreProvider273(body:string,signature:string|null):Promise<{accepted:boolean;status:string}>;
+
+export function tenantConsumerStatus273(input:{userId:string;campgroundId:string}):Promise<{status:string;bookingAcks:number;commsAcks:number}>;
