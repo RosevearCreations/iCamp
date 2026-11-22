@@ -18,7 +18,7 @@ const id = "11111111-1111-4111-8111-111111111111";
 const now = Date.parse("2026-11-22T12:00:00Z");
 test("Rosevear first-password credential is one-time, expiring, production-only", () => {
   const fakeCredential = Array.from({ length: 50 }, (_, i) =>
-    String.fromCharCode(97 + (i % 26))
+    String.fromCharCode(97 + (i % 26)),
   ).join("");
   const args = {
     supplied: fakeCredential,
@@ -68,13 +68,14 @@ test("Owner first password or one-time existing recovery cannot replay or grant 
   );
   assert.equal(
     ownerSetupReadiness273({
-      ...eligible,existingCredential:true,
-      existingCredentialChangedAt:"2026-11-22T21:31:00Z",
+      ...eligible,
+      existingCredential: true,
+      existingCredentialChangedAt: "2026-11-22T21:31:00Z",
     }),
     "OWNER_CREDENTIAL_ALREADY_CLAIMED",
   );
   assert.match(
-    ownerSetupReadiness273({...eligible,issuedAt:"unconfigured"}),
+    ownerSetupReadiness273({ ...eligible, issuedAt: "unconfigured" }),
     /^HOLD/,
   );
   assert.match(
@@ -91,7 +92,7 @@ test("Owner first password or one-time existing recovery cannot replay or grant 
 });
 test("Consumer and restore HMAC is signed, fresh, bounded and tenant scoped", () => {
   const fakeHmacKey = Array.from({ length: 44 }, (_, i) =>
-    String.fromCharCode(65 + (i % 26))
+    String.fromCharCode(65 + (i % 26)),
   ).join("");
   const p = {
     campgroundId: id,
