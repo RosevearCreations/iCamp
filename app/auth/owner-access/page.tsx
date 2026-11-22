@@ -34,6 +34,13 @@ export default function OwnerAccessHelp() {
             account exists.
           </p>
           <p>
+            For our first sign-in, use the owner-issued, expiring recovery
+            credential at{" "}
+            <Link href="/auth/owner-setup">Rosevear first-password setup</Link>.
+            It can only create a missing password once and does not approve
+            elevated access or MFA automatically.
+          </p>
+          <p>
             <Link href="/auth/login?next=%2Fsysop">
               Return to Rosevear operator sign-in
             </Link>
