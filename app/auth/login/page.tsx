@@ -50,6 +50,15 @@ export default async function LoginPage({
             </p>
           ) : null}
 
+          {status === "owner-first-password" ? (
+            <p className="form-message" role="status">
+              Rosevear first password has been set. Sign in with username
+              Rosevear and the personal password we just chose. After sign-in,
+              complete authenticator enrollment at Account MFA. GOD MODE still
+              requires independently verified platform owner approval.
+            </p>
+          ) : null}
+
           {status === "reset" ? (
             <p className="form-message" role="status">
               Your password was changed and previous sessions were revoked.
@@ -91,6 +100,8 @@ export default async function LoginPage({
             <Link href="/auth/recover">Forgot password?</Link>
             <Link href="/auth/register">Create a guest account</Link>
             <Link href="/auth/owner-access">Platform owner access help</Link>
+            <Link href="/auth/owner-setup">Rosevear first-password setup</Link>
+            <Link href="/auth/mfa">Authenticator setup after login</Link>
           </div>
         </section>
       </div>
