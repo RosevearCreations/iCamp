@@ -1,0 +1,29 @@
+name: Build 273 temporary formatter
+on:
+  push:
+    branches:
+      - release/build273-owner-first-password-source-ack-dev-20261122
+permissions:
+  contents: write
+jobs:
+  format:
+    if: github.actor == 'RosevearCreations'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      - run: npm ci --ignore-scripts
+      - name: Format Build 273 original source and owner flow
+        run: |
+          npx prettier --write lib/build273/core.mjs lib/build273/owner-postgres.mjs lib/build273/owner-postgres.d.mts lib/build273/protocol.mjs lib/build273/postgres.mjs lib/build273/postgres.d.mts app/api/auth/owner-setup273/route.ts app/auth/owner-setup/page.tsx app/auth/login/page.tsx app/auth/owner-access/page.tsx app/api/internal/consumer-ack273/route.ts app/api/internal/restore-attest273/route.ts app/sysop/acceptance273/actions.ts app/sysop/acceptance273/page.tsx app/sysop/page.tsx app/workspaces/management/campgrounds/booking-recovery268/page.tsx tests/build273-owner-original-source.test.mjs docs/builds/BUILD273_ROSEVEAR_FIRST_PASSWORD_SIGNED_SOURCE_CONSUMER_ACK.md
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add lib/build273/core.mjs lib/build273/owner-postgres.mjs lib/build273/owner-postgres.d.mts lib/build273/protocol.mjs lib/build273/postgres.mjs lib/build273/postgres.d.mts app/api/auth/owner-setup273/route.ts app/auth/owner-setup/page.tsx app/auth/login/page.tsx app/auth/owner-access/page.tsx app/api/internal/consumer-ack273/route.ts app/api/internal/restore-attest273/route.ts app/sysop/acceptance273/actions.ts app/sysop/acceptance273/page.tsx app/sysop/page.tsx app/workspaces/management/campgrounds/booking-recovery268/page.tsx tests/build273-owner-original-source.test.mjs docs/builds/BUILD273_ROSEVEAR_FIRST_PASSWORD_SIGNED_SOURCE_CONSUMER_ACK.md
+          if ! git diff --cached --quiet; then
+            git commit -m "Build 273: normalized original owner and source acceptance"
+            git push origin HEAD:release/build273-owner-first-password-source-ack-dev-20261122
+          fi
