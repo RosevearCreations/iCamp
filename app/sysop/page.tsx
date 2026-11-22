@@ -55,7 +55,8 @@ export default async function SysopPage() {
           </p>
           <p>
             <Link href="/sysop/acceptance272">
-              Build 272: original owner login, provider, Comms and restoration acceptance
+              Build 272: original owner login, provider, Comms and restoration
+              acceptance
             </Link>
           </p>
           <p>

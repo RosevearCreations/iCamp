@@ -299,27 +299,70 @@ export default async function BookingRecovery268Page({
                 issue a refund, send a guest message or change site inventory.
               </p>
               <form action={recordProviderBooking272Action}>
-                <input type="hidden" name="campgroundId" value={selected?.campgroundId??""}/>
-                <input type="hidden" name="recoveryId" value={c.id}/>
-                <label>Provider trace UUID (Build 270)
-                  <input name="traceId" required pattern="[a-fA-F0-9-]{36}" maxLength={36}/>
+                <input
+                  type="hidden"
+                  name="campgroundId"
+                  value={selected?.campgroundId ?? ""}
+                />
+                <input type="hidden" name="recoveryId" value={c.id} />
+                <label>
+                  Provider trace UUID (Build 270)
+                  <input
+                    name="traceId"
+                    required
+                    pattern="[a-fA-F0-9-]{36}"
+                    maxLength={36}
+                  />
                 </label>
-                <label>Processor settlement witness UUID (Build 269)
-                  <input name="processorWitnessId" required pattern="[a-fA-F0-9-]{36}" maxLength={36}/>
+                <label>
+                  Processor settlement witness UUID (Build 269)
+                  <input
+                    name="processorWitnessId"
+                    required
+                    pattern="[a-fA-F0-9-]{36}"
+                    maxLength={36}
+                  />
                 </label>
-                <label>Site allocation witness UUID
-                  <input name="siteWitnessId" required pattern="[a-fA-F0-9-]{36}" maxLength={36}/>
+                <label>
+                  Site allocation witness UUID
+                  <input
+                    name="siteWitnessId"
+                    required
+                    pattern="[a-fA-F0-9-]{36}"
+                    maxLength={36}
+                  />
                 </label>
-                <label>Delivered guest confirmation witness UUID
-                  <input name="deliveryWitnessId" required pattern="[a-fA-F0-9-]{36}" maxLength={36}/>
+                <label>
+                  Delivered guest confirmation witness UUID
+                  <input
+                    name="deliveryWitnessId"
+                    required
+                    pattern="[a-fA-F0-9-]{36}"
+                    maxLength={36}
+                  />
                 </label>
-                <label>Guest acknowledgment witness UUID
-                  <input name="guestWitnessId" required pattern="[a-fA-F0-9-]{36}" maxLength={36}/>
+                <label>
+                  Guest acknowledgment witness UUID
+                  <input
+                    name="guestWitnessId"
+                    required
+                    pattern="[a-fA-F0-9-]{36}"
+                    maxLength={36}
+                  />
                 </label>
-                <label>Independent source evidence SHA-256
-                  <input name="evidenceDigest" required pattern="[a-f0-9]{64}" minLength={64} maxLength={64}/>
+                <label>
+                  Independent source evidence SHA-256
+                  <input
+                    name="evidenceDigest"
+                    required
+                    pattern="[a-f0-9]{64}"
+                    minLength={64}
+                    maxLength={64}
+                  />
                 </label>
-                <button type="submit">Record independently reviewed original booking evidence</button>
+                <button type="submit">
+                  Record independently reviewed original booking evidence
+                </button>
               </form>
               <h3>Build 271 · independently certified guest recovery</h3>
               <p>
@@ -355,9 +398,11 @@ export default async function BookingRecovery268Page({
           ))}
         </section>
         {params.field272 ? (
-          <p role="status">{params.field272==="recorded" ?
-            "Original processor and guest chain evidence recorded. No booking or payment changed." :
-            "HOLD — distinct campground reviewer, original provider, guest or site evidence missing."}</p>
+          <p role="status">
+            {params.field272 === "recorded"
+              ? "Original processor and guest chain evidence recorded. No booking or payment changed."
+              : "HOLD — distinct campground reviewer, original provider, guest or site evidence missing."}
+          </p>
         ) : null}
         {params.closure271 ? (
           <p role="status">
