@@ -1,0 +1,29 @@
+name: Build 272 temporary formatter
+on:
+  push:
+    branches:
+      - release/build272-original-field-acceptance-dev-20261122
+permissions:
+  contents: write
+jobs:
+  format:
+    if: github.actor == 'RosevearCreations'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      - run: npm ci --ignore-scripts
+      - name: Format Build 272 exact changed paths
+        run: |
+          npx prettier --write app/sysop/acceptance272/actions.ts app/sysop/acceptance272/page.tsx app/workspaces/management/campgrounds/booking-recovery268/actions272.ts app/workspaces/management/campgrounds/booking-recovery268/page.tsx app/sysop/page.tsx lib/build272/core.mjs lib/build272/postgres.mjs lib/build272/postgres.d.mts tests/build272-original-field-acceptance.test.mjs docs/builds/BUILD272_ORIGINAL_OWNER_PROVIDER_COMMS_RESTORE_ACCEPTANCE.md
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add app/sysop/acceptance272/actions.ts app/sysop/acceptance272/page.tsx app/workspaces/management/campgrounds/booking-recovery268/actions272.ts app/workspaces/management/campgrounds/booking-recovery268/page.tsx app/sysop/page.tsx lib/build272/core.mjs lib/build272/postgres.mjs lib/build272/postgres.d.mts tests/build272-original-field-acceptance.test.mjs docs/builds/BUILD272_ORIGINAL_OWNER_PROVIDER_COMMS_RESTORE_ACCEPTANCE.md
+          if ! git diff --cached --quiet; then
+            git commit -m "Build 272: normalize independently sourced acceptance code"
+            git push origin HEAD:release/build272-original-field-acceptance-dev-20261122
+          fi
