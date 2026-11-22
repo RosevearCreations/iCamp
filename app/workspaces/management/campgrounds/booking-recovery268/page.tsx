@@ -16,6 +16,7 @@ import {
 } from "./actions";
 import { recordBookingWitness269Action } from "./actions269";
 import { compareOriginalPayment270Action } from "./actions270";
+import { certifyBooking271Action } from "./actions271";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
@@ -31,6 +32,7 @@ export default async function BookingRecovery268Page({
     saved?: string;
     error?: string;
     provider270?: string;
+    closure271?: string;
   }>;
 }) {
   const path = "/workspaces/management/campgrounds/booking-recovery268";
@@ -285,9 +287,32 @@ export default async function BookingRecovery268Page({
                   Verify payment with original test provider
                 </button>
               </form>
+              <h3>Build 271 · independently certified guest recovery</h3>
+              <p>
+                A separate campground manager must confirm the original processor
+                payment match, site allocation, delivered confirmation and guest
+                acknowledgment. This creates an immutable closure certificate
+                and does not itself close a reservation or refund a payment.
+                Unverified refunds and no-payment assertions remain on HOLD.
+              </p>
+              <form action={certifyBooking271Action}>
+                <input type="hidden" name="campgroundId"
+                  value={selected?.campgroundId??""}/>
+                <input type="hidden" name="recoveryId" value={c.id}/>
+                <label>Independent review evidence SHA-256
+                  <input name="evidenceDigest" required
+                    pattern="[a-f0-9]{64}" minLength={64} maxLength={64}/>
+                </label>
+                <button type="submit">Certify original paid-guest recovery</button>
+              </form>
             </article>
           ))}
         </section>
+        {params.closure271 ? (
+          <p role="status">{params.closure271==="certified" ?
+            "Independent recovery certificate recorded. An authorized manager may close the case." :
+            "HOLD — independent reviewer or original payment, site, delivery or guest outcome evidence missing."}</p>
+        ) : null}
         {evidence ? (
           <section className="content-panel">
             <h2>Original evidence: {evidence.status}</h2>
