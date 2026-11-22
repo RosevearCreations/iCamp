@@ -17,6 +17,7 @@ import {
 import { recordBookingWitness269Action } from "./actions269";
 import { compareOriginalPayment270Action } from "./actions270";
 import { certifyBooking271Action } from "./actions271";
+import { recordProviderBooking272Action } from "./actions272";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
@@ -33,6 +34,7 @@ export default async function BookingRecovery268Page({
     error?: string;
     provider270?: string;
     closure271?: string;
+    field272?: string;
   }>;
 }) {
   const path = "/workspaces/management/campgrounds/booking-recovery268";
@@ -287,6 +289,38 @@ export default async function BookingRecovery268Page({
                   Verify payment with original test provider
                 </button>
               </form>
+              <h3>Build 272 · original processor and guest chain</h3>
+              <p>
+                An independently authorized campground manager can cross-link
+                one real original provider match with the processor settlement,
+                site allocation, delivered confirmation and guest acknowledgment
+                witness rows. All UUIDs must belong to this same campground and
+                booking recovery. Evidence review does not capture a payment,
+                issue a refund, send a guest message or change site inventory.
+              </p>
+              <form action={recordProviderBooking272Action}>
+                <input type="hidden" name="campgroundId" value={selected?.campgroundId??""}/>
+                <input type="hidden" name="recoveryId" value={c.id}/>
+                <label>Provider trace UUID (Build 270)
+                  <input name="traceId" required pattern="[a-fA-F0-9-]{36}" maxLength={36}/>
+                </label>
+                <label>Processor settlement witness UUID (Build 269)
+                  <input name="processorWitnessId" required pattern="[a-fA-F0-9-]{36}" maxLength={36}/>
+                </label>
+                <label>Site allocation witness UUID
+                  <input name="siteWitnessId" required pattern="[a-fA-F0-9-]{36}" maxLength={36}/>
+                </label>
+                <label>Delivered guest confirmation witness UUID
+                  <input name="deliveryWitnessId" required pattern="[a-fA-F0-9-]{36}" maxLength={36}/>
+                </label>
+                <label>Guest acknowledgment witness UUID
+                  <input name="guestWitnessId" required pattern="[a-fA-F0-9-]{36}" maxLength={36}/>
+                </label>
+                <label>Independent source evidence SHA-256
+                  <input name="evidenceDigest" required pattern="[a-f0-9]{64}" minLength={64} maxLength={64}/>
+                </label>
+                <button type="submit">Record independently reviewed original booking evidence</button>
+              </form>
               <h3>Build 271 · independently certified guest recovery</h3>
               <p>
                 A separate campground manager must confirm the original
@@ -320,6 +354,11 @@ export default async function BookingRecovery268Page({
             </article>
           ))}
         </section>
+        {params.field272 ? (
+          <p role="status">{params.field272==="recorded" ?
+            "Original processor and guest chain evidence recorded. No booking or payment changed." :
+            "HOLD — distinct campground reviewer, original provider, guest or site evidence missing."}</p>
+        ) : null}
         {params.closure271 ? (
           <p role="status">
             {params.closure271 === "certified"
