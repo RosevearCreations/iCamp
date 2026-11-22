@@ -1,0 +1,4 @@
+export function claimFirstRosevearPassword273(input: {
+  credential: string;
+  newPassword: string;
+}): Promise<{ status: string }>;
