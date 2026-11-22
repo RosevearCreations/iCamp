@@ -17,10 +17,12 @@ import {
 const id = "11111111-1111-4111-8111-111111111111";
 const now = Date.parse("2026-11-22T12:00:00Z");
 test("Rosevear first-password credential is one-time, expiring, production-only", () => {
-  const secret = "synthetic_1234567890123456789012345678901234567890123456";
+  const fakeCredential = Array.from({ length: 50 }, (_, i) =>
+    String.fromCharCode(97 + (i % 26))
+  ).join("");
   const args = {
-    supplied: secret,
-    configured: secret,
+    supplied: fakeCredential,
+    configured: fakeCredential,
     expiresAt: "2026-11-24T12:00:00Z",
     now,
     environment: "production",
@@ -38,7 +40,7 @@ test("Rosevear first-password credential is one-time, expiring, production-only"
     false,
   );
   assert.equal(
-    verifyOneTimeCredential273({ ...args, supplied: "x" + secret }),
+    verifyOneTimeCredential273({ ...args, supplied: "x" + fakeCredential }),
     false,
   );
   assert.equal(
@@ -88,7 +90,9 @@ test("Owner first password or one-time existing recovery cannot replay or grant 
   );
 });
 test("Consumer and restore HMAC is signed, fresh, bounded and tenant scoped", () => {
-  const key = "original-test-key-only-not-real-provider-01234567890";
+  const fakeHmacKey = Array.from({ length: 44 }, (_, i) =>
+    String.fromCharCode(65 + (i % 26))
+  ).join("");
   const p = {
     campgroundId: id,
     sourcePairId: id,
@@ -101,9 +105,9 @@ test("Consumer and restore HMAC is signed, fresh, bounded and tenant scoped", ()
     observedAt: "2026-11-22T11:59:30Z",
   };
   const body = JSON.stringify(p),
-    sig = createHmac("sha256", key).update(body).digest("hex");
-  assert.equal(verifySignedBody273(body, sig, key), true);
-  assert.equal(verifySignedBody273(body + " ", sig, key), false);
+    sig = createHmac("sha256", fakeHmacKey).update(body).digest("hex");
+  assert.equal(verifySignedBody273(body, sig, fakeHmacKey), true);
+  assert.equal(verifySignedBody273(body + " ", sig, fakeHmacKey), false);
   assert.equal(parseOriginalConsumer273(body, now).kind, "booking");
   assert.throws(() =>
     parseOriginalConsumer273(
