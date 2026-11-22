@@ -45,7 +45,7 @@ export default async function OwnerFirstPassword273({
    <p>Use a unique 16+ character password where possible. The recovery
     credential is sensitive: do not post it to public issues, screenshots
     or live-stream recordings.</p>
-   <p><Link href="/auth/login?next=%2Fsysop">Return to Rosevear sign-in</Link> ·
+   <p><Link href="/auth/login?next=%2Fauth%2Fmfa">Return to Rosevear sign-in and authenticator setup</Link> ·
     <Link href="/auth/owner-access">Owner MFA and access guidance</Link></p>
   </section></div></AppShell>;
 }
