@@ -31,17 +31,20 @@ password** 12–128 characters, twice. Server uses constant-time
 SHA-256 comparison and production-environment restriction. It only
 locates `icamp_private.user_accounts.username_normalized='rosevear'`
 and requires a non-archived staff identity with existing MFA-required
-policy and **no existing password credential**. One row lock serializes
-parallel claims, inserts a salted scrypt password verifier **only once**
-and enables ordinary staff account sign-in, clearing old lockouts and
-revoking old sessions. It never adds/approves a platform operator grant,
+policy and either no password credential **or** an existing credential last changed before the issuance timestamp. One row lock serializes parallel claims and inserts or replaces a
+salted scrypt password verifier **only once per issued recovery credential**.
+An existing verifier is replaced only if its `changed_at` precedes the
+production-only `ICAMP_OWNER273_FIRST_LOGIN_ISSUED_AT` timestamp
+(`2026-11-22T21:30:00Z`); a successful claim advances `changed_at`
+and blocks replay. The ceremony enables ordinary staff account sign-in,
+clears old lockouts and revokes old sessions. It never adds/approves a platform operator grant,
 owner binding, independently verifies an email, changes guest accounts
 or creates MFA factors.
 
 One-time setup is contingent on the existing Vercel production
 `DATABASE_URL` actually containing the original `rosevear` row,
-authentication schema and no existing password. If the original record
-is absent or password already exists, setup fails closed; **no
+authentication schema and no newer redeemed password. If the original record
+is absent or changed after issued-at, setup fails closed; **no
 credential set in production may be claimed before owner completes
 the form**. Once claimed, normal username/password sign-in is
 available, but GOD MODE remains locked by the independent owner
