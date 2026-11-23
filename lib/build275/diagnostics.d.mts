@@ -34,7 +34,10 @@ export function classify275(input: {
     independentOwnerBinding?: boolean;
   } | null;
   session: { originalRosevear: boolean; aal2: boolean } | null;
-  ledger: { schemaReady: boolean; receipts: { source: string; observedAt: string }[] };
+  ledger: {
+    schemaReady: boolean;
+    receipts: { source: string; observedAt: string }[];
+  };
   configured?: string[];
   now?: number;
 }): {

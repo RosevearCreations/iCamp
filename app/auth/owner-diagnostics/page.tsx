@@ -15,8 +15,8 @@ export default function OwnerDiagnosticsPage() {
           <h1>Rosevear login diagnostics</h1>
           <p>
             Sign in with username Rosevear and the personal password selected
-            during one-time setup. The one-time recovery credential is not
-            your daily password.
+            during one-time setup. The one-time recovery credential is not your
+            daily password.
           </p>
           <p>
             If setup is on hold, the credential may have expired or been used,
@@ -26,9 +26,9 @@ export default function OwnerDiagnosticsPage() {
           </p>
           <p>
             After login, complete authenticator verification. Operator access
-            still requires an independently approved owner binding.
-            This public page intentionally does not reveal any account,
-            database, credential, secret or source-signer status.
+            still requires an independently approved owner binding. This public
+            page intentionally does not reveal any account, database,
+            credential, secret or source-signer status.
           </p>
           <p>
             <Link href="/auth/owner-setup">First-password setup</Link>

@@ -4,5 +4,7 @@ export function handshakeSummary275(): Promise<{
   schemaReady: boolean;
   receipts: { source: string; observedAt: string }[];
 }>;
-export function acceptHandshake275(body: string, signature: string | null):
-  Promise<{ accepted: boolean; status: string }>;
+export function acceptHandshake275(
+  body: string,
+  signature: string | null,
+): Promise<{ accepted: boolean; status: string }>;

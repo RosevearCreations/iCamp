@@ -5,7 +5,10 @@ import { requireSysop } from "@/lib/platform/access";
 import { inspectOwnerEnrollment270 } from "@/lib/build270/postgres.mjs";
 import { sourceSummary273 } from "@/lib/build273/postgres.mjs";
 import { classify275 } from "@/lib/build275/diagnostics.mjs";
-import { configuredSources275, handshakeSummary275 } from "@/lib/build275/postgres.mjs";
+import {
+  configuredSources275,
+  handshakeSummary275,
+} from "@/lib/build275/postgres.mjs";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
@@ -16,14 +19,19 @@ export const metadata: Metadata = {
 export default async function Acceptance275Page() {
   const { session } = await requireSysop("/sysop");
   const [owner, host, ledger] = await Promise.all([
-    inspectOwnerEnrollment270(), sourceSummary273(), handshakeSummary275()
+    inspectOwnerEnrollment270(),
+    sourceSummary273(),
+    handshakeSummary275(),
   ]);
   const result = classify275({
-    owner, host, ledger, configured: configuredSources275(),
+    owner,
+    host,
+    ledger,
+    configured: configuredSources275(),
     session: {
       originalRosevear: session.user.username?.toLowerCase() === "rosevear",
-      aal2: session.assuranceLevel === "aal2"
-    }
+      aal2: session.assuranceLevel === "aal2",
+    },
   });
   return (
     <SysopShell>
@@ -32,8 +40,8 @@ export default async function Acceptance275Page() {
           <p className="eyebrow">Build 275 · original production evidence</p>
           <h1>Rosevear login and seven-peer recovery certification</h1>
           <p className="hero-panel__lead">
-            Original read-only diagnostics. A successful deployment is not
-            proof of original owner login, live signed sources or restore.
+            Original read-only diagnostics. A successful deployment is not proof
+            of original owner login, live signed sources or restore.
           </p>
         </section>
         <section className="content-panel" aria-live="polite">
@@ -50,7 +58,9 @@ export default async function Acceptance275Page() {
           <ul>
             {result.checks.map((check) => (
               <li key={check.source}>
-                <strong>{check.source}: {check.status}</strong>
+                <strong>
+                  {check.source}: {check.status}
+                </strong>
               </li>
             ))}
           </ul>
@@ -62,15 +72,16 @@ export default async function Acceptance275Page() {
             {" · "}
             <Link href="/auth/mfa?next=%2Fsysop">Original MFA</Link>
             {" · "}
-            <Link href="/sysop/acceptance274">Build 274 independent review</Link>
+            <Link href="/sysop/acceptance274">
+              Build 274 independent review
+            </Link>
           </p>
           <p>
-            Require an independently pinned original database, applied
-            migration 0249, original peer public keys and commit revisions,
-            seven fresh Ed25519 signatures, an actual Rosevear AAL2 session,
-            verified owner binding, and independent isolated restore review.
-            No aggregate counters, test fixtures or unreviewed signature
-            can close recovery.
+            Require an independently pinned original database, applied migration
+            0249, original peer public keys and commit revisions, seven fresh
+            Ed25519 signatures, an actual Rosevear AAL2 session, verified owner
+            binding, and independent isolated restore review. No aggregate
+            counters, test fixtures or unreviewed signature can close recovery.
           </p>
         </section>
       </div>
