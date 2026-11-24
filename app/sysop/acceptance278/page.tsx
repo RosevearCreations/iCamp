@@ -112,6 +112,15 @@ export default async function Acceptance278Page({
             anyone and it does not reset any password.
           </p>
           <p>Session readback: <strong>{result.owner.status}</strong></p>
+          {session.user.username?.toLowerCase() === "rosevear" ? (
+            <p>
+              Original owner account UUID: <code>{session.user.id}</code>.
+              Current browser session UUID: <code>{session.sessionId}</code>.
+              These are identifiers, not passwords or bearer login tokens.
+              An independent approved reviewer must verify this active session
+              in person or through a trusted private channel.
+            </p>
+          ) : null}
           {result.owner.owner.checks.map(x=>(
             <p key={x.id}>{x.id}: {x.status}</p>
           ))}
