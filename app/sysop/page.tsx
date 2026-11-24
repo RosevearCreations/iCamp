@@ -55,7 +55,8 @@ export default async function SysopPage() {
           </p>
           <p>
             <Link href="/sysop/acceptance279">
-              Build 279: seven-source original receipts, owner recovery audit and isolated restore evidence
+              Build 279: seven-source original receipts, owner recovery audit
+              and isolated restore evidence
             </Link>
           </p>
           <p>
