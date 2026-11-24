@@ -54,6 +54,11 @@ export default async function SysopPage() {
             <Link href="/status">View published system status</Link>
           </p>
           <p>
+            <Link href="/sysop/acceptance278">
+              Build 278: independent original field signatures, owner MFA and external restore service review
+            </Link>
+          </p>
+          <p>
             <Link href="/sysop/acceptance277">
               Build 277: original owner peer field challenges and external
               restore review
