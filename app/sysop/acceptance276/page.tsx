@@ -60,11 +60,21 @@ export default async function Acceptance276Page({
         </section>
         <section className="content-panel" aria-live="polite">
           <h2>Production recovery gates</h2>
-          <p>Original schema: <strong>{peers.admission.status}</strong>.</p>
-          <p>Owner login readback: <strong>{owner.status}</strong>.</p>
-          <p>Fresh cryptographic peer readback: <strong>{signed.status}</strong>.</p>
-          <p>Signed original sources: <strong>{signed.verifiedCount}/7</strong>.</p>
-          <p>Restore closure operations: <strong>{restore.status}</strong>.</p>
+          <p>
+            Original schema: <strong>{peers.admission.status}</strong>.
+          </p>
+          <p>
+            Owner login readback: <strong>{owner.status}</strong>.
+          </p>
+          <p>
+            Fresh cryptographic peer readback: <strong>{signed.status}</strong>.
+          </p>
+          <p>
+            Signed original sources: <strong>{signed.verifiedCount}/7</strong>.
+          </p>
+          <p>
+            Restore closure operations: <strong>{restore.status}</strong>.
+          </p>
           <p>
             All operational gates remain HOLD unless separate independent
             evidence is present. A Vercel READY build certifies software
@@ -74,9 +84,11 @@ export default async function Acceptance276Page({
         <section className="content-panel">
           <h2>Original Rosevear account and MFA readback</h2>
           <ul>
-            {owner.checks.map(check => (
+            {owner.checks.map((check) => (
               <li key={check.id}>
-                <strong>{check.id}: {check.status}</strong>
+                <strong>
+                  {check.id}: {check.status}
+                </strong>
                 <p>{check.detail}</p>
               </li>
             ))}
@@ -93,13 +105,15 @@ export default async function Acceptance276Page({
           <h2>Seven peer-signature readbacks</h2>
           <p>
             Every row below is checked against its approved Ed25519 public key
-            and source revision, including a fresh signature over the stored
-            raw message. It is not merely a count of database rows.
+            and source revision, including a fresh signature over the stored raw
+            message. It is not merely a count of database rows.
           </p>
           <ul>
-            {signed.sources.map(peer => (
+            {signed.sources.map((peer) => (
               <li key={peer.source}>
-                <strong>{peer.source}: {peer.status}</strong>
+                <strong>
+                  {peer.source}: {peer.status}
+                </strong>
               </li>
             ))}
           </ul>
@@ -139,28 +153,57 @@ export default async function Acceptance276Page({
             </label>
             <label>
               Original source key identifier
-              <input name="keyId" required minLength={8} maxLength={80}
-                pattern="[a-z0-9_-]{8,80}" autoComplete="off"/>
+              <input
+                name="keyId"
+                required
+                minLength={8}
+                maxLength={80}
+                pattern="[a-z0-9_-]{8,80}"
+                autoComplete="off"
+              />
             </label>
             <label>
               Exact original source commit SHA-1 (40 hex characters)
-              <input name="commitSha" required minLength={40} maxLength={40}
-                pattern="[a-f0-9]{40}" autoComplete="off"/>
+              <input
+                name="commitSha"
+                required
+                minLength={40}
+                maxLength={40}
+                pattern="[a-f0-9]{40}"
+                autoComplete="off"
+              />
             </label>
             <label>
               Verified Ed25519 SPKI public key (PEM only)
-              <textarea name="publicKeyPem" required maxLength={1200}
-                rows={5} autoComplete="off"/>
+              <textarea
+                name="publicKeyPem"
+                required
+                maxLength={1200}
+                rows={5}
+                autoComplete="off"
+              />
             </label>
             <label>
               Independently observed public key SHA-256 fingerprint
-              <input name="keyFingerprint" required pattern={shaPattern}
-                minLength={64} maxLength={64} autoComplete="off"/>
+              <input
+                name="keyFingerprint"
+                required
+                pattern={shaPattern}
+                minLength={64}
+                maxLength={64}
+                autoComplete="off"
+              />
             </label>
             <label>
               Out-of-band original source custody evidence SHA-256
-              <input name="evidenceDigest" required pattern={shaPattern}
-                minLength={64} maxLength={64} autoComplete="off"/>
+              <input
+                name="evidenceDigest"
+                required
+                pattern={shaPattern}
+                minLength={64}
+                maxLength={64}
+                autoComplete="off"
+              />
             </label>
             <button type="submit">Stage signer for independent review</button>
           </form>
@@ -169,16 +212,27 @@ export default async function Acceptance276Page({
           <h2>Independent second-person signer review</h2>
           <p>
             The reviewer must not be the proposer. Review the original key
-            fingerprint and source revision outside this application; a
-            proposed key alone is not trusted.
+            fingerprint and source revision outside this application; a proposed
+            key alone is not trusted.
           </p>
           <ul>
-            {peers.proposals.map(p => (
+            {peers.proposals.map((p) => (
               <li key={p.id}>
-                <strong>{p.sourceId}: {p.reviewed ? "REVIEWED — live challenge required" : "PENDING SECOND REVIEW"}</strong>
-                <p>Proposal: <code>{p.id}</code>; key: {p.keyId}</p>
-                <p>Source revision: <code>{p.commitSha}</code></p>
-                <p>Key fingerprint: <code>{p.fingerprint}</code></p>
+                <strong>
+                  {p.sourceId}:{" "}
+                  {p.reviewed
+                    ? "REVIEWED — live challenge required"
+                    : "PENDING SECOND REVIEW"}
+                </strong>
+                <p>
+                  Proposal: <code>{p.id}</code>; key: {p.keyId}
+                </p>
+                <p>
+                  Source revision: <code>{p.commitSha}</code>
+                </p>
+                <p>
+                  Key fingerprint: <code>{p.fingerprint}</code>
+                </p>
               </li>
             ))}
           </ul>
@@ -192,13 +246,24 @@ export default async function Acceptance276Page({
           <form action={approvePeerSigner276Action}>
             <label>
               Pending signer proposal UUID
-              <input name="proposalId" required pattern={uuidPattern}
-                maxLength={36} autoComplete="off"/>
+              <input
+                name="proposalId"
+                required
+                pattern={uuidPattern}
+                maxLength={36}
+                autoComplete="off"
+              />
             </label>
             <label>
               Independent external fingerprint/revision review SHA-256
-              <input name="reviewDigest" required pattern={shaPattern}
-                minLength={64} maxLength={64} autoComplete="off"/>
+              <input
+                name="reviewDigest"
+                required
+                pattern={shaPattern}
+                minLength={64}
+                maxLength={64}
+                autoComplete="off"
+              />
             </label>
             <button type="submit">Record separate signer approval</button>
           </form>
@@ -208,17 +273,24 @@ export default async function Acceptance276Page({
           <p>
             An original Build 272 isolated four-scope restore review and signed
             Build 273 provider host attestation must already exist. A second
-            operator, distinct from both earlier restore reviewers, must
-            compare actual original and isolated host readbacks. Recording
-            review evidence never executes a restore or automatically
-            certifies production recovery.
+            operator, distinct from both earlier restore reviewers, must compare
+            actual original and isolated host readbacks. Recording review
+            evidence never executes a restore or automatically certifies
+            production recovery.
           </p>
           <p>Independent review rows: {restore.reviewed}.</p>
           <ul>
-            {restore.records.map(record => (
+            {restore.records.map((record) => (
               <li key={record.id}>
-                <strong>{record.providerId}: {record.reviewed ? "INDEPENDENT REVIEW RECORDED" : "PENDING REVIEW"}</strong>
-                <p>Provider attestation UUID: <code>{record.id}</code></p>
+                <strong>
+                  {record.providerId}:{" "}
+                  {record.reviewed
+                    ? "INDEPENDENT REVIEW RECORDED"
+                    : "PENDING REVIEW"}
+                </strong>
+                <p>
+                  Provider attestation UUID: <code>{record.id}</code>
+                </p>
               </li>
             ))}
           </ul>
@@ -232,15 +304,28 @@ export default async function Acceptance276Page({
           <form action={independentRestore276Action}>
             <label>
               Original signed provider attestation UUID
-              <input name="attestationId" required pattern={uuidPattern}
-                maxLength={36} autoComplete="off"/>
+              <input
+                name="attestationId"
+                required
+                pattern={uuidPattern}
+                maxLength={36}
+                autoComplete="off"
+              />
             </label>
             <label>
               Independent external original/isolated host readback SHA-256
-              <input name="evidenceDigest" required pattern={shaPattern}
-                minLength={64} maxLength={64} autoComplete="off"/>
+              <input
+                name="evidenceDigest"
+                required
+                pattern={shaPattern}
+                minLength={64}
+                maxLength={64}
+                autoComplete="off"
+              />
             </label>
-            <button type="submit">Record separate restore evidence review</button>
+            <button type="submit">
+              Record separate restore evidence review
+            </button>
           </form>
         </section>
       </div>
