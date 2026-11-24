@@ -54,6 +54,18 @@ export default async function SysopPage() {
             <Link href="/status">View published system status</Link>
           </p>
           <p>
+            <Link href="/sysop/acceptance277">
+              Build 277: original owner peer field challenges and external
+              restore review
+            </Link>
+          </p>
+          <p>
+            <Link href="/sysop/acceptance276">
+              Build 276: original independent signer enrollment and restore
+              review
+            </Link>
+          </p>
+          <p>
             <Link href="/sysop/acceptance273">
               Build 273: original signed consumer ACK, incident closure and
               restore attestation
