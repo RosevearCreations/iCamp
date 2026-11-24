@@ -54,6 +54,11 @@ export default async function SysopPage() {
             <Link href="/status">View published system status</Link>
           </p>
           <p>
+            <Link href="/sysop/acceptance279">
+              Build 279: seven-source original receipts, owner recovery audit and isolated restore evidence
+            </Link>
+          </p>
+          <p>
             <Link href="/sysop/acceptance278">
               Build 278: independent original field signatures, owner MFA and
               external restore service review
