@@ -51,7 +51,7 @@ export default async function Acceptance279Page({
           <p className="hero-panel__lead">
             Original database and approved MFA operators only. A software
             deployment does not certify the original database, a source
-            provider, an owner's recovery, or a physical backup restore. This
+            provider, an owner&apos;s recovery, or a physical backup restore. This
             console records independent evidence reviews; it never resets
             accounts, changes signer keys, modifies bookings or performs
             production restores.
@@ -184,7 +184,7 @@ export default async function Acceptance279Page({
         <section className="content-panel">
           <h2>Original Rosevear account recovery access audit</h2>
           <p>
-            The owner's genuine original Rosevear AAL2 session must still be
+            The owner&apos;s genuine original Rosevear AAL2 session must still be
             active, independently witnessed and bound to the existing account. A
             separate, independently approved operator audits the original Build
             278 MFA readback, password-verifier presence, account status, MFA
