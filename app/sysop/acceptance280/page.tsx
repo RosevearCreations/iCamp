@@ -30,7 +30,7 @@ export default async function Acceptance280Page({
     certificate?: string;
   }>;
 }>) {
-  const { session } = await requireSysop("/sysop");
+  await requireSysop("/sysop");
   const [result, p] = await Promise.all([acceptanceSummary280(), searchParams]);
   return (
     <SysopShell>
