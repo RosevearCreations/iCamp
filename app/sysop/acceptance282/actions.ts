@@ -3,6 +3,7 @@
 import { redirect } from "next/navigation";
 import { requireSysop } from "@/lib/platform/access";
 import {
+  dispatchRecovery282,
   openRecovery282,
   recordDelivery282,
 } from "@/lib/build282/postgres.mjs";
@@ -36,4 +37,17 @@ export async function recordDelivery282Action(form: FormData) {
     redirect(route + "?result=hold");
   }
   redirect(route + "?result=reviewed");
+}
+
+export async function dispatchRecovery282Action(form: FormData) {
+  const { session } = await requireSysop("/sysop");
+  try {
+    await dispatchRecovery282({
+      actorId: session.user.id,
+      id: String(form.get("id") ?? ""),
+    });
+  } catch {
+    redirect(route + "?result=hold");
+  }
+  redirect(route + "?result=submitted");
 }

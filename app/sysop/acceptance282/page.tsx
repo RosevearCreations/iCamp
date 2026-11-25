@@ -2,7 +2,11 @@ import Link from "next/link";
 import { SysopShell } from "@/components/sysop-shell";
 import { requireSysop } from "@/lib/platform/access";
 import { summary282 } from "@/lib/build282/postgres.mjs";
-import { openRecovery282Action, recordDelivery282Action } from "./actions";
+import {
+  dispatchRecovery282Action,
+  openRecovery282Action,
+  recordDelivery282Action,
+} from "./actions";
 
 export const dynamic = "force-dynamic";
 
@@ -26,7 +30,7 @@ export default async function Acceptance282Page({
           <p>
             Historical signed evidence does not establish current availability.
             Delivery requires a genuine externally signed receipt and separate
-            original operator review. No alert is transmitted by this console.
+            original operator review. Optional provider submission is not delivery.
           </p>
         </section>
         <section className="content-panel" aria-live="polite">
@@ -95,6 +99,18 @@ export default async function Acceptance282Page({
               </li>
             ))}
           </ul>
+          {params.result === "submitted" && (
+            <p>Provider accepted submission; signed delivery remains HOLD.</p>
+          )}
+          <form action={dispatchRecovery282Action}>
+            <label>
+              Pending incident ID (original opener only)
+              <input name="id" required maxLength={36} />
+            </label>
+            <button disabled={!state.ready || !state.incidents.length}>
+              Submit to configured independent provider
+            </button>
+          </form>
           <form action={recordDelivery282Action}>
             <label>
               Original recovery incident ID

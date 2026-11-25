@@ -20,3 +20,8 @@ export function summary282(): Promise<{
     delivered: boolean;
   }[];
 }>;
+
+export function dispatchRecovery282(input: {
+  actorId: string;
+  id: string;
+}): Promise<{ status: string }>;

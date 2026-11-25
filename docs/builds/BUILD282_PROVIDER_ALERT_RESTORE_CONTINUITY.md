@@ -20,7 +20,7 @@ restore or direct customer notification is performed.
    Record the recovery incident. Copy its UUID and original ACK digest.
 3. Through the authorized original provider's independently operated delivery
    system, arrange actual delivery of that incident. Do not send credentials
-   or tenant details. The console does not send or schedule messages.
+   or tenant details. The console supports optional operator-initiated HTTPS submission; it does not schedule messages.
 4. Obtain the exact UTF-8 JSON statement signed by the original approved
    provider key. Fields: kind (icamp-original-provider-alert-delivery-v1),
    alertId (incident UUID), priorAckDigest (original ACK SHA-256), providerId,
@@ -32,9 +32,20 @@ restore or direct customer notification is performed.
    event uniqueness must verify. Historical delivery does not close an
    incident or certify current owner recovery.
 6. If the actual provider cannot supply the receipt, leave DELIVERY HOLD.
-   Automatic transmission, independent provider enrollment, and ongoing
+   Automatic scheduling, independent provider enrollment, and ongoing
    incident polling require a separately authorized real integration.
 
 Protected release requires format, lint, types, tests, build, disposable
 migration verification, browser checks and security scans. Production
 software readiness is separate from original field acceptance.
+
+## Optional independent transport
+
+Configure server-only ICAMP282_ALERT_ENABLED=true, ICAMP282_ALERT_URL,
+ICAMP282_ALERT_PROVIDER_ID and ICAMP282_ALERT_TOKEN only after approving the
+actual external provider. The endpoint must be a fixed HTTPS DNS hostname,
+without credentials, query, fragment or custom port. The original incident
+opener can submit only an outstanding incident. The provider must honor the
+incident UUID as an idempotency key. No redirect or response body is consumed.
+HTTP success means submission only; signed delivery remains separately gated.
+No configuration is provisioned by this release.
