@@ -160,10 +160,10 @@ export default async function Acceptance281Page({
        <input name="ownerContinuityId" required maxLength={36} pattern={uuid} autoComplete="off"/>
       </label>
       <label>Exact external provider-signed JSON, unchanged UTF-8 bytes
-       <textarea name="body" required maxRows={8} rows={7} maxLength={3200}/>
+       <textarea name="body" required rows={7} maxLength={3200}/>
       </label>
       <label>Genuine external provider Ed25519 base64url signature (public output)
-       <textarea name="signature" required maxRows={2} rows={2} maxLength={100}/>
+       <textarea name="signature" required rows={2} maxLength={100}/>
       </label>
       <button type="submit">Verify actual provider signed final restore acknowledgment</button>
      </form>
