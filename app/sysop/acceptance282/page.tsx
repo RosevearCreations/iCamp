@@ -30,11 +30,26 @@ export default async function Acceptance282Page({
           </p>
         </section>
         <section className="content-panel" aria-live="polite">
-          <h2>{state.ready ? "Original schema present" : "HOLD — original schema or host unverified"}</h2>
-          {params.result === "hold" && <p>HOLD — evidence or review rejected.</p>}
-          {params.result === "opened" && <p>Incident recorded; alert delivery remains HOLD.</p>}
-          {params.result === "reviewed" && <p>Signed delivery receipt recorded; recovery remains independent.</p>}
-          <p>Current reasons: {state.reasons.join(", ") || "No current reasons displayed"}</p>
+          <h2>
+            {state.ready
+              ? "Original schema present"
+              : "HOLD — original schema or host unverified"}
+          </h2>
+          {params.result === "hold" && (
+            <p>HOLD — evidence or review rejected.</p>
+          )}
+          {params.result === "opened" && (
+            <p>Incident recorded; alert delivery remains HOLD.</p>
+          )}
+          {params.result === "reviewed" && (
+            <p>
+              Signed delivery receipt recorded; recovery remains independent.
+            </p>
+          )}
+          <p>
+            Current reasons:{" "}
+            {state.reasons.join(", ") || "No current reasons displayed"}
+          </p>
           <Link href="/sysop/acceptance281">Review live original evidence</Link>
           <h3>Historically verified restore receipts</h3>
           <ul>
@@ -59,7 +74,11 @@ export default async function Acceptance282Page({
                 ))}
               </select>
             </label>
-            <button disabled={!state.ready || !state.history.length || !state.reasons.length}>
+            <button
+              disabled={
+                !state.ready || !state.history.length || !state.reasons.length
+              }
+            >
               Record recovery incident for external escalation
             </button>
           </form>
@@ -70,7 +89,9 @@ export default async function Acceptance282Page({
             {state.incidents.map((incident) => (
               <li key={incident.id}>
                 <code>{incident.id}</code> · {incident.reason} ·{" "}
-                {incident.delivered ? "Historical signed delivery verified" : "DELIVERY HOLD"}
+                {incident.delivered
+                  ? "Historical signed delivery verified"
+                  : "DELIVERY HOLD"}
               </li>
             ))}
           </ul>

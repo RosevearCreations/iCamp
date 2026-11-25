@@ -13,5 +13,10 @@ export function summary282(): Promise<{
   ready: boolean;
   reasons: string[];
   history: { id: string; digest: string }[];
-  incidents: { id: string; reason: string; ackId: string; delivered: boolean }[];
+  incidents: {
+    id: string;
+    reason: string;
+    ackId: string;
+    delivered: boolean;
+  }[];
 }>;

@@ -2,7 +2,10 @@
 
 import { redirect } from "next/navigation";
 import { requireSysop } from "@/lib/platform/access";
-import { openRecovery282, recordDelivery282 } from "@/lib/build282/postgres.mjs";
+import {
+  openRecovery282,
+  recordDelivery282,
+} from "@/lib/build282/postgres.mjs";
 
 const route = "/sysop/acceptance282";
 
