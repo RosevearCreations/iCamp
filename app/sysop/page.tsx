@@ -54,6 +54,12 @@ export default async function SysopPage() {
             <Link href="/status">View published system status</Link>
           </p>
           <p>
+            <Link href="/sysop/acceptance281">
+              Build 281: original external provider custody, Rosevear MFA
+              continuity and signed restore monitoring
+            </Link>
+          </p>
+          <p>
             <Link href="/sysop/acceptance280">
               Build 280: original provider-signed closure, Rosevear MFA witness
               and isolated restore certificate
