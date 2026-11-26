@@ -30,3 +30,9 @@ owner MFA. Closure is a historical review, not continuing certification.
 
 A scheduled invocation, genuine provider delivery, migration adoption and
 independent field review remain unverified until original evidence exists.
+
+Every scheduled sample also rechecks up to the 20 most recently recorded
+original delivery signatures against their historical restore chain. It
+stores the checked and verified counts separately from live recovery health.
+Zero checked receipts is not successful original delivery acceptance. Older
+receipts remain individually rechecked on independent closure review.

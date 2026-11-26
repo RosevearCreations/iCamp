@@ -2,7 +2,9 @@
 create table icamp_private.monitor_run283 (
  id uuid primary key default gen_random_uuid(),
  sampled_at timestamptz not null default statement_timestamp(),
- evidence_status text not null check(evidence_status in ('CURRENT','HOLD','READBACK_HOLD'))
+ evidence_status text not null check(evidence_status in ('CURRENT','HOLD','READBACK_HOLD')),
+ delivery_checked integer not null check(delivery_checked between 0 and 20),
+ delivery_verified integer not null check(delivery_verified between 0 and delivery_checked)
 );
 create table icamp_private.escalation_attempt283 (
  id uuid primary key default gen_random_uuid(),

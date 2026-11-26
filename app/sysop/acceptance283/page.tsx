@@ -42,29 +42,48 @@ export default async function Acceptance283Page({
               : "No original scheduled sample"}
           </p>
           <p>
+            Latest bounded delivery recheck:{" "}
+            {state.latest
+              ? state.latest.delivery_verified +
+                "/" +
+                state.latest.delivery_checked +
+                " historical signatures verified"
+              : "HOLD"}
+          </p>
+          <p>
             A past sample is not current health. Automatic retry is bounded to
             three attempts, separated by at least one hour, for previously
             opened incidents.
           </p>
-          <Link href="/sysop/acceptance282">Original incident and delivery evidence</Link>
+          <Link href="/sysop/acceptance282">
+            Original incident and delivery evidence
+          </Link>
           <ul>
             {state.incidents.map((incident) => (
               <li key={incident.id}>
                 <code>{incident.id}</code> · {incident.reason} ·{" "}
                 {incident.attempts}/3 attempts ·{" "}
-                {incident.receipt_present ? "Receipt recorded" : "Delivery HOLD"}{" "}
+                {incident.receipt_present
+                  ? "Receipt recorded"
+                  : "Delivery HOLD"}{" "}
                 · {incident.closure_recorded ? "Closure recorded" : "Open"}
               </li>
             ))}
           </ul>
-          {params.result === "hold" && <p>HOLD — independent evidence missing.</p>}
-          {params.result === "recorded" && <p>Historical recovery closure recorded.</p>}
+          {params.result === "hold" && (
+            <p>HOLD — independent evidence missing.</p>
+          )}
+          {params.result === "recorded" && (
+            <p>Historical recovery closure recorded.</p>
+          )}
           <form action={closeRecovery283Action}>
             <label>
               Original recovery incident ID
               <input name="id" required maxLength={36} />
             </label>
-            <button disabled={!state.ready}>Independently review recovery closure</button>
+            <button disabled={!state.ready}>
+              Independently review recovery closure
+            </button>
           </form>
         </section>
       </div>
