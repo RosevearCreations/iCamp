@@ -50,7 +50,10 @@ test("closure requires a newer verified recovery on the same source and key", ()
   assert.equal(closureEligible283(state), true);
   assert.equal(closureEligible283({ ...state, delivery: false }), false);
   assert.equal(
-    closureEligible283({ ...state, current: { ...current, sourceHost: "other" } }),
+    closureEligible283({
+      ...state,
+      current: { ...current, sourceHost: "other" },
+    }),
     false,
   );
   assert.equal(
