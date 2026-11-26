@@ -19,21 +19,25 @@ export default async function Acceptance284Page() {
           </p>
         </section>
         <section className="content-panel">
-          <h2>{state.ready ? "Original schema present" : "Original schema HOLD"}</h2>
+          <h2>
+            {state.ready ? "Original schema present" : "Original schema HOLD"}
+          </h2>
           <p>
             Latest authenticated scheduler observation:{" "}
             {state.latest ? String(state.latest.sampled_at) : "HOLD"}
           </p>
-          <p>
-            Observed recovery: {state.latest?.evidence_status ?? "HOLD"}
-          </p>
+          <p>Observed recovery: {state.latest?.evidence_status ?? "HOLD"}</p>
           <p>
             Historical delivery checks:{" "}
             {state.latest
-              ? state.latest.delivery_verified + "/" + state.latest.delivery_checked
+              ? state.latest.delivery_verified +
+                "/" +
+                state.latest.delivery_checked
               : "HOLD"}
           </p>
-          <Link href="/sysop/acceptance282">Review and open original incidents</Link>
+          <Link href="/sysop/acceptance282">
+            Review and open original incidents
+          </Link>
           <ul>
             {state.discoveries.map((item) => (
               <li key={item.id}>
