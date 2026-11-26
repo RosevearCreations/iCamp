@@ -26,7 +26,10 @@ test("discovery distinguishes missing readback from witnessed HOLD", () => {
   assert.equal(discoveries284(state, "verified-ack").length, 4);
   assert.deepEqual(discoveries284(state, null), []);
   assert.deepEqual(
-    discoveries284({ ...state, status: "HOLD_ORIGINAL_PROVIDER_MFA_MONITOR_READBACK" }, "verified-ack"),
+    discoveries284(
+      { ...state, status: "HOLD_ORIGINAL_PROVIDER_MFA_MONITOR_READBACK" },
+      "verified-ack",
+    ),
     [],
   );
 });
@@ -43,5 +46,7 @@ test("secondary relay requires separately configured shared idempotency", () => 
   assert.equal(relayEnvironment284(env, 0).channel, "PRIMARY");
   assert.equal(relayEnvironment284(env, 1).channel, "SECONDARY_RELAY");
   assert.equal(relayEnvironment284({}, 1).channel, "PRIMARY");
-  assert.throws(() => relayEnvironment284({ ...env, ICAMP284_RELAY_URL: env.ICAMP282_ALERT_URL }, 1));
+  assert.throws(() =>
+    relayEnvironment284({ ...env, ICAMP284_RELAY_URL: env.ICAMP282_ALERT_URL }, 1),
+  );
 });

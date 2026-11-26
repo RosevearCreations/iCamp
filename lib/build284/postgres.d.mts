@@ -7,5 +7,10 @@ export function summary284(): Promise<{
     delivery_checked: number;
     delivery_verified: number;
   } | null;
-  discoveries: { id: string; ack_id: string; reason: string; opened: boolean }[];
+  discoveries: {
+    id: string;
+    ack_id: string;
+    reason: string;
+    opened: boolean;
+  }[];
 }>;
