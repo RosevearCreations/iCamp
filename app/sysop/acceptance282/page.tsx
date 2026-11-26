@@ -30,7 +30,8 @@ export default async function Acceptance282Page({
           <p>
             Historical signed evidence does not establish current availability.
             Delivery requires a genuine externally signed receipt and separate
-            original operator review. Optional provider submission is not delivery.
+            original operator review. Optional provider submission is not
+            delivery.
           </p>
         </section>
         <section className="content-panel" aria-live="polite">
