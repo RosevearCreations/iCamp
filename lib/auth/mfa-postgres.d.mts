@@ -11,4 +11,6 @@ export function verifyTotpForSession(input: {
   code: string;
 }): Promise<boolean>;
 
-export function getTotpEnrollmentState(userId: string): Promise<"verified" | "pending" | "none" | "unknown">;
+export function getTotpEnrollmentState(
+  userId: string,
+): Promise<"verified" | "pending" | "none" | "unknown">;

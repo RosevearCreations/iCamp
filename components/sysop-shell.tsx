@@ -51,7 +51,9 @@ export function SysopShell({
           <Link href="/integration/comms-hub">Elevated Comms guidance</Link>
         </nav>
         <StandardAccessibilityControls />
-        <span className="orbit-command-mark">Orbit Command · fixed platform theme</span>
+        <span className="orbit-command-mark">
+          Orbit Command · fixed platform theme
+        </span>
         <div className="topbar__status" aria-label="Shell mode">
           <span className="orbit-command-mark">Read-only sysop</span>
         </div>

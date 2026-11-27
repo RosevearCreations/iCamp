@@ -35,7 +35,13 @@ export default async function LoginPage({
         >
           <SectionHeading
             eyebrow="Secure account"
-            title={platform ? "Platform administrator sign-in" : campground ? "Campground owner or staff sign-in" : "Sign in to iCamp"}
+            title={
+              platform
+                ? "Platform administrator sign-in"
+                : campground
+                  ? "Campground owner or staff sign-in"
+                  : "Sign in to iCamp"
+            }
             id="login-heading"
             helpTopic="auth.login"
           />
@@ -78,7 +84,9 @@ export default async function LoginPage({
           </p>
           <div className="auth-links">
             <Link href="/auth/login?next=%2Fsysop">Platform administrator</Link>
-            <Link href="/auth/login?next=%2Fcampground">Campground owner or staff</Link>
+            <Link href="/auth/login?next=%2Fcampground">
+              Campground owner or staff
+            </Link>
             <Link href="/auth/login?next=%2Fguest%2Fhub">Camper / guest</Link>
           </div>
           <form className="auth-form" action="/api/auth/login" method="post">
@@ -89,7 +97,13 @@ export default async function LoginPage({
               <input
                 autoComplete="username"
                 name="email"
-                placeholder={platform ? "Rosevear" : campground ? "CampRosevear" : "Username or email"}
+                placeholder={
+                  platform
+                    ? "Rosevear"
+                    : campground
+                      ? "CampRosevear"
+                      : "Username or email"
+                }
                 required
                 type="text"
                 maxLength={320}

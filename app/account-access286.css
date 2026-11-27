@@ -3,12 +3,12 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: .55rem 1rem;
-  padding: .7rem 1rem;
+  gap: 0.55rem 1rem;
+  padding: 0.7rem 1rem;
   border-bottom: 1px solid var(--line);
   background: var(--surface);
   color: var(--ink);
-  font-size: .85rem;
+  font-size: 0.85rem;
 }
 .account-context286 form {
   margin: 0;
@@ -17,8 +17,8 @@
   color: inherit;
   background: transparent;
   border: 1px solid var(--line);
-  border-radius: .4rem;
-  padding: .35rem .7rem;
+  border-radius: 0.4rem;
+  padding: 0.35rem 0.7rem;
   cursor: pointer;
 }
 .app-shell[data-shell="sysop"] .slave-shell-banner {

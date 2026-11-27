@@ -9,20 +9,31 @@ export async function GET() {
   try {
     const session = await getCurrentSession();
     if (!session) return Response.json({ signedIn: false }, { headers });
-    const assigned = session.user.accountType === "staff"
-      ? await listAssignedCampgrounds(session.user.id)
-      : [];
-    const platform = session.user.accountType === "staff" && session.assuranceLevel === "aal2"
-      ? Boolean(await getPlatformOverview(session.user.id, session.assuranceLevel))
-      : false;
-    return Response.json({
-      signedIn: true,
-      username: session.user.username ?? session.user.email,
-      accountType: session.user.accountType,
-      assurance: session.assuranceLevel,
-      platform,
-      assigned: assigned.map((item) => ({ id: item.campgroundId, name: item.campgroundName, roles: item.roleCodes })),
-    }, { headers });
+    const assigned =
+      session.user.accountType === "staff"
+        ? await listAssignedCampgrounds(session.user.id)
+        : [];
+    const platform =
+      session.user.accountType === "staff" && session.assuranceLevel === "aal2"
+        ? Boolean(
+            await getPlatformOverview(session.user.id, session.assuranceLevel),
+          )
+        : false;
+    return Response.json(
+      {
+        signedIn: true,
+        username: session.user.username ?? session.user.email,
+        accountType: session.user.accountType,
+        assurance: session.assuranceLevel,
+        platform,
+        assigned: assigned.map((item) => ({
+          id: item.campgroundId,
+          name: item.campgroundName,
+          roles: item.roleCodes,
+        })),
+      },
+      { headers },
+    );
   } catch {
     return Response.json({ unavailable: true }, { status: 503, headers });
   }
