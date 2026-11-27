@@ -26,7 +26,8 @@ export function SysopShell({
       >
         <strong>ICAMP PLATFORM ADMINISTRATOR SHELL</strong>
         <span>
-          Platform oversight only · campground operations are separate
+          SLAVE APPLICATION SHELL · governed by the three Rosevear Masters.
+          Campground operations are separate.
         </span>
       </div>
       <header className="topbar">
