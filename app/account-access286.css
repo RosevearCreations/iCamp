@@ -1,0 +1,37 @@
+/* Fixed platform access appearance; tenant themes remain independent. */
+.account-context286 {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.55rem 1rem;
+  padding: 0.7rem 1rem;
+  border-bottom: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--ink);
+  font-size: 0.85rem;
+}
+.account-context286 form {
+  margin: 0;
+}
+.account-context286 button {
+  color: inherit;
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: 0.4rem;
+  padding: 0.35rem 0.7rem;
+  cursor: pointer;
+}
+.app-shell[data-shell="sysop"] .slave-shell-banner {
+  background: #142d50;
+  color: #edf5ff;
+}
+.app-shell[data-shell="platform-access"] .main-content {
+  max-width: 70rem;
+  width: 100%;
+  margin: 0 auto;
+}
+.account-directory286 {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+}

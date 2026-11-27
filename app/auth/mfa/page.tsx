@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 
 import { AppShell } from "@/components/app-shell";
+import { AccessShell } from "@/components/access-shell";
+import { getTotpEnrollmentState } from "@/lib/auth/mfa-postgres.mjs";
 import { requireSignedIn } from "@/lib/auth/current-session";
 import { sysopReturnPath } from "@/lib/platform/shell.mjs";
 
@@ -18,8 +20,11 @@ export default async function MfaPage({
 }>) {
   const session = await requireSignedIn("/auth/mfa");
   const next = sysopReturnPath((await searchParams).next);
+  const platform = next === "/sysop" || next === "/platform";
+  const Shell = platform ? AccessShell : AppShell;
+  const enrollment = await getTotpEnrollmentState(session.user.id);
   return (
-    <AppShell>
+    <Shell>
       <main className="page-stack">
         <section className="hero-panel">
           <p className="eyebrow">Secure account</p>
@@ -30,8 +35,8 @@ export default async function MfaPage({
             their elevated assurance after 15 minutes.
           </p>
         </section>
-        <MfaPanel returnPath={next} />
+        <MfaPanel returnPath={next} enrollment={enrollment} />
       </main>
-    </AppShell>
+    </Shell>
   );
 }
