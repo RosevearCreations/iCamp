@@ -54,6 +54,11 @@ export default async function SysopPage() {
             <Link href="/status">View published system status</Link>
           </p>
           <p>
+            <Link href="/sysop/acceptance284">
+              Build 284: scheduler and recovery discovery
+            </Link>
+          </p>
+          <p>
             <Link href="/sysop/acceptance283">
               Build 283: scheduled delivery monitoring and recovery closure
             </Link>
