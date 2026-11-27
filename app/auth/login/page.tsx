@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import { AppShell } from "@/components/app-shell";
+import { AccessShell } from "@/components/access-shell";
 import { SectionHeading } from "@/components/section-heading";
 
 export const metadata: Metadata = {
@@ -19,11 +20,14 @@ export default async function LoginPage({
     typeof params.next === "string" && params.next.startsWith("/")
       ? params.next
       : "/";
+  const platform = next === "/sysop" || next === "/platform";
+  const campground = next === "/campground";
+  const Shell = platform ? AccessShell : AppShell;
   const error = params.error === "credentials";
   const status = typeof params.status === "string" ? params.status : null;
 
   return (
-    <AppShell>
+    <Shell>
       <div className="page-stack">
         <section
           className="content-panel auth-panel"
@@ -31,7 +35,7 @@ export default async function LoginPage({
         >
           <SectionHeading
             eyebrow="Secure account"
-            title="Sign in to iCamp"
+            title={platform ? "Platform administrator sign-in" : campground ? "Campground owner or staff sign-in" : "Sign in to iCamp"}
             id="login-heading"
             helpTopic="auth.login"
           />
@@ -65,6 +69,18 @@ export default async function LoginPage({
             </p>
           ) : null}
 
+          <p>
+            {platform
+              ? "Use your authorized platform operator account (Rosevear)."
+              : campground
+                ? "Use your assigned campground account (for example, CampRosevear)."
+                : "Choose your workspace before signing in."}
+          </p>
+          <div className="auth-links">
+            <Link href="/auth/login?next=%2Fsysop">Platform administrator</Link>
+            <Link href="/auth/login?next=%2Fcampground">Campground owner or staff</Link>
+            <Link href="/auth/login?next=%2Fguest%2Fhub">Camper / guest</Link>
+          </div>
           <form className="auth-form" action="/api/auth/login" method="post">
             <input name="next" type="hidden" value={next} />
 
@@ -73,6 +89,7 @@ export default async function LoginPage({
               <input
                 autoComplete="username"
                 name="email"
+                placeholder={platform ? "Rosevear" : campground ? "CampRosevear" : "Username or email"}
                 required
                 type="text"
                 maxLength={320}
@@ -105,6 +122,6 @@ export default async function LoginPage({
           </div>
         </section>
       </div>
-    </AppShell>
+    </Shell>
   );
 }

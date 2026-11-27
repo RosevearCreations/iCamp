@@ -5,7 +5,8 @@ import { useRouter } from "next/navigation";
 
 export function MfaPanel({
   returnPath = "/auth/account",
-}: Readonly<{ returnPath?: string }>) {
+  enrollment = "unknown",
+}: Readonly<{ returnPath?: string; enrollment?: "verified" | "pending" | "none" | "unknown" }>) {
   const router = useRouter();
   const [password, setPassword] = useState("");
   const [seed, setSeed] = useState("");
@@ -77,12 +78,15 @@ export function MfaPanel({
 
   return (
     <div className="content-panel auth-panel">
-      <h2>Set up an authenticator</h2>
+      <h2>{enrollment === "verified" ? "Verify your existing authenticator" : "Authenticator security"}</h2>
       <p>
-        For a new account, enter your current password to start setup. If you
-        already enrolled, enter a current code below to verify this session. No
-        email or SMS code is sent.
+        Enter the current six-digit code from Authy or your authenticator.
+        No email or SMS code is sent. Create a setup key only if you have not
+        enrolled an authenticator.
       </p>
+      {enrollment !== "verified" && enrollment !== "unknown" ? (
+      <details open={enrollment === "none" || undefined}>
+        <summary>{enrollment === "pending" ? "Restart incomplete enrollment (replaces pending key)" : "First-time authenticator enrollment"}</summary>
       <form onSubmit={enroll} className="auth-form">
         <label>
           Current password
@@ -112,6 +116,9 @@ export function MfaPanel({
           </p>
         </section>
       ) : null}
+      </details>
+      ) : null}
+      {enrollment === "unknown" ? <p role="status">Enrollment status unavailable. Try your existing code or contact trusted recovery support.</p> : null}
       <form onSubmit={verify} className="auth-form">
         <label>
           Current six-digit authenticator code
