@@ -254,7 +254,8 @@ test("Build 251 runtime audit is Sysop-private and does not expose database or s
   assert.match(client, /window.localStorage.setItem/u);
   assert.match(client, /independent owner acceptance: HOLD/iu);
   assert.match(selector, /defaultTheme/u);
-  assert.match(shell, /defaultTheme="orbit"/u);
+  assert.doesNotMatch(shell, /VisualThemeSelector/u);
+  assert.match(shell, /fixed platform theme/u);
   assert.match(shell, /data-visual="orbit"/u);
   assert.equal(STANDARD_THEME.style, "Meadow & evergreen");
   assert.ok(

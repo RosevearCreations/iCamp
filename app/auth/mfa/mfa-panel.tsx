@@ -5,7 +5,11 @@ import { useRouter } from "next/navigation";
 
 export function MfaPanel({
   returnPath = "/auth/account",
-}: Readonly<{ returnPath?: string }>) {
+  enrollment = "unknown",
+}: Readonly<{
+  returnPath?: string;
+  enrollment?: "verified" | "pending" | "none" | "unknown";
+}>) {
   const router = useRouter();
   const [password, setPassword] = useState("");
   const [seed, setSeed] = useState("");
@@ -77,40 +81,61 @@ export function MfaPanel({
 
   return (
     <div className="content-panel auth-panel">
-      <h2>Set up an authenticator</h2>
+      <h2>
+        {enrollment === "verified"
+          ? "Verify your existing authenticator"
+          : "Authenticator security"}
+      </h2>
       <p>
-        For a new account, enter your current password to start setup. If you
-        already enrolled, enter a current code below to verify this session. No
-        email or SMS code is sent.
+        Enter the current six-digit code from Authy or your authenticator. No
+        email or SMS code is sent. Create a setup key only if you have not
+        enrolled an authenticator.
       </p>
-      <form onSubmit={enroll} className="auth-form">
-        <label>
-          Current password
-          <input
-            type="password"
-            autoComplete="current-password"
-            value={password}
-            onChange={(event) => setPassword(event.target.value)}
-            minLength={12}
-            maxLength={128}
-            required
-          />
-        </label>
-        <button className="secondary-button" type="submit" disabled={busy}>
-          Create one-time setup key
-        </button>
-      </form>
-      {seed ? (
-        <section aria-label="Authenticator setup key">
-          <p>Authenticator setup key (shown only during this enrollment):</p>
-          <code>{seed}</code>
-          <p>For an authenticator that accepts a setup URI:</p>
-          <code style={{ overflowWrap: "anywhere" }}>{uri}</code>
-          <p>
-            Keep this key private. It will not be shown again after you leave
-            this page.
-          </p>
-        </section>
+      {enrollment !== "verified" && enrollment !== "unknown" ? (
+        <details open={enrollment === "none" || undefined}>
+          <summary>
+            {enrollment === "pending"
+              ? "Restart incomplete enrollment (replaces pending key)"
+              : "First-time authenticator enrollment"}
+          </summary>
+          <form onSubmit={enroll} className="auth-form">
+            <label>
+              Current password
+              <input
+                type="password"
+                autoComplete="current-password"
+                value={password}
+                onChange={(event) => setPassword(event.target.value)}
+                minLength={12}
+                maxLength={128}
+                required
+              />
+            </label>
+            <button className="secondary-button" type="submit" disabled={busy}>
+              Create one-time setup key
+            </button>
+          </form>
+          {seed ? (
+            <section aria-label="Authenticator setup key">
+              <p>
+                Authenticator setup key (shown only during this enrollment):
+              </p>
+              <code>{seed}</code>
+              <p>For an authenticator that accepts a setup URI:</p>
+              <code style={{ overflowWrap: "anywhere" }}>{uri}</code>
+              <p>
+                Keep this key private. It will not be shown again after you
+                leave this page.
+              </p>
+            </section>
+          ) : null}
+        </details>
+      ) : null}
+      {enrollment === "unknown" ? (
+        <p role="status">
+          Enrollment status unavailable. Try your existing code or contact
+          trusted recovery support.
+        </p>
       ) : null}
       <form onSubmit={verify} className="auth-form">
         <label>

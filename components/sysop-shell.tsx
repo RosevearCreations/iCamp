@@ -2,7 +2,7 @@ import Link from "next/link";
 
 import { EnvironmentBanner } from "@/components/environment-banner";
 import { StandardAccessibilityControls } from "@/components/standard-accessibility-controls";
-import { VisualThemeSelector } from "@/components/visual-theme-selector";
+import { SessionIdentity } from "@/components/session-identity";
 
 /** The Sysop chrome intentionally has no campground booking or guest links. */
 export function SysopShell({
@@ -24,10 +24,10 @@ export function SysopShell({
         role="status"
         aria-label="Application shell classification"
       >
-        <strong>SLAVE APPLICATION SHELL</strong>
+        <strong>ICAMP PLATFORM ADMINISTRATOR SHELL</strong>
         <span>
-          iCamp · governed by the three Rosevear Master applications · iCamp
-          themes remain independent
+          SLAVE APPLICATION SHELL · governed by the three Rosevear Masters.
+          Campground operations are separate.
         </span>
       </div>
       <header className="topbar">
@@ -52,11 +52,14 @@ export function SysopShell({
           <Link href="/integration/comms-hub">Elevated Comms guidance</Link>
         </nav>
         <StandardAccessibilityControls />
-        <VisualThemeSelector defaultTheme="orbit" />
+        <span className="orbit-command-mark">
+          Orbit Command · fixed platform theme
+        </span>
         <div className="topbar__status" aria-label="Shell mode">
           <span className="orbit-command-mark">Read-only sysop</span>
         </div>
       </header>
+      <SessionIdentity platform />
       <div className="shell-grid">
         <aside className="sidebar" aria-label="Platform Sysop navigation">
           <p className="sidebar__label">Platform control plane</p>
@@ -68,6 +71,7 @@ export function SysopShell({
               <ul className="workspace-nav">
                 <li>
                   <Link href="/sysop">Read-only overview</Link>
+                  <Link href="/sysop/accounts">User accounts & access</Link>
                 </li>
                 <li>
                   <Link href="/platform">Aggregate statistics</Link>
