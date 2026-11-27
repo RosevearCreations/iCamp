@@ -61,8 +61,14 @@ test("Build 232 read-only Sysop requires owner binding, active reviewed grant, a
   assert.match(platform, /assuranceLevel !== "aal2"/u);
   assert.match(guard, /requireStaff\(returnPath\)/u);
   assert.match(guard, /getPlatformOverview/u);
-  assert.match(guard, /if \(!summary\) redirect\("\/auth\/platform-access-denied"\)/u);
-  assert.match(read("app/auth/platform-access-denied/page.tsx"), /requireSignedIn\("\/sysop"\)/u);
+  assert.match(
+    guard,
+    /if \(!summary\) redirect\("\/auth\/platform-access-denied"\)/u,
+  );
+  assert.match(
+    read("app/auth/platform-access-denied/page.tsx"),
+    /requireSignedIn\("\/sysop"\)/u,
+  );
   assert.match(guard, /auth\/mfa\?next=/u);
   assert.doesNotMatch(platform, /select \* from .*reservations/u);
 });
