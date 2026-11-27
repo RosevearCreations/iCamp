@@ -10,3 +10,7 @@ export function verifyTotpForSession(input: {
   sessionId: string;
   code: string;
 }): Promise<boolean>;
+
+export function getTotpEnrollmentState(
+  userId: string,
+): Promise<"verified" | "pending" | "none" | "unknown">;

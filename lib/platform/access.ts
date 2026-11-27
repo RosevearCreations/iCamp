@@ -15,6 +15,6 @@ export async function requireSysop(
     session.user.id,
     session.assuranceLevel,
   );
-  if (!summary) redirect("/auth/not-authorized");
+  if (!summary) redirect("/auth/platform-access-denied");
   return { session, summary };
 }

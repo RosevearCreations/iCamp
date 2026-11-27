@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import { EnvironmentBanner } from "@/components/environment-banner";
 import { StandardAccessibilityControls } from "@/components/standard-accessibility-controls";
+import { SessionIdentity } from "@/components/session-identity";
 import { VisualThemeSelector } from "@/components/visual-theme-selector";
 import { workspaces } from "@/lib/workspaces";
 
@@ -73,6 +74,7 @@ export function AppShell({
         <VisualThemeSelector />
       </header>
 
+      <SessionIdentity />
       <div className="shell-grid">
         <aside className="sidebar" aria-label="iCamp workspaces">
           <p className="sidebar__label">Navigation</p>
