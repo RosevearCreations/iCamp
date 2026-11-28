@@ -261,7 +261,9 @@ export default async function GuestHubPage({
         !stay.checkOut?.checkedOutAt ? (
           <section className={styles.card} aria-labelledby="my-site285">
             <p className={styles.kicker}>My campsite</p>
-            <h2 id="my-site285">{stay.reservation.accommodation.displayName}</h2>
+            <h2 id="my-site285">
+              {stay.reservation.accommodation.displayName}
+            </h2>
             <p>
               {stay.reservation.accommodation.code} ·{" "}
               {stay.reservation.campground.name}
