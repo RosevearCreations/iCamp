@@ -1,6 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { authenticatePassword, createSession } from "@/lib/auth/postgres.mjs";
+import {
+  authenticatePassword,
+  createSession,
+  revokeSessionByToken,
+} from "@/lib/auth/postgres.mjs";
+import {
+  matchesWorkspace288,
+  workspaceKind288,
+} from "@/lib/build288/workspace.mjs";
 import {
   isSameOriginMutation,
   safeReturnPath,
@@ -35,6 +43,21 @@ export async function POST(request: NextRequest) {
       303,
     );
   }
+
+  if (!matchesWorkspace288(workspaceKind288(returnPath), user.accountType)) {
+    return NextResponse.redirect(
+      new URL(
+        `/auth/login?error=workspace&next=${encodeURIComponent(returnPath)}`,
+        request.url,
+      ),
+      303,
+    );
+  }
+
+  // Replacing the browser's account also retires its old server session.
+  // Failed credentials and wrong-workspace attempts leave that session intact.
+  const previous = request.cookies.get(getSessionCookieName())?.value;
+  if (previous) await revokeSessionByToken(previous, "account-switch");
 
   const session = await createSession({
     userId: user.id,
