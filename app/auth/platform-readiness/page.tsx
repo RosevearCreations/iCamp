@@ -44,7 +44,8 @@ export default async function PlatformReadinessPage() {
             <div key={label}>
               <dt>{label}</dt>
               <dd>
-                {index > 2 && (!result.querySucceeded || !result.sessionVerified)
+                {index > 2 &&
+                (!result.querySucceeded || !result.sessionVerified)
                   ? "Not inspected"
                   : passed
                     ? "Present"
