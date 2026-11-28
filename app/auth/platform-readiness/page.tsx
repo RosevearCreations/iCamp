@@ -14,8 +14,7 @@ export const metadata: Metadata = {
 
 export default async function PlatformReadinessPage() {
   const session = await requireStaff("/sysop");
-  if (session.assuranceLevel !== "aal2")
-    redirect("/auth/mfa?next=%2Fsysop");
+  if (session.assuranceLevel !== "aal2") redirect("/auth/mfa?next=%2Fsysop");
   const result = await inspectOwnAccount287(session);
   const rows = [
     ["Fresh server-verified MFA session", result.sessionVerified],
@@ -23,7 +22,10 @@ export default async function PlatformReadinessPage() {
     ["Configured database host pin matches", result.hostPin === "matches"],
     ["Migration ledger present", result.migrationLedger],
     ["Independent owner-binding table present", result.ownerBindingTable],
-    ["My verified MFA factor and required policy", result.mfaVerified && result.mfaRequired],
+    [
+      "My verified MFA factor and required policy",
+      result.mfaVerified && result.mfaRequired,
+    ],
     ["My active platform grant", result.grantActive],
     ["My independently reviewed owner binding", result.bindingVerified],
   ] as const;
@@ -42,7 +44,7 @@ export default async function PlatformReadinessPage() {
             <div key={label}>
               <dt>{label}</dt>
               <dd>
-                {index > 2 && !result.querySucceeded
+                {index > 2 && (!result.querySucceeded || !result.sessionVerified)
                   ? "Not inspected"
                   : passed
                     ? "Present"
@@ -55,8 +57,8 @@ export default async function PlatformReadinessPage() {
         <p>
           If the ledger or binding table is absent, the original database
           custodian must reconcile the actual schema against canonical
-          migrations, verify a recoverable backup and rehearse the repair on
-          an isolated restore before approved production migration.
+          migrations, verify a recoverable backup and rehearse the repair on an
+          isolated restore before approved production migration.
         </p>
         <p>
           An independent reviewer must verify owner identity and approve the

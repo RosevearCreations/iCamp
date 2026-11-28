@@ -8,6 +8,7 @@ const read = (path) =>
   readFileSync(new URL(`../${path}`, import.meta.url), "utf8");
 
 const complete = {
+  sessionEligible: true,
   sessionVerified: true,
   querySucceeded: true,
   hostPin: "matches",
@@ -20,15 +21,28 @@ const complete = {
 };
 
 test("Build 287 host comparison does not infer project identity", () => {
-  assert.equal(databasePin287("postgres://db.example/db", "db.example"), "matches");
-  assert.equal(databasePin287("postgres://db.example.evil/db", "db.example"), "mismatch");
-  assert.equal(databasePin287("https://db.example/db", "db.example"), "mismatch");
-  assert.equal(databasePin287("postgres://db.example/db", ""), "unconfigured");
+  assert.equal(
+    databasePin287("postgres://db.example/db", "db.example"),
+    "matches",
+  );
+  assert.equal(
+    databasePin287("postgres://db.example.evil/db", "db.example"),
+    "mismatch",
+  );
+  assert.equal(
+    databasePin287("https://db.example/db", "db.example"),
+    "mismatch",
+  );
+  assert.equal(
+    databasePin287("postgres://db.example/db", ""),
+    "unconfigured",
+  );
 });
 
 test("Build 287 reports independent prerequisites without granting authority", () => {
   assert.equal(assessAccount287(complete), "SELF_ACCESS_PREREQUISITES_PRESENT");
   const cases = [
+    ["sessionEligible", false, "HOLD_FRESH_MFA"],
     ["sessionVerified", false, "HOLD_FRESH_MFA"],
     ["querySucceeded", false, "HOLD_DIAGNOSTIC_UNAVAILABLE"],
     ["hostPin", "mismatch", "HOLD_DATABASE_TARGET"],
@@ -51,7 +65,10 @@ test("Build 287 self-only inspection requires a fresh actual session and read-on
   assert.match(service, /s\.revoked_at is null/u);
   assert.match(service, /interval '15 minutes'/u);
   assert.match(service, /o\.verified_by<>o\.user_id/u);
-  assert.doesNotMatch(service, /password_hash|provider_reference|insert into|update icamp_private|delete from/iu);
+  assert.doesNotMatch(
+    service,
+    /password_hash|provider_reference|insert into|update icamp_private|delete from/iu,
+  );
   assert.match(page, /requireStaff\("\/sysop"\)/u);
   assert.match(page, /inspectOwnAccount287\(session\)/u);
   assert.match(page, /session\.assuranceLevel !== "aal2"/u);

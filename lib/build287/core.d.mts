@@ -1,6 +1,7 @@
 export type DatabasePin287 = "unconfigured" | "matches" | "mismatch";
 
 export interface AccountEvidence287 {
+  sessionEligible: boolean;
   sessionVerified: boolean;
   querySucceeded: boolean;
   hostPin: DatabasePin287;
