@@ -95,12 +95,12 @@ export function SessionIdentity({
                 ? "Campground: see your selected stay"
                 : identity.assigned === null
                   ? "Campground assignment unavailable"
-              : selected
-                ? selected.name + " · " + selected.roles.join(", ")
-                : identity.assigned?.length
-                  ? "Assigned: " +
-                    identity.assigned.map((item) => item.name).join(", ")
-                  : "No staff campground assignment"}
+                  : selected
+                    ? selected.name + " · " + selected.roles.join(", ")
+                    : identity.assigned?.length
+                      ? "Assigned: " +
+                        identity.assigned.map((item) => item.name).join(", ")
+                      : "No staff campground assignment"}
           </span>
           <Link href="/auth/account">My account</Link>
           <form action="/api/auth/logout" method="post">

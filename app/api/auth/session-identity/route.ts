@@ -16,7 +16,10 @@ export async function GET() {
     const platform =
       session.user.accountType === "staff" && session.assuranceLevel === "aal2"
         ? Boolean(
-            await getPlatformOverview(session.user.id, session.assuranceLevel).catch(() => null),
+            await getPlatformOverview(
+              session.user.id,
+              session.assuranceLevel,
+            ).catch(() => null),
           )
         : false;
     return Response.json(
@@ -26,11 +29,12 @@ export async function GET() {
         accountType: session.user.accountType,
         assurance: session.assuranceLevel,
         platform,
-        assigned: assigned?.map((item) => ({
-          id: item.campgroundId,
-          name: item.campgroundName,
-          roles: item.roleCodes,
-        })) ?? null,
+        assigned:
+          assigned?.map((item) => ({
+            id: item.campgroundId,
+            name: item.campgroundName,
+            roles: item.roleCodes,
+          })) ?? null,
       },
       { headers },
     );

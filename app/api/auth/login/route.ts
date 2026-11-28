@@ -5,7 +5,10 @@ import {
   createSession,
   revokeSessionByToken,
 } from "@/lib/auth/postgres.mjs";
-import { matchesWorkspace288, workspaceKind288 } from "@/lib/build288/workspace.mjs";
+import {
+  matchesWorkspace288,
+  workspaceKind288,
+} from "@/lib/build288/workspace.mjs";
 import {
   isSameOriginMutation,
   safeReturnPath,

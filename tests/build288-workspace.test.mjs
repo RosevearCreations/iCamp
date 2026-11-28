@@ -20,7 +20,10 @@ test("Build 288 distinguishes account entry paths without granting access", () =
 
 test("Build 288 account switch permits only fixed local login destinations", () => {
   assert.equal(workspaceSignIn288("platform"), "/auth/login?next=%2Fsysop");
-  assert.equal(workspaceSignIn288("campground"), "/auth/login?next=%2Fcampground");
+  assert.equal(
+    workspaceSignIn288("campground"),
+    "/auth/login?next=%2Fcampground",
+  );
   assert.equal(workspaceSignIn288("guest"), "/auth/login?next=%2Fguest%2Fhub");
   assert.equal(workspaceSignIn288("//evil.example"), null);
 });

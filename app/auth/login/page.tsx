@@ -18,7 +18,9 @@ export default async function LoginPage({
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }>) {
   const params = await searchParams;
-  const next = safeReturnPath(typeof params.next === "string" ? params.next : null);
+  const next = safeReturnPath(
+    typeof params.next === "string" ? params.next : null,
+  );
   const workspace = workspaceKind288(next);
   const platform = workspace === "platform";
   const campground = workspace === "campground";
@@ -58,7 +60,8 @@ export default async function LoginPage({
           {params.error === "workspace" ? (
             <p role="alert" className="form-message form-message--error">
               This account type does not match the selected workspace. Choose
-              the correct sign-in entrance. Your existing session was not changed.
+              the correct sign-in entrance. Your existing session was not
+              changed.
             </p>
           ) : null}
 
