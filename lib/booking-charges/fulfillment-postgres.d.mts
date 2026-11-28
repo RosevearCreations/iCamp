@@ -1,6 +1,7 @@
 export interface FulfillmentJob {
   id: string;
   reservationReference: string;
+  accommodationId: string | null;
   displayName: string;
   serviceCode: string;
   quantity: number;
