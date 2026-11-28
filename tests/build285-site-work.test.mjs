@@ -5,8 +5,18 @@ import test from "node:test";
 import { summarizeSiteWork285 } from "../lib/build285/site-work.mjs";
 
 const sites = [
-  { id: "12", code: "12", displayName: "Synthetic Site 12", statusState: "occupied" },
-  { id: "18", code: "18", displayName: "Synthetic Site 18", statusState: "available" },
+  {
+    id: "12",
+    code: "12",
+    displayName: "Synthetic Site 12",
+    statusState: "occupied",
+  },
+  {
+    id: "18",
+    code: "18",
+    displayName: "Synthetic Site 18",
+    statusState: "available",
+  },
 ];
 const repair = { accommodationId: "12", caseState: "open" };
 const delivery = { accommodationId: "12", jobState: "queued" };
@@ -44,7 +54,10 @@ test("Unverified sources remain unknown and work stays on its recorded site", ()
 
 test("Monitor uses staff permissions and existing tenant-scoped queues", () => {
   const page = readFileSync(
-    new URL("../app/workspaces/management/campgrounds/site-work/page.tsx", import.meta.url),
+    new URL(
+      "../app/workspaces/management/campgrounds/site-work/page.tsx",
+      import.meta.url,
+    ),
     "utf8",
   );
   assert.match(page, /requireStaff\(path\)/u);
@@ -52,4 +65,13 @@ test("Monitor uses staff permissions and existing tenant-scoped queues", () => {
   assert.match(page, /permissions.includes\("reservation.modify"\)/u);
   assert.match(page, /listAssistanceQueue\(session.user.id, campground\)/u);
   assert.match(page, /!fulfillment.value.truncated/u);
+  assert.match(page, /publication.value.campground.id === campground/u);
+});
+
+test("Missing job location must not be reported as no work", () => {
+  const [site] = summarizeSiteWork285(sites, [repair], [
+    { ...delivery, accommodationId: null },
+  ]);
+  assert.equal(site.fulfillment, null);
+  assert.equal(site.assistance, 1);
 });

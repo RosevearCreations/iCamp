@@ -9,7 +9,8 @@ Staff must review delivery reassignment on a site move before fulfillment.
 
 No actual Camp Rosevear map, account, inventory, payment, or ledger is seeded.
 The pure regression is a synthetic test, not an authenticated field rehearsal.
-Actual map geometry overlay, payment-to-delivery and ledger reconciliation,
+The staff overlay uses only existing same-tenant published geometry and the
+accessible list retains unplotted sites. Actual map publication, payment-to-delivery and ledger reconciliation,
 reconnect timing, original account readiness and authenticated cross-tenant
 browser acceptance remain open. No real payments, external providers or
 original database migrations are authorized by this candidate.
