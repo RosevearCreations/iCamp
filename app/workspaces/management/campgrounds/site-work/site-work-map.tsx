@@ -60,9 +60,9 @@ export function SiteWorkMap({
   return (
     <>
       <p>
-        Version {map.versionNumber} · Orange A: open assistance · Purple F:
-        open add-on work. Blue: occupied · Red: closed or winterized. A
-        question mark means unknown. Select a polygon to open its list entry.
+        Version {map.versionNumber} · Orange A: open assistance · Purple F: open
+        add-on work. Blue: occupied · Red: closed or winterized. A question mark
+        means unknown. Select a polygon to open its list entry.
       </p>
       {failed ? (
         <p role="status">
