@@ -55,26 +55,28 @@ export default async function SiteWorkPage({
   const departureDate = new Date(Date.now() + 86400000)
     .toISOString()
     .slice(0, 10);
-  const [sites, assistance, fulfillment, publication] = await Promise.allSettled([
-    listAccommodations(session.user.id, campground),
-    listAssistanceQueue(session.user.id, campground),
-    listCampgroundFulfillment({
-      userId: session.user.id,
-      campgroundId: campground,
-    }),
-    getPublicBookingMapSnapshot({
-      campgroundSlug: selected.campgroundSlug,
-      arrivalDate,
-      departureDate,
-      kind: "all",
-      availability: "all",
-    }),
-  ]);
+  const [sites, assistance, fulfillment, publication] =
+    await Promise.allSettled([
+      listAccommodations(session.user.id, campground),
+      listAssistanceQueue(session.user.id, campground),
+      listCampgroundFulfillment({
+        userId: session.user.id,
+        campgroundId: campground,
+      }),
+      getPublicBookingMapSnapshot({
+        campgroundSlug: selected.campgroundSlug,
+        arrivalDate,
+        departureDate,
+        kind: "all",
+        availability: "all",
+      }),
+    ]);
   const jobs =
     fulfillment.status === "fulfilled" && !fulfillment.value.truncated
       ? fulfillment.value.jobs
       : null;
-  const cases = assistance.status === "fulfilled" ? assistance.value.cases : null;
+  const cases =
+    assistance.status === "fulfilled" ? assistance.value.cases : null;
   const rows =
     sites.status === "fulfilled"
       ? summarizeSiteWork285(
@@ -96,11 +98,11 @@ export default async function SiteWorkPage({
         <section className="content-panel">
           <h1>{selected.campgroundName} · Campsite service monitor</h1>
           <p>
-            Current authorized site list. Operating state, assistance and
-            add-on work are independent; a completed job does not close a site
-            or clear unrelated requests. This is not payment settlement or
-            future-date booking availability. Review delivery location after a
-            site move; this view does not reassign deliveries.
+            Current authorized site list. Operating state, assistance and add-on
+            work are independent; a completed job does not close a site or clear
+            unrelated requests. This is not payment settlement or future-date
+            booking availability. Review delivery location after a site move;
+            this view does not reassign deliveries.
           </p>
           <p role="status">
             Server view rendered at {new Date().toISOString()}. Automatic
@@ -133,8 +135,8 @@ export default async function SiteWorkPage({
             />
           ) : (
             <p role="status">
-              A matching published map or site inventory is unavailable.
-              Use the authorized list below; no geography is invented.
+              A matching published map or site inventory is unavailable. Use the
+              authorized list below; no geography is invented.
             </p>
           )}
         </section>
