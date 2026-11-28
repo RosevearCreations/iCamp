@@ -72,6 +72,7 @@ export function SysopShell({
                 <li>
                   <Link href="/sysop">Read-only overview</Link>
                   <Link href="/sysop/accounts">User accounts & access</Link>
+                  <Link href="/sysop/onboarding">New campground plan</Link>
                 </li>
                 <li>
                   <Link href="/platform">Aggregate statistics</Link>
