@@ -69,9 +69,11 @@ test("Monitor uses staff permissions and existing tenant-scoped queues", () => {
 });
 
 test("Missing job location must not be reported as no work", () => {
-  const [site] = summarizeSiteWork285(sites, [repair], [
-    { ...delivery, accommodationId: null },
-  ]);
+  const [site] = summarizeSiteWork285(
+    sites,
+    [repair],
+    [{ ...delivery, accommodationId: null }],
+  );
   assert.equal(site.fulfillment, null);
   assert.equal(site.assistance, 1);
 });
