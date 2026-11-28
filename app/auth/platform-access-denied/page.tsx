@@ -27,6 +27,9 @@ export default async function PlatformDeniedPage() {
           <Link href="/auth/mfa?next=%2Fsysop">
             Verify existing authenticator
           </Link>
+          <Link href="/auth/platform-readiness">
+            Check my exact access prerequisites
+          </Link>
           <Link href="/auth/owner-access">Owner recovery guidance</Link>
           <Link href="/auth/account">My account</Link>
           <Link href="/auth/login?next=%2Fcampground">Campground sign-in</Link>
