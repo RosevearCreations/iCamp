@@ -4,6 +4,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
+import { workspaceKind288 } from "@/lib/build288/workspace.mjs";
+
 type Identity = {
   signedIn?: boolean;
   unavailable?: boolean;
@@ -11,18 +13,20 @@ type Identity = {
   accountType?: string;
   assurance?: string;
   platform?: boolean;
-  assigned?: { id: string; name: string; roles: string[] }[];
+  assigned?: { id: string; name: string; roles: string[] }[] | null;
 };
 
 export function SessionIdentity({
   platform = false,
-}: Readonly<{ platform?: boolean }>) {
+  access = false,
+}: Readonly<{ platform?: boolean; access?: boolean }>) {
   const pathname = usePathname();
   const [snapshot, setSnapshot] = useState<{
     path: string;
     value: Identity;
   } | null>(null);
   const identity = snapshot?.path === pathname ? snapshot.value : null;
+  const guest = workspaceKind288(pathname) === "guest";
   useEffect(() => {
     let active = true;
     let pending = false;
@@ -64,7 +68,13 @@ export function SessionIdentity({
   return (
     <div className="account-context286" aria-label="Account and workspace">
       <strong>
-        {platform ? "Platform administrator shell" : "Campground application"}
+        {access
+          ? "Platform access · authentication"
+          : platform
+            ? "Platform administrator shell"
+            : guest
+              ? "Camper / guest portal"
+              : "Campground application"}
       </strong>
       {identity?.signedIn ? (
         <>
@@ -79,8 +89,12 @@ export function SessionIdentity({
               : "Password session"}
           </span>
           <span>
-            {platform
+            {platform || access
               ? "Tenant: not applicable"
+              : identity.accountType === "guest"
+                ? "Campground: see your selected stay"
+                : identity.assigned === null
+                  ? "Campground assignment unavailable"
               : selected
                 ? selected.name + " · " + selected.roles.join(", ")
                 : identity.assigned?.length
@@ -92,6 +106,18 @@ export function SessionIdentity({
           <form action="/api/auth/logout" method="post">
             <button type="submit">Sign out</button>
           </form>
+          <details>
+            <summary>Switch account (sign out first)</summary>
+            <form action="/api/auth/logout?switchTo=platform" method="post">
+              <button type="submit">Administrator sign-in</button>
+            </form>
+            <form action="/api/auth/logout?switchTo=campground" method="post">
+              <button type="submit">Campground sign-in</button>
+            </form>
+            <form action="/api/auth/logout?switchTo=guest" method="post">
+              <button type="submit">Guest sign-in</button>
+            </form>
+          </details>
         </>
       ) : (
         <>

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 import { revokeSessionByToken } from "@/lib/auth/postgres.mjs";
 import { isSameOriginMutation } from "@/lib/auth/request-security";
+import { workspaceSignIn288 } from "@/lib/build288/workspace.mjs";
 import {
   getSessionCookieName,
   getSessionCookieOptions,
@@ -21,7 +22,9 @@ export async function POST(request: NextRequest) {
     await revokeSessionByToken(rawToken, "logout");
   }
 
-  const response = NextResponse.redirect(new URL("/", request.url), 303);
+  const switchTo = request.nextUrl.searchParams.get("switchTo");
+  const destination = workspaceSignIn288(switchTo) ?? "/";
+  const response = NextResponse.redirect(new URL(destination, request.url), 303);
   response.cookies.set(getSessionCookieName(), "", {
     ...getSessionCookieOptions(),
     maxAge: 0,

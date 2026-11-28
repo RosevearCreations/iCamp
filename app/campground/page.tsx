@@ -48,6 +48,10 @@ export default async function CampgroundPage({
         <section className="hero-panel meadow-hero">
           <p className="eyebrow">Campground operations · Build 232</p>
           <h1>{selected.campgroundName}</h1>
+          <p>
+            Signed in: {session.user.username ?? session.user.email} ·{" "}
+            {authorization.roleCodes.join(", ")} · {selected.campgroundName}
+          </p>
           <p className="hero-panel__lead">
             Your assigned campground workspace. Bookings, guest services,
             amenities and maintenance stay within this tenant&apos;s
@@ -81,6 +85,11 @@ export default async function CampgroundPage({
         <section className="content-panel">
           <h2>Campground management</h2>
           <ul>
+            <li>
+              <Link href={`/workspaces/management/campgrounds/maps?${scope}`}>
+                Map publication and campsite service monitor
+              </Link>
+            </li>
             <li>
               <Link href={`/workspaces/management/campgrounds?${scope}`}>
                 Campground overview

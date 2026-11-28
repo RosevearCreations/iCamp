@@ -4,6 +4,8 @@ import Link from "next/link";
 import { AppShell } from "@/components/app-shell";
 import { AccessShell } from "@/components/access-shell";
 import { SectionHeading } from "@/components/section-heading";
+import { safeReturnPath } from "@/lib/auth/request-security";
+import { workspaceKind288 } from "@/lib/build288/workspace.mjs";
 
 export const metadata: Metadata = {
   title: "Sign in · iCamp",
@@ -16,12 +18,11 @@ export default async function LoginPage({
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }>) {
   const params = await searchParams;
-  const next =
-    typeof params.next === "string" && params.next.startsWith("/")
-      ? params.next
-      : "/";
-  const platform = next === "/sysop" || next === "/platform";
-  const campground = next === "/campground";
+  const next = safeReturnPath(typeof params.next === "string" ? params.next : null);
+  const workspace = workspaceKind288(next);
+  const platform = workspace === "platform";
+  const campground = workspace === "campground";
+  const guest = workspace === "guest";
   const Shell = platform ? AccessShell : AppShell;
   const error = params.error === "credentials";
   const status = typeof params.status === "string" ? params.status : null;
@@ -40,7 +41,9 @@ export default async function LoginPage({
                 ? "Platform administrator sign-in"
                 : campground
                   ? "Campground owner or staff sign-in"
-                  : "Sign in to iCamp"
+                  : guest
+                    ? "Camper / guest sign-in"
+                    : "Sign in to iCamp"
             }
             id="login-heading"
             helpTopic="auth.login"
@@ -49,6 +52,13 @@ export default async function LoginPage({
           {error ? (
             <p className="form-message form-message--error" role="alert">
               The username, email, or password could not be verified.
+            </p>
+          ) : null}
+
+          {params.error === "workspace" ? (
+            <p role="alert" className="form-message form-message--error">
+              This account type does not match the selected workspace. Choose
+              the correct sign-in entrance. Your existing session was not changed.
             </p>
           ) : null}
 
@@ -80,7 +90,9 @@ export default async function LoginPage({
               ? "Use your authorized platform operator account (Rosevear)."
               : campground
                 ? "Use your assigned campground account (for example, CampRosevear)."
-                : "Choose your workspace before signing in."}
+                : guest
+                  ? "Use your guest account (for example, SampleCamper)."
+                  : "Choose your workspace before signing in."}
           </p>
           <div className="auth-links">
             <Link href="/auth/login?next=%2Fsysop">Platform administrator</Link>
@@ -102,7 +114,9 @@ export default async function LoginPage({
                     ? "Rosevear"
                     : campground
                       ? "CampRosevear"
-                      : "Username or email"
+                      : guest
+                        ? "SampleCamper"
+                        : "Username or email"
                 }
                 required
                 type="text"

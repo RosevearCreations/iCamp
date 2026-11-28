@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { EnvironmentBanner } from "@/components/environment-banner";
+import { SessionIdentity } from "@/components/session-identity";
 import { StandardAccessibilityControls } from "@/components/standard-accessibility-controls";
 
 export function AccessShell({
@@ -26,6 +27,7 @@ export function AccessShell({
         <StandardAccessibilityControls />
         <Link href="/auth/login?next=%2Fcampground">Campground sign-in</Link>
       </header>
+      <SessionIdentity access />
       <main className="main-content" id="main-content">
         {children}
       </main>
