@@ -256,6 +256,34 @@ export default async function GuestHubPage({
           </nav>
         ) : null}
 
+        {stay.reservation.status === "checked_in" &&
+        stay.checkIn?.checkedInAt &&
+        !stay.checkOut?.checkedOutAt ? (
+          <section className={styles.card} aria-labelledby="my-site285">
+            <p className={styles.kicker}>My campsite</p>
+            <h2 id="my-site285">
+              {stay.reservation.accommodation.displayName}
+            </h2>
+            <p>
+              {stay.reservation.accommodation.code} ·{" "}
+              {stay.reservation.campground.name}
+            </p>
+            <div className={styles.quickLinks}>
+              <Link href={selectHref("/guest/assistance")}>
+                Report a campsite fault or view existing cases
+              </Link>
+              <Link href="/guest/store">Order supplies or firewood</Link>
+              <Link href={documentsHref}>Review reservation documents</Link>
+              <Link href={mapHref}>View published campground map</Link>
+            </div>
+            <p>
+              Assistance and purchases are separate. Review the actual price,
+              stock and pickup or delivery terms before committing an order.
+              Urgent hazards require direct contact with campground staff.
+            </p>
+          </section>
+        ) : null}
+
         <MyStayProgress stay={stay} view="hub" />
         <GuestArrivalGuide
           stay={stay}
