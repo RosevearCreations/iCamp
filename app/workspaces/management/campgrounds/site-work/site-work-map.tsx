@@ -16,7 +16,11 @@ export function SiteWorkMap({
   map,
   items,
   rows,
-}: Readonly<{ map: Snapshot["map"]; items: PublicBookingMapItem[]; rows: Rows }>) {
+}: Readonly<{
+  map: Snapshot["map"];
+  items: PublicBookingMapItem[];
+  rows: Rows;
+}>) {
   const [url, setUrl] = useState<string | null>(null);
   const [failed, setFailed] = useState(false);
   useEffect(() => {
@@ -83,25 +87,19 @@ export function SiteWorkMap({
         {plotted.map(({ site, points, first }) => {
           const fill = ["closed", "winterized"].includes(site.operatingState)
             ? "#b52c36"
-            : site.assistance && site.assistance > 0
-              ? "#d87820"
-              : site.operatingState === "occupied"
-                ? "#2362b5"
-                : "#455e54";
+            : site.operatingState === "occupied"
+              ? "#2362b5"
+              : "#455e54";
           const label = `${site.code}: ${site.operatingState}; assistance ${site.assistance ?? "unknown"}; add-on work ${site.fulfillment ?? "unknown"}`;
           return (
-            <a
-              key={site.id}
-              href={`#site-work-${site.id}`}
-              aria-label={label}
-            >
+            <a key={site.id} href={`#site-work-${site.id}`} aria-label={label}>
               <title>{label}</title>
               <polygon
                 points={points}
                 fill={fill}
                 fillOpacity="0.75"
-                stroke="white"
-                strokeWidth={scale * 0.18}
+                stroke={site.assistance ? "#ff9e40" : "white"}
+                strokeWidth={scale * (site.assistance ? 0.55 : 0.18)}
               />
               <text
                 x={first.x}
@@ -112,11 +110,22 @@ export function SiteWorkMap({
                 strokeWidth={scale * 0.12}
                 paintOrder="stroke"
               >
-                {site.code} A:{site.assistance ?? "?"}
+                {site.code} · {site.operatingState}
               </text>
               <text
                 x={first.x}
                 y={first.y + scale * 3.2}
+                fontSize={scale * 1.5}
+                fill="#ffbf81"
+                stroke="#2c1a0b"
+                strokeWidth={scale * 0.12}
+                paintOrder="stroke"
+              >
+                A:{site.assistance ?? "?"}
+              </text>
+              <text
+                x={first.x}
+                y={first.y + scale * 4.9}
                 fontSize={scale * 1.5}
                 fill="#e0bcff"
                 stroke="#24123c"

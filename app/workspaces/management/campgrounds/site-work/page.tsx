@@ -16,6 +16,7 @@ import { listAssistanceQueue } from "@/lib/camper-assistance-triage/postgres.mjs
 import { getPublicBookingMapSnapshot } from "@/lib/public-booking-map/postgres.mjs";
 
 import { SiteWorkMap } from "./site-work-map";
+import { SiteWorkRefresh } from "./site-work-refresh";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
@@ -102,10 +103,11 @@ export default async function SiteWorkPage({
             site move; this view does not reassign deliveries.
           </p>
           <p role="status">
-            Read completed at {new Date().toISOString()}. Refresh after
-            reconnecting or changing work. Unavailable or truncated sources
-            are unknown, never zero.
+            Server view rendered at {new Date().toISOString()}. Automatic
+            refresh is a fallback, not a real-time delivery guarantee.
+            Unavailable or truncated sources are unknown, never zero.
           </p>
+          <SiteWorkRefresh />
           <AdminRefreshControl
             renderedAt={new Date().toISOString()}
             sectionKey="management.site-work285"

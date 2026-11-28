@@ -75,3 +75,17 @@ test("Missing job location must not be reported as no work", () => {
   assert.equal(site.fulfillment, null);
   assert.equal(site.assistance, 1);
 });
+
+test("Monitor refresh is a read-only reconnect and visibility fallback", () => {
+  const refresh = readFileSync(
+    new URL(
+      "../app/workspaces/management/campgrounds/site-work/site-work-refresh.tsx",
+      import.meta.url,
+    ),
+    "utf8",
+  );
+  assert.match(refresh, /router\.refresh\(\)/u);
+  assert.match(refresh, /addEventListener\("online", refresh\)/u);
+  assert.match(refresh, /removeEventListener\("online", refresh\)/u);
+  assert.match(refresh, /30_000/u);
+});
