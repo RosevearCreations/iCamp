@@ -33,10 +33,7 @@ test("Build 287 host comparison does not infer project identity", () => {
     databasePin287("https://db.example/db", "db.example"),
     "mismatch",
   );
-  assert.equal(
-    databasePin287("postgres://db.example/db", ""),
-    "unconfigured",
-  );
+  assert.equal(databasePin287("postgres://db.example/db", ""), "unconfigured");
 });
 
 test("Build 287 reports independent prerequisites without granting authority", () => {
