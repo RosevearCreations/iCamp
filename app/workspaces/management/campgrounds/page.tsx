@@ -105,6 +105,13 @@ export default async function CampgroundAdministrationPage({
               Open your campground operations, customizations and support
             </Link>
           </p>
+          <p>
+            <Link
+              href={`/workspaces/management/campgrounds/onboarding?campground=${encodeURIComponent(selected.campgroundId)}`}
+            >
+              Open campground setup wizard
+            </Link>
+          </p>
           <p className="hero-panel__lead">
             Manage campground details, ordered sections and subsections without
             crossing property boundaries.
