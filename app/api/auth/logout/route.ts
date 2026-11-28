@@ -24,7 +24,10 @@ export async function POST(request: NextRequest) {
 
   const switchTo = request.nextUrl.searchParams.get("switchTo");
   const destination = workspaceSignIn288(switchTo) ?? "/";
-  const response = NextResponse.redirect(new URL(destination, request.url), 303);
+  const response = NextResponse.redirect(
+    new URL(destination, request.url),
+    303,
+  );
   response.cookies.set(getSessionCookieName(), "", {
     ...getSessionCookieOptions(),
     maxAge: 0,

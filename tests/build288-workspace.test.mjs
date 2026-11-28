@@ -8,7 +8,10 @@ import {
 
 test("Build 288 distinguishes account entry paths without granting access", () => {
   assert.equal(workspaceKind288("/sysop/accounts"), "platform");
-  assert.equal(workspaceKind288("/campground?campground=example"), "campground");
+  assert.equal(
+    workspaceKind288("/campground?campground=example"),
+    "campground",
+  );
   assert.equal(workspaceKind288("/guest/hub"), "guest");
   assert.equal(workspaceKind288("/sysop-fake"), "general");
   assert.equal(workspaceKind288("//evil.example/sysop"), "general");
