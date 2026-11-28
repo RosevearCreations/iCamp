@@ -263,6 +263,25 @@ export default async function CampgroundMapImageLibraryPage({
           </section>
         ) : null}
 
+        <section className="content-panel" aria-labelledby="site-pilot285">
+          <h2 id="site-pilot285">Map publication and campsite service pilot</h2>
+          <p>
+            {versions.some((version) => version.isPublished)
+              ? "A published version exists. Verify the public map and inventory before inviting guests."
+              : "No map version is published. Upload an authorized overhead image or plan, review campsite and amenity bindings, then publish."}
+          </p>
+          <p>
+            The service monitor uses current campsite records and keeps open
+            assistance separate from add-on fulfillment. An image or a completed
+            request alone does not establish availability.
+          </p>
+          <Link
+            href={`/workspaces/management/campgrounds/site-work?campground=${encodeURIComponent(selected.campgroundId)}`}
+          >
+            Open campsite service monitor (authorized operations staff)
+          </Link>
+        </section>
+
         <section className="content-panel" aria-labelledby="versions-heading">
           <SectionHeading
             eyebrow="Version history"
