@@ -51,10 +51,10 @@ export default async function SiteWorkPage({
   if (!selected) redirect("/auth/not-authorized");
   // Dates are needed by the existing public geometry source. Its booking
   // presentation is not used for this current-state work monitor.
-  const arrivalDate = new Date().toISOString().slice(0, 10);
-  const departureDate = new Date(Date.now() + 86400000)
-    .toISOString()
-    .slice(0, 10);
+  const today = new Date();
+  const arrivalDate = today.toISOString().slice(0, 10);
+  const tomorrow = new Date(today.getTime() + 86400000);
+  const departureDate = tomorrow.toISOString().slice(0, 10);
   const [sites, assistance, fulfillment, publication] =
     await Promise.allSettled([
       listAccommodations(session.user.id, campground),
